@@ -7,42 +7,41 @@ import 'package:flutter/material.dart';
 // ════════════════════════════════════════════════════════════════════
 class _C {
   // Primary
-  static const Color primary      = Color(0xFFFD587A);
-  static const Color primary100   = Color(0xFFFFE4E8);
-  static const Color primary200   = Color(0xFFFFCCD5);
+  static const Color primary = Color(0xFFFD587A);
+  static const Color primary100 = Color(0xFFFFE4E8);
+  static const Color primary200 = Color(0xFFFFCCD5);
   // Secondary / violet
-  static const Color secondary    = Color(0xFFC294EC);
+  static const Color secondary = Color(0xFFC294EC);
   static const Color secondary100 = Color(0xFFF3EBFC);
   static const Color secondary200 = Color(0xFFEADBF9);
   // PMS / jaune-doré
-  static const Color pmsBase      = Color(0xFFE8A825);
-  static const Color pmsLight     = Color(0xFFF5D98A);
-  static const Color pmsLighter   = Color(0xFFFAEFBF);
-  static const Color pmsInner     = Color(0xFFD4920F);
+  static const Color pmsBase = Color(0xFFE8A825);
+  static const Color pmsLight = Color(0xFFF5D98A);
+  static const Color pmsInner = Color(0xFFD4920F);
   // Period / rose
-  static const Color periodBase   = Color(0xFFE8607C);
-  static const Color periodLight  = Color(0xFFF5A3B5);
-  static const Color periodLighter= Color(0xFFFAD0DA);
+  static const Color periodBase = Color(0xFFE8607C);
+  static const Color periodLight = Color(0xFFF5A3B5);
+  static const Color periodLighter = Color(0xFFFAD0DA);
   // Ovulation / violet
-  static const Color ovulBase     = Color(0xFF8B5CF6);
-  static const Color ovulMid      = Color(0xFFB39DDB);
-  static const Color ovulLight    = Color(0xFFD4B8F0);
-  static const Color ovulLighter  = Color(0xFFEDE0FA);
+  static const Color ovulBase = Color(0xFF8B5CF6);
+  static const Color ovulMid = Color(0xFFB39DDB);
+  static const Color ovulLight = Color(0xFFD4B8F0);
+  static const Color ovulLighter = Color(0xFFEDE0FA);
   // Neutrals
-  static const Color white        = Color(0xFFFFFFFF);
-  static const Color grey100      = Color(0xFFEFEFEF);
-  static const Color grey200      = Color(0xFFE0E0E0);
-  static const Color grey400      = Color(0xFFBDBDBD);
-  static const Color grey500      = Color(0xFF989898);
-  static const Color grey700      = Color(0xFF464646);
-  static const Color grey900      = Color(0xFF292929);
-  static const Color black        = Color(0xFF121212);
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color grey100 = Color(0xFFEFEFEF);
+  static const Color grey200 = Color(0xFFE0E0E0);
+  static const Color grey400 = Color(0xFFBDBDBD);
+  static const Color grey500 = Color(0xFF989898);
+  static const Color grey700 = Color(0xFF464646);
+  static const Color grey900 = Color(0xFF292929);
+  static const Color black = Color(0xFF121212);
   // Dot ring (violet pâle)
-  static const Color dotRing      = Color(0xFFD4B8EE);
+  static const Color dotRing = Color(0xFFD4B8EE);
   // Fond gradient
-  static const Color bgTop        = Color(0xFFFCE4EC);
-  static const Color bgMid        = Color(0xFFF3E5F5);
-  static const Color bgWhite      = Color(0xFFFFFFFF);
+  static const Color bgTop = Color(0xFFFCE4EC);
+  static const Color bgMid = Color(0xFFF3E5F5);
+  static const Color bgWhite = Color(0xFFFFFFFF);
 }
 
 // ════════════════════════════════════════════════════════════════════
@@ -108,58 +107,58 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
     switch (_phase) {
       case CyclePhase.period:
         return const _PhaseConfig(
-          label:             'Period',
-          dayLabel:          '3 day',
+          label: 'Period',
+          dayLabel: '3 day',
           // Couche du bas (la plus foncée, occupe ~65% bas)
-          colorBottom:       _C.periodBase,
+          colorBottom: _C.periodBase,
           // Couche intermédiaire (vague 1)
-          colorMid:          _C.periodLight,
+          colorMid: _C.periodLight,
           // Couche haute (vague 2, la plus claire)
-          colorTop:          _C.periodLighter,
+          colorTop: _C.periodLighter,
           // Couleur texte dans la roue
-          textColor:         Color(0xFF8B1A2E),
+          textColor: Color(0xFF8B1A2E),
           // Badge numéro cycle
-          badgeDay:          4,
+          badgeDay: 4,
           // Angle du badge sur l'anneau (0 = 3h, -π/2 = 12h)
           // Period → badge à ~2h30 (droite légèrement haut)
-          badgeAngleDeg:     -20.0,
+          badgeAngleDeg: -20.0,
           // Surbrillance du jour dans le calendrier
-          calHighlight:      Color(0xFFFFD6DE),
-          calTextColor:      Color(0xFFE8607C),
+          calHighlight: Color(0xFFFFD6DE),
+          calTextColor: Color(0xFFE8607C),
           // Couleur des dots de l'anneau
-          dotColor:          Color(0xFFD4B8EE),
+          dotColor: Color(0xFFD4B8EE),
           // Couleur de fond du gap (anneau blanc entre outer et inner)
-          ringBg:            Color(0xFFF5D6E0),
+          ringBg: Color(0xFFF5D6E0),
         );
       case CyclePhase.pms:
         return const _PhaseConfig(
-          label:             'PMS',
-          dayLabel:          '3 day',
-          colorBottom:       _C.pmsInner,
-          colorMid:          _C.pmsBase,
-          colorTop:          _C.pmsLight,
-          textColor:         Color(0xFF7A5200),
-          badgeDay:          25,
-          badgeAngleDeg:     -160.0,  // gauche ~10h
-          calHighlight:      Color(0xFFFFF5C0),
-          calTextColor:      Color(0xFFD4920F),
-          dotColor:          Color(0xFFD4B8EE),
-          ringBg:            Color(0xFFF5EED4),
+          label: 'PMS',
+          dayLabel: '3 day',
+          colorBottom: _C.pmsInner,
+          colorMid: _C.pmsBase,
+          colorTop: _C.pmsLight,
+          textColor: Color(0xFF7A5200),
+          badgeDay: 25,
+          badgeAngleDeg: -160.0, // gauche ~10h
+          calHighlight: Color(0xFFFFF5C0),
+          calTextColor: Color(0xFFD4920F),
+          dotColor: Color(0xFFD4B8EE),
+          ringBg: Color(0xFFF5EED4),
         );
       case CyclePhase.ovulation:
         return const _PhaseConfig(
-          label:             'Ovulation',
-          dayLabel:          'Day 14',
-          colorBottom:       _C.ovulBase,
-          colorMid:          _C.ovulMid,
-          colorTop:          _C.ovulLight,
-          textColor:         Color(0xFF4A2080),
-          badgeDay:          14,
-          badgeAngleDeg:     90.0,   // bas ~6h
-          calHighlight:      Color(0xFFE8D8FA),
-          calTextColor:      Color(0xFF8B5CF6),
-          dotColor:          Color(0xFFD4B8EE),
-          ringBg:            Color(0xFFF0E4FA),
+          label: 'Ovulation',
+          dayLabel: 'Day 14',
+          colorBottom: _C.ovulBase,
+          colorMid: _C.ovulMid,
+          colorTop: _C.ovulLight,
+          textColor: Color(0xFF4A2080),
+          badgeDay: 14,
+          badgeAngleDeg: 90.0, // bas ~6h
+          calHighlight: Color(0xFFE8D8FA),
+          calTextColor: Color(0xFF8B5CF6),
+          dotColor: Color(0xFFD4B8EE),
+          ringBg: Color(0xFFF0E4FA),
         );
     }
   }
@@ -171,7 +170,7 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final cfg  = _config;
+    final cfg = _config;
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -221,15 +220,16 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
 
                 // ── Roue animée ──────────────────────────────────
                 AnimatedBuilder(
-                  animation: Listenable.merge([_wave1Ctrl, _wave2Ctrl, _phaseAnim]),
+                  animation:
+                      Listenable.merge([_wave1Ctrl, _wave2Ctrl, _phaseAnim]),
                   builder: (_, __) {
                     return SizedBox(
                       width: size.width * 0.72,
                       height: size.width * 0.72,
                       child: _CycleWheel(
-                        config:    cfg,
-                        wave1:     _wave1Ctrl.value,
-                        wave2:     _wave2Ctrl.value,
+                        config: cfg,
+                        wave1: _wave1Ctrl.value,
+                        wave2: _wave2Ctrl.value,
                         phaseAnim: _phaseAnim.value,
                       ),
                     );
@@ -248,17 +248,17 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                     children: [
                       Expanded(
                         child: _LogBtn(
-                          label:  'Log Symptom',
+                          label: 'Log Symptom',
                           filled: false,
-                          onTap:  () {},
+                          onTap: () {},
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _LogBtn(
-                          label:  'Log Period',
+                          label: 'Log Period',
                           filled: true,
-                          onTap:  () {},
+                          onTap: () {},
                         ),
                       ),
                     ],
@@ -275,7 +275,8 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
       ),
 
       // ── Bottom Navigation ─────────────────────────────────────────
-      bottomNavigationBar: _BottomNav(activePhase: _phase, onSwitch: _switchPhase),
+      bottomNavigationBar:
+          _BottomNav(activePhase: _phase, onSwitch: _switchPhase),
     );
   }
 }
@@ -304,12 +305,13 @@ class _AppBar extends StatelessWidget {
                 color: _C.grey200,
                 border: Border.all(color: _C.white, width: 1),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6, offset: const Offset(0, 2)),
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2)),
                 ],
               ),
-              child: Image.asset('images/icons/Profile.png' ,
-                fit: BoxFit.cover
-              ),
+              child: Image.asset('images/icons/Profile.png', fit: BoxFit.cover),
             ),
           ),
 
@@ -378,8 +380,10 @@ class _PeriaLogo extends StatelessWidget {
   const _PeriaLogo({required this.size});
 
   @override
-  Widget build(BuildContext context) =>
-      SizedBox(width: size, height: size, child: CustomPaint(painter: _PeriaLogoPainter()));
+  Widget build(BuildContext context) => SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(painter: _PeriaLogoPainter()));
 }
 
 class _PeriaLogoPainter extends CustomPainter {
@@ -391,7 +395,7 @@ class _PeriaLogoPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final r  = size.width * 0.34;
+    final r = size.width * 0.34;
     // Cercle gauche (rose)
     paint.color = _C.primary;
     canvas.drawCircle(Offset(cx - r * 0.38, cy), r, paint);
@@ -409,8 +413,8 @@ class _PeriaLogoPainter extends CustomPainter {
 // ════════════════════════════════════════════════════════════════════
 class _CycleWheel extends StatelessWidget {
   final _PhaseConfig config;
-  final double wave1;    // 0.0 → 1.0 (animation vague 1)
-  final double wave2;    // 0.0 → 1.0 (animation vague 2)
+  final double wave1; // 0.0 → 1.0 (animation vague 1)
+  final double wave2; // 0.0 → 1.0 (animation vague 2)
   final double phaseAnim;
 
   const _CycleWheel({
@@ -424,9 +428,9 @@ class _CycleWheel extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _CycleWheelPainter(
-        config:    config,
-        wave1:     wave1,
-        wave2:     wave2,
+        config: config,
+        wave1: wave1,
+        wave2: wave2,
         phaseAnim: phaseAnim,
       ),
       // ── Texte centré dans la roue ──────────────────────────
@@ -484,8 +488,8 @@ class _CycleWheelPainter extends CustomPainter {
     final cy = size.height / 2;
 
     final outerR = size.width / 2 - 2.0;
-    const ringW  = 14.0;
-    const gapW   = 12.0;
+    const ringW = 18.0;
+    const gapW = 25.0;
     final innerR = outerR - ringW - gapW;
 
     final center = Offset(cx, cy);
@@ -500,7 +504,7 @@ class _CycleWheelPainter extends CustomPainter {
     // 2. Points
     final dotPaint = Paint()..color = config.dotColor;
     const dotCount = 40;
-    const dotR     = 3.2;
+    const dotR = 3.2;
     for (int i = 0; i < dotCount; i++) {
       final angle = (i / dotCount) * 2 * math.pi - math.pi / 2;
       final dotCx = cx + (outerR - ringW / 2) * math.cos(angle);
@@ -510,49 +514,54 @@ class _CycleWheelPainter extends CustomPainter {
 
     // 3. Gap blanc
     final gapPaint = Paint()
-      ..color = _C.white
+      ..color = Colors.transparent
       ..style = PaintingStyle.stroke
       ..strokeWidth = gapW;
     canvas.drawCircle(center, outerR - ringW - gapW / 2, gapPaint);
 
     // 4. Cercle intérieur blanc (fond)
-    final bgPaint = Paint()..color = _C.white;
+    final bgPaint = Paint()..color = Colors.transparent;
     canvas.drawCircle(center, innerR, bgPaint);
 
     // 5. Vagues (style liquid) – clip dans le cercle intérieur
     canvas.save();
-    canvas.clipPath(Path()..addOval(Rect.fromCircle(center: center, radius: innerR)));
+    canvas.clipPath(
+        Path()..addOval(Rect.fromCircle(center: center, radius: innerR)));
 
     // Paramètres : hauteur relative (0=bas, 1=haut) et amplitude
     // On utilise wave1 pour les deux premières couches (avec décalage)
     // et wave2 pour la dernière
-    _drawWaveLiquid(
-      canvas: canvas,
-      center: center,
-      radius: innerR,
-      anim: wave1,
-      color: config.colorBottom,
-      heightFactor: 0.4,
-      amplitude: innerR * 0.07,
-    );
-    _drawWaveLiquid(
-      canvas: canvas,
-      center: center,
-      radius: innerR,
-      anim: wave1 + 0.3, // déphasage
-      color: config.colorMid,
-      heightFactor: 0.3,
-      amplitude: innerR * 0.06,
-    );
-    _drawWaveLiquid(
-      canvas: canvas,
-      center: center,
-      radius: innerR,
-      anim: wave2,
-      color: config.colorTop,
-      heightFactor: 0.2,
-      amplitude: innerR * 0.05,
-    );
+
+// Surface (haut)
+_drawWaveLiquid(
+  canvas: canvas,
+  center: center,
+  radius: innerR,
+  anim: wave1,
+  color: config.colorTop,
+  fillPercent: 0.4,
+  amplitude: innerR * 0.07,
+);
+// Milieu
+_drawWaveLiquid(
+  canvas: canvas,
+  center: center,
+  radius: innerR,
+  anim: wave1 + 0.3,
+  color: config.colorMid,
+  fillPercent: 0.3,
+  amplitude: innerR * 0.06,
+);
+_drawWaveLiquid(
+  canvas: canvas,
+  center: center,
+  radius: innerR,
+  anim: wave2,
+  color: config.colorBottom,
+  fillPercent: 0.2,
+  amplitude: innerR * 0.05,
+);
+
 
     canvas.restore();
 
@@ -563,37 +572,41 @@ class _CycleWheelPainter extends CustomPainter {
     _drawBadge(canvas, Offset(badgeCx, badgeCy), config.badgeDay, config);
   }
 
-  // Nouvelle méthode de tracé de vague (inspirée de home.dart)
-  void _drawWaveLiquid({
-    required Canvas canvas,
-    required Offset center,
-    required double radius,
-    required double anim,       // 0..1, animation répétée
-    required Color color,
-    required double heightFactor, // 0..1 : plus haut = plus près du haut
-    required double amplitude,
-  }) {
-    final paint = Paint()..color = color;
-    final path = Path();
+void _drawWaveLiquid({
+  required Canvas canvas,
+  required Offset center,
+  required double radius,
+  required double anim, // 0..1 pour l’ondulation
+  required Color color,
+  required double fillPercent, // 0.0 (vide) à 1.0 (plein)
+  required double amplitude,
+}) {
+  final paint = Paint()..color = color;
+  final path = Path();
 
-    // Y de base : proportionnelle à la hauteur
-    final yBase = center.dy + radius - (radius * 2 * heightFactor);
+  final topY = center.dy - radius; // haut du cercle
+  final bottomY = center.dy + radius; // bas du cercle
+  final waterLevel = bottomY - (radius * 2 * fillPercent); // niveau de l’eau
 
-    path.moveTo(center.dx - radius, center.dy + radius);
-    for (double i = 0; i <= radius * 2; i++) {
-      final x = center.dx - radius + i;
-      // Faire deux oscillations sur la largeur
-      final y = yBase + amplitude * math.sin((i / radius * math.pi * 2) + (anim * 2 * math.pi));
-      path.lineTo(x, y);
-    }
-    path.lineTo(center.dx + radius, center.dy + radius);
-    path.close();
-    canvas.drawPath(path, paint);
+  path.moveTo(center.dx - radius, bottomY);
+
+  // On dessine de gauche à droite en ajoutant une sinusoïde
+  for (double x = center.dx - radius; x <= center.dx + radius; x += 2) {
+    final dx = x - (center.dx - radius);
+    final angle = (dx / (radius * 2)) * 2 * math.pi;
+    final y = waterLevel +
+        amplitude *
+            math.sin(angle * 2 + (anim * 2 * math.pi));
+    path.lineTo(x, y.clamp(topY, bottomY));
   }
 
+  path.lineTo(center.dx + radius, bottomY);
+  path.close();
+  canvas.drawPath(path, paint);
+}
   void _drawBadge(Canvas canvas, Offset pos, int day, _PhaseConfig cfg) {
     // (identique au code existant)
-    const badgeR = 19.0;
+    const badgeR = 15.0;
     final shadowPaint = Paint()
       ..color = Colors.black.withOpacity(0.10)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
@@ -625,8 +638,11 @@ class _CycleWheelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CycleWheelPainter old) =>
-      old.wave1 != wave1 || old.wave2 != wave2 || old.config.label != config.label;
+      old.wave1 != wave1 ||
+      old.wave2 != wave2 ||
+      old.config.label != config.label;
 }
+
 // ════════════════════════════════════════════════════════════════════
 //  CALENDRIER SEMAINE — 7 jours, aujourd'hui surligné
 // ════════════════════════════════════════════════════════════════════
@@ -637,7 +653,7 @@ class _WeekCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Jours fixes comme dans la maquette : 18 Mo → 24 Su, sélectionné 21 Th
-    const days     = [18, 19, 20, 21, 22, 23, 24];
+    const days = [18, 19, 20, 21, 22, 23, 24];
     const dayNames = ['Mo', 'Tu', 'Wed', 'Th', 'Fr', 'Sa', 'Su'];
     const todayIdx = 3; // 21 Th
 
@@ -668,7 +684,8 @@ class _WeekCalendar extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 17,
-                          fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight:
+                              isToday ? FontWeight.w700 : FontWeight.w500,
                           color: isToday ? config.calTextColor : _C.grey900,
                         ),
                       ),
@@ -702,7 +719,8 @@ class _LogBtn extends StatelessWidget {
   final bool filled;
   final VoidCallback onTap;
 
-  const _LogBtn({required this.label, required this.filled, required this.onTap});
+  const _LogBtn(
+      {required this.label, required this.filled, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -713,11 +731,14 @@ class _LogBtn extends StatelessWidget {
         decoration: BoxDecoration(
           color: filled ? _C.grey900 : _C.white,
           borderRadius: BorderRadius.circular(50),
-          border: filled
-              ? null
-              : Border.all(color: _C.grey900, width: 1.5),
+          border: filled ? null : Border.all(color: _C.grey900, width: 1.5),
           boxShadow: filled
-              ? [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 8, offset: const Offset(0, 3))]
+              ? [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3))
+                ]
               : null,
         ),
         alignment: Alignment.center,
@@ -747,25 +768,25 @@ class _ArticlesRow extends StatelessWidget {
     // Couleurs selon maquette : article 1 et 3 rose, article 2 violet
     const articles = [
       _ArticleCfg(
-        title:      'Healthy di',
-        bg:         Color(0xFFFFD6DE),
-        textColor:  Color(0xFFE03060),
+        title: 'Healthy di',
+        bg: Color(0xFFFFD6DE),
+        textColor: Color(0xFFE03060),
         // ⚠️  IMAGE 3D À REMPLIR
         // Image.asset('assets/images/article_diet.png')
         // Personnage 3D tenant un bol de salade verte
       ),
       _ArticleCfg(
-        title:      'Skin care',
-        bg:         Color(0xFFE8D8FA),
-        textColor:  Color(0xFF8B5CF6),
+        title: 'Skin care',
+        bg: Color(0xFFE8D8FA),
+        textColor: Color(0xFF8B5CF6),
         // ⚠️  IMAGE 3D À REMPLIR
         // Image.asset('assets/images/article_skin.png')
         // Personnage 3D appliquant de la crème visage (bandeau rose)
       ),
       _ArticleCfg(
-        title:      'Yoga Tipps',
-        bg:         Color(0xFFFFD6DE),
-        textColor:  Color(0xFFE03060),
+        title: 'Yoga Tipps',
+        bg: Color(0xFFFFD6DE),
+        textColor: Color(0xFFE03060),
         // ⚠️  IMAGE 3D À REMPLIR
         // Image.asset('assets/images/article_yoga.png')
         // Personnage 3D en posture yoga (mains jointes)
@@ -786,7 +807,8 @@ class _ArticleCfg {
   final String title;
   final Color bg;
   final Color textColor;
-  const _ArticleCfg({required this.title, required this.bg, required this.textColor});
+  const _ArticleCfg(
+      {required this.title, required this.bg, required this.textColor});
 }
 
 class _ArticleCard extends StatelessWidget {
@@ -796,45 +818,56 @@ class _ArticleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 148,
+      width: 140,
       decoration: BoxDecoration(
         color: cfg.bg,
         borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      clipBehavior: Clip.hardEdge,
-      child: Stack(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-            Positioned(
-              bottom: 24,
-              left: 0, right: 0,
-              child: Image.asset('images/skin.png', height: 110, fit: BoxFit.contain),
+          // Image en haut (remplacer par asset réel)
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(22),
+              topRight: Radius.circular(22),
             ),
-          
-          // Placeholder visuel (à supprimer quand images disponibles)
-          // Positioned(
-          //   bottom: 20,
-          //   left: 0,
-          //   right: 0,
-          //   child: Opacity(
-          //     opacity: 0.25,
-          //     child: Icon(Icons.person_outline, size: 90, color: cfg.textColor),
-          //   ),
-          // ),
-
-          // Titre en bas à gauche
-          Positioned(
-            bottom: 12,
-            left: 14,
-            right: 8,
+            child: Image.asset(
+              'images/skin.png', // à adapter selon ta carte
+              height: 110,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Texte avec arrondi en bas (simule une séparation)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              color: cfg.bg.withOpacity(0.9),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(22),
+                bottomRight: Radius.circular(22),
+              ),
+            ),
             child: Text(
               cfg.title,
-              maxLines: 2,
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: cfg.textColor,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -842,7 +875,6 @@ class _ArticleCard extends StatelessWidget {
     );
   }
 }
-
 // ════════════════════════════════════════════════════════════════════
 //  BOTTOM NAV BAR
 //  Maquette : pill noire avec icône + "Cycle" label (actif),
@@ -855,73 +887,72 @@ class _BottomNav extends StatelessWidget {
   const _BottomNav({required this.activePhase, required this.onSwitch});
 
   @override
-Widget build(BuildContext context) {
-  return SafeArea(
-    top: false,
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
       child: Container(
-        height: 64,
+        height: 70,  // hauteur ajustée
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(61, 255, 255, 255),
+          color: _C.grey900,
           borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
+          border: Border.all(color: Colors.white, width: 1.5), // bordure blanche
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // ACTIVE TAB
+            // Bouton Cycle actif
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               decoration: BoxDecoration(
-                color: _C.grey900,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Row(
                 children: [
-                  SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CustomPaint(painter: _CycleIconPainter()),
-                  ),
+                  const Icon(Icons.circle_outlined, size: 18, color: _C.grey900),
                   const SizedBox(width: 6),
                   const Text(
                     'Cycle',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: _C.grey900,
                       fontWeight: FontWeight.w600,
+                      fontSize: 14,
                     ),
                   ),
                 ],
               ),
             ),
-
-            // AI
-            Icon(Icons.auto_awesome, color: _C.grey500),
-
-            // JOURNAL
-            Icon(Icons.menu_book_outlined, color: _C.grey500),
+            // Icône AI
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: const Icon(Icons.auto_awesome, color: Colors.white, size: 24),
+            ),
+            // Icône Journal
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: const Icon(Icons.menu_book_outlined, color: Colors.white, size: 24),
+            ),
           ],
         ),
       ),
-    ),
-  );
+    );
+  }
 }
-}
-
 // ── Icône cycle (cercle + flèche rotation) ───────────
 class _CycleIconPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final r  = size.width / 2 - 1.5;
+    final r = size.width / 2 - 1.5;
     final paint = Paint()
       ..color = _C.white
       ..style = PaintingStyle.stroke
@@ -965,7 +996,7 @@ class _AiIconPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final cx = size.width / 2 - 2;
     final cy = size.height / 2;
-    final r  = size.width * 0.36;
+    final r = size.width * 0.36;
     // Visage arrondi (carré aux coins arrondis)
     final rect = RRect.fromRectAndRadius(
       Rect.fromCenter(center: Offset(cx, cy), width: r * 2, height: r * 2),
@@ -973,7 +1004,8 @@ class _AiIconPainter extends CustomPainter {
     );
     canvas.drawRRect(rect, paint);
     // Yeux
-    canvas.drawCircle(Offset(cx - 4, cy - 2), 2, paint..style = PaintingStyle.fill);
+    canvas.drawCircle(
+        Offset(cx - 4, cy - 2), 2, paint..style = PaintingStyle.fill);
     canvas.drawCircle(Offset(cx + 4, cy - 2), 2, paint);
     paint.style = PaintingStyle.stroke;
     // Sourire
@@ -991,8 +1023,10 @@ class _AiIconPainter extends CustomPainter {
     paint.strokeWidth = 1.5;
     canvas.drawLine(Offset(sx, sy - 4), Offset(sx, sy + 4), paint);
     canvas.drawLine(Offset(sx - 4, sy), Offset(sx + 4, sy), paint);
-    canvas.drawLine(Offset(sx - 2.5, sy - 2.5), Offset(sx + 2.5, sy + 2.5), paint);
-    canvas.drawLine(Offset(sx + 2.5, sy - 2.5), Offset(sx - 2.5, sy + 2.5), paint);
+    canvas.drawLine(
+        Offset(sx - 2.5, sy - 2.5), Offset(sx + 2.5, sy + 2.5), paint);
+    canvas.drawLine(
+        Offset(sx + 2.5, sy - 2.5), Offset(sx - 2.5, sy + 2.5), paint);
   }
 
   @override
