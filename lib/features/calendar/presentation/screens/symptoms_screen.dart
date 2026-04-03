@@ -333,8 +333,15 @@ class _Pill extends StatelessWidget {
 
 // ── BOTTOM SHEETS ──
 
-class _WaterBottomSheet extends StatelessWidget {
+class _WaterBottomSheet extends StatefulWidget {
   const _WaterBottomSheet();
+
+  @override
+  State<_WaterBottomSheet> createState() => _WaterBottomSheetState();
+}
+
+class _WaterBottomSheetState extends State<_WaterBottomSheet> {
+  int _glasses = 3; // Initial mock value
 
   @override
   Widget build(BuildContext context) {
@@ -384,12 +391,28 @@ class _WaterBottomSheet extends StatelessWidget {
                 // Pseudo grid for glasses
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(4, (index) => _WaterGlass(isFilled: index < 3, isPlus: index == 3)),
+                  children: List.generate(4, (index) => GestureDetector(
+                    onTap: () {
+                      setState(() {
+                         if (index < _glasses) _glasses = index;
+                         else _glasses = index + 1;
+                      });
+                    },
+                    child: _WaterGlass(isFilled: index < _glasses, isPlus: false)
+                  )),
                 ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(4, (index) => const _WaterGlass(isFilled: false, isPlus: false)),
+                  children: List.generate(4, (index) => GestureDetector(
+                     onTap: () {
+                      setState(() {
+                         if (index + 4 < _glasses) _glasses = index + 4;
+                         else _glasses = index + 5;
+                      });
+                    },
+                    child: _WaterGlass(isFilled: (index + 4) < _glasses, isPlus: false)
+                  )),
                 ),
               ],
             ),
@@ -428,8 +451,15 @@ class _WaterGlass extends StatelessWidget {
   }
 }
 
-class _WeightBottomSheet extends StatelessWidget {
+class _WeightBottomSheet extends StatefulWidget {
   const _WeightBottomSheet();
+
+  @override
+  State<_WeightBottomSheet> createState() => _WeightBottomSheetState();
+}
+
+class _WeightBottomSheetState extends State<_WeightBottomSheet> {
+  final TextEditingController _weightCtrl = TextEditingController(text: '75.02');
 
   @override
   Widget build(BuildContext context) {
@@ -471,7 +501,13 @@ class _WeightBottomSheet extends StatelessWidget {
             decoration: BoxDecoration(color: AppColors.grey50, borderRadius: BorderRadius.circular(20)),
             child: Column(
               children: [
-                const Text('75.02', style: AppText.h3),
+                TextField(
+                  controller: _weightCtrl,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  textAlign: TextAlign.center,
+                  style: AppText.h3,
+                  decoration: const InputDecoration(border: InputBorder.none),
+                ),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -491,8 +527,15 @@ class _WeightBottomSheet extends StatelessWidget {
   }
 }
 
-class _NoteBottomSheet extends StatelessWidget {
+class _NoteBottomSheet extends StatefulWidget {
   const _NoteBottomSheet();
+
+  @override
+  State<_NoteBottomSheet> createState() => _NoteBottomSheetState();
+}
+
+class _NoteBottomSheetState extends State<_NoteBottomSheet> {
+  final TextEditingController _noteCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -531,8 +574,9 @@ class _NoteBottomSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(color: AppColors.grey50, borderRadius: BorderRadius.circular(16)),
-            child: const TextField(
-              decoration: InputDecoration(
+            child: TextField(
+              controller: _noteCtrl,
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: 'I had a very good day.',
               ),

@@ -130,7 +130,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
                       PrimaryButton(
                         label: 'Edit Period',
-                        onPressed: () {},
+                        onPressed: () {
+                          context.push("/edit-calendar");
+                        },
                       ),
                     ],
                   ),

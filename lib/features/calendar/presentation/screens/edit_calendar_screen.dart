@@ -1,0 +1,209 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:perla_app/core/theme/app_colors.dart';
+import 'package:perla_app/core/theme/app_text.dart';
+import 'package:perla_app/core/theme/app_typography.dart';
+import 'package:perla_app/shared/widgets/common_widgets.dart';
+
+class EditCalendarScreen extends StatefulWidget {
+  const EditCalendarScreen({super.key});
+
+  @override
+  State<EditCalendarScreen> createState() => _EditCalendarScreenState();
+}
+
+class _EditCalendarScreenState extends State<EditCalendarScreen> {
+  DateTime? _startDate;
+  DateTime? _endDate;
+
+  static const List<String> _monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+  static const List<String> _weekDays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+
+  void _selectDay(DateTime day) {
+    setState(() {
+      if (_startDate == null || (_startDate != null && _endDate != null)) {
+        // Premier tap → début de plage
+        _startDate = day;
+        _endDate = null;
+      } else if (day.isBefore(_startDate!)) {
+        // Tap avant le début → nouveau début
+        _startDate = day;
+      } else {
+        // Deuxième tap → fin de plage
+        _endDate = day;
+      }
+    });
+  }
+
+  bool _isSelected(DateTime day) {
+    if (_startDate == null) return false;
+    if (_endDate == null) return _isSameDay(day, _startDate!);
+    return !day.isBefore(_startDate!) && !day.isAfter(_endDate!);
+  }
+
+  bool _isRangeEdge(DateTime day) {
+    if (_startDate == null) return false;
+    return _isSameDay(day, _startDate!) ||
+        (_endDate != null && _isSameDay(day, _endDate!));
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  bool get _canSave => _startDate != null;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageScaffold(
+      showBack: true,
+      onBack: () => context.pop(),
+      showTitle: true,
+      title: 'Calendar',
+      child: Padding(
+        padding: const EdgeInsets.only(top: 80, bottom: 20),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.grey200),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  itemCount: 12, // Par exemple, les 12 mois à venir/passés
+                  itemBuilder: (context, index) {
+                    final targetMonth = DateTime.now().month - 3 + index; 
+                    final monthDate = DateTime(DateTime.now().year, targetMonth, 1);
+                    return _buildMonthSection(monthDate);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: PrimaryButton(
+                  label: 'save',
+                  onPressed: _canSave ? () {
+                    // Logic to save the period dates
+                    context.pop();
+                  } : null,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMonthSection(DateTime monthDate) {
+    final firstDay = DateTime(monthDate.year, monthDate.month, 1);
+    final lastDay = DateTime(monthDate.year, monthDate.month + 1, 0);
+    int startOffset = firstDay.weekday - 1;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('${_monthNames[monthDate.month - 1]} ${monthDate.year}', style: AppText.h4),
+          const SizedBox(height: 16),
+          Row(
+            children: _weekDays
+                .map((d) => Expanded(
+                      child: Text(d,
+                          style: AppTypography.captionSmall.copyWith(color: AppColors.grey400),
+                          textAlign: TextAlign.center),
+                    ))
+                .toList(),
+          ),
+          const SizedBox(height: 8),
+          _buildCalendarGrid(firstDay, lastDay, startOffset, monthDate),
+          const SizedBox(height: 16),
+          Divider(color: AppColors.grey100, thickness: 1),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCalendarGrid(DateTime firstDay, DateTime lastDay, int startOffset, DateTime monthDate) {
+    final int totalDays = lastDay.day;
+    final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 4,
+        childAspectRatio: 1,
+      ),
+      itemCount: totalCells,
+      itemBuilder: (ctx, i) {
+        final dayNum = i - startOffset + 1;
+        if (dayNum < 1 || dayNum > totalDays) {
+          final nextDayNum = dayNum < 1 ? 0 : dayNum - totalDays;
+          return Center(
+            child: Text(
+              dayNum < 1 ? '' : nextDayNum.toString(),
+              style: AppTypography.captionSmall.copyWith(color: AppColors.grey200),
+            ),
+          );
+        }
+        final day = DateTime(monthDate.year, monthDate.month, dayNum);
+        
+        final selected = _isSelected(day);
+        final edge = _isRangeEdge(day);
+
+        return GestureDetector(
+          onTap: () => _selectDay(day),
+          child: _DayCell(day: day, selected: selected, isEdge: edge),
+        );
+      },
+    );
+  }
+}
+
+class _DayCell extends StatelessWidget {
+  final DateTime day;
+  final bool selected;
+  final bool isEdge;
+
+  const _DayCell(
+      {required this.day, required this.selected, required this.isEdge});
+
+  @override
+  Widget build(BuildContext context) {
+    Color? bg;
+    Color textColor = AppColors.black;
+
+    if (isEdge) {
+      bg = AppColors.primary;
+      textColor = AppColors.white;
+    } else if (selected) {
+      bg = AppColors.primary100;
+      textColor = AppColors.primary;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        '${day.day}',
+        style: AppText.label.copyWith(
+          color: textColor,
+          fontWeight: isEdge ? FontWeight.w700 : FontWeight.w400,
+        ),
+      ),
+    );
+  }
+}
