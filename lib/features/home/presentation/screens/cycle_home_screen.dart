@@ -290,8 +290,11 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                           currentIndex: _activeTab,
                           onTap: (tab) {
                             setState(() => _activeTab = tab);
-                            // Logique de switch de phase si besoin,
-                            // ou navigation vers d'autres pages
+                            if (tab == NavItem.cycle) {
+                              context.go('/');
+                            } else if (tab == NavItem.ai) {
+                              context.go('/calendar');
+                            }
                           },
                         ),
                       ),
@@ -370,12 +373,11 @@ class _AppBar extends StatelessWidget {
                 height: 28,
                 child: Stack(
                   children: [
-                   InkWell(
-                    onTap: () {
-                      context.go("/notification");
-                    },
-                    child: Image.asset("images/icons/notification-1.png")
-                   ),
+                    InkWell(
+                        onTap: () {
+                          context.go("/notification");
+                        },
+                        child: Image.asset("images/icons/notification-1.png")),
                     Positioned(
                       top: 1,
                       right: 1,

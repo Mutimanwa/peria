@@ -11,6 +11,11 @@ import 'package:perla_app/features/onboarding/presentation/screens/onboarding_sc
 import 'package:perla_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/welcome_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/self_care_home_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/article_detail_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/activity_detail_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/activity_step_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/activity_timer_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -113,6 +118,32 @@ final GoRouter appRouter = GoRouter(
       path: '/symptoms',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context, state, const SymptomsScreen()),
+    ),
+    // self-care
+    GoRoute(
+      path: '/self-care',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const SelfCareHomeScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/article',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const ArticleDetailScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/activity-detail',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const ActivityDetailScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/activity-step',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const ActivityStepScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/timer',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const ActivityTimerScreen()),
     ),
   ],
 );
