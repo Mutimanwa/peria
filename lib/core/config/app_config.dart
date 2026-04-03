@@ -9,6 +9,6 @@ class AppConfig{
   static const String baseUrlProd = 'https://api.example.com';
 
   // Environnement actuel (dev ou prod)
-  static const _Env _currentEnv = _Env.dev;
+  // static const _Env _currentEnv = _Env.dev;
 
 }

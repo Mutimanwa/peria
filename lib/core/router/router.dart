@@ -4,6 +4,7 @@ import 'package:perla_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:perla_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:perla_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/calendar_screen.dart';
+import 'package:perla_app/features/calendar/presentation/screens/symptoms_screen.dart';
 import 'package:perla_app/features/home/presentation/screens/cycle_home_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/onboarding_screens.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_goals_screen.dart';
@@ -101,7 +102,12 @@ final GoRouter appRouter = GoRouter(
       path: '/calendar',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context, state, const CalendarScreen()),
-    )
+    ),
+    GoRoute(
+      path: '/symptoms',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const SymptomsScreen()),
+    ),
   ],
 );
 

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
@@ -369,7 +370,12 @@ class _AppBar extends StatelessWidget {
                 height: 28,
                 child: Stack(
                   children: [
-                    Image.asset("images/icons/notification-1.png"),
+                   InkWell(
+                    onTap: () {
+                      context.go("/notification");
+                    },
+                    child: Image.asset("images/icons/notification-1.png")
+                   ),
                     Positioned(
                       top: 1,
                       right: 1,
@@ -387,8 +393,12 @@ class _AppBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              // Icône calendrier grille
-              Image.asset("images/icons/calendar.png")
+              // Button pour calendrier
+              InkWell(
+                  onTap: () {
+                    context.go("/calendar");
+                  },
+                  child: Image.asset("images/icons/calendar.png"))
             ],
           ),
         ],

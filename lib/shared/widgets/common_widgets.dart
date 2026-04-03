@@ -255,3 +255,65 @@ class OnboardingScaffold extends StatelessWidget {
     );
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════
+//  SCAFFOLD PAGES — gradient bg + back + title
+// ═══════════════════════════════════════════════════════════════════
+class PageScaffold extends StatelessWidget {
+  final Widget child;
+  final bool showBack;
+  final bool showTitle;
+  final VoidCallback? onBack;
+  final String? title;
+
+  const PageScaffold({
+    super.key,
+    required this.child,
+    this.showBack = true,
+    this.showTitle = true,
+    this.onBack,
+    this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.bgGradient),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // ── Contenu principal
+              child,
+              
+              // ── Bouton retour (à gauche)
+              if (showBack)
+                 Positioned(
+                  top: 12,
+                  left: 20,
+                  child: BackIconButton(onPressed: onBack), 
+                ),
+              
+              // ── Titre (au milieu)
+              if (showTitle && title != null)
+                Positioned(
+                  top: 20,  
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Text(
+                      title!,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
