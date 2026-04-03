@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
+import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -13,6 +14,7 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selectedDate = DateTime.now();
+  NavItem _activeTab = NavItem.cycle;
 
   static const List<String> _monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -63,13 +65,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     return PageScaffold(
       showBack: true,
-      onBack: () => context.pop(),
+      onBack: () => context.push('/home'),
       showTitle: true,
       title: 'My Calendar',
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 100, bottom: 40), // Espace sous l'AppBar
-          child: Column(
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 100, bottom: 120), // Espace sous l'AppBar et pour la nav
+              child: Column(
             children: [
               // ── Calendrier Card ────────
               Padding(
@@ -176,8 +180,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
         ),
       ),
-    );
-  }
+      Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: CustomBottomNav(
+          currentIndex: _activeTab,
+          onTap: (tab) {
+            setState(() => _activeTab = tab);
+            if (tab == NavItem.cycle) {
+            }
+          },
+        ),
+      ),
+    ],
+  ),
+);
+}
 
   // Légende
   Widget _buildLegendItem(String label, Color color) {
