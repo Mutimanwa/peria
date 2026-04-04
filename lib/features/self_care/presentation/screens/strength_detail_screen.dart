@@ -3,14 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
-class ActivityTimerScreen extends StatefulWidget {
-  const ActivityTimerScreen({super.key});
+class StrengthDetailScreen extends StatefulWidget {
+  const StrengthDetailScreen({super.key});
 
   @override
-  State<ActivityTimerScreen> createState() => _ActivityTimerScreenState();
+  State<StrengthDetailScreen> createState() => _StrengthDetailScreenState();
 }
 
-class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
+class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
+  double _progress = 0.25;
+
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
@@ -26,7 +28,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
               text: TextSpan(
                 style: AppText.h3.copyWith(color: AppColors.grey900),
                 children: [
-                  const TextSpan(text: 'Jumping jacks'),
+                  const TextSpan(text: 'jumping jacks'),
                   TextSpan(
                     text: '        1',
                     style: AppText.h3.copyWith(color: AppColors.primary400),
@@ -39,7 +41,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
               ),
             ),
             Text('Full-body cardio', style: AppText.body.copyWith(color: AppColors.grey500)),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: Image.asset(
@@ -49,7 +51,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 26),
             Expanded(
               child: Column(
                 children: [
@@ -57,10 +59,10 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        width: 180,
-                        height: 180,
+                        width: 176,
+                        height: 176,
                         child: CircularProgressIndicator(
-                          value: .35,
+                          value: _progress,
                           strokeWidth: 5,
                           backgroundColor: AppColors.grey200,
                           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary400),
@@ -69,7 +71,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                       Text('02:00', style: AppText.h3.copyWith(fontWeight: FontWeight.w700)),
                     ],
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
                   Text('04:00', style: AppText.h5.copyWith(color: AppColors.grey700)),
                   const Spacer(),
                   Row(
@@ -81,7 +83,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
-                        onTap: () => _showPauseDialog(context),
+                        onTap: () => context.go('/self-care/timer'),
                         child: Container(
                           width: 64,
                           height: 64,
@@ -89,7 +91,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                             color: AppColors.grey900,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.pause_rounded, color: AppColors.white, size: 36),
+                          child: const Icon(Icons.play_arrow_rounded, color: AppColors.white, size: 36),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -99,7 +101,6 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -108,57 +109,5 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
       ),
     );
   }
-
-  void _showPauseDialog(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-          contentPadding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset('moc/Chat Page-68.png', width: 86, height: 86, fit: BoxFit.cover),
-              const SizedBox(height: 12),
-              const Text('Wait!', style: AppText.h4),
-              const SizedBox(height: 6),
-              Text(
-                'Only 2 minutes left - Keep it up!',
-                textAlign: TextAlign.center,
-                style: AppText.body.copyWith(color: AppColors.grey600),
-              ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        this.context.go('/self-care/congratulations');
-                      },
-                      child: Text('Quit', style: AppText.label.copyWith(color: AppColors.grey700)),
-                    ),
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.grey900,
-                          shape: const StadiumBorder(),
-                        ),
-                        child: Text('Keep', style: AppText.label.copyWith(color: AppColors.white)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
+

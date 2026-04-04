@@ -251,19 +251,21 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                   child: Row(
                     children: [
                       Expanded(
-                        child: _LogBtn(
+child: _LogBtn(
                           label: 'Log Symptom',
                           filled: false,
-                          onTap: () {},
+                          onTap: () => context.go('/symptoms'),
                         ),
+
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _LogBtn(
+child: _LogBtn(
                           label: 'Log Period',
                           filled: true,
-                          onTap: () {},
+                          onTap: () => context.go('/edit-calendar'),
                         ),
+
                       ),
                     ],
                   ),
@@ -288,14 +290,17 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                         right: 0,
                         child: CustomBottomNav(
                           currentIndex: _activeTab,
-                          onTap: (tab) {
+onTap: (tab) {
                             setState(() => _activeTab = tab);
                             if (tab == NavItem.cycle) {
                               context.go('/');
                             } else if (tab == NavItem.ai) {
                               context.go('/calendar');
+                            } else if (tab == NavItem.journal) {
+                              context.go('/self-care');
                             }
                           },
+
                         ),
                       ),
                     ],

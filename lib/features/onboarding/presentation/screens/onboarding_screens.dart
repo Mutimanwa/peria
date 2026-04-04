@@ -44,7 +44,8 @@ class _AskNameScreenState extends State<AskNameScreen> {
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () {/* TODO: passer à l'étape suivante */},
+onSkip: () => context.go('/home'),
+
       child: Padding(
         padding: const EdgeInsets.only(top: 70),
         child: Column(
@@ -157,7 +158,8 @@ class _DateOfBirthScreenState extends State<DateOfBirthScreen> {
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () {/* TODO */},
+onSkip: () => context.go('/home'),
+
       child: Padding(
         padding: const EdgeInsets.only(top: 70),
         child: Column(

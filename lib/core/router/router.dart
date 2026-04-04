@@ -16,6 +16,10 @@ import 'package:perla_app/features/self_care/presentation/screens/article_detail
 import 'package:perla_app/features/self_care/presentation/screens/activity_detail_screen.dart';
 import 'package:perla_app/features/self_care/presentation/screens/activity_step_screen.dart';
 import 'package:perla_app/features/self_care/presentation/screens/activity_timer_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/congratulations_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/meditation_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/skincare_screen.dart';
+import 'package:perla_app/features/self_care/presentation/screens/strength_detail_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -144,6 +148,31 @@ final GoRouter appRouter = GoRouter(
       path: '/self-care/timer',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context, state, const ActivityTimerScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/meditation',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const MeditationScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/skincare',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const SkincareScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/strength',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const StrengthDetailScreen()),
+    ),
+    GoRoute(
+      path: '/self-care/congratulations',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const CongratulationsScreen()),
+    ),
+    GoRoute(
+      path: '/notification',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const SelfCareHomeScreen()),
     ),
   ],
 );
