@@ -189,6 +189,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
           onTap: (tab) {
             setState(() => _activeTab = tab);
             if (tab == NavItem.cycle) {
+              context.go('/home');
+            } else if (tab == NavItem.ai) {
+              context.go('/ai');
+            } else if (tab == NavItem.journal) {
+              context.go('/self-care');
             }
           },
         ),

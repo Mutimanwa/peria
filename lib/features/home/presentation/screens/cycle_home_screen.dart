@@ -295,7 +295,7 @@ onTap: (tab) {
                             if (tab == NavItem.cycle) {
                               context.go('/');
                             } else if (tab == NavItem.ai) {
-                              context.go('/calendar');
+                              context.go('/ai');
                             } else if (tab == NavItem.journal) {
                               context.go('/self-care');
                             }

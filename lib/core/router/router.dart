@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:perla_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:perla_app/features/auth/presentation/screens/register_screen.dart';
+import 'package:perla_app/features/ai/presentation/screens/ai_chat_screen.dart';
+import 'package:perla_app/features/ai/presentation/screens/appointment_confirmation_screen.dart';
+import 'package:perla_app/features/ai/presentation/screens/voice_chat_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/symptoms_screen.dart';
@@ -11,6 +14,7 @@ import 'package:perla_app/features/onboarding/presentation/screens/onboarding_sc
 import 'package:perla_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/welcome_screen.dart';
+import 'package:perla_app/features/profile/presentation/screens/profile_screens.dart';
 import 'package:perla_app/features/self_care/presentation/screens/self_care_home_screen.dart';
 import 'package:perla_app/features/self_care/presentation/screens/article_detail_screen.dart';
 import 'package:perla_app/features/self_care/presentation/screens/activity_detail_screen.dart';
@@ -114,6 +118,21 @@ final GoRouter appRouter = GoRouter(
         context, state, const CalendarScreen()),
     ),
     GoRoute(
+      path: '/ai',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const AiChatScreen()),
+    ),
+    GoRoute(
+      path: '/ai/voice',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const VoiceChatScreen()),
+    ),
+    GoRoute(
+      path: '/ai/appointment',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const AppointmentConfirmationScreen()),
+    ),
+    GoRoute(
       path: '/edit-calendar',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context, state, const EditCalendarScreen()),
@@ -172,7 +191,52 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/notification',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const SelfCareHomeScreen()),
+        context, state, const NotificationsScreen()),
+    ),
+    GoRoute(
+      path: '/profile',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const ProfileScreen()),
+    ),
+    GoRoute(
+      path: '/profile/personal-info',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const PersonalInformationScreen()),
+    ),
+    GoRoute(
+      path: '/profile/settings',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const SettingsScreen()),
+    ),
+    GoRoute(
+      path: '/profile/notifications',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const NotificationsScreen()),
+    ),
+    GoRoute(
+      path: '/profile/account-security',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const AccountSecurityScreen()),
+    ),
+    GoRoute(
+      path: '/profile/partner',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const PartnerScreen()),
+    ),
+    GoRoute(
+      path: '/profile/partner/invite',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const InvitePartnerScreen()),
+    ),
+    GoRoute(
+      path: '/profile/partner/connected',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const ConnectedPartnerScreen()),
+    ),
+    GoRoute(
+      path: '/profile/partner/sharing',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const SharingSettingsScreen()),
     ),
   ],
 );
