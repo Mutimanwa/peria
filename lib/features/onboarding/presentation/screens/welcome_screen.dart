@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/onboarding/domain/onboarding_navigation_target.dart';
+import 'package:perla_app/features/onboarding/presentation/controllers/welcome_controller.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -16,11 +19,20 @@ import 'package:perla_app/shared/widgets/common_widgets.dart';
 ///   • Bouton "Turn on notification" (noir, pill)
 ///   • Lien "Another Time"
 /// ═══════════════════════════════════════════════════════════════════
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(welcomeControllerProvider);
+
+    void goTo(OnboardingNavigationTarget target) {
+      switch (target) {
+        case OnboardingNavigationTarget.register:
+          context.go('/register');
+      }
+    }
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -62,13 +74,11 @@ class WelcomeScreen extends StatelessWidget {
                     const SizedBox(height: 32),
                     PrimaryButton(
                       label: 'Turn on notification',
-                      onPressed: () {/* TODO: demander permission notif */},
+                      onPressed: () => goTo(controller.onTurnOnNotificationsTapped()),
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
-                      onTap: () {
-                        context.go('/register');
-                      },
+                      onTap: () => goTo(controller.onAnotherTimeTapped()),
                       child: Text(
                         'Another Time',
                         style: AppText.label.copyWith(color: AppColors.grey700),

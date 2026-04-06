@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -26,14 +28,14 @@ import 'package:perla_app/shared/widgets/common_widgets.dart';
 ///   5. Share data with my doctor (stethoscope icon)
 ///   6. AI-Powered Guidance (chat+sparkle icon)
 /// ═══════════════════════════════════════════════════════════════════
-class SetGoalsScreen extends StatefulWidget {
+class SetGoalsScreen extends ConsumerStatefulWidget {
   const SetGoalsScreen({super.key});
 
   @override
-  State<SetGoalsScreen> createState() => _SetGoalsScreenState();
+  ConsumerState<SetGoalsScreen> createState() => _SetGoalsScreenState();
 }
 
-class _SetGoalsScreenState extends State<SetGoalsScreen> {
+class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
   // Ensemble des indices sélectionnés
   final Set<int> _selected = {};
 
@@ -44,8 +46,10 @@ class _SetGoalsScreenState extends State<SetGoalsScreen> {
     const _GoalItem(icon: Icons.water_drop_outlined, label: 'Track my period'),
     const _GoalItem(
         icon: Icons.favorite_border_rounded, label: 'Get health insights'),
-    const _GoalItem(icon: Icons.medical_services, label: 'Share data with my doctor'),
-    const _GoalItem(icon: Icons.auto_awesome_outlined, label: 'AI-Powered Guidance'),
+    const _GoalItem(
+        icon: Icons.medical_services, label: 'Share data with my doctor'),
+    const _GoalItem(
+        icon: Icons.auto_awesome_outlined, label: 'AI-Powered Guidance'),
   ];
 
   void _toggleGoal(int index) {
@@ -120,8 +124,13 @@ class _SetGoalsScreenState extends State<SetGoalsScreen> {
               label: 'Continue',
               onPressed: canContinue
                   ? () {
-                    context.go("/last-period");
-                  }
+                      final goals =
+                          _selected.map((i) => _goals[i].label).toList();
+                      ref
+                          .read(userProfileProvider.notifier)
+                          .patch((p) => p.copyWith(goals: goals));
+                      context.go("/last-period");
+                    }
                   : null,
             ),
           ),

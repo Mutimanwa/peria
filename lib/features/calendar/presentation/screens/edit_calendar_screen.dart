@@ -1,26 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/core/theme/app_typography.dart';
+import 'package:perla_app/features/cycle/data/models/period_log.dart';
+import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
-class EditCalendarScreen extends StatefulWidget {
+class EditCalendarScreen extends ConsumerStatefulWidget {
   const EditCalendarScreen({super.key});
 
   @override
-  State<EditCalendarScreen> createState() => _EditCalendarScreenState();
+  ConsumerState<EditCalendarScreen> createState() => _EditCalendarScreenState();
 }
 
-class _EditCalendarScreenState extends State<EditCalendarScreen> {
+class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
 
   static const List<String> _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
-  static const List<String> _weekDays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+  static const List<String> _weekDays = [
+    'mo',
+    'tu',
+    'we',
+    'th',
+    'fr',
+    'sa',
+    'su'
+  ];
 
   void _selectDay(DateTime day) {
     setState(() {
@@ -75,11 +97,13 @@ class _EditCalendarScreenState extends State<EditCalendarScreen> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   itemCount: 12, // Par exemple, les 12 mois à venir/passés
                   itemBuilder: (context, index) {
-                    final targetMonth = DateTime.now().month - 3 + index; 
-                    final monthDate = DateTime(DateTime.now().year, targetMonth, 1);
+                    final targetMonth = DateTime.now().month - 3 + index;
+                    final monthDate =
+                        DateTime(DateTime.now().year, targetMonth, 1);
                     return _buildMonthSection(monthDate);
                   },
                 ),
@@ -88,10 +112,34 @@ class _EditCalendarScreenState extends State<EditCalendarScreen> {
                 padding: const EdgeInsets.all(16),
                 child: PrimaryButton(
                   label: 'save',
-                  onPressed: _canSave ? () {
-                    // Logic to save the period dates
-                    context.pop();
-                  } : null,
+                  onPressed: _canSave
+                      ? () {
+                          final start = _startDate!;
+                          final end = _endDate ?? _startDate!;
+                          final now = DateTime.now();
+                          final log = PeriodLog(
+                            id: now.microsecondsSinceEpoch.toString(),
+                            startDate:
+                                DateTime(start.year, start.month, start.day),
+                            endDate: DateTime(end.year, end.month, end.day),
+                            isEstimated: false,
+                          );
+                          ref.read(periodLogsProvider.notifier).add(log);
+
+                          // Keep profile in sync: lastPeriodStart should reflect the most recent known start.
+                          final currentProfile =
+                              ref.read(userProfileProvider).value;
+                          final currentLast = currentProfile?.lastPeriodStart;
+                          if (currentLast == null ||
+                              start.isAfter(currentLast)) {
+                            ref.read(userProfileProvider.notifier).patch(
+                                  (p) => p.copyWith(lastPeriodStart: start),
+                                );
+                          }
+
+                          context.pop();
+                        }
+                      : null,
                 ),
               ),
             ],
@@ -111,13 +159,15 @@ class _EditCalendarScreenState extends State<EditCalendarScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('${_monthNames[monthDate.month - 1]} ${monthDate.year}', style: AppText.h4),
+          Text('${_monthNames[monthDate.month - 1]} ${monthDate.year}',
+              style: AppText.h4),
           const SizedBox(height: 16),
           Row(
             children: _weekDays
                 .map((d) => Expanded(
                       child: Text(d,
-                          style: AppTypography.captionSmall.copyWith(color: AppColors.grey400),
+                          style: AppTypography.captionSmall
+                              .copyWith(color: AppColors.grey400),
                           textAlign: TextAlign.center),
                     ))
                 .toList(),
@@ -131,7 +181,8 @@ class _EditCalendarScreenState extends State<EditCalendarScreen> {
     );
   }
 
-  Widget _buildCalendarGrid(DateTime firstDay, DateTime lastDay, int startOffset, DateTime monthDate) {
+  Widget _buildCalendarGrid(DateTime firstDay, DateTime lastDay,
+      int startOffset, DateTime monthDate) {
     final int totalDays = lastDay.day;
     final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
 
@@ -152,12 +203,13 @@ class _EditCalendarScreenState extends State<EditCalendarScreen> {
           return Center(
             child: Text(
               dayNum < 1 ? '' : nextDayNum.toString(),
-              style: AppTypography.captionSmall.copyWith(color: AppColors.grey200),
+              style:
+                  AppTypography.captionSmall.copyWith(color: AppColors.grey200),
             ),
           );
         }
         final day = DateTime(monthDate.year, monthDate.month, dayNum);
-        
+
         final selected = _isSelected(day);
         final edge = _isRangeEdge(day);
 

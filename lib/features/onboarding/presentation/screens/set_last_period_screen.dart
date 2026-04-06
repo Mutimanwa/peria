@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -17,14 +19,15 @@ import 'package:perla_app/shared/widgets/common_widgets.dart';
 ///     - Bouton "Today" (outline, bas calendrier)
 ///   • Boutons "Not Sure" (outline) + "Continue" (noir)
 /// ═══════════════════════════════════════════════════════════════════
-class SetLastPeriodScreen extends StatefulWidget {
+class SetLastPeriodScreen extends ConsumerStatefulWidget {
   const SetLastPeriodScreen({super.key});
 
   @override
-  State<SetLastPeriodScreen> createState() => _SetLastPeriodScreenState();
+  ConsumerState<SetLastPeriodScreen> createState() =>
+      _SetLastPeriodScreenState();
 }
 
-class _SetLastPeriodScreenState extends State<SetLastPeriodScreen> {
+class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _startDate;
   DateTime? _endDate;
@@ -219,8 +222,11 @@ class _SetLastPeriodScreenState extends State<SetLastPeriodScreen> {
                     label: 'Continue',
                     onPressed: _canContinue
                         ? () {
-                          context.go("/home");
-                        }
+                            final start = _startDate!;
+                            ref.read(userProfileProvider.notifier).patch(
+                                (p) => p.copyWith(lastPeriodStart: start));
+                            context.go("/home");
+                          }
                         : null,
                   ),
                 ),

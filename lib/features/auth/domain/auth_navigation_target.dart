@@ -1,0 +1,4 @@
+enum AuthNavigationTarget {
+  continueWithEmail,
+}
+

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -15,14 +17,14 @@ import 'package:perla_app/shared/widgets/common_widgets.dart';
 ///   • Champ pill "Enter your name"
 ///   • Bouton "Continue" (désactivé si vide)
 /// ═══════════════════════════════════════════════════════════════════
-class AskNameScreen extends StatefulWidget {
+class AskNameScreen extends ConsumerStatefulWidget {
   const AskNameScreen({super.key});
 
   @override
-  State<AskNameScreen> createState() => _AskNameScreenState();
+  ConsumerState<AskNameScreen> createState() => _AskNameScreenState();
 }
 
-class _AskNameScreenState extends State<AskNameScreen> {
+class _AskNameScreenState extends ConsumerState<AskNameScreen> {
   final _nameController = TextEditingController();
   bool _hasName = false;
 
@@ -44,22 +46,17 @@ class _AskNameScreenState extends State<AskNameScreen> {
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-onSkip: () => context.go('/home'),
-
+      onSkip: () => context.go('/home'),
       child: Padding(
         padding: const EdgeInsets.only(top: 70),
         child: Column(
           children: [
             // ── Illustration 3D ────────────────────────────────
-            // ⚠️  IMAGE 3D À REMPLIR
-            // Remplacer par : Image.asset('assets/images/ask_name_character.png', height: 200)
-            // Personnage féminin aux cheveux violets/lavande tenant un téléphone, souriant
             Container(
-              width: 200,
-              height: 200,
-              alignment: Alignment.center,
-              child: Image.asset("assets/images/icons/login1.png")
-            ),
+                width: 200,
+                height: 200,
+                alignment: Alignment.center,
+                child: Image.asset("assets/images/icons/login1.png")),
             const SizedBox(height: 32),
 
             Padding(
@@ -92,8 +89,12 @@ onSkip: () => context.go('/home'),
                 label: 'Continue',
                 onPressed: _hasName
                     ? () {
-                      context.go("/date-of-birth");
-                    }
+                        // Persist displayName for later flows.
+                        ref.read(userProfileProvider.notifier).patch((p) =>
+                            p.copyWith(
+                                displayName: _nameController.text.trim()));
+                        context.go("/date-of-birth");
+                      }
                     : null,
               ),
             ),
@@ -117,14 +118,14 @@ onSkip: () => context.go('/home'),
 ///   • Scroll picker : Mois | Jour | Année
 ///   • Bouton "Continue"
 /// ═══════════════════════════════════════════════════════════════════
-class DateOfBirthScreen extends StatefulWidget {
+class DateOfBirthScreen extends ConsumerStatefulWidget {
   const DateOfBirthScreen({super.key});
 
   @override
-  State<DateOfBirthScreen> createState() => _DateOfBirthScreenState();
+  ConsumerState<DateOfBirthScreen> createState() => _DateOfBirthScreenState();
 }
 
-class _DateOfBirthScreenState extends State<DateOfBirthScreen> {
+class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
   int _selectedMonth = 0; // index
   int _selectedDay = 0;
   int _selectedYear = 0;
@@ -158,8 +159,7 @@ class _DateOfBirthScreenState extends State<DateOfBirthScreen> {
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-onSkip: () => context.go('/home'),
-
+      onSkip: () => context.go('/home'),
       child: Padding(
         padding: const EdgeInsets.only(top: 70),
         child: Column(
@@ -167,12 +167,10 @@ onSkip: () => context.go('/home'),
             // ── Illustration 3D personnage avec livre ───────────
 
             Container(
-              width: 200,
-              height: 200,
-              
-              alignment: Alignment.center,
-              child: Image.asset("assets/images/icons/birthday.png")
-            ),
+                width: 200,
+                height: 200,
+                alignment: Alignment.center,
+                child: Image.asset("assets/images/icons/birthday.png")),
             const SizedBox(height: 28),
 
             const Text("When's your birthday",
@@ -249,6 +247,14 @@ onSkip: () => context.go('/home'),
               child: PrimaryButton(
                 label: 'Continue',
                 onPressed: () {
+                  final selectedDob = DateTime(
+                    _years[_selectedYear],
+                    _selectedMonth + 1,
+                    _selectedDay + 1,
+                  );
+                  ref
+                      .read(userProfileProvider.notifier)
+                      .patch((p) => p.copyWith(dateOfBirth: selectedDob));
                   context.go("/set-goals");
                 },
               ),

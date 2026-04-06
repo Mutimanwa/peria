@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/auth/domain/auth_navigation_target.dart';
+import 'package:perla_app/features/auth/presentation/controllers/register_controller.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -18,11 +21,20 @@ import 'package:perla_app/shared/widgets/common_widgets.dart';
 ///   • Bouton "Continue with Google" (outline)
 ///   • Bouton "Continue with Apple" (outline)
 /// ═══════════════════════════════════════════════════════════════════
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(registerControllerProvider);
+
+    void goTo(AuthNavigationTarget target) {
+      switch (target) {
+        case AuthNavigationTarget.continueWithEmail:
+          context.go('/email');
+      }
+    }
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(gradient: AppColors.bgGradient),
@@ -102,9 +114,7 @@ class RegisterScreen extends StatelessWidget {
                     // Bouton Email
                     PrimaryButton(
                       label: 'Continue with email',
-                      onPressed: () {
-                        context.go("/email");
-                      },
+                      onPressed: () => goTo(controller.onContinueWithEmailTapped()),
                     ),
                     const SizedBox(height: 20),
 
@@ -131,7 +141,7 @@ class RegisterScreen extends StatelessWidget {
                     SocialButton(
                       label: 'Continue with Google',
                       icon: _GoogleLogo(),
-                      onPressed: () {/* TODO: auth Google */},
+                      onPressed: controller.onContinueWithGoogleTapped,
                     ),
                     const SizedBox(height: 12),
 
@@ -140,7 +150,7 @@ class RegisterScreen extends StatelessWidget {
                       label: 'Continue with Apple',
                       icon: const Icon(Icons.apple,
                           size: 22, color: AppColors.black),
-                      onPressed: () {/* TODO: auth Apple */},
+                      onPressed: controller.onContinueWithAppleTapped,
                     ),
                     const SizedBox(height: 40),
                   ],

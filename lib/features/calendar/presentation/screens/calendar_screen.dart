@@ -1,26 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/core/storage/app_settings.dart';
+import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
   @override
-  State<CalendarScreen> createState() => _CalendarScreenState();
+  ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
+class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selectedDate = DateTime.now();
   NavItem _activeTab = NavItem.cycle;
 
   static const List<String> _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
-  static const List<String> _weekDays = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+  static const List<String> _weekDays = [
+    'mo',
+    'tu',
+    'we',
+    'th',
+    'fr',
+    'sa',
+    'su'
+  ];
 
   void _prevMonth() => setState(() {
         _displayMonth = DateTime(_displayMonth.year, _displayMonth.month - 1);
@@ -36,20 +59,54 @@ class _CalendarScreenState extends State<CalendarScreen> {
     });
   }
 
-  // Fonctions factices pour l'UI (Mock data)
+  DateTime _startOfDay(DateTime d) => DateTime(d.year, d.month, d.day);
+  DateTime _endOfDay(DateTime d) =>
+      DateTime(d.year, d.month, d.day, 23, 59, 59, 999);
+
+  bool _inRange(DateTime day, DateTime? start, DateTime? end) {
+    if (start == null || end == null) return false;
+    final xStart = _startOfDay(day);
+    final xEnd = _endOfDay(day);
+    return (xStart.isAtSameMomentAs(start) || xStart.isAfter(start)) &&
+        (xEnd.isAtSameMomentAs(end) || xEnd.isBefore(end));
+  }
+
   bool _isPeriodDay(DateTime day) {
-    // Ex: Period days are 22 to 27
-    return day.day >= 22 && day.day <= 27;
+    final logsState = ref.watch(periodLogsProvider);
+    final logs = logsState.value ?? const [];
+    for (final log in logs) {
+      if (_inRange(day, log.startDate, log.endDate)) return true;
+    }
+
+    // Fallback: if no logs, use onboarding lastPeriodStart as an initial period range.
+    final profile = ref.watch(userProfileProvider).value;
+    final last = profile?.lastPeriodStart;
+    if (last == null) return false;
+    final settings =
+        ref.watch(appSettingsProvider).value ?? const AppSettings();
+    final end = last.add(Duration(
+      days: (settings.periodLengthDays - 1).clamp(0, 60),
+      hours: 23,
+      minutes: 59,
+      seconds: 59,
+      milliseconds: 999,
+    ));
+    return _inRange(day, last, end);
   }
 
   bool _isOvulationDay(DateTime day) {
-    // Ex: Ovulation days are 4 to 8
-    return day.day >= 4 && day.day <= 8;
+    final status = ref.watch(cycleStatusProvider);
+    if (status == null) return false;
+    return _inRange(day, status.fertileWindowStart, status.fertileWindowEnd);
   }
 
   bool _isPmsDay(DateTime day) {
-    // Ex: PMS days are 16 to 20
-    return day.day >= 16 && day.day <= 20;
+    final status = ref.watch(cycleStatusProvider);
+    if (status == null) return false;
+    final nextStart = status.nextPeriodStart;
+    final pmsStart = nextStart.subtract(const Duration(days: 5));
+    final pmsEnd = nextStart.subtract(const Duration(days: 1));
+    return _inRange(day, pmsStart, pmsEnd);
   }
 
   bool _isToday(DateTime day) {
@@ -72,136 +129,145 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(top: 100, bottom: 120), // Espace sous l'AppBar et pour la nav
+              padding: const EdgeInsets.only(
+                  top: 100, bottom: 120), // Espace sous l'AppBar et pour la nav
               child: Column(
-            children: [
-              // ── Calendrier Card ────────
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.grey200),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      // Navigation mois
-                      Row(
+                children: [
+                  // ── Calendrier Card ────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.grey200),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
                         children: [
-                          _NavArrow(onTap: _prevMonth, icon: Icons.chevron_left_rounded),
-                          Expanded(
-                            child: Text(
-                              '${_monthNames[_displayMonth.month - 1]} ${_displayMonth.year}',
-                              style: AppText.h4,
-                              textAlign: TextAlign.center,
-                            ),
+                          // Navigation mois
+                          Row(
+                            children: [
+                              _NavArrow(
+                                  onTap: _prevMonth,
+                                  icon: Icons.chevron_left_rounded),
+                              Expanded(
+                                child: Text(
+                                  '${_monthNames[_displayMonth.month - 1]} ${_displayMonth.year}',
+                                  style: AppText.h4,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              _NavArrow(
+                                  onTap: _nextMonth,
+                                  icon: Icons.chevron_right_rounded),
+                            ],
                           ),
-                          _NavArrow(onTap: _nextMonth, icon: Icons.chevron_right_rounded),
+                          const SizedBox(height: 16),
+
+                          // En-têtes jours
+                          Row(
+                            children: _weekDays
+                                .map((d) => Expanded(
+                                      child: Text(d,
+                                          style: AppText.caption.copyWith(
+                                              color: AppColors.grey400),
+                                          textAlign: TextAlign.center),
+                                    ))
+                                .toList(),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Grille des jours
+                          _buildCalendarGrid(firstDay, lastDay, startOffset),
+                          const SizedBox(height: 16),
+
+                          // Légende
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildLegendItem('pms day', AppColors.warning50),
+                              const SizedBox(width: 16),
+                              _buildLegendItem(
+                                  'period day', AppColors.primary50),
+                              const SizedBox(width: 16),
+                              _buildLegendItem(
+                                  'ovulation day', AppColors.secondary100),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          PrimaryButton(
+                            label: 'Edit Period',
+                            onPressed: () {
+                              context.push("/edit-calendar");
+                            },
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                    ),
+                  ),
 
-                      // En-têtes jours
-                      Row(
-                        children: _weekDays
-                            .map((d) => Expanded(
-                                  child: Text(d,
-                                      style: AppText.caption.copyWith(color: AppColors.grey400),
-                                      textAlign: TextAlign.center),
-                                ))
-                            .toList(),
+                  const SizedBox(height: 24),
+
+                  // ── Résumé des symptômes Card ────────
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary50,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      const SizedBox(height: 12),
-
-                      // Grille des jours
-                      _buildCalendarGrid(firstDay, lastDay, startOffset),
-                      const SizedBox(height: 16),
-
-                      // Légende
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildLegendItem('pms day', AppColors.warning50),
-                          const SizedBox(width: 16),
-                          _buildLegendItem('period day', AppColors.primary50),
-                          const SizedBox(width: 16),
-                          _buildLegendItem('ovulation day', AppColors.secondary100),
+                          Text('How are you feeling today?', style: AppText.h4),
+                          const SizedBox(height: 8),
+                          Text(
+                            'tell us more about your body to get analyze',
+                            style:
+                                AppText.body.copyWith(color: AppColors.grey600),
+                          ),
+                          const SizedBox(height: 16),
+                          OutlineButton(
+                            label: '+ Add Symptom',
+                            onPressed: () {
+                              // Navigation à venir vers screen ajouter symptomes
+                              context.go("/symptoms");
+                            },
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-
-                      PrimaryButton(
-                        label: 'Edit Period',
-                        onPressed: () {
-                          context.push("/edit-calendar");
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-
-              const SizedBox(height: 24),
-
-              // ── Résumé des symptômes Card ────────
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondary50,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('How are you feeling today?', style: AppText.h4),
-                      const SizedBox(height: 8),
-                      Text(
-                        'tell us more about your body to get analyze',
-                        style: AppText.body.copyWith(color: AppColors.grey600),
-                      ),
-                      const SizedBox(height: 16),
-                      OutlineButton(
-                        label: '+ Add Symptom',
-                        onPressed: () {
-                          // Navigation à venir vers screen ajouter symptomes
-                          context.go("/symptoms");
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: CustomBottomNav(
+              currentIndex: _activeTab,
+              onTap: (tab) {
+                setState(() => _activeTab = tab);
+                if (tab == NavItem.cycle) {
+                  context.go('/home');
+                } else if (tab == NavItem.ai) {
+                  context.go('/ai');
+                } else if (tab == NavItem.journal) {
+                  context.go('/journal');
+                }
+              },
+            ),
+          ),
+        ],
       ),
-      Positioned(
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: CustomBottomNav(
-          currentIndex: _activeTab,
-          onTap: (tab) {
-            setState(() => _activeTab = tab);
-            if (tab == NavItem.cycle) {
-              context.go('/home');
-            } else if (tab == NavItem.ai) {
-              context.go('/ai');
-            } else if (tab == NavItem.journal) {
-              context.go('/journal');
-            }
-          },
-        ),
-      ),
-    ],
-  ),
-);
-}
+    );
+  }
 
   // Légende
   Widget _buildLegendItem(String label, Color color) {
@@ -219,7 +285,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // Grille
-  Widget _buildCalendarGrid(DateTime firstDay, DateTime lastDay, int startOffset) {
+  Widget _buildCalendarGrid(
+      DateTime firstDay, DateTime lastDay, int startOffset) {
     final int totalDays = lastDay.day;
     final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
 
@@ -245,8 +312,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
           );
         }
         final day = DateTime(_displayMonth.year, _displayMonth.month, dayNum);
-        
-        bool isSelected = day.year == _selectedDate.year && day.month == _selectedDate.month && day.day == _selectedDate.day;
+
+        bool isSelected = day.year == _selectedDate.year &&
+            day.month == _selectedDate.month &&
+            day.day == _selectedDate.day;
 
         return GestureDetector(
           onTap: () => _selectDay(day),

@@ -1,0 +1,4 @@
+enum EmailFlowNavigationTarget {
+  createAccount,
+}
+

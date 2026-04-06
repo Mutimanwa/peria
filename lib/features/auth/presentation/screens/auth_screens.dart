@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/auth/domain/create_account_navigation_target.dart';
+import 'package:perla_app/features/auth/domain/email_flow_navigation_target.dart';
+import 'package:perla_app/features/auth/presentation/controllers/continue_with_email_controller.dart';
+import 'package:perla_app/features/auth/presentation/controllers/create_account_controller.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -15,23 +20,25 @@ import 'package:perla_app/shared/widgets/common_widgets.dart';
 ///   • Label "Email Address" + champ pill
 ///   • Bouton "Continue" (désactivé si vide)
 /// ═══════════════════════════════════════════════════════════════════
-class ContinueWithEmailScreen extends StatefulWidget {
+class ContinueWithEmailScreen extends ConsumerStatefulWidget {
   const ContinueWithEmailScreen({super.key});
 
   @override
-  State<ContinueWithEmailScreen> createState() =>
+  ConsumerState<ContinueWithEmailScreen> createState() =>
       _ContinueWithEmailScreenState();
 }
 
-class _ContinueWithEmailScreenState extends State<ContinueWithEmailScreen> {
+class _ContinueWithEmailScreenState
+    extends ConsumerState<ContinueWithEmailScreen> {
   final _emailController = TextEditingController();
-  bool _hasEmail = false;
 
   @override
   void initState() {
     super.initState();
     _emailController.addListener(() {
-      setState(() => _hasEmail = _emailController.text.trim().isNotEmpty);
+      ref
+          .read(continueWithEmailControllerProvider.notifier)
+          .onEmailChanged(_emailController.text);
     });
   }
 
@@ -43,6 +50,15 @@ class _ContinueWithEmailScreenState extends State<ContinueWithEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(continueWithEmailControllerProvider);
+
+    void goTo(EmailFlowNavigationTarget target) {
+      switch (target) {
+        case EmailFlowNavigationTarget.createAccount:
+          context.go('/create-account');
+      }
+    }
+
     return OnboardingScaffold(
       showBack: true,
       showSkip: false,
@@ -97,10 +113,10 @@ class _ContinueWithEmailScreenState extends State<ContinueWithEmailScreen> {
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
                 label: 'Continue',
-                onPressed: _hasEmail
-                    ? () {
-                      context.go("/create-account");
-                    }
+                onPressed: state.canContinue
+                    ? () => goTo(ref
+                        .read(continueWithEmailControllerProvider.notifier)
+                        .onContinueTapped())
                     : null,
               ),
             ),
@@ -126,29 +142,31 @@ class _ContinueWithEmailScreenState extends State<ContinueWithEmailScreen> {
 ///   • Lien "Forgot your password?"
 ///   • Bouton "Continue" (désactivé)
 /// ═══════════════════════════════════════════════════════════════════
-class CreateAccountScreen extends StatefulWidget {
+class CreateAccountScreen extends ConsumerStatefulWidget {
   const CreateAccountScreen({super.key});
 
   @override
-  State<CreateAccountScreen> createState() => _CreateAccountScreenState();
+  ConsumerState<CreateAccountScreen> createState() =>
+      _CreateAccountScreenState();
 }
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> {
+class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   final _pwdController = TextEditingController();
   final _confirmController = TextEditingController();
-  bool _showPwd = false;
-  bool _showConfirm = false;
-  bool _canContinue = false;
 
   @override
   void initState() {
     super.initState();
-    void _check() => setState(() {
-          _canContinue = _pwdController.text.isNotEmpty &&
-              _confirmController.text.isNotEmpty;
-        });
-    _pwdController.addListener(_check);
-    _confirmController.addListener(_check);
+    _pwdController.addListener(() {
+      ref
+          .read(createAccountControllerProvider.notifier)
+          .onPasswordChanged(_pwdController.text);
+    });
+    _confirmController.addListener(() {
+      ref
+          .read(createAccountControllerProvider.notifier)
+          .onConfirmPasswordChanged(_confirmController.text);
+    });
   }
 
   @override
@@ -160,6 +178,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(createAccountControllerProvider);
+
+    void goTo(CreateAccountNavigationTarget target) {
+      switch (target) {
+        case CreateAccountNavigationTarget.otp:
+          context.go('/otp');
+      }
+    }
+
     return OnboardingScaffold(
       showBack: true,
       child: Padding(
@@ -196,16 +223,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   const SizedBox(height: 8),
                   PillTextField(
                     hint: 'Enter your password',
-                    obscure: !_showPwd,
+                    obscure: !state.showPassword,
                     controller: _pwdController,
                     suffix: IconButton(
                       icon: Icon(
-                        _showPwd
+                        state.showPassword
                             ? Icons.visibility_outlined
                             : Icons.visibility_off_outlined,
                         color: AppColors.grey500,
                       ),
-                      onPressed: () => setState(() => _showPwd = !_showPwd),
+                      onPressed: ref
+                          .read(createAccountControllerProvider.notifier)
+                          .toggleShowPassword,
                     ),
                   ),
                   Align(
@@ -224,17 +253,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   const SizedBox(height: 8),
                   PillTextField(
                     hint: 'Enter your password',
-                    obscure: !_showConfirm,
+                    obscure: !state.showConfirmPassword,
                     controller: _confirmController,
                     suffix: IconButton(
                       icon: Icon(
-                        _showConfirm
+                        state.showConfirmPassword
                             ? Icons.visibility_outlined
                             : Icons.visibility_off_outlined,
                         color: AppColors.grey500,
                       ),
-                      onPressed: () =>
-                          setState(() => _showConfirm = !_showConfirm),
+                      onPressed: ref
+                          .read(createAccountControllerProvider.notifier)
+                          .toggleShowConfirmPassword,
                     ),
                   ),
                   Align(
@@ -256,10 +286,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
                 label: 'Continue',
-                onPressed:
-                    _canContinue ? () {
-                      context.go("/otp");
-                    } : null,
+                onPressed: state.canContinue
+                    ? () => goTo(ref
+                        .read(createAccountControllerProvider.notifier)
+                        .onContinueTapped())
+                    : null,
               ),
             ),
           ],

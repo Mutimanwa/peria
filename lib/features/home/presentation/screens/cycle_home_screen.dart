@@ -1,71 +1,36 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
+import 'package:perla_app/core/storage/app_settings.dart';
+import 'package:perla_app/core/storage/app_settings_provider.dart';
+import 'package:perla_app/features/cycle/domain/cycle_status.dart';
+import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
 // ════════════════════════════════════════════════════════════════════
-//  COULEURS (inline pour autonomie du fichier)
-//  → Remplacer par import '../core/theme/app_colors.dart' si disponible
+//  ENUM — 4 phases du cycle (computed from startDate)
 // ════════════════════════════════════════════════════════════════════
-class _C {
-  // Primary
-  static const Color primary = Color(0xFFF37C94);
-  static const Color primary100 = Color(0xFFFFE4E8);
-  static const Color primary200 = Color(0xFFFFCCD5);
-  // Secondary / violet
-  static const Color secondary = Color(0xFFC294EC);
-  static const Color secondary100 = Color(0xFFF3EBFC);
-  static const Color secondary200 = Color(0xFFEADBF9);
-  // PMS / jaune-doré
-  static const Color pmsBase = Color(0xFFE8A825);
-  static const Color pmsLight = Color(0xFFF5D98A);
-  static const Color pmsInner = Color(0xFFD4920F);
-  // Period / rose
-  static const Color periodBase = Color(0xFFF194A7);
-  static const Color periodLight = Color(0xFFF5A3B5);
-  static const Color periodLighter = Color(0xFFFAD0DA);
-  // Ovulation / violet
-  static const Color ovulBase = Color(0xFF8B5CF6);
-  static const Color ovulMid = Color(0xFFB39DDB);
-  static const Color ovulLight = Color(0xFFD4B8F0);
-  static const Color ovulLighter = Color(0xFFEDE0FA);
-  // Neutrals
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color grey100 = Color(0xFFEFEFEF);
-  static const Color grey200 = Color(0xFFE0E0E0);
-  static const Color grey400 = Color(0xFFBDBDBD);
-  static const Color grey500 = Color(0xFF989898);
-  static const Color grey700 = Color(0xFF464646);
-  static const Color grey900 = Color(0xFF292929);
-  static const Color black = Color(0xFF121212);
-  // Dot ring (violet pâle)
-  static const Color dotRing = Color(0xFFD4B8EE);
-  // Fond gradient
-  static const Color bgTop = Color(0xFFFCE4EC);
-  static const Color bgMid = Color(0xFFF3E5F5);
-  static const Color bgWhite = Color(0xFFFFFFFF);
-}
-
-// ════════════════════════════════════════════════════════════════════
-//  ENUM — 3 phases du cycle
-// ════════════════════════════════════════════════════════════════════
-enum CyclePhase { period, pms, ovulation }
+enum CyclePhase { menstrual, follicular, ovulation, luteal }
 
 // ════════════════════════════════════════════════════════════════════
 //  ÉCRAN PRINCIPAL — Cycle Home
 // ════════════════════════════════════════════════════════════════════
-class CycleHomeScreen extends StatefulWidget {
+class CycleHomeScreen extends ConsumerStatefulWidget {
   const CycleHomeScreen({super.key});
 
   @override
-  State<CycleHomeScreen> createState() => _CycleHomeScreenState();
+  ConsumerState<CycleHomeScreen> createState() => _CycleHomeScreenState();
 }
 
-class _CycleHomeScreenState extends State<CycleHomeScreen>
+class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
     with TickerProviderStateMixin {
-  // ── Phase courante (changer ici pour tester) ─────────────────────
-  CyclePhase _phase = CyclePhase.ovulation;
+  // ── Phase courante (pilotée par cycleStatusProvider) ─────────────
+  CyclePhase _phase = CyclePhase.follicular;
+  int _dayOfCycle = 1;
+  int? _daysUntilNextPeriod;
   NavItem _activeTab = NavItem.cycle;
 
   // ── Controllers d'animation de vague ────────────────────────────
@@ -108,11 +73,13 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
 
   // ── Config couleurs + données par phase ─────────────────────────
   _PhaseConfig get _config {
+    final dayLabel = 'Day $_dayOfCycle';
+
     switch (_phase) {
-      case CyclePhase.period:
-        return const _PhaseConfig(
+      case CyclePhase.menstrual:
+        return _PhaseConfig(
           label: 'Period',
-          dayLabel: '3 day',
+          dayLabel: dayLabel,
           // Couche du bas (la plus foncée, occupe ~65% bas)
           colorBottom: AppColors.primary300,
           // Couche intermédiaire (vague 1)
@@ -122,7 +89,7 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
           // Couleur texte dans la roue
           textColor: AppColors.primary800,
           // Badge numéro cycle
-          badgeDay: 4,
+          badgeDay: _dayOfCycle,
           // Angle du badge sur l'anneau (0 = 3h, -π/2 = 12h)
           // Period → badge à ~2h30 (droite légèrement haut)
           badgeAngleDeg: -40.0,
@@ -134,15 +101,15 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
           // Couleur de fond du gap (anneau blanc entre outer et inner)
           ringBg: Color(0xFFF5D6E0),
         );
-      case CyclePhase.pms:
+      case CyclePhase.luteal:
         return _PhaseConfig(
-          label: 'PMS',
-          dayLabel: '3 day',
+          label: 'Luteal',
+          dayLabel: dayLabel,
           colorBottom: AppColors.pmsBase,
           colorMid: AppColors.pmsBase.withOpacity(0.8),
-          colorTop:AppColors.pmsLight,
+          colorTop: AppColors.pmsLight,
           textColor: const Color(0xFF7A5200),
-          badgeDay: 25,
+          badgeDay: _dayOfCycle,
           badgeAngleDeg: -160.0, // gauche ~10h
           calHighlight: const Color(0xFFFFF5C0),
           calTextColor: const Color(0xFFD4920F),
@@ -152,19 +119,51 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
       case CyclePhase.ovulation:
         return _PhaseConfig(
           label: 'Ovulation',
-          dayLabel: 'Day 14',
+          dayLabel: dayLabel,
           colorBottom: AppColors.ovulBase,
           colorMid: AppColors.ovulBase.withOpacity(0.8),
           colorTop: AppColors.ovulLight,
           textColor: const Color(0xFF4A2080),
-          badgeDay: 14,
+          badgeDay: _dayOfCycle,
           badgeAngleDeg: 90.0, // bas ~6h
           calHighlight: const Color(0xFFE8D8FA),
           calTextColor: const Color(0xFF8B5CF6),
           dotColor: const Color(0xFFD4B8EE),
           ringBg: const Color(0xFFF0E4FA),
         );
+      case CyclePhase.follicular:
+        return _PhaseConfig(
+          label: 'Follicular',
+          dayLabel: dayLabel,
+          colorBottom: AppColors.secondary500,
+          colorMid: AppColors.secondary400.withOpacity(0.85),
+          colorTop: AppColors.secondary100,
+          textColor: const Color(0xFF4A2080),
+          badgeDay: _dayOfCycle,
+          badgeAngleDeg: -20.0,
+          calHighlight: const Color(0xFFF3EBFC),
+          calTextColor: const Color(0xFF8B5CF6),
+          dotColor: const Color(0xFFD4B8EE),
+          ringBg: const Color(0xFFF0E4FA),
+        );
     }
+  }
+
+  CyclePhase _phaseFromStatus(CycleStatus? status) {
+    if (status == null) return CyclePhase.follicular;
+    final phaseName = status.phase.toString().split('.').last;
+    return switch (phaseName) {
+      'menstrual' => CyclePhase.menstrual,
+      'ovulation' => CyclePhase.ovulation,
+      'luteal' => CyclePhase.luteal,
+      _ => CyclePhase.follicular,
+    };
+  }
+
+  void _applyPhase(CyclePhase next) {
+    if (next == _phase) return;
+    setState(() => _phase = next);
+    _phaseCtrl.forward(from: 0);
   }
 
   // void _switchPhase(CyclePhase p) {
@@ -174,6 +173,27 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final status = ref.watch(cycleStatusProvider);
+    final dayOfCycle = status?.dayOfCycle ?? 1;
+    final daysUntilNext = status?.daysUntilNextPeriod;
+    final nextPhase = _phaseFromStatus(status);
+
+    if (_dayOfCycle != dayOfCycle || _daysUntilNextPeriod != daysUntilNext) {
+      // Avoid setState during build.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          _dayOfCycle = dayOfCycle;
+          _daysUntilNextPeriod = daysUntilNext;
+        });
+      });
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _applyPhase(nextPhase);
+    });
+
     final cfg = _config;
     final size = MediaQuery.of(context).size;
 
@@ -211,9 +231,13 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                 const SizedBox(height: 10),
 
                 // Texte subtitle
-                const Text(
-                  'Next period in 5 days',
-                  style: TextStyle(
+                Text(
+                  _daysUntilNextPeriod == null
+                      ? 'Next period: unknown'
+                      : _daysUntilNextPeriod! <= 0
+                          ? 'Period is due'
+                          : 'Next period in $_daysUntilNextPeriod days',
+                  style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -242,7 +266,7 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                 const SizedBox(height: 22),
 
                 // ── Calendrier semaine ───────────────────────────
-                _WeekCalendar(config: cfg),
+                _WeekCalendar(config: cfg, now: status?.now ?? DateTime.now()),
                 const SizedBox(height: 28),
 
                 // ── Boutons Log ──────────────────────────────────
@@ -251,21 +275,19 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
                   child: Row(
                     children: [
                       Expanded(
-child: _LogBtn(
+                        child: _LogBtn(
                           label: 'Log Symptom',
                           filled: false,
                           onTap: () => context.go('/symptoms'),
                         ),
-
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-child: _LogBtn(
+                        child: _LogBtn(
                           label: 'Log Period',
                           filled: true,
                           onTap: () => context.go('/edit-calendar'),
                         ),
-
                       ),
                     ],
                   ),
@@ -290,7 +312,7 @@ child: _LogBtn(
                         right: 0,
                         child: CustomBottomNav(
                           currentIndex: _activeTab,
-onTap: (tab) {
+                          onTap: (tab) {
                             setState(() => _activeTab = tab);
                             if (tab == NavItem.cycle) {
                               context.go('/');
@@ -300,7 +322,6 @@ onTap: (tab) {
                               context.go('/journal');
                             }
                           },
-
                         ),
                       ),
                     ],
@@ -345,7 +366,8 @@ class _AppBar extends StatelessWidget {
                       offset: const Offset(0, 2)),
                 ],
               ),
-              child: Image.asset('assets/images/icons/Profile.png', fit: BoxFit.cover),
+              child: Image.asset('assets/images/icons/Profile.png',
+                  fit: BoxFit.cover),
             ),
           ),
 
@@ -382,7 +404,8 @@ class _AppBar extends StatelessWidget {
                         onTap: () {
                           context.go("/notification");
                         },
-                        child: Image.asset("assets/images/icons/notification-1.png")),
+                        child: Image.asset(
+                            "assets/images/icons/notification-1.png")),
                     Positioned(
                       top: 1,
                       right: 1,
@@ -392,7 +415,8 @@ class _AppBar extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.white, width: 1.5),
+                          border:
+                              Border.all(color: AppColors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -694,21 +718,34 @@ class _CycleWheelPainter extends CustomPainter {
 // ════════════════════════════════════════════════════════════════════
 class _WeekCalendar extends StatelessWidget {
   final _PhaseConfig config;
-  const _WeekCalendar({required this.config});
+  final DateTime now;
+
+  const _WeekCalendar({
+    required this.config,
+    required this.now,
+  });
+
+  DateTime _startOfDay(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Jours fixes comme dans la maquette : 18 Mo → 24 Su, sélectionné 21 Th
-    const days = [18, 19, 20, 21, 22, 23, 24];
-    const dayNames = ['Mo', 'Tu', 'Wed', 'Th', 'Fr', 'Sa', 'Su'];
-    const todayIdx = 3; // 21 Th
+    // Week starts Monday (weekday: Mon=1..Sun=7)
+    final today = _startOfDay(now);
+    final weekStart = today.subtract(Duration(days: today.weekday - 1));
+    final weekDays = List.generate(7, (i) => weekStart.add(Duration(days: i)));
+    const dayNames = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(7, (i) {
-          final isToday = i == todayIdx;
+          final date = weekDays[i];
+          final isToday = _isSameDay(date, today);
           return SizedBox(
             width: 42,
             child: Column(
@@ -726,23 +763,25 @@ class _WeekCalendar extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${days[i]}',
+                        '${date.day}',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 17,
                           fontWeight:
                               isToday ? FontWeight.w700 : FontWeight.w500,
-                          color: isToday ? config.calTextColor : AppColors.grey700,
+                          color:
+                              isToday ? config.calTextColor : AppColors.grey700,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        dayNames[i],
+                        dayNames[date.weekday - 1],
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 11,
                           fontWeight: FontWeight.w400,
-                          color: isToday ? config.calTextColor : AppColors.grey500,
+                          color:
+                              isToday ? config.calTextColor : AppColors.grey500,
                         ),
                       ),
                     ],
@@ -777,7 +816,8 @@ class _LogBtn extends StatelessWidget {
         decoration: BoxDecoration(
           color: filled ? AppColors.grey900 : AppColors.white,
           borderRadius: BorderRadius.circular(50),
-          border: filled ? null : Border.all(color: AppColors.grey900, width: 1.5),
+          border:
+              filled ? null : Border.all(color: AppColors.grey900, width: 1.5),
           boxShadow: filled
               ? [
                   BoxShadow(

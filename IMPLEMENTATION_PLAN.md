@@ -69,17 +69,19 @@ Existing feature folders:
 - `self_care`
 - `ai`
 - `profile`
+- `journal`
+- `cycle` (data + prediction foundation)
 
 ## 3.2 Still Missing at Product Level
 
 The following high-value product layers are not yet implemented or are only partially represented:
 
-- `journal` module
-- local persistence for user cycle/symptoms/profile
+- encrypted local storage (journal and sensitive health logs are currently stored in `shared_preferences`)
+- local persistence for symptoms (cycle periods + basic profile persistence now exist; symptoms still UI-only)
 - privacy and security engine
 - discreet mode behavior
 - biometrics / app lock
-- cycle prediction rules engine
+- cycle prediction rules engine (MVP prediction logic now exists; still needs irregular-cycle mode and UX disclaimers)
 - irregular cycle mode
 - multilingual structure
 - partner-sharing permissions model
