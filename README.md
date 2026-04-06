@@ -7,6 +7,7 @@ Peria is a Flutter mobile application focused on cycle tracking, self-care, AI a
 Project documentation is available here:
 
 - [PROJECT_DOCUMENTATION.md](/g:/flutter/flutter/NewApp/peria/PROJECT_DOCUMENTATION.md)
+- [IMPLEMENTATION_PLAN.md](/g:/flutter/flutter/NewApp/peria/IMPLEMENTATION_PLAN.md)
 
 ## Existing Design Notes
 

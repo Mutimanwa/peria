@@ -297,7 +297,7 @@ onTap: (tab) {
                             } else if (tab == NavItem.ai) {
                               context.go('/ai');
                             } else if (tab == NavItem.journal) {
-                              context.go('/self-care');
+                              context.go('/journal');
                             }
                           },
 

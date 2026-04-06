@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/router/router.dart';
 
 void main() {
-  runApp(const PeriaApp());
+  runApp(const ProviderScope(child: PeriaApp()));
 }
 
 class PeriaApp extends StatelessWidget {

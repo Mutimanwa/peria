@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/core/storage/app_settings.dart';
+import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
@@ -120,120 +123,201 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   }
 }
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsState = ref.watch(appSettingsProvider);
     return _SimplePage(
       title: 'Settings',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const _SectionLabel('Appearance'),
-          _MenuGroup(items: [
-            _MenuItemData('Theme', Icons.palette_outlined, () {}),
-          ]),
-          const SizedBox(height: 22),
-          const _SectionLabel('Cycle Settings'),
-          _MenuGroup(items: [
-            _MenuItemData('Period Length', Icons.water_drop_outlined, () {}, trailingText: '7 Days'),
-            _MenuItemData('Cycle Length', Icons.calendar_month_outlined, () {}, trailingText: '28 Days'),
-          ]),
-          const SizedBox(height: 22),
-          const _SectionLabel('Integrations & Sync'),
-          _MenuGroup(items: [
-            _MenuItemData('Connected Apps', Icons.all_inclusive_rounded, () {}),
-          ]),
-          const SizedBox(height: 22),
-          const _SectionLabel('About'),
-          _MenuGroup(items: [
-            _MenuItemData('Privacy Policy', Icons.verified_user_outlined, () {}),
-            _MenuItemData('App Version', Icons.info_outline_rounded, () {}, trailingText: '1.0.2'),
-          ]),
-        ],
+      child: settingsState.when(
+        data: (settings) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _SectionLabel('Appearance'),
+            _MenuGroup(items: [
+              _MenuItemData('Theme', Icons.palette_outlined, () {}),
+            ]),
+            const SizedBox(height: 22),
+            const _SectionLabel('Cycle Settings'),
+            _MenuGroup(items: [
+              _MenuItemData(
+                'Period Length',
+                Icons.water_drop_outlined,
+                () => _showCycleLengthPicker(
+                  context,
+                  title: 'Period Length',
+                  currentValue: settings.periodLengthDays,
+                  min: 2,
+                  max: 12,
+                  onSelected: (value) => ref.read(appSettingsProvider.notifier).patch(
+                        (current) => current.copyWith(periodLengthDays: value),
+                      ),
+                ),
+                trailingText: '${settings.periodLengthDays} Days',
+              ),
+              _MenuItemData(
+                'Cycle Length',
+                Icons.calendar_month_outlined,
+                () => _showCycleLengthPicker(
+                  context,
+                  title: 'Cycle Length',
+                  currentValue: settings.cycleLengthDays,
+                  min: 20,
+                  max: 40,
+                  onSelected: (value) => ref.read(appSettingsProvider.notifier).patch(
+                        (current) => current.copyWith(cycleLengthDays: value),
+                      ),
+                ),
+                trailingText: '${settings.cycleLengthDays} Days',
+              ),
+            ]),
+            const SizedBox(height: 22),
+            const _SectionLabel('Integrations & Sync'),
+            _MenuGroup(items: [
+              _MenuItemData('Connected Apps', Icons.all_inclusive_rounded, () {}),
+            ]),
+            const SizedBox(height: 22),
+            const _SectionLabel('About'),
+            _MenuGroup(items: [
+              _MenuItemData('Privacy Policy', Icons.verified_user_outlined, () {}),
+              _MenuItemData('App Version', Icons.info_outline_rounded, () {}, trailingText: '1.0.2'),
+            ]),
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => const Center(child: Text('Unable to load settings')),
       ),
     );
   }
 }
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
-}
-
-class _NotificationsScreenState extends State<NotificationsScreen> {
-  bool allowAll = false;
-  bool fertileWindow = true;
-  bool partnerUpdates = true;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsState = ref.watch(appSettingsProvider);
     return _SimplePage(
       title: 'Notifications',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _ToggleGroup(items: [
-            _ToggleItemData('Allow Notifications', allowAll, (v) => setState(() => allowAll = v)),
-          ]),
-          const SizedBox(height: 28),
-          const _SectionLabel('Cycle Predictions'),
-          _ToggleGroup(items: [
-            _ToggleItemData('Period Starting', false, (_) {}),
-            _ToggleItemData('Fertile Window', fertileWindow, (v) => setState(() => fertileWindow = v)),
-            _ToggleItemData('Ovulation Day', false, (_) {}),
-          ]),
-          const SizedBox(height: 28),
-          const _SectionLabel('Reminders'),
-          _ToggleGroup(items: [
-            _ToggleItemData('Log Symptoms', false, (_) {}),
-            _ToggleItemData('Partner Updates', partnerUpdates, (v) => setState(() => partnerUpdates = v)),
-          ]),
-        ],
+      child: settingsState.when(
+        data: (settings) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ToggleGroup(items: [
+              _ToggleItemData(
+                'Allow Notifications',
+                settings.allowNotifications,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(allowNotifications: v),
+                    ),
+              ),
+            ]),
+            const SizedBox(height: 28),
+            const _SectionLabel('Cycle Predictions'),
+            _ToggleGroup(items: [
+              _ToggleItemData(
+                'Period Starting',
+                settings.notifyPeriodStarting,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(notifyPeriodStarting: v),
+                    ),
+              ),
+              _ToggleItemData(
+                'Fertile Window',
+                settings.notifyFertileWindow,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(notifyFertileWindow: v),
+                    ),
+              ),
+              _ToggleItemData(
+                'Ovulation Day',
+                settings.notifyOvulationDay,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(notifyOvulationDay: v),
+                    ),
+              ),
+            ]),
+            const SizedBox(height: 28),
+            const _SectionLabel('Reminders'),
+            _ToggleGroup(items: [
+              _ToggleItemData(
+                'Log Symptoms',
+                settings.remindLogSymptoms,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(remindLogSymptoms: v),
+                    ),
+              ),
+              _ToggleItemData(
+                'Partner Updates',
+                settings.notifyPartnerUpdates,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(notifyPartnerUpdates: v),
+                    ),
+              ),
+            ]),
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => const Center(child: Text('Unable to load notifications')),
       ),
     );
   }
 }
 
-class AccountSecurityScreen extends StatefulWidget {
+class AccountSecurityScreen extends ConsumerWidget {
   const AccountSecurityScreen({super.key});
 
   @override
-  State<AccountSecurityScreen> createState() => _AccountSecurityScreenState();
-}
-
-class _AccountSecurityScreenState extends State<AccountSecurityScreen> {
-  bool twoFactor = false;
-  bool faceId = true;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsState = ref.watch(appSettingsProvider);
     return _SimplePage(
       title: 'Account & Security',
-      child: Column(
-        children: [
-          const SizedBox(height: 6),
-          Image.asset('assets/images/icons/security.png', width: 96, height: 96),
-          const SizedBox(height: 24),
-          const Align(alignment: Alignment.centerLeft, child: _SectionLabel('Account')),
-          _MenuGroup(items: [
-            _MenuItemData('Email Address', Icons.email_outlined, () {}),
-            _MenuItemData('Change Password', Icons.lock_outline_rounded, () {}),
-          ]),
-          const SizedBox(height: 22),
-          const Align(alignment: Alignment.centerLeft, child: _SectionLabel('Security')),
-          _ToggleGroup(items: [
-            _ToggleItemData('Two Factor Authentication', twoFactor, (v) => setState(() => twoFactor = v)),
-            _ToggleItemData('Face ID', faceId, (v) => setState(() => faceId = v)),
-          ]),
-          const SizedBox(height: 22),
-          _MenuGroup(items: [
-            _MenuItemData('Delete Account', Icons.delete_outline_rounded, () {}, danger: true),
-          ]),
-        ],
+      child: settingsState.when(
+        data: (settings) => Column(
+          children: [
+            const SizedBox(height: 6),
+            Image.asset('assets/images/icons/security.png', width: 96, height: 96),
+            const SizedBox(height: 24),
+            const Align(alignment: Alignment.centerLeft, child: _SectionLabel('Account')),
+            _MenuGroup(items: [
+              _MenuItemData('Email Address', Icons.email_outlined, () {}),
+              _MenuItemData('Change Password', Icons.lock_outline_rounded, () {}),
+            ]),
+            const SizedBox(height: 22),
+            const Align(alignment: Alignment.centerLeft, child: _SectionLabel('Security')),
+            _ToggleGroup(items: [
+              _ToggleItemData(
+                'Two Factor Authentication',
+                settings.twoFactorEnabled,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(twoFactorEnabled: v),
+                    ),
+              ),
+              _ToggleItemData(
+                'Face ID',
+                settings.faceIdEnabled,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(faceIdEnabled: v),
+                    ),
+              ),
+              _ToggleItemData(
+                'Discreet Mode',
+                settings.discreetModeEnabled,
+                (v) => ref.read(appSettingsProvider.notifier).patch(
+                      (current) => current.copyWith(discreetModeEnabled: v),
+                    ),
+              ),
+            ]),
+            const SizedBox(height: 22),
+            _MenuGroup(items: [
+              _MenuItemData('Delete Account', Icons.delete_outline_rounded, () {}, danger: true),
+            ]),
+          ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => const Center(child: Text('Unable to load security settings')),
       ),
     );
   }
@@ -608,6 +692,80 @@ class _SimplePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> _showCycleLengthPicker(
+  BuildContext context, {
+  required String title,
+  required int currentValue,
+  required int min,
+  required int max,
+  required ValueChanged<int> onSelected,
+}) async {
+  final result = await showModalBottomSheet<int>(
+    context: context,
+    backgroundColor: AppColors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(28),
+        topRight: Radius.circular(28),
+      ),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.grey300,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(title, style: AppText.h4),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                for (int value = min; value <= max; value++)
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(value),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: value == currentValue ? AppColors.primary50 : AppColors.grey100,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: value == currentValue ? AppColors.primary300 : AppColors.grey200,
+                        ),
+                      ),
+                      child: Text(
+                        '$value',
+                        style: AppText.label.copyWith(
+                          color: value == currentValue ? AppColors.primary400 : AppColors.grey800,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
+
+  if (result != null) {
+    onSelected(result);
   }
 }
 

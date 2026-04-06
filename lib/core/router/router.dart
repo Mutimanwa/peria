@@ -10,6 +10,7 @@ import 'package:perla_app/features/calendar/presentation/screens/calendar_screen
 import 'package:perla_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/symptoms_screen.dart';
 import 'package:perla_app/features/home/presentation/screens/cycle_home_screen.dart';
+import 'package:perla_app/features/journal/presentation/screens/journal_screens.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/onboarding_screens.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
@@ -109,6 +110,24 @@ final GoRouter appRouter = GoRouter(
         context,
         state,
         const CycleHomeScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/journal',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const JournalScreen()),
+    ),
+    GoRoute(
+      path: '/journal/new',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const JournalEditorScreen()),
+    ),
+    GoRoute(
+      path: '/journal/edit/:id',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        JournalEditorScreen(entryId: state.pathParameters['id']),
       ),
     ),
     // calendrier 
