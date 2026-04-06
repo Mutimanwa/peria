@@ -1,17 +1,42 @@
-# peria
+# Peria
 
-A new Flutter project.
+Peria is a Flutter mobile application focused on cycle tracking, self-care, AI assistance, symptom logging, and partner sharing.
 
-## Getting Started
+## Main Documentation
 
-This project is a starting point for a Flutter application.
+Project documentation is available here:
 
-A few resources to get you started if this is your first Flutter project:
+- [PROJECT_DOCUMENTATION.md](/g:/flutter/flutter/NewApp/peria/PROJECT_DOCUMENTATION.md)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Existing Design Notes
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [design_system.md](/g:/flutter/flutter/NewApp/peria/design_system.md)
+
+## Tech Stack
+
+- Flutter
+- Dart
+- go_router
+- flutter_riverpod
+- dio
+- shared_preferences
+
+## Current App Areas
+
+- onboarding
+- authentication
+- cycle dashboard
+- calendar and symptoms
+- self-care
+- AI assistant
+- profile and settings
+- partner sharing
+
+## Assets
+
+- production assets: `assets/images/`
+- visual mockups: `moc/`
+
+## Notes
+
+The project is strongly driven by the mockups inside `moc/`, and a large part of the UI has been aligned to those designs to prepare the app for integration.

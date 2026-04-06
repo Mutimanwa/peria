@@ -135,42 +135,42 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
           ringBg: Color(0xFFF5D6E0),
         );
       case CyclePhase.pms:
-        return const _PhaseConfig(
+        return _PhaseConfig(
           label: 'PMS',
           dayLabel: '3 day',
-          colorBottom: _C.pmsInner,
-          colorMid: _C.pmsBase,
-          colorTop: _C.pmsLight,
-          textColor: Color(0xFF7A5200),
+          colorBottom: AppColors.pmsBase,
+          colorMid: AppColors.pmsBase.withOpacity(0.8),
+          colorTop:AppColors.pmsLight,
+          textColor: const Color(0xFF7A5200),
           badgeDay: 25,
           badgeAngleDeg: -160.0, // gauche ~10h
-          calHighlight: Color(0xFFFFF5C0),
-          calTextColor: Color(0xFFD4920F),
-          dotColor: Color(0xFFD4B8EE),
-          ringBg: Color(0xFFF5EED4),
+          calHighlight: const Color(0xFFFFF5C0),
+          calTextColor: const Color(0xFFD4920F),
+          dotColor: const Color(0xFFD4B8EE),
+          ringBg: const Color(0xFFF5EED4),
         );
       case CyclePhase.ovulation:
-        return const _PhaseConfig(
+        return _PhaseConfig(
           label: 'Ovulation',
           dayLabel: 'Day 14',
-          colorBottom: _C.ovulBase,
-          colorMid: _C.ovulMid,
-          colorTop: _C.ovulLight,
-          textColor: Color(0xFF4A2080),
+          colorBottom: AppColors.ovulBase,
+          colorMid: AppColors.ovulBase.withOpacity(0.8),
+          colorTop: AppColors.ovulLight,
+          textColor: const Color(0xFF4A2080),
           badgeDay: 14,
           badgeAngleDeg: 90.0, // bas ~6h
-          calHighlight: Color(0xFFE8D8FA),
-          calTextColor: Color(0xFF8B5CF6),
-          dotColor: Color(0xFFD4B8EE),
-          ringBg: Color(0xFFF0E4FA),
+          calHighlight: const Color(0xFFE8D8FA),
+          calTextColor: const Color(0xFF8B5CF6),
+          dotColor: const Color(0xFFD4B8EE),
+          ringBg: const Color(0xFFF0E4FA),
         );
     }
   }
 
-  void _switchPhase(CyclePhase p) {
-    setState(() => _phase = p);
-    _phaseCtrl.forward(from: 0);
-  }
+  // void _switchPhase(CyclePhase p) {
+  //   setState(() => _phase = p);
+  //   _phaseCtrl.forward(from: 0);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +178,7 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: _C.white,
+      backgroundColor: AppColors.white,
       // ── Fond gradient rose→violet→blanc ───────────────────────────
       body: Stack(
         children: [
@@ -207,7 +207,7 @@ class _CycleHomeScreenState extends State<CycleHomeScreen>
             child: Column(
               children: [
                 // AppBar
-                _AppBar(onAvatarTap: () {}),
+                _AppBar(onAvatarTap: () => context.go('/profile')),
                 const SizedBox(height: 10),
 
                 // Texte subtitle
@@ -336,8 +336,8 @@ class _AppBar extends StatelessWidget {
               height: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _C.grey200,
-                border: Border.all(color: _C.white, width: 1),
+                color: AppColors.grey200,
+                border: Border.all(color: AppColors.white, width: 1),
                 boxShadow: [
                   BoxShadow(
                       color: Colors.black.withOpacity(0.08),
@@ -345,7 +345,7 @@ class _AppBar extends StatelessWidget {
                       offset: const Offset(0, 2)),
                 ],
               ),
-              child: Image.asset('images/icons/Profile.png', fit: BoxFit.cover),
+              child: Image.asset('assets/images/icons/Profile.png', fit: BoxFit.cover),
             ),
           ),
 
@@ -362,7 +362,7 @@ class _AppBar extends StatelessWidget {
                     fontFamily: 'Poppins',
                     fontSize: 21,
                     fontWeight: FontWeight.w700,
-                    color: _C.primary,
+                    color: AppColors.primary,
                   ),
                 ),
               ],
@@ -382,7 +382,7 @@ class _AppBar extends StatelessWidget {
                         onTap: () {
                           context.go("/notification");
                         },
-                        child: Image.asset("images/icons/notification-1.png")),
+                        child: Image.asset("assets/images/icons/notification-1.png")),
                     Positioned(
                       top: 1,
                       right: 1,
@@ -390,9 +390,9 @@ class _AppBar extends StatelessWidget {
                         width: 9,
                         height: 9,
                         decoration: BoxDecoration(
-                          color: _C.primary,
+                          color: AppColors.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: _C.white, width: 1.5),
+                          border: Border.all(color: AppColors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -405,7 +405,7 @@ class _AppBar extends StatelessWidget {
                   onTap: () {
                     context.go("/calendar");
                   },
-                  child: Image.asset("images/icons/calendar.png"))
+                  child: Image.asset("assets/images/icons/calendar.png"))
             ],
           ),
         ],
@@ -439,10 +439,10 @@ class _PeriaLogoPainter extends CustomPainter {
     final cy = size.height / 2;
     final r = size.width * 0.34;
     // Cercle gauche (rose)
-    paint.color = _C.primary;
+    paint.color = AppColors.primary;
     canvas.drawCircle(Offset(cx - r * 0.38, cy), r, paint);
     // Cercle droit (violet)
-    paint.color = _C.secondary;
+    paint.color = AppColors.secondary;
     canvas.drawCircle(Offset(cx + r * 0.38, cy), r, paint);
   }
 
@@ -657,7 +657,7 @@ class _CycleWheelPainter extends CustomPainter {
       ..color = Colors.black.withOpacity(0.10)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
     canvas.drawCircle(pos + const Offset(0, 2), badgeR + 1, shadowPaint);
-    canvas.drawCircle(pos, badgeR, Paint()..color = _C.white);
+    canvas.drawCircle(pos, badgeR, Paint()..color = AppColors.white);
     canvas.drawCircle(
       pos,
       badgeR,
@@ -732,7 +732,7 @@ class _WeekCalendar extends StatelessWidget {
                           fontSize: 17,
                           fontWeight:
                               isToday ? FontWeight.w700 : FontWeight.w500,
-                          color: isToday ? config.calTextColor : _C.grey900,
+                          color: isToday ? config.calTextColor : AppColors.grey700,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -742,7 +742,7 @@ class _WeekCalendar extends StatelessWidget {
                           fontFamily: 'Poppins',
                           fontSize: 11,
                           fontWeight: FontWeight.w400,
-                          color: isToday ? config.calTextColor : _C.grey500,
+                          color: isToday ? config.calTextColor : AppColors.grey500,
                         ),
                       ),
                     ],
@@ -775,9 +775,9 @@ class _LogBtn extends StatelessWidget {
       child: Container(
         height: 56,
         decoration: BoxDecoration(
-          color: filled ? _C.grey900 : _C.white,
+          color: filled ? AppColors.grey900 : AppColors.white,
           borderRadius: BorderRadius.circular(50),
-          border: filled ? null : Border.all(color: _C.grey900, width: 1.5),
+          border: filled ? null : Border.all(color: AppColors.grey900, width: 1.5),
           boxShadow: filled
               ? [
                   BoxShadow(
@@ -794,7 +794,7 @@ class _LogBtn extends StatelessWidget {
             fontFamily: 'Poppins',
             fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: filled ? _C.white : _C.black,
+            color: filled ? AppColors.white : AppColors.black,
           ),
         ),
       ),
@@ -817,7 +817,7 @@ class _ArticlesRow extends StatelessWidget {
         title: 'Healthy di',
         bg: Color(0xFFFFD6DE),
         textColor: Color(0xFFE03060),
-        image: 'images/skin.png',
+        image: 'assets/images/skin.png',
         width: 140,
         height: 140,
         marginTop: 25,
@@ -826,7 +826,7 @@ class _ArticlesRow extends StatelessWidget {
         title: 'Skin care',
         bg: Color(0xFFE8D8FA),
         textColor: Color(0xFF8B5CF6),
-        image: 'images/skin.png',
+        image: 'assets/images/skin.png',
         width: 185,
         height: 155,
         marginTop: 0,
@@ -835,7 +835,7 @@ class _ArticlesRow extends StatelessWidget {
         title: 'Yoga Tipps',
         bg: Color(0xFFFFD6DE),
         textColor: Color(0xFFE03060),
-        image: 'images/yoga.png',
+        image: 'assets/images/yoga.png',
         width: 140,
         height: 140,
         marginTop: 25,

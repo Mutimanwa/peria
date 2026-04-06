@@ -104,7 +104,7 @@ class _OtpScreenState extends State<OtpScreen> {
               width: 150,
               height: 150,
               alignment: Alignment.center,
-              child: Image.asset("images/icons/security.png")
+              child: Image.asset("assets/images/icons/security.png")
             ),
             const SizedBox(height: 32),
 

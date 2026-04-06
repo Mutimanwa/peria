@@ -153,9 +153,12 @@ class _SelfCareHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const CircleAvatar(
-          radius: 18,
-          backgroundImage: AssetImage('assets/images/onboarding/Avatar-21.png'),
+        GestureDetector(
+          onTap: () => context.go('/profile'),
+          child: const CircleAvatar(
+            radius: 18,
+            backgroundImage: AssetImage('assets/images/onboarding/Avatar-21.png'),
+          ),
         ),
         const Spacer(),
         Row(

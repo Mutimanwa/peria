@@ -21,8 +21,6 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -83,80 +81,6 @@ class WelcomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ───────────────────────────────────────────────
-//  Widget interne : Logo Peria dessiné
-// ───────────────────────────────────────────────
-class _PeriaLogoSvg extends StatelessWidget {
-  final double size;
-  const _PeriaLogoSvg({required this.size});
-
-  @override
-  Widget build(BuildContext context) {
-    // Logo deux cercles entrelacés (style maquette)
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(painter: _PeriaPainter()),
-    );
-  }
-}
-
-class _PeriaPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5
-      ..strokeCap = StrokeCap.round;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    final r = size.width * 0.32;
-
-    // Cercle gauche (rose)
-    paint.color = AppColors.primary;
-    canvas.drawCircle(Offset(center.dx - r * 0.4, center.dy), r, paint);
-
-    // Cercle droit (violet)
-    paint.color = AppColors.secondary;
-    canvas.drawCircle(Offset(center.dx + r * 0.4, center.dy), r, paint);
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
-}
-
-// ───────────────────────────────────────────────
-//  Widget interne : Avatar flottant
-// ───────────────────────────────────────────────
-class _FloatingAvatar extends StatelessWidget {
-  final Color color;
-  final String label;
-
-  const _FloatingAvatar({required this.color, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4)),
-        ],
-      ),
-      // ⚠️  Remplacer par Image.asset() dès que les images sont disponibles
-      child: Center(
-        child: Text('👤', style: TextStyle(fontSize: 24)),
       ),
     );
   }

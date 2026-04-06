@@ -351,7 +351,7 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  this.context.go('/profile/partner/connected');
+                  this.context.go('/profile/partner/pending');
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.grey900, shape: const StadiumBorder()),
                 child: Text('Got it', style: AppText.label.copyWith(color: AppColors.white)),
@@ -359,6 +359,77 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PartnerInvitationPendingScreen extends StatelessWidget {
+  const PartnerInvitationPendingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return _SimplePage(
+      title: 'Partner',
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Image.asset(
+              'moc/Partner Pending Screen (1).png',
+              height: 185,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text("You've Invited Your Partner!", style: AppText.h2, textAlign: TextAlign.center),
+          const SizedBox(height: 10),
+          Text(
+            "We'll let you know when they accept.",
+            style: AppText.body.copyWith(color: AppColors.grey600),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.grey100,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: const BoxDecoration(color: AppColors.grey900, shape: BoxShape.circle),
+                  child: const Icon(Icons.person_add_alt_1_rounded, color: AppColors.white, size: 18),
+                ),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Samrad@gmail.com', style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
+                    Row(
+                      children: [
+                        Container(width: 8, height: 8, decoration: const BoxDecoration(color: Color(0xFFF6C542), shape: BoxShape.circle)),
+                        const SizedBox(width: 6),
+                        Text('Status: Pending Approval', style: AppText.body.copyWith(color: AppColors.grey600)),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+          PrimaryButton(label: 'Resend Invitation', onPressed: () {}),
+          const SizedBox(height: 12),
+          OutlineButton(label: 'Cancel Invitation', onPressed: () => context.go('/profile/partner')),
+        ],
       ),
     );
   }
@@ -575,7 +646,7 @@ class _InfoField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       decoration: BoxDecoration(
         color: AppColors.grey100,
         borderRadius: BorderRadius.circular(22),
@@ -616,21 +687,46 @@ class _MenuGroup extends StatelessWidget {
           final item = items[index];
           return Column(
             children: [
-              ListTile(
+              InkWell(
+                borderRadius: BorderRadius.circular(20),
                 onTap: item.onTap,
-                leading: Icon(item.icon, color: item.danger ? const Color(0xFFFF6E6E) : AppColors.grey700),
-                title: Text(
-                  item.title,
-                  style: AppText.body.copyWith(color: item.danger ? const Color(0xFFFF6E6E) : AppColors.grey800),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (item.trailingText != null)
-                      Text(item.trailingText!, style: AppText.body.copyWith(color: AppColors.grey400)),
-                    const SizedBox(width: 6),
-                    const Icon(Icons.chevron_right_rounded, color: AppColors.grey400),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: AppColors.white.withOpacity(0.75),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          item.icon,
+                          size: 16,
+                          color: item.danger ? const Color(0xFFFF6E6E) : AppColors.grey700,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          item.title,
+                          style: AppText.body.copyWith(
+                            color: item.danger ? const Color(0xFFFF6E6E) : AppColors.grey800,
+                          ),
+                        ),
+                      ),
+                      if (item.trailingText != null)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Text(
+                            item.trailingText!,
+                            style: AppText.body.copyWith(color: AppColors.grey400),
+                          ),
+                        ),
+                      const Icon(Icons.chevron_right_rounded, color: AppColors.grey400),
+                    ],
+                  ),
                 ),
               ),
               if (index != items.length - 1)
@@ -667,14 +763,31 @@ class _ToggleGroup extends StatelessWidget {
           final item = items[index];
           return Column(
             children: [
-              SwitchListTile(
-                value: item.value,
-                onChanged: item.onChanged,
-                title: Text(item.title, style: AppText.body),
-                activeColor: AppColors.white,
-                activeTrackColor: const Color(0xFF4BE28C),
-                inactiveThumbColor: AppColors.white,
-                inactiveTrackColor: AppColors.grey300,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withOpacity(0.75),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(_toggleIcon(item.title), size: 14, color: AppColors.grey500),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(item.title, style: AppText.body)),
+                    Switch(
+                      value: item.value,
+                      onChanged: item.onChanged,
+                      activeColor: AppColors.white,
+                      activeTrackColor: const Color(0xFF4BE28C),
+                      inactiveThumbColor: AppColors.white,
+                      inactiveTrackColor: AppColors.grey300,
+                    ),
+                  ],
+                ),
               ),
               if (index != items.length - 1)
                 const Divider(height: 1, indent: 16, endIndent: 16),
@@ -683,5 +796,16 @@ class _ToggleGroup extends StatelessWidget {
         }),
       ),
     );
+  }
+
+  IconData _toggleIcon(String title) {
+    if (title.contains('Cycle') || title.contains('Period')) return Icons.autorenew_rounded;
+    if (title.contains('Logged') || title.contains('Log')) return Icons.add_circle_outline_rounded;
+    if (title.contains('Mood')) return Icons.sentiment_satisfied_alt_outlined;
+    if (title.contains('Face ID')) return Icons.fingerprint_rounded;
+    if (title.contains('Two Factor')) return Icons.shield_outlined;
+    if (title.contains('Partner')) return Icons.people_alt_outlined;
+    if (title.contains('Ovulation')) return Icons.event_available_outlined;
+    return Icons.radio_button_checked;
   }
 }

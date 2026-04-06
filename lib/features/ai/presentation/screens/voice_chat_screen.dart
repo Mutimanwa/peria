@@ -9,26 +9,64 @@ class VoiceChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.bgGradient),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFF2EAFE),
+              Color(0xFFFFFFFF),
+              Color(0xFFFFEEF3),
+            ],
+          ),
+        ),
         child: SafeArea(
           child: Stack(
             children: [
-              Center(
+              Positioned(
+                left: -32,
+                right: -32,
+                bottom: -12,
                 child: Container(
-                  width: 170,
-                  height: 170,
+                  height: 168,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD5B2F4),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFD5B2F4).withOpacity(.45),
-                        blurRadius: 0,
-                        spreadRadius: 18,
-                      ),
-                    ],
+                    color: const Color(0xFFE7DAFB),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(100),
+                      topRight: Radius.circular(100),
+                    ),
                   ),
-                  child: const Icon(Icons.graphic_eq_rounded, color: AppColors.white, size: 62),
+                ),
+              ),
+              Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 196,
+                      height: 196,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE7D5FB),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Container(
+                      width: 162,
+                      height: 162,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFC798F0),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFD5B2F4).withOpacity(.45),
+                            blurRadius: 30,
+                            spreadRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.graphic_eq_rounded, color: AppColors.white, size: 62),
+                    ),
+                  ],
                 ),
               ),
               Positioned(

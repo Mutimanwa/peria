@@ -229,6 +229,11 @@ final GoRouter appRouter = GoRouter(
         context, state, const InvitePartnerScreen()),
     ),
     GoRoute(
+      path: '/profile/partner/pending',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context, state, const PartnerInvitationPendingScreen()),
+    ),
+    GoRoute(
       path: '/profile/partner/connected',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context, state, const ConnectedPartnerScreen()),

@@ -58,7 +58,7 @@ onSkip: () => context.go('/home'),
               width: 200,
               height: 200,
               alignment: Alignment.center,
-              child: Image.asset("images/icons/login1.png")
+              child: Image.asset("assets/images/icons/login1.png")
             ),
             const SizedBox(height: 32),
 
@@ -171,7 +171,7 @@ onSkip: () => context.go('/home'),
               height: 200,
               
               alignment: Alignment.center,
-              child: Image.asset("images/icons/birthday.png")
+              child: Image.asset("assets/images/icons/birthday.png")
             ),
             const SizedBox(height: 28),
 

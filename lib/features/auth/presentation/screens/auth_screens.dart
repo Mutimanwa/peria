@@ -58,7 +58,7 @@ class _ContinueWithEmailScreenState extends State<ContinueWithEmailScreen> {
               width: 140,
               height: 140,
               alignment: Alignment.center,
-              child: Image.asset("images/icons/envelope.png")
+              child: Image.asset("assets/images/icons/envelope.png")
             ),
             const SizedBox(height: 32),
 
@@ -171,7 +171,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               width: 140,
               height: 140,
               alignment: Alignment.center,
-              child: Image.asset("images/icons/envelope.png")
+              child: Image.asset("assets/images/icons/envelope.png")
             ),
             const SizedBox(height: 32),
 
