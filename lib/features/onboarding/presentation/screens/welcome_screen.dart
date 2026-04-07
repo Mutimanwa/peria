@@ -24,14 +24,6 @@ class WelcomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(welcomeControllerProvider);
-
-    void goTo(OnboardingNavigationTarget target) {
-      switch (target) {
-        case OnboardingNavigationTarget.register:
-          context.go('/register');
-      }
-    }
 
     return Scaffold(
       body: Container(
@@ -72,18 +64,24 @@ class WelcomeScreen extends ConsumerWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
+                    // PrimaryButton(
+                    //   label: 'Turn on notification',
+                    //   onPressed: () => goTo(controller.onTurnOnNotificationsTapped()),
+                    // ),
+                    // const SizedBox(height: 16),
+                    // GestureDetector(
+                    //   onTap: () => goTo(controller.onAnotherTimeTapped()),
+                    //   child: Text(
+                    //     'Another Time',
+                    //     style: AppText.label.copyWith(color: AppColors.grey700),
+                    //   ),
+                    // ),
+
                     PrimaryButton(
-                      label: 'Turn on notification',
-                      onPressed: () => goTo(controller.onTurnOnNotificationsTapped()),
-                    ),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: () => goTo(controller.onAnotherTimeTapped()),
-                      child: Text(
-                        'Another Time',
-                        style: AppText.label.copyWith(color: AppColors.grey700),
+                      label: 'Continue',
+                      onPressed: () => context.go('/ask-name')
                       ),
-                    ),
+                  
                     const SizedBox(height: 32),
                   ],
                 ),

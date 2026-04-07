@@ -213,7 +213,16 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
                 Expanded(
                   child: OutlineButton(
                     label: 'Not Sure',
-                    onPressed: () {/* TODO */},
+                    onPressed: () {
+                      // MVP behavior:
+                      // - user explicitly doesn't know the last period start date
+                      // - we proceed without setting lastPeriodStart (keeps it null)
+                      // - downstream cycle logic will show "unknown" predictions until user logs a period
+                      ref
+                          .read(userProfileProvider.notifier)
+                          .patch((p) => p.copyWith(lastPeriodStart: null));
+                      context.go('/home');
+                    },
                   ),
                 ),
                 const SizedBox(width: 12),

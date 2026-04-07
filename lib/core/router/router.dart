@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:perla_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:perla_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:perla_app/features/auth/presentation/screens/register_screen.dart';
@@ -30,8 +31,16 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: '/welcome',
+  initialLocation: '/splash',
   routes: [
+    GoRoute(
+      path: '/splash',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const SplashScreen(),
+      ),
+    ),
     GoRoute(
       path: '/welcome',
       pageBuilder: (context, state) => _buildSlideTransitionPage(

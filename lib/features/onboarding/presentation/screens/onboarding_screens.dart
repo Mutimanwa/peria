@@ -255,7 +255,7 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
                   ref
                       .read(userProfileProvider.notifier)
                       .patch((p) => p.copyWith(dateOfBirth: selectedDob));
-                  context.go("/set-goals");
+                  context.go("/last-period");
                 },
               ),
             ),
