@@ -13,4 +13,3 @@ class CyclePrediction {
     this.fertileWindowEnd,
   });
 }
-

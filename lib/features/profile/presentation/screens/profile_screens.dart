@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/storage/app_settings.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
@@ -18,24 +17,31 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 20),
           const CircleAvatar(
             radius: 46,
-            backgroundImage: AssetImage('assets/images/onboarding/Avatar-21.png'),
+            backgroundImage:
+                AssetImage('assets/images/onboarding/Avatar-21.png'),
           ),
           const SizedBox(height: 16),
           const Text('Sara Hoseini', style: AppText.h3),
           const SizedBox(height: 4),
-          Text('Sarahoseini@gmail.com', style: AppText.body.copyWith(color: AppColors.grey500)),
+          Text('Sarahoseini@gmail.com',
+              style: AppText.body.copyWith(color: AppColors.grey500)),
           const SizedBox(height: 28),
           const _SectionLabel('My Account'),
           _MenuGroup(items: [
-            _MenuItemData('Personal Information', Icons.person_outline, () => context.go('/profile/personal-info')),
-            _MenuItemData('Partner', Icons.favorite_border, () => context.go('/profile/partner')),
-            _MenuItemData('Account & Security', Icons.shield_outlined, () => context.go('/profile/account-security')),
+            _MenuItemData('Personal Information', Icons.person_outline,
+                () => context.go('/profile/personal-info')),
+            _MenuItemData('Partner', Icons.favorite_border,
+                () => context.go('/profile/partner')),
+            _MenuItemData('Account & Security', Icons.shield_outlined,
+                () => context.go('/profile/account-security')),
           ]),
           const SizedBox(height: 22),
           const _SectionLabel('App Setting'),
           _MenuGroup(items: [
-            _MenuItemData('Settings', Icons.settings_outlined, () => context.go('/profile/settings')),
-            _MenuItemData('Notifications', Icons.notifications_none_rounded, () => context.go('/profile/notifications')),
+            _MenuItemData('Settings', Icons.settings_outlined,
+                () => context.go('/profile/settings')),
+            _MenuItemData('Notifications', Icons.notifications_none_rounded,
+                () => context.go('/profile/notifications')),
           ]),
           const SizedBox(height: 22),
           const _SectionLabel('Support & Legal'),
@@ -53,7 +59,8 @@ class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({super.key});
 
   @override
-  State<PersonalInformationScreen> createState() => _PersonalInformationScreenState();
+  State<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
@@ -70,7 +77,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             children: [
               const CircleAvatar(
                 radius: 48,
-                backgroundImage: AssetImage('assets/images/onboarding/Avatar-21.png'),
+                backgroundImage:
+                    AssetImage('assets/images/onboarding/Avatar-21.png'),
               ),
               if (_editing)
                 Positioned(
@@ -106,10 +114,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
           const _InfoField(text: 'Sarahoseini@gmail.com'),
           const SizedBox(height: 18),
           const _FieldLabel('Date of Birth'),
-          const _InfoField(text: '17.08.1998', trailing: Icons.calendar_today_outlined),
+          const _InfoField(
+              text: '17.08.1998', trailing: Icons.calendar_today_outlined),
           const SizedBox(height: 18),
           const _FieldLabel('My Goal'),
-          const _InfoField(text: '2 Selected', trailing: Icons.keyboard_arrow_down_rounded),
+          const _InfoField(
+              text: '2 Selected', trailing: Icons.keyboard_arrow_down_rounded),
           if (_editing) ...[
             const SizedBox(height: 40),
             PrimaryButton(
@@ -151,9 +161,11 @@ class SettingsScreen extends ConsumerWidget {
                   currentValue: settings.periodLengthDays,
                   min: 2,
                   max: 12,
-                  onSelected: (value) => ref.read(appSettingsProvider.notifier).patch(
-                        (current) => current.copyWith(periodLengthDays: value),
-                      ),
+                  onSelected: (value) =>
+                      ref.read(appSettingsProvider.notifier).patch(
+                            (current) =>
+                                current.copyWith(periodLengthDays: value),
+                          ),
                 ),
                 trailingText: '${settings.periodLengthDays} Days',
               ),
@@ -166,9 +178,11 @@ class SettingsScreen extends ConsumerWidget {
                   currentValue: settings.cycleLengthDays,
                   min: 20,
                   max: 40,
-                  onSelected: (value) => ref.read(appSettingsProvider.notifier).patch(
-                        (current) => current.copyWith(cycleLengthDays: value),
-                      ),
+                  onSelected: (value) =>
+                      ref.read(appSettingsProvider.notifier).patch(
+                            (current) =>
+                                current.copyWith(cycleLengthDays: value),
+                          ),
                 ),
                 trailingText: '${settings.cycleLengthDays} Days',
               ),
@@ -176,13 +190,16 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 22),
             const _SectionLabel('Integrations & Sync'),
             _MenuGroup(items: [
-              _MenuItemData('Connected Apps', Icons.all_inclusive_rounded, () {}),
+              _MenuItemData(
+                  'Connected Apps', Icons.all_inclusive_rounded, () {}),
             ]),
             const SizedBox(height: 22),
             const _SectionLabel('About'),
             _MenuGroup(items: [
-              _MenuItemData('Privacy Policy', Icons.verified_user_outlined, () {}),
-              _MenuItemData('App Version', Icons.info_outline_rounded, () {}, trailingText: '1.0.2'),
+              _MenuItemData(
+                  'Privacy Policy', Icons.verified_user_outlined, () {}),
+              _MenuItemData('App Version', Icons.info_outline_rounded, () {},
+                  trailingText: '1.0.2'),
             ]),
           ],
         ),
@@ -260,7 +277,8 @@ class NotificationsScreen extends ConsumerWidget {
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Unable to load notifications')),
+        error: (_, __) =>
+            const Center(child: Text('Unable to load notifications')),
       ),
     );
   }
@@ -278,15 +296,21 @@ class AccountSecurityScreen extends ConsumerWidget {
         data: (settings) => Column(
           children: [
             const SizedBox(height: 6),
-            Image.asset('assets/images/icons/security.png', width: 96, height: 96),
+            Image.asset('assets/images/icons/security.png',
+                width: 96, height: 96),
             const SizedBox(height: 24),
-            const Align(alignment: Alignment.centerLeft, child: _SectionLabel('Account')),
+            const Align(
+                alignment: Alignment.centerLeft,
+                child: _SectionLabel('Account')),
             _MenuGroup(items: [
               _MenuItemData('Email Address', Icons.email_outlined, () {}),
-              _MenuItemData('Change Password', Icons.lock_outline_rounded, () {}),
+              _MenuItemData(
+                  'Change Password', Icons.lock_outline_rounded, () {}),
             ]),
             const SizedBox(height: 22),
-            const Align(alignment: Alignment.centerLeft, child: _SectionLabel('Security')),
+            const Align(
+                alignment: Alignment.centerLeft,
+                child: _SectionLabel('Security')),
             _ToggleGroup(items: [
               _ToggleItemData(
                 'Two Factor Authentication',
@@ -312,12 +336,15 @@ class AccountSecurityScreen extends ConsumerWidget {
             ]),
             const SizedBox(height: 22),
             _MenuGroup(items: [
-              _MenuItemData('Delete Account', Icons.delete_outline_rounded, () {}, danger: true),
+              _MenuItemData(
+                  'Delete Account', Icons.delete_outline_rounded, () {},
+                  danger: true),
             ]),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Unable to load security settings')),
+        error: (_, __) =>
+            const Center(child: Text('Unable to load security settings')),
       ),
     );
   }
@@ -335,10 +362,12 @@ class PartnerScreen extends StatelessWidget {
           const SizedBox(height: 20),
           ClipRRect(
             borderRadius: BorderRadius.circular(24),
-            child: Image.asset('moc/Partner Pending Screen.png', height: 185, width: double.infinity, fit: BoxFit.cover),
+            child: Image.asset('moc/Partner Pending Screen.png',
+                height: 185, width: double.infinity, fit: BoxFit.cover),
           ),
           const SizedBox(height: 24),
-          const Text('Connect with your partner', style: AppText.h2, textAlign: TextAlign.center),
+          const Text('Connect with your partner',
+              style: AppText.h2, textAlign: TextAlign.center),
           const SizedBox(height: 12),
           Text(
             'Securely share key cycle dates, predictions, and ovulation windows.',
@@ -346,7 +375,9 @@ class PartnerScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const Spacer(),
-          PrimaryButton(label: 'Invite Partner', onPressed: () => context.go('/profile/partner/invite')),
+          PrimaryButton(
+              label: 'Invite Partner',
+              onPressed: () => context.go('/profile/partner/invite')),
           const SizedBox(height: 12),
           OutlineButton(label: 'Learn More', onPressed: () {}),
         ],
@@ -363,7 +394,8 @@ class InvitePartnerScreen extends StatefulWidget {
 }
 
 class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
-  final TextEditingController _email = TextEditingController(text: 'Samrad@gmail.com');
+  final TextEditingController _email =
+      TextEditingController(text: 'Samrad@gmail.com');
 
   @override
   Widget build(BuildContext context) {
@@ -374,7 +406,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
           const SizedBox(height: 16),
           Image.asset('moc/Invite Partner.png', height: 150),
           const SizedBox(height: 18),
-          const Text('Invite your partner', style: AppText.h2, textAlign: TextAlign.center),
+          const Text('Invite your partner',
+              style: AppText.h2, textAlign: TextAlign.center),
           const SizedBox(height: 10),
           Text(
             "We'll send a secure, private invitation link for your partner.",
@@ -418,8 +451,11 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
             Container(
               width: 68,
               height: 68,
-              decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.success, width: 2)),
-              child: const Icon(Icons.check, color: AppColors.success, size: 36),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.success, width: 2)),
+              child:
+                  const Icon(Icons.check, color: AppColors.success, size: 36),
             ),
             const SizedBox(height: 18),
             const Text('Invitation Sent!', style: AppText.h4),
@@ -437,8 +473,11 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                   Navigator.of(context).pop();
                   this.context.go('/profile/partner/pending');
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.grey900, shape: const StadiumBorder()),
-                child: Text('Got it', style: AppText.label.copyWith(color: AppColors.white)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.grey900,
+                    shape: const StadiumBorder()),
+                child: Text('Got it',
+                    style: AppText.label.copyWith(color: AppColors.white)),
               ),
             ),
           ],
@@ -469,7 +508,8 @@ class PartnerInvitationPendingScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text("You've Invited Your Partner!", style: AppText.h2, textAlign: TextAlign.center),
+          const Text("You've Invited Your Partner!",
+              style: AppText.h2, textAlign: TextAlign.center),
           const SizedBox(height: 10),
           Text(
             "We'll let you know when they accept.",
@@ -489,19 +529,30 @@ class PartnerInvitationPendingScreen extends StatelessWidget {
                 Container(
                   width: 34,
                   height: 34,
-                  decoration: const BoxDecoration(color: AppColors.grey900, shape: BoxShape.circle),
-                  child: const Icon(Icons.person_add_alt_1_rounded, color: AppColors.white, size: 18),
+                  decoration: const BoxDecoration(
+                      color: AppColors.grey900, shape: BoxShape.circle),
+                  child: const Icon(Icons.person_add_alt_1_rounded,
+                      color: AppColors.white, size: 18),
                 ),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Samrad@gmail.com', style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
+                    Text('Samrad@gmail.com',
+                        style: AppText.label
+                            .copyWith(fontWeight: FontWeight.w700)),
                     Row(
                       children: [
-                        Container(width: 8, height: 8, decoration: const BoxDecoration(color: Color(0xFFF6C542), shape: BoxShape.circle)),
+                        Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                                color: Color(0xFFF6C542),
+                                shape: BoxShape.circle)),
                         const SizedBox(width: 6),
-                        Text('Status: Pending Approval', style: AppText.body.copyWith(color: AppColors.grey600)),
+                        Text('Status: Pending Approval',
+                            style: AppText.body
+                                .copyWith(color: AppColors.grey600)),
                       ],
                     ),
                   ],
@@ -512,7 +563,9 @@ class PartnerInvitationPendingScreen extends StatelessWidget {
           const Spacer(),
           PrimaryButton(label: 'Resend Invitation', onPressed: () {}),
           const SizedBox(height: 12),
-          OutlineButton(label: 'Cancel Invitation', onPressed: () => context.go('/profile/partner')),
+          OutlineButton(
+              label: 'Cancel Invitation',
+              onPressed: () => context.go('/profile/partner')),
         ],
       ),
     );
@@ -536,10 +589,12 @@ class _ConnectedPartnerScreenState extends State<ConnectedPartnerScreen> {
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(24),
-            child: Image.asset('moc/Partner Pending Screen (2).png', height: 185, width: double.infinity, fit: BoxFit.cover),
+            child: Image.asset('moc/Partner Pending Screen (2).png',
+                height: 185, width: double.infinity, fit: BoxFit.cover),
           ),
           const SizedBox(height: 24),
-          const Text("You're connected with Reza!", style: AppText.h2, textAlign: TextAlign.center),
+          const Text("You're connected with Reza!",
+              style: AppText.h2, textAlign: TextAlign.center),
           const SizedBox(height: 10),
           Text(
             'You can now manage your shared cycle data and insights below.',
@@ -556,17 +611,30 @@ class _ConnectedPartnerScreenState extends State<ConnectedPartnerScreen> {
             ),
             child: Row(
               children: [
-                Container(width: 32, height: 32, decoration: const BoxDecoration(color: Colors.black, shape: BoxShape.circle)),
+                Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                        color: Colors.black, shape: BoxShape.circle)),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Samrad@gmail.com', style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
+                    Text('Samrad@gmail.com',
+                        style: AppText.label
+                            .copyWith(fontWeight: FontWeight.w700)),
                     Row(
                       children: [
-                        Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.success, shape: BoxShape.circle)),
+                        Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                                color: AppColors.success,
+                                shape: BoxShape.circle)),
                         const SizedBox(width: 6),
-                        Text('Status: Connected', style: AppText.body.copyWith(color: AppColors.grey600)),
+                        Text('Status: Connected',
+                            style: AppText.body
+                                .copyWith(color: AppColors.grey600)),
                       ],
                     ),
                   ],
@@ -575,7 +643,9 @@ class _ConnectedPartnerScreenState extends State<ConnectedPartnerScreen> {
             ),
           ),
           const Spacer(),
-          PrimaryButton(label: 'Manage Sharing Settings', onPressed: () => context.go('/profile/partner/sharing')),
+          PrimaryButton(
+              label: 'Manage Sharing Settings',
+              onPressed: () => context.go('/profile/partner/sharing')),
           const SizedBox(height: 12),
           OutlineButton(
             label: 'Disconnect Partner',
@@ -597,7 +667,8 @@ class _ConnectedPartnerScreenState extends State<ConnectedPartnerScreen> {
           children: [
             Image.asset('moc/Chat Page-68.png', width: 84, height: 84),
             const SizedBox(height: 14),
-            const Text('Disconnect from Sam?', style: AppText.h4, textAlign: TextAlign.center),
+            const Text('Disconnect from Sam?',
+                style: AppText.h4, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text(
               'This will immediately stop all data sharing.',
@@ -607,7 +678,12 @@ class _ConnectedPartnerScreenState extends State<ConnectedPartnerScreen> {
             const SizedBox(height: 18),
             Row(
               children: [
-                Expanded(child: TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel', style: AppText.label.copyWith(color: AppColors.grey700)))),
+                Expanded(
+                    child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text('Cancel',
+                            style: AppText.label
+                                .copyWith(color: AppColors.grey700)))),
                 Expanded(
                   child: SizedBox(
                     height: 48,
@@ -616,8 +692,12 @@ class _ConnectedPartnerScreenState extends State<ConnectedPartnerScreen> {
                         Navigator.of(context).pop();
                         this.context.go('/profile/partner');
                       },
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.grey900, shape: const StadiumBorder()),
-                      child: Text('Disconnect', style: AppText.label.copyWith(color: AppColors.white)),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.grey900,
+                          shape: const StadiumBorder()),
+                      child: Text('Disconnect',
+                          style:
+                              AppText.label.copyWith(color: AppColors.white)),
                     ),
                   ),
                 ),
@@ -657,9 +737,11 @@ class _SharingSettingsScreenState extends State<SharingSettingsScreen> {
           const SizedBox(height: 22),
           _ToggleGroup(items: [
             _ToggleItemData('Cycle Predictions', false, (_) {}),
-            _ToggleItemData('Logged Symptoms', loggedSymptoms, (v) => setState(() => loggedSymptoms = v)),
+            _ToggleItemData('Logged Symptoms', loggedSymptoms,
+                (v) => setState(() => loggedSymptoms = v)),
             _ToggleItemData('Period Dates', false, (_) {}),
-            _ToggleItemData('Mood Entries', moodEntries, (v) => setState(() => moodEntries = v)),
+            _ToggleItemData('Mood Entries', moodEntries,
+                (v) => setState(() => moodEntries = v)),
           ]),
           const Spacer(),
           PrimaryButton(label: 'Save Changes', onPressed: () => context.pop()),
@@ -740,18 +822,25 @@ Future<void> _showCycleLengthPicker(
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(value),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: value == currentValue ? AppColors.primary50 : AppColors.grey100,
+                        color: value == currentValue
+                            ? AppColors.primary50
+                            : AppColors.grey100,
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: value == currentValue ? AppColors.primary300 : AppColors.grey200,
+                          color: value == currentValue
+                              ? AppColors.primary300
+                              : AppColors.grey200,
                         ),
                       ),
                       child: Text(
                         '$value',
                         style: AppText.label.copyWith(
-                          color: value == currentValue ? AppColors.primary400 : AppColors.grey800,
+                          color: value == currentValue
+                              ? AppColors.primary400
+                              : AppColors.grey800,
                         ),
                       ),
                     ),
@@ -777,7 +866,9 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Text(text, style: AppText.caption.copyWith(color: AppColors.grey500, fontWeight: FontWeight.w700)),
+      child: Text(text,
+          style: AppText.caption
+              .copyWith(color: AppColors.grey500, fontWeight: FontWeight.w700)),
     );
   }
 }
@@ -790,7 +881,8 @@ class _FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Text(text, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
+      child:
+          Text(text, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
     );
   }
 }
@@ -812,7 +904,8 @@ class _InfoField extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(text, style: AppText.body)),
-          if (trailing != null) Icon(trailing, color: AppColors.grey500, size: 20),
+          if (trailing != null)
+            Icon(trailing, color: AppColors.grey500, size: 20),
         ],
       ),
     );
@@ -826,7 +919,8 @@ class _MenuItemData {
   final String? trailingText;
   final bool danger;
 
-  _MenuItemData(this.title, this.icon, this.onTap, {this.trailingText, this.danger = false});
+  _MenuItemData(this.title, this.icon, this.onTap,
+      {this.trailingText, this.danger = false});
 }
 
 class _MenuGroup extends StatelessWidget {
@@ -849,7 +943,8 @@ class _MenuGroup extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 onTap: item.onTap,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: Row(
                     children: [
                       Container(
@@ -862,7 +957,9 @@ class _MenuGroup extends StatelessWidget {
                         child: Icon(
                           item.icon,
                           size: 16,
-                          color: item.danger ? const Color(0xFFFF6E6E) : AppColors.grey700,
+                          color: item.danger
+                              ? const Color(0xFFFF6E6E)
+                              : AppColors.grey700,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -870,7 +967,9 @@ class _MenuGroup extends StatelessWidget {
                         child: Text(
                           item.title,
                           style: AppText.body.copyWith(
-                            color: item.danger ? const Color(0xFFFF6E6E) : AppColors.grey800,
+                            color: item.danger
+                                ? const Color(0xFFFF6E6E)
+                                : AppColors.grey800,
                           ),
                         ),
                       ),
@@ -879,10 +978,12 @@ class _MenuGroup extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(
                             item.trailingText!,
-                            style: AppText.body.copyWith(color: AppColors.grey400),
+                            style:
+                                AppText.body.copyWith(color: AppColors.grey400),
                           ),
                         ),
-                      const Icon(Icons.chevron_right_rounded, color: AppColors.grey400),
+                      const Icon(Icons.chevron_right_rounded,
+                          color: AppColors.grey400),
                     ],
                   ),
                 ),
@@ -922,7 +1023,8 @@ class _ToggleGroup extends StatelessWidget {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
                     Container(
@@ -932,7 +1034,8 @@ class _ToggleGroup extends StatelessWidget {
                         color: AppColors.white.withOpacity(0.75),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(_toggleIcon(item.title), size: 14, color: AppColors.grey500),
+                      child: Icon(_toggleIcon(item.title),
+                          size: 14, color: AppColors.grey500),
                     ),
                     const SizedBox(width: 12),
                     Expanded(child: Text(item.title, style: AppText.body)),
@@ -957,8 +1060,10 @@ class _ToggleGroup extends StatelessWidget {
   }
 
   IconData _toggleIcon(String title) {
-    if (title.contains('Cycle') || title.contains('Period')) return Icons.autorenew_rounded;
-    if (title.contains('Logged') || title.contains('Log')) return Icons.add_circle_outline_rounded;
+    if (title.contains('Cycle') || title.contains('Period'))
+      return Icons.autorenew_rounded;
+    if (title.contains('Logged') || title.contains('Log'))
+      return Icons.add_circle_outline_rounded;
     if (title.contains('Mood')) return Icons.sentiment_satisfied_alt_outlined;
     if (title.contains('Face ID')) return Icons.fingerprint_rounded;
     if (title.contains('Two Factor')) return Icons.shield_outlined;

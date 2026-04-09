@@ -10,7 +10,8 @@ class JournalRepository {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getStringList(_journalEntriesKey) ?? <String>[];
     final entries = raw
-        .map((item) => JournalEntry.fromJson(jsonDecode(item) as Map<String, dynamic>))
+        .map((item) =>
+            JournalEntry.fromJson(jsonDecode(item) as Map<String, dynamic>))
         .toList();
     entries.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     return entries;

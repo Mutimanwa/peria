@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/features/onboarding/domain/onboarding_navigation_target.dart';
-import 'package:perla_app/features/onboarding/presentation/controllers/welcome_controller.dart';
+// import 'package:perla_app/features/onboarding/domain/onboarding_navigation_target.dart';
+// import 'package:perla_app/features/onboarding/presentation/controllers/welcome_controller.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -24,7 +25,7 @@ class WelcomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -52,17 +53,11 @@ class WelcomeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    const Text(
-                      'Welcome To peria',
-                      style: AppText.h1,
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(l10n.welcomeTitle,
+                        style: AppText.h1, textAlign: TextAlign.center),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Peria helps you understand your body\nwith calm, personalized guidance.',
-                      style: AppText.body,
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(l10n.welcomeSubtitle,
+                        style: AppText.body, textAlign: TextAlign.center),
                     const SizedBox(height: 32),
                     // PrimaryButton(
                     //   label: 'Turn on notification',
@@ -78,10 +73,10 @@ class WelcomeScreen extends ConsumerWidget {
                     // ),
 
                     PrimaryButton(
-                      label: 'Continue',
-                      onPressed: () => context.go('/ask-name')
-                      ),
-                  
+                      label: l10n.continueCta,
+                      onPressed: () => context.go('/ask-name'),
+                    ),
+
                     const SizedBox(height: 32),
                   ],
                 ),

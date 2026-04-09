@@ -114,11 +114,62 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return day.year == now.year && day.month == now.month && day.day == now.day;
   }
 
+  String _formatDate(DateTime date) {
+    return '${_monthNames[date.month - 1]} ${date.day}, ${date.year}';
+  }
+
+  _CalendarDayState _dayState(DateTime day) {
+    if (_isPeriodDay(day)) {
+      return const _CalendarDayState(
+        label: 'Period day',
+        description: 'Your period is tracked on this date.',
+        color: AppColors.primary400,
+        softColor: AppColors.primary50,
+        icon: Icons.water_drop_outlined,
+      );
+    }
+    if (_isOvulationDay(day)) {
+      return const _CalendarDayState(
+        label: 'Fertility window',
+        description: 'This date is inside your predicted fertile window.',
+        color: AppColors.secondary500,
+        softColor: AppColors.secondary50,
+        icon: Icons.auto_awesome,
+      );
+    }
+    if (_isPmsDay(day)) {
+      return const _CalendarDayState(
+        label: 'PMS day',
+        description: 'This date falls in your predicted PMS phase.',
+        color: AppColors.warning700,
+        softColor: AppColors.warning50,
+        icon: Icons.bolt_rounded,
+      );
+    }
+    if (_isToday(day)) {
+      return const _CalendarDayState(
+        label: 'Today',
+        description: 'You selected today in your cycle calendar.',
+        color: AppColors.grey900,
+        softColor: AppColors.grey100,
+        icon: Icons.today_rounded,
+      );
+    }
+    return const _CalendarDayState(
+      label: 'Regular day',
+      description: 'No tracked cycle event is attached to this date.',
+      color: AppColors.grey700,
+      softColor: AppColors.grey100,
+      icon: Icons.calendar_today_outlined,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
     int startOffset = firstDay.weekday - 1;
+    final selectedState = _dayState(_selectedDate);
 
     return PageScaffold(
       showBack: true,
@@ -180,6 +231,68 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
                           // Grille des jours
                           _buildCalendarGrid(firstDay, lastDay, startOffset),
+                          const SizedBox(height: 16),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 220),
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: selectedState.softColor,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: selectedState.color.withOpacity(0.14),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 42,
+                                  height: 42,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        selectedState.color.withOpacity(0.12),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    selectedState.icon,
+                                    color: selectedState.color,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _formatDate(_selectedDate),
+                                        style: AppText.label.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.grey900,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        selectedState.label,
+                                        style: AppText.body.copyWith(
+                                          color: selectedState.color,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        selectedState.description,
+                                        style: AppText.caption.copyWith(
+                                          color: AppColors.grey600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           const SizedBox(height: 16),
 
                           // Légende
@@ -354,38 +467,107 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     Color? bgColor;
     Color textColor = AppColors.neutral900;
+    Color borderColor = Colors.transparent;
+    IconData? badgeIcon;
 
     if (isPeriod) {
       bgColor = AppColors.primary50;
       textColor = AppColors.primary400;
+      borderColor = AppColors.primary100;
+      badgeIcon = Icons.water_drop;
     } else if (isOvulation) {
       bgColor = AppColors.secondary100;
       textColor = AppColors.secondary500;
+      borderColor = AppColors.secondary200;
+      badgeIcon = Icons.auto_awesome;
     } else if (isPms) {
       bgColor = AppColors.warning50;
       textColor = AppColors.warning700;
+      borderColor = AppColors.warning200;
+      badgeIcon = Icons.bolt_rounded;
     }
 
     if (isSelected) {
       bgColor = AppColors.grey900;
       textColor = AppColors.white;
+      borderColor = AppColors.grey900;
+    } else if (isToday) {
+      borderColor = AppColors.grey300;
     }
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
-      alignment: Alignment.center,
-      child: Text(
-        '${day.day}',
-        style: AppText.label.copyWith(
-          color: textColor,
-          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-        ),
+      child: Stack(
+        children: [
+          Center(
+            child: Text(
+              '${day.day}',
+              style: AppText.label.copyWith(
+                color: textColor,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ),
+          if (!isSelected && badgeIcon != null)
+            Positioned(
+              right: 4,
+              bottom: 4,
+              child: Icon(
+                badgeIcon,
+                size: 10,
+                color: textColor.withOpacity(0.75),
+              ),
+            ),
+          if (!isSelected && isToday)
+            Positioned(
+              top: 5,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: 5,
+                  height: 5,
+                  decoration: const BoxDecoration(
+                    color: AppColors.grey900,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
+}
+
+class _CalendarDayState {
+  final String label;
+  final String description;
+  final Color color;
+  final Color softColor;
+  final IconData icon;
+
+  const _CalendarDayState({
+    required this.label,
+    required this.description,
+    required this.color,
+    required this.softColor,
+    required this.icon,
+  });
 }
 
 class _NavArrow extends StatelessWidget {

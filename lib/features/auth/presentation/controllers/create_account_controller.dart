@@ -64,4 +64,3 @@ class CreateAccountController extends StateNotifier<CreateAccountState> {
     return CreateAccountNavigationTarget.otp;
   }
 }
-

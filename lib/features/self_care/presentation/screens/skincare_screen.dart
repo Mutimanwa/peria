@@ -34,7 +34,8 @@ class SkincareScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Text(kSkinCareSteps[1].subtitle, style: AppText.body.copyWith(color: AppColors.grey500)),
+            Text(kSkinCareSteps[1].subtitle,
+                style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 14),
             Expanded(
               child: Column(
@@ -63,7 +64,9 @@ class SkincareScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const Text('8', style: AppText.h2),
-                        Text('times', style: AppText.body.copyWith(color: AppColors.grey500)),
+                        Text('times',
+                            style: AppText.body
+                                .copyWith(color: AppColors.grey500)),
                         const SizedBox(height: 18),
                         Container(
                           padding: const EdgeInsets.all(14),
@@ -78,18 +81,22 @@ class SkincareScreen extends StatelessWidget {
                               final selected = step == kSkinCareSteps[1];
                               return Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 4),
                                   child: Container(
                                     height: 54,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                        color: selected ? AppColors.primary400 : Colors.transparent,
+                                        color: selected
+                                            ? AppColors.primary400
+                                            : Colors.transparent,
                                       ),
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(14),
-                                      child: Image.asset(step.imagePath, fit: BoxFit.cover),
+                                      child: Image.asset(step.imagePath,
+                                          fit: BoxFit.cover),
                                     ),
                                   ),
                                 ),
@@ -103,11 +110,16 @@ class SkincareScreen extends StatelessWidget {
                           children: [
                             TextButton(
                               onPressed: () {},
-                              child: Text('previous', style: AppText.body.copyWith(color: AppColors.grey800)),
+                              child: Text('previous',
+                                  style: AppText.body
+                                      .copyWith(color: AppColors.grey800)),
                             ),
                             TextButton(
-                              onPressed: () => context.go('/self-care/congratulations'),
-                              child: Text('Next', style: AppText.body.copyWith(color: AppColors.grey900)),
+                              onPressed: () =>
+                                  context.go('/self-care/congratulations'),
+                              child: Text('Next',
+                                  style: AppText.body
+                                      .copyWith(color: AppColors.grey900)),
                             ),
                           ],
                         ),
@@ -123,4 +135,3 @@ class SkincareScreen extends StatelessWidget {
     );
   }
 }
-

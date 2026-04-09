@@ -19,4 +19,3 @@ class RegisterController {
     // TODO: connect Apple auth later (keep logic here, not in UI).
   }
 }
-

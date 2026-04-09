@@ -6,6 +6,7 @@ import 'package:perla_app/features/journal/data/models/journal_entry.dart';
 import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 
 class JournalScreen extends ConsumerStatefulWidget {
   const JournalScreen({super.key});
@@ -20,12 +21,14 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(journalProvider);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Stack(
         children: [
-          Container(decoration: const BoxDecoration(gradient: AppColors.bgGradient)),
+          Container(
+              decoration: const BoxDecoration(gradient: AppColors.bgGradient)),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(22, 12, 22, 110),
@@ -38,11 +41,12 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                         onTap: () => context.go('/profile'),
                         child: const CircleAvatar(
                           radius: 18,
-                          backgroundImage: AssetImage('assets/images/onboarding/Avatar-21.png'),
+                          backgroundImage: AssetImage(
+                              'assets/images/onboarding/Avatar-21.png'),
                         ),
                       ),
                       const Spacer(),
-                      const Text('Journal', style: AppText.h4),
+                      Text(l10n.journalTitle, style: AppText.h4),
                       const Spacer(),
                       GestureDetector(
                         onTap: () => context.go('/notification'),
@@ -54,14 +58,15 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: AppColors.grey200),
                           ),
-                          child: const Icon(Icons.lock_outline_rounded, size: 18),
+                          child:
+                              const Icon(Icons.lock_outline_rounded, size: 18),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Your private space to note feelings, thoughts and body patterns.',
+                    l10n.journalSubtitle,
                     style: AppText.body.copyWith(color: AppColors.grey600),
                   ),
                   const SizedBox(height: 18),
@@ -72,13 +77,17 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       borderRadius: BorderRadius.circular(26),
                     ),
                     child: TextField(
-                      onChanged: (value) => setState(() => _query = value.trim().toLowerCase()),
+                      onChanged: (value) =>
+                          setState(() => _query = value.trim().toLowerCase()),
                       decoration: InputDecoration(
-                        hintText: 'Search journal...',
-                        hintStyle: AppText.body.copyWith(color: AppColors.grey400),
-                        prefixIcon: const Icon(Icons.search, color: AppColors.grey400),
+                        hintText: l10n.searchJournalHint,
+                        hintStyle:
+                            AppText.body.copyWith(color: AppColors.grey400),
+                        prefixIcon:
+                            const Icon(Icons.search, color: AppColors.grey400),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 14),
                       ),
                     ),
                   ),
@@ -87,14 +96,14 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                     children: [
                       Expanded(
                         child: OutlineButton(
-                          label: 'Clear All',
+                          label: l10n.clearAll,
                           onPressed: () => _showClearDialog(context),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: PrimaryButton(
-                          label: 'New Entry',
+                          label: l10n.newEntry,
                           onPressed: () => context.go('/journal/new'),
                         ),
                       ),
@@ -117,15 +126,18 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
 
                         return ListView.separated(
                           itemCount: filtered.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 12),
                           itemBuilder: (context, index) {
                             final entry = filtered[index];
                             return _JournalCard(entry: entry);
                           },
                         );
                       },
-                      loading: () => const Center(child: CircularProgressIndicator()),
-                      error: (_, __) => const Center(child: Text('Unable to load journal')),
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (_, __) =>
+                          const Center(child: Text('Unable to load journal')),
                     ),
                   ),
                 ],
@@ -164,7 +176,8 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.delete_outline_rounded, size: 52, color: AppColors.error),
+            const Icon(Icons.delete_outline_rounded,
+                size: 52, color: AppColors.error),
             const SizedBox(height: 14),
             const Text('Delete all notes?', style: AppText.h4),
             const SizedBox(height: 8),
@@ -179,7 +192,9 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                 Expanded(
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text('Cancel', style: AppText.label.copyWith(color: AppColors.grey700)),
+                    child: Text('Cancel',
+                        style:
+                            AppText.label.copyWith(color: AppColors.grey700)),
                   ),
                 ),
                 Expanded(
@@ -194,7 +209,9 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                         backgroundColor: AppColors.grey900,
                         shape: const StadiumBorder(),
                       ),
-                      child: Text('Delete', style: AppText.label.copyWith(color: AppColors.white)),
+                      child: Text('Delete',
+                          style:
+                              AppText.label.copyWith(color: AppColors.white)),
                     ),
                   ),
                 ),
@@ -213,7 +230,8 @@ class JournalEditorScreen extends ConsumerStatefulWidget {
   final String? entryId;
 
   @override
-  ConsumerState<JournalEditorScreen> createState() => _JournalEditorScreenState();
+  ConsumerState<JournalEditorScreen> createState() =>
+      _JournalEditorScreenState();
 }
 
 class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
@@ -256,11 +274,12 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
       showTitle: true,
-      title: widget.entryId == null ? 'New Journal Entry' : 'Edit Journal Entry',
+      title: widget.entryId == null ? l10n.newEntry : l10n.saveEntry,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(22, 88, 22, 24),
         child: Column(
@@ -281,16 +300,21 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                 return GestureDetector(
                   onTap: () => setState(() => _mood = mood.$1),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
                       color: selected ? AppColors.primary50 : AppColors.grey100,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: selected ? AppColors.primary300 : AppColors.grey200),
+                      border: Border.all(
+                          color: selected
+                              ? AppColors.primary300
+                              : AppColors.grey200),
                     ),
                     child: Text(
                       mood.$2,
                       style: AppText.label.copyWith(
-                        color: selected ? AppColors.primary400 : AppColors.grey700,
+                        color:
+                            selected ? AppColors.primary400 : AppColors.grey700,
                       ),
                     ),
                   ),
@@ -309,7 +333,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
             const SizedBox(height: 8),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.grey100,
                   borderRadius: BorderRadius.circular(24),
@@ -318,9 +343,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                   controller: _contentController,
                   maxLines: null,
                   expands: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Write freely. This note stays on your device.',
+                    hintText: l10n.writeFreelyHint,
                   ),
                 ),
               ),
@@ -331,9 +356,11 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                 if (_existing != null)
                   Expanded(
                     child: OutlineButton(
-                      label: 'Delete',
+                      label: l10n.delete,
                       onPressed: () async {
-                        await ref.read(journalProvider.notifier).delete(_existing!.id);
+                        await ref
+                            .read(journalProvider.notifier)
+                            .delete(_existing!.id);
                         if (mounted) context.go('/journal');
                       },
                     ),
@@ -341,8 +368,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                 if (_existing != null) const SizedBox(width: 12),
                 Expanded(
                   child: PrimaryButton(
-                    label: 'Save Entry',
-                    onPressed: _contentController.text.trim().isEmpty && _titleController.text.trim().isEmpty
+                    label: l10n.saveEntry,
+                    onPressed: _contentController.text.trim().isEmpty &&
+                            _titleController.text.trim().isEmpty
                         ? null
                         : _save,
                   ),
@@ -367,11 +395,11 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
               mood: 'calm',
             ))
         .copyWith(
-          updatedAt: now,
-          title: _titleController.text.trim(),
-          content: _contentController.text.trim(),
-          mood: _mood,
-        );
+      updatedAt: now,
+      title: _titleController.text.trim(),
+      content: _contentController.text.trim(),
+      mood: _mood,
+    );
     await ref.read(journalProvider.notifier).upsert(entry);
     if (mounted) context.go('/journal');
   }
@@ -388,6 +416,7 @@ class _JournalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () => context.go('/journal/edit/${entry.id}'),
       child: Container(
@@ -412,12 +441,12 @@ class _JournalCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              entry.title.isEmpty ? 'Untitled note' : entry.title,
+              entry.title.isEmpty ? l10n.untitledNote : entry.title,
               style: AppText.h6,
             ),
             const SizedBox(height: 8),
             Text(
-              entry.content.isEmpty ? 'No details yet.' : entry.content,
+              entry.content.isEmpty ? l10n.noDetailsYet : entry.content,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: AppText.body.copyWith(color: AppColors.grey700),
@@ -467,21 +496,21 @@ class _EmptyJournal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.menu_book_outlined, size: 64, color: AppColors.grey400),
+          const Icon(Icons.menu_book_outlined,
+              size: 64, color: AppColors.grey400),
           const SizedBox(height: 14),
           Text(
-            hasQuery ? 'No matching notes' : 'Your journal is empty',
+            hasQuery ? l10n.noMatchingNotes : l10n.journalEmpty,
             style: AppText.h5,
           ),
           const SizedBox(height: 8),
           Text(
-            hasQuery
-                ? 'Try another keyword.'
-                : 'Start your first private note. It stays on this device.',
+            hasQuery ? l10n.tryAnotherKeyword : l10n.startFirstNote,
             textAlign: TextAlign.center,
             style: AppText.body.copyWith(color: AppColors.grey600),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
 ///  ÉCRAN 5 — OTP Verification
@@ -89,6 +90,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return OnboardingScaffold(
       showBack: true,
       showSkip: false,
@@ -101,23 +103,21 @@ class _OtpScreenState extends State<OtpScreen> {
             // Remplacer par : Image.asset('assets/images/shield_3d.png', height: 130)
             // L'image montre un bouclier rose/violet avec une coche en 3D
             Container(
-              width: 150,
-              height: 150,
-              alignment: Alignment.center,
-              child: Image.asset("assets/images/icons/security.png")
-            ),
+                width: 150,
+                height: 150,
+                alignment: Alignment.center,
+                child: Image.asset("assets/images/icons/security.png")),
             const SizedBox(height: 32),
 
             // ── Titre ───────────────────────────────────────────
-            const Text('Enter verification code',
-                style: AppText.h1, textAlign: TextAlign.center),
+            Text(l10n.otpTitle, style: AppText.h1, textAlign: TextAlign.center),
             const SizedBox(height: 10),
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
                 style: AppText.body,
                 children: [
-                  const TextSpan(text: "We've sent a 4-digit code to :\n"),
+                  TextSpan(text: '${l10n.otpSubtitle(widget.email)}\n'),
                   TextSpan(
                       text: widget.email,
                       style: AppText.body.copyWith(
@@ -144,7 +144,7 @@ class _OtpScreenState extends State<OtpScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Didn't get the code? ", style: AppText.body),
+                Text('${l10n.didntGetCode} ', style: AppText.body),
                 GestureDetector(
                   onTap: _resendSeconds == 0
                       ? () {
@@ -155,8 +155,8 @@ class _OtpScreenState extends State<OtpScreen> {
                       : null,
                   child: Text(
                     _resendSeconds > 0
-                        ? 'Resend in ${_resendSeconds}s'
-                        : 'Resend now',
+                        ? l10n.resendIn(_resendSeconds)
+                        : l10n.resendNow,
                     style: AppText.body.copyWith(
                       color: _resendSeconds == 0
                           ? AppColors.primary
@@ -174,7 +174,7 @@ class _OtpScreenState extends State<OtpScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
-                label: 'Continue',
+                label: l10n.otpContinue,
                 onPressed: _canContinue ? _verifyCode : null,
               ),
             ),
@@ -227,6 +227,7 @@ class _OtpBox extends StatelessWidget {
     );
   }
 }
+
 // ── Dialog Succès ────────────────────────────────────
 class _SuccessDialog extends StatelessWidget {
   const _SuccessDialog();

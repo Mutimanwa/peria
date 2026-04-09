@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -43,6 +44,7 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
@@ -63,17 +65,14 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  const Text('What should we call you?',
+                  Text(l10n.askNameTitle,
                       style: AppText.h1, textAlign: TextAlign.center),
                   const SizedBox(height: 10),
-                  const Text(
-                    "Let's make this experience truly yours.",
-                    style: AppText.body,
-                    textAlign: TextAlign.center,
-                  ),
+                  Text(l10n.askNameSubtitle,
+                      style: AppText.body, textAlign: TextAlign.center),
                   const SizedBox(height: 32),
                   PillTextField(
-                    hint: 'Enter your name',
+                    hint: l10n.enterYourNameHint,
                     controller: _nameController,
                     keyboardType: TextInputType.name,
                   ),
@@ -86,7 +85,7 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
-                label: 'Continue',
+                label: l10n.continueCta,
                 onPressed: _hasName
                     ? () {
                         // Persist displayName for later flows.
@@ -156,6 +155,7 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
 
   @override
   Widget build(BuildContext context) {
+final l10n = AppLocalizations.of(context)!;
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
@@ -173,14 +173,11 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
                 child: Image.asset("assets/images/icons/birthday.png")),
             const SizedBox(height: 28),
 
-            const Text("When's your birthday",
+            Text(l10n.dateOfBirthTitle,
                 style: AppText.h1, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            const Text(
-              'This helps us personalize your cycle predictions.',
-              style: AppText.body,
-              textAlign: TextAlign.center,
-            ),
+            Text(l10n.dateOfBirthSubtitle,
+                style: AppText.body, textAlign: TextAlign.center),
             const SizedBox(height: 24),
 
             // ── Champ date display ──────────────────────────────
@@ -245,7 +242,7 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
-                label: 'Continue',
+                label: l10n.continueCta,
                 onPressed: () {
                   final selectedDob = DateTime(
                     _years[_selectedYear],

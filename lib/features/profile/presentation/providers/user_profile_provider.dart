@@ -34,4 +34,3 @@ class UserProfileNotifier extends StateNotifier<AsyncValue<UserProfile>> {
     await update(next);
   }
 }
-

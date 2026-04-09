@@ -1,5 +1,4 @@
-class AppConfig{
-
+class AppConfig {
   AppConfig._();
 
   // =========================================
@@ -10,5 +9,4 @@ class AppConfig{
 
   // Environnement actuel (dev ou prod)
   // static const _Env _currentEnv = _Env.dev;
-
 }

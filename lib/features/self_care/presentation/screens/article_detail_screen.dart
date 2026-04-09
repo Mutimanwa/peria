@@ -117,7 +117,8 @@ class ArticleDetailScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
           contentPadding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -129,10 +130,12 @@ class ArticleDetailScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: AppColors.success, width: 2),
                 ),
-                child: const Icon(Icons.check, size: 36, color: AppColors.success),
+                child:
+                    const Icon(Icons.check, size: 36, color: AppColors.success),
               ),
               const SizedBox(height: 20),
-              const Text('Thanks for feedback!', style: AppText.h4, textAlign: TextAlign.center),
+              const Text('Thanks for feedback!',
+                  style: AppText.h4, textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text(
                 "Feedback received. We'll do our best to bring you a better user experience",
@@ -148,7 +151,8 @@ class ArticleDetailScreen extends StatelessWidget {
                     backgroundColor: AppColors.grey900,
                     shape: const StadiumBorder(),
                   ),
-                  child: Text('OK', style: AppText.label.copyWith(color: AppColors.white)),
+                  child: Text('OK',
+                      style: AppText.label.copyWith(color: AppColors.white)),
                 ),
               ),
             ],
@@ -172,12 +176,14 @@ class _ArticleSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: AppText.body.copyWith(fontWeight: FontWeight.w700)),
+          Text(title,
+              style: AppText.body.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
           for (final item in bullets)
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
-              child: Text('• $item', style: AppText.body.copyWith(color: AppColors.grey700)),
+              child: Text('• $item',
+                  style: AppText.body.copyWith(color: AppColors.grey700)),
             ),
         ],
       ),
@@ -207,7 +213,8 @@ class _FeedbackButton extends StatelessWidget {
           color: selected ? const Color(0xFFFFF6D8) : AppColors.grey100,
           shape: BoxShape.circle,
         ),
-        child: Icon(icon, color: selected ? const Color(0xFFE4A100) : AppColors.grey700),
+        child: Icon(icon,
+            color: selected ? const Color(0xFFE4A100) : AppColors.grey700),
       ),
     );
   }

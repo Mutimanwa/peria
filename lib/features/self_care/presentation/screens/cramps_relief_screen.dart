@@ -36,7 +36,8 @@ class CrampsReliefScreen extends StatelessWidget {
                           color: AppColors.primary50,
                           borderRadius: BorderRadius.circular(32),
                         ),
-                        child: Icon(Icons.local_hospital, size: 80, color: AppColors.primary400),
+                        child: Icon(Icons.local_hospital,
+                            size: 80, color: AppColors.primary400),
                       ),
                       const SizedBox(height: 32),
                       const Text(
@@ -47,7 +48,8 @@ class CrampsReliefScreen extends StatelessWidget {
                       const SizedBox(height: 24),
                       PrimaryButton(
                         label: 'Start Exercises',
-                        onPressed: () => context.go('/self-care/activity-detail'),
+                        onPressed: () =>
+                            context.go('/self-care/activity-detail'),
                       ),
                     ],
                   ),
@@ -60,4 +62,3 @@ class CrampsReliefScreen extends StatelessWidget {
     );
   }
 }
-

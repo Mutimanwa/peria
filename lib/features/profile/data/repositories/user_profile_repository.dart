@@ -18,4 +18,3 @@ class UserProfileRepository {
     await prefs.setString(_profileKey, jsonEncode(profile.toJson()));
   }
 }
-

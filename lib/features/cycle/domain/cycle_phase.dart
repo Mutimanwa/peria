@@ -4,4 +4,3 @@ enum CyclePhase {
   ovulation,
   luteal,
 }
-

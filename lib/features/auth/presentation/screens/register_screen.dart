@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/auth/domain/auth_navigation_target.dart';
 import 'package:perla_app/features/auth/presentation/controllers/register_controller.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
+
 
 /// ═══════════════════════════════════════════════════════════════════
 ///  ÉCRAN 2 — Register / Login
@@ -26,6 +28,7 @@ class RegisterScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+final l10n = AppLocalizations.of(context)!;
     final controller = ref.read(registerControllerProvider);
 
     void goTo(AuthNavigationTarget target) {
@@ -50,7 +53,7 @@ class RegisterScreen extends ConsumerWidget {
                   children: [
                     _PeriaLogoMini(),
                     const SizedBox(width: 8),
-                    Text('Peria',
+                    Text(l10n.appTitle,
                         style: AppText.h3.copyWith(color: AppColors.primary)),
                   ],
                 ),
@@ -101,19 +104,16 @@ class RegisterScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    const Text("Let's get you started",
+                    Text(l10n.registerTitle,
                         style: AppText.h1, textAlign: TextAlign.center),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Login or create an account to get started.',
-                      style: AppText.body,
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(l10n.registerSubtitle,
+                        style: AppText.body, textAlign: TextAlign.center),
                     const SizedBox(height: 32),
 
                     // Bouton Email
                     PrimaryButton(
-                      label: 'Continue with email',
+                      label: l10n.continueWithEmail,
                       onPressed: () => goTo(controller.onContinueWithEmailTapped()),
                     ),
                     const SizedBox(height: 20),
@@ -126,7 +126,7 @@ class RegisterScreen extends ConsumerWidget {
                                 color: AppColors.grey200, thickness: 1)),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text('Or',
+                          child: Text(l10n.orDivider,
                               style: AppText.caption
                                   .copyWith(color: AppColors.grey400)),
                         ),
@@ -139,7 +139,7 @@ class RegisterScreen extends ConsumerWidget {
 
                     // Bouton Google
                     SocialButton(
-                      label: 'Continue with Google',
+                      label: l10n.continueWithGoogle,
                       icon: _GoogleLogo(),
                       onPressed: controller.onContinueWithGoogleTapped,
                     ),
@@ -147,7 +147,7 @@ class RegisterScreen extends ConsumerWidget {
 
                     // Bouton Apple
                     SocialButton(
-                      label: 'Continue with Apple',
+                      label: l10n.continueWithApple,
                       icon: const Icon(Icons.apple,
                           size: 22, color: AppColors.black),
                       onPressed: controller.onContinueWithAppleTapped,

@@ -77,6 +77,31 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
 
   bool get _canSave => _startDate != null;
 
+  String _formatDate(DateTime date) {
+    return '${_monthNames[date.month - 1]} ${date.day}';
+  }
+
+  String get _selectionTitle {
+    final start = _startDate;
+    if (start == null) return 'Select your period days';
+    final end = _endDate;
+    if (end == null) return 'Start date selected';
+    return 'Period range selected';
+  }
+
+  String get _selectionSubtitle {
+    final start = _startDate;
+    if (start == null) {
+      return 'Tap the first day of your period, then tap the last day.';
+    }
+    final end = _endDate;
+    if (end == null) {
+      return '${_formatDate(start)} selected. Now choose the last day.';
+    }
+    final duration = end.difference(start).inDays + 1;
+    return '${_formatDate(start)} - ${_formatDate(end)} • $duration days';
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
@@ -95,6 +120,65 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
           ),
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: _canSave ? AppColors.primary50 : AppColors.grey50,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color:
+                          _canSave ? AppColors.primary100 : AppColors.grey200,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: _canSave
+                              ? AppColors.primary.withOpacity(0.12)
+                              : AppColors.grey200,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _endDate == null
+                              ? Icons.date_range_rounded
+                              : Icons.check_rounded,
+                          color:
+                              _canSave ? AppColors.primary : AppColors.grey600,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _selectionTitle,
+                              style: AppText.label.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.grey900,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _selectionSubtitle,
+                              style: AppText.body.copyWith(
+                                color: AppColors.grey600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                   padding:
@@ -111,7 +195,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: PrimaryButton(
-                  label: 'save',
+                  label: _endDate == null ? 'Save Start Date' : 'Save Period',
                   onPressed: _canSave
                       ? () {
                           final start = _startDate!;
@@ -234,26 +318,40 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) {
     Color? bg;
     Color textColor = AppColors.black;
+    Color borderColor = Colors.transparent;
 
     if (isEdge) {
       bg = AppColors.primary;
       textColor = AppColors.white;
+      borderColor = AppColors.primary;
     } else if (selected) {
       bg = AppColors.primary100;
       textColor = AppColors.primary;
+      borderColor = AppColors.primary100;
     }
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: borderColor),
+        boxShadow: isEdge
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.18),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
       alignment: Alignment.center,
       child: Text(
         '${day.day}',
         style: AppText.label.copyWith(
           color: textColor,
-          fontWeight: isEdge ? FontWeight.w700 : FontWeight.w400,
+          fontWeight: isEdge || selected ? FontWeight.w700 : FontWeight.w400,
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -64,6 +65,7 @@ class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
 
   @override
   Widget build(BuildContext context) {
+final l10n = AppLocalizations.of(context)!;
     final bool canContinue = _selected.isNotEmpty;
 
     return OnboardingScaffold(
@@ -75,15 +77,15 @@ class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
           const SizedBox(height: 72),
 
           // ── Titre ──────────────────────────────────────────
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
-                Text("What's your goal?",
+                Text(l10n.setGoalsTitle,
                     style: AppText.h1, textAlign: TextAlign.center),
                 SizedBox(height: 10),
                 Text(
-                  "Choose what you'd like to focus on so we can\ntailor your experience.",
+                  l10n.setGoalsSubtitle,
                   style: AppText.body,
                   textAlign: TextAlign.center,
                 ),
@@ -121,7 +123,7 @@ class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
             child: PrimaryButton(
-              label: 'Continue',
+              label: l10n.continueCta,
               onPressed: canContinue
                   ? () {
                       final goals =

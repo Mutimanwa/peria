@@ -27,7 +27,9 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
       return kSelfCareSections;
     }
     return kSelfCareSections
-        .where((section) => section.title.toLowerCase().contains(_selectedFilter.toLowerCase().split(' ').first))
+        .where((section) => section.title
+            .toLowerCase()
+            .contains(_selectedFilter.toLowerCase().split(' ').first))
         .toList();
   }
 
@@ -71,15 +73,20 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                           onTap: () => setState(() => _selectedFilter = label),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 180),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 10),
                             decoration: BoxDecoration(
-                              color: selected ? AppColors.grey900 : AppColors.grey100,
+                              color: selected
+                                  ? AppColors.grey900
+                                  : AppColors.grey100,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
                               label,
                               style: AppText.caption.copyWith(
-                                color: selected ? AppColors.white : AppColors.grey700,
+                                color: selected
+                                    ? AppColors.white
+                                    : AppColors.grey700,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -108,9 +115,11 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                         },
                       ),
                     ),
-                    if (section.title == 'Facial Care') const SizedBox(height: 10),
+                    if (section.title == 'Facial Care')
+                      const SizedBox(height: 10),
                     if (section.title == 'Articles') const SizedBox(height: 10),
-                    if (section.title == 'Relaxing stretching') const SizedBox(height: 14),
+                    if (section.title == 'Relaxing stretching')
+                      const SizedBox(height: 14),
                     if (section.title != 'Articles') const SizedBox(height: 22),
                   ],
                   _MeditationHeroCard(
@@ -157,7 +166,8 @@ class _SelfCareHeader extends StatelessWidget {
           onTap: () => context.go('/profile'),
           child: const CircleAvatar(
             radius: 18,
-            backgroundImage: AssetImage('assets/images/onboarding/Avatar-21.png'),
+            backgroundImage:
+                AssetImage('assets/images/onboarding/Avatar-21.png'),
           ),
         ),
         const Spacer(),
@@ -248,7 +258,8 @@ class _SelfCareCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(card.title, style: AppText.h6.copyWith(fontWeight: FontWeight.w700)),
+                  Text(card.title,
+                      style: AppText.h6.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   Text(
                     card.subtitle,
@@ -259,7 +270,8 @@ class _SelfCareCard extends StatelessWidget {
                   if (card.badge != null) ...[
                     const SizedBox(height: 12),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppColors.white.withOpacity(0.92),
                         borderRadius: BorderRadius.circular(14),
@@ -325,12 +337,14 @@ class _MeditationHeroCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('Deep Sleep\nMeditation', style: AppText.h4.copyWith(color: AppColors.white)),
+              Text('Deep Sleep\nMeditation',
+                  style: AppText.h4.copyWith(color: AppColors.white)),
               const SizedBox(height: 10),
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: AppColors.white.withOpacity(0.18),
                       borderRadius: BorderRadius.circular(18),
@@ -338,9 +352,12 @@ class _MeditationHeroCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.play_arrow_rounded, size: 16, color: AppColors.white),
+                        const Icon(Icons.play_arrow_rounded,
+                            size: 16, color: AppColors.white),
                         const SizedBox(width: 4),
-                        Text('Play', style: AppText.caption.copyWith(color: AppColors.white)),
+                        Text('Play',
+                            style: AppText.caption
+                                .copyWith(color: AppColors.white)),
                       ],
                     ),
                   ),

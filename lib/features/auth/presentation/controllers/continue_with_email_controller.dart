@@ -3,7 +3,8 @@ import 'package:perla_app/features/auth/domain/auth_validators.dart';
 import 'package:perla_app/features/auth/domain/email_flow_navigation_target.dart';
 
 final continueWithEmailControllerProvider =
-    StateNotifierProvider<ContinueWithEmailController, ContinueWithEmailState>((ref) {
+    StateNotifierProvider<ContinueWithEmailController, ContinueWithEmailState>(
+        (ref) {
   return ContinueWithEmailController();
 });
 
@@ -19,7 +20,8 @@ class ContinueWithEmailState {
   }
 }
 
-class ContinueWithEmailController extends StateNotifier<ContinueWithEmailState> {
+class ContinueWithEmailController
+    extends StateNotifier<ContinueWithEmailState> {
   ContinueWithEmailController() : super(const ContinueWithEmailState());
 
   void onEmailChanged(String value) {
@@ -30,4 +32,3 @@ class ContinueWithEmailController extends StateNotifier<ContinueWithEmailState> 
     return EmailFlowNavigationTarget.createAccount;
   }
 }
-

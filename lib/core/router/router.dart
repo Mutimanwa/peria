@@ -123,13 +123,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/journal',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const JournalScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const JournalScreen()),
     ),
     GoRoute(
       path: '/journal/new',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const JournalEditorScreen()),
+          context, state, const JournalEditorScreen()),
     ),
     GoRoute(
       path: '/journal/edit/:id',
@@ -139,137 +139,137 @@ final GoRouter appRouter = GoRouter(
         JournalEditorScreen(entryId: state.pathParameters['id']),
       ),
     ),
-    // calendrier 
+    // calendrier
     GoRoute(
       path: '/calendar',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const CalendarScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const CalendarScreen()),
     ),
     GoRoute(
       path: '/ai',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const AiChatScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const AiChatScreen()),
     ),
     GoRoute(
       path: '/ai/voice',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const VoiceChatScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const VoiceChatScreen()),
     ),
     GoRoute(
       path: '/ai/appointment',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const AppointmentConfirmationScreen()),
+          context, state, const AppointmentConfirmationScreen()),
     ),
     GoRoute(
       path: '/edit-calendar',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const EditCalendarScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const EditCalendarScreen()),
     ),
     GoRoute(
       path: '/symptoms',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const SymptomsScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const SymptomsScreen()),
     ),
     // self-care
     GoRoute(
       path: '/self-care',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const SelfCareHomeScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const SelfCareHomeScreen()),
     ),
     GoRoute(
       path: '/self-care/article',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const ArticleDetailScreen()),
+          context, state, const ArticleDetailScreen()),
     ),
     GoRoute(
       path: '/self-care/activity-detail',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const ActivityDetailScreen()),
+          context, state, const ActivityDetailScreen()),
     ),
     GoRoute(
       path: '/self-care/activity-step',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const ActivityStepScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const ActivityStepScreen()),
     ),
     GoRoute(
       path: '/self-care/timer',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const ActivityTimerScreen()),
+          context, state, const ActivityTimerScreen()),
     ),
     GoRoute(
       path: '/self-care/meditation',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const MeditationScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const MeditationScreen()),
     ),
     GoRoute(
       path: '/self-care/skincare',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const SkincareScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const SkincareScreen()),
     ),
     GoRoute(
       path: '/self-care/strength',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const StrengthDetailScreen()),
+          context, state, const StrengthDetailScreen()),
     ),
     GoRoute(
       path: '/self-care/congratulations',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const CongratulationsScreen()),
+          context, state, const CongratulationsScreen()),
     ),
     GoRoute(
       path: '/notification',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const NotificationsScreen()),
+          context, state, const NotificationsScreen()),
     ),
     GoRoute(
       path: '/profile',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const ProfileScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const ProfileScreen()),
     ),
     GoRoute(
       path: '/profile/personal-info',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const PersonalInformationScreen()),
+          context, state, const PersonalInformationScreen()),
     ),
     GoRoute(
       path: '/profile/settings',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const SettingsScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const SettingsScreen()),
     ),
     GoRoute(
       path: '/profile/notifications',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const NotificationsScreen()),
+          context, state, const NotificationsScreen()),
     ),
     GoRoute(
       path: '/profile/account-security',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const AccountSecurityScreen()),
+          context, state, const AccountSecurityScreen()),
     ),
     GoRoute(
       path: '/profile/partner',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const PartnerScreen()),
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const PartnerScreen()),
     ),
     GoRoute(
       path: '/profile/partner/invite',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const InvitePartnerScreen()),
+          context, state, const InvitePartnerScreen()),
     ),
     GoRoute(
       path: '/profile/partner/pending',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const PartnerInvitationPendingScreen()),
+          context, state, const PartnerInvitationPendingScreen()),
     ),
     GoRoute(
       path: '/profile/partner/connected',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const ConnectedPartnerScreen()),
+          context, state, const ConnectedPartnerScreen()),
     ),
     GoRoute(
       path: '/profile/partner/sharing',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context, state, const SharingSettingsScreen()),
+          context, state, const SharingSettingsScreen()),
     ),
   ],
 );

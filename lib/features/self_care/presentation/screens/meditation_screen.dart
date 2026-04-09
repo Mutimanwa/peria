@@ -53,7 +53,8 @@ class MeditationScreen extends StatelessWidget {
                           const Text('Relax', style: AppText.h3),
                           Text(
                             'Peace and relaxation',
-                            style: AppText.body.copyWith(color: AppColors.grey600),
+                            style:
+                                AppText.body.copyWith(color: AppColors.grey600),
                           ),
                         ],
                       ),
@@ -67,7 +68,8 @@ class MeditationScreen extends StatelessWidget {
                           color: AppColors.grey900,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.play_arrow_rounded, color: AppColors.white, size: 34),
+                        child: const Icon(Icons.play_arrow_rounded,
+                            color: AppColors.white, size: 34),
                       ),
                     ),
                   ],
@@ -76,44 +78,47 @@ class MeditationScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ...kSleepTracks.asMap().entries.map(
-              (entry) => Padding(
-                padding: const EdgeInsets.only(bottom: 14),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Image.asset(
-                        entry.value['image']!,
-                        width: 62,
-                        height: 62,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(entry.value['title']!, style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
-                          Text(
-                            entry.value['subtitle']!,
-                            style: AppText.body.copyWith(color: AppColors.grey500),
+                  (entry) => Padding(
+                    padding: const EdgeInsets.only(bottom: 14),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: Image.asset(
+                            entry.value['image']!,
+                            width: 62,
+                            height: 62,
+                            fit: BoxFit.cover,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(entry.value['title']!,
+                                  style: AppText.label
+                                      .copyWith(fontWeight: FontWeight.w700)),
+                              Text(
+                                entry.value['subtitle']!,
+                                style: AppText.body
+                                    .copyWith(color: AppColors.grey500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => context.go('/self-care/timer'),
+                          icon: const Icon(Icons.play_circle_fill_rounded,
+                              color: AppColors.grey900),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: () => context.go('/self-care/timer'),
-                      icon: const Icon(Icons.play_circle_fill_rounded, color: AppColors.grey900),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 }
-

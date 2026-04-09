@@ -174,21 +174,21 @@ class AppTypography {
   static TextTheme buildTextTheme({bool isDark = false}) {
     final color = isDark ? AppColors.neutral50 : AppColors.neutral900;
     return TextTheme(
-      displayLarge:  displayLarge.copyWith(color: color),
+      displayLarge: displayLarge.copyWith(color: color),
       displayMedium: displayMedium.copyWith(color: color),
-      displaySmall:  displaySmall.copyWith(color: color),
+      displaySmall: displaySmall.copyWith(color: color),
       headlineLarge: heading1.copyWith(color: color),
       headlineMedium: heading2.copyWith(color: color),
-      headlineSmall:  heading3.copyWith(color: color),
-      titleLarge:  heading4.copyWith(color: color),
+      headlineSmall: heading3.copyWith(color: color),
+      titleLarge: heading4.copyWith(color: color),
       titleMedium: heading5.copyWith(color: color),
-      titleSmall:  heading6.copyWith(color: color),
-      bodyLarge:   bodyLarge.copyWith(color: color),
-      bodyMedium:  bodyMedium.copyWith(color: color),
-      bodySmall:   bodySmall.copyWith(color: color),
-      labelLarge:  buttonLarge.copyWith(color: color),
+      titleSmall: heading6.copyWith(color: color),
+      bodyLarge: bodyLarge.copyWith(color: color),
+      bodyMedium: bodyMedium.copyWith(color: color),
+      bodySmall: bodySmall.copyWith(color: color),
+      labelLarge: buttonLarge.copyWith(color: color),
       labelMedium: buttonMedium.copyWith(color: color),
-      labelSmall:  captionSmall.copyWith(color: color),
+      labelSmall: captionSmall.copyWith(color: color),
     );
   }
 }

@@ -51,7 +51,8 @@ class AppointmentConfirmationScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.success, width: 2),
               ),
-              child: const Icon(Icons.check, color: AppColors.success, size: 40),
+              child:
+                  const Icon(Icons.check, color: AppColors.success, size: 40),
             ),
             const SizedBox(height: 20),
             const Text('Appointment Confirmed!', style: AppText.h3),
@@ -83,28 +84,41 @@ class AppointmentConfirmationScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                 color: AppColors.grey100,
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Text('4.5 | 2340 Review', style: AppText.caption.copyWith(fontWeight: FontWeight.w700)),
+                              child: Text('4.5 | 2340 Review',
+                                  style: AppText.caption
+                                      .copyWith(fontWeight: FontWeight.w700)),
                             ),
                             const SizedBox(height: 10),
                             const Text('Dr. Adrian Cole', style: AppText.h5),
-                            Text('Gynecologist', style: AppText.body.copyWith(color: AppColors.grey600)),
-                            Text('Focus on Gyn Oncology Screening', style: AppText.caption.copyWith(color: AppColors.grey500)),
+                            Text('Gynecologist',
+                                style: AppText.body
+                                    .copyWith(color: AppColors.grey600)),
+                            Text('Focus on Gyn Oncology Screening',
+                                style: AppText.caption
+                                    .copyWith(color: AppColors.grey500)),
                           ],
                         ),
                       ),
                     ],
                   ),
                   const Divider(height: 28),
-                  const _InfoRow(icon: Icons.calendar_today_outlined, text: 'Tuesday, October 26, 2024'),
+                  const _InfoRow(
+                      icon: Icons.calendar_today_outlined,
+                      text: 'Tuesday, October 26, 2024'),
                   const SizedBox(height: 16),
-                  const _InfoRow(icon: Icons.access_time_outlined, text: '10:30 AM - 11:00 AM'),
+                  const _InfoRow(
+                      icon: Icons.access_time_outlined,
+                      text: '10:30 AM - 11:00 AM'),
                   const SizedBox(height: 16),
-                  const _InfoRow(icon: Icons.videocam_outlined, text: 'Video Consultation'),
+                  const _InfoRow(
+                      icon: Icons.videocam_outlined,
+                      text: 'Video Consultation'),
                 ],
               ),
             ),

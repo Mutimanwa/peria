@@ -40,7 +40,8 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
                 ],
               ),
             ),
-            Text('Full-body cardio', style: AppText.body.copyWith(color: AppColors.grey500)),
+            Text('Full-body cardio',
+                style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
@@ -65,21 +66,26 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
                           value: _progress,
                           strokeWidth: 5,
                           backgroundColor: AppColors.grey200,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary400),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.primary400),
                         ),
                       ),
-                      Text('02:00', style: AppText.h3.copyWith(fontWeight: FontWeight.w700)),
+                      Text('02:00',
+                          style:
+                              AppText.h3.copyWith(fontWeight: FontWeight.w700)),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text('04:00', style: AppText.h5.copyWith(color: AppColors.grey700)),
+                  Text('04:00',
+                      style: AppText.h5.copyWith(color: AppColors.grey700)),
                   const Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () {},
-                        icon: const Icon(Icons.skip_previous_rounded, size: 34, color: AppColors.grey900),
+                        icon: const Icon(Icons.skip_previous_rounded,
+                            size: 34, color: AppColors.grey900),
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
@@ -91,13 +97,16 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
                             color: AppColors.grey900,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.play_arrow_rounded, color: AppColors.white, size: 36),
+                          child: const Icon(Icons.play_arrow_rounded,
+                              color: AppColors.white, size: 36),
                         ),
                       ),
                       const SizedBox(width: 10),
                       IconButton(
-                        onPressed: () => context.go('/self-care/congratulations'),
-                        icon: const Icon(Icons.skip_next_rounded, size: 34, color: AppColors.grey900),
+                        onPressed: () =>
+                            context.go('/self-care/congratulations'),
+                        icon: const Icon(Icons.skip_next_rounded,
+                            size: 34, color: AppColors.grey900),
                       ),
                     ],
                   ),
@@ -110,4 +119,3 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
     );
   }
 }
-

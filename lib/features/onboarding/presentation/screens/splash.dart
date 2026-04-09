@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Container(
@@ -64,14 +66,14 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
               ),
-              const Positioned(
+              Positioned(
                 left: 0,
                 right: 0,
                 bottom: 22,
                 child: Center(
                   child: Text(
-                    'Made by Isopo Media',
-                    style: TextStyle(
+                    l10n.madeByIm,
+                    style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
                       fontWeight: FontWeight.w600,

@@ -1,0 +1,96 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Peria",
+
+  "welcomeTitle": "Bienvenue sur Peria",
+  "welcomeSubtitle": "Peria t'aide à comprendre ton corps avec un accompagnement doux et personnalisé.",
+  "turnOnNotifications": "Activer les notifications",
+  "anotherTime": "Plus tard",
+
+  "registerTitle": "On commence",
+  "registerSubtitle": "Connecte-toi ou crée un compte pour démarrer.",
+  "continueWithEmail": "Continuer avec email",
+  "continueWithGoogle": "Continuer avec Google",
+  "continueWithApple": "Continuer avec Apple",
+  "orDivider": "Ou",
+
+  "enterYourEmailTitle": "Saisis ton email",
+  "enterYourEmailSubtitle": "On vérifie si tu as déjà un compte",
+  "emailAddressLabel": "Adresse email",
+  "yourEmailAddressHint": "Ton adresse email",
+  "continueCta": "Continuer",
+  "skip": "Passer",
+
+  "createAccountTitle": "Créer ton compte",
+  "createAccountSubtitle": "Choisis un mot de passe pour créer ton compte Peria.",
+  "passwordLabel": "Mot de passe",
+  "confirmPasswordLabel": "Confirmer le mot de passe",
+  "enterYourPasswordHint": "Saisis ton mot de passe",
+  "forgotYourPassword": "Mot de passe oublié ?",
+
+  "setGoalsTitle": "Quel est ton objectif ?",
+  "setGoalsSubtitle": "Choisis ce sur quoi tu veux te concentrer\\npour personnaliser ton expérience.",
+
+  "askNameTitle": "Comment veux-tu qu'on t'appelle ?",
+  "askNameSubtitle": "Rendons cette expérience vraiment à toi.",
+  "enterYourNameHint": "Saisis ton prénom",
+
+  "dateOfBirthTitle": "Date de naissance",
+  "dateOfBirthSubtitle": "Cela nous aide à personnaliser ton expérience.",
+
+  "whenWasYourLastPeriodTitle": "Quand étaient tes dernières règles ?",
+  "whenWasYourLastPeriodSubtitle": "Sélectionne le premier jour de tes dernières règles.",
+  "notSure": "Je ne sais pas",
+  "today": "Aujourd'hui",
+
+  "madeByIm": "Made by IM",
+
+  "nextPeriodUnknown": "Prochaines règles : inconnues",
+  "periodIsDue": "Les règles sont proches",
+  "nextPeriodInDays": "Prochaines règles dans {days} jours",
+  "day": "Jour",
+  "@nextPeriodInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
+  ,
+  "otpTitle": "Saisis le code de vérification",
+  "otpSubtitle": "Nous avons envoyé un code à {email}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "didntGetCode": "Tu n'as pas reçu le code ?",
+  "resendIn": "Renvoyer dans {seconds}s",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "resendNow": "Renvoyer maintenant",
+  "otpContinue": "Continuer",
+
+  "journalTitle": "Journal",
+  "journalSubtitle": "Ton espace privé pour noter tes ressentis, pensées et observations.",
+  "searchJournalHint": "Rechercher dans le journal...",
+  "clearAll": "Tout effacer",
+  "newEntry": "Nouvelle note",
+  "noMatchingNotes": "Aucune note trouvée",
+  "journalEmpty": "Ton journal est vide",
+  "tryAnotherKeyword": "Essaie un autre mot-clé.",
+  "startFirstNote": "Commence ta première note privée. Elle reste sur cet appareil.",
+  "untitledNote": "Note sans titre",
+  "noDetailsYet": "Pas de détail pour l'instant.",
+  "delete": "Supprimer",
+  "saveEntry": "Enregistrer",
+  "writeFreelyHint": "Écris librement. Cette note reste sur ton appareil."
+}

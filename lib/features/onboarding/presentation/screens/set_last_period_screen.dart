@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -100,6 +101,7 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
 
   @override
   Widget build(BuildContext context) {
+final l10n = AppLocalizations.of(context)!;
     // Générer les jours du mois
     final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
@@ -115,15 +117,15 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
           const SizedBox(height: 72),
 
           // ── Titre ──────────────────────────────────────────
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
-                Text('When was your last period?',
+                Text(l10n.whenWasYourLastPeriodTitle,
                     style: AppText.h1, textAlign: TextAlign.center),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
-                  'Select the days your last period started and ended. This helps us predict your next cycle.',
+                  l10n.whenWasYourLastPeriodSubtitle,
                   style: AppText.body,
                   textAlign: TextAlign.center,
                 ),
@@ -195,7 +197,7 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
                             border: Border.all(color: AppColors.grey200),
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: Text('Today', style: AppText.label),
+                          child: Text(l10n.today, style: AppText.label),
                         ),
                       ),
                     ),
@@ -212,7 +214,7 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
               children: [
                 Expanded(
                   child: OutlineButton(
-                    label: 'Not Sure',
+                    label: l10n.notSure,
                     onPressed: () {
                       // MVP behavior:
                       // - user explicitly doesn't know the last period start date
@@ -228,7 +230,7 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: PrimaryButton(
-                    label: 'Continue',
+                    label: l10n.continueCta,
                     onPressed: _canContinue
                         ? () {
                             final start = _startDate!;

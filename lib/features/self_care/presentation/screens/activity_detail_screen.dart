@@ -171,8 +171,10 @@ class _StepTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(step.title, style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
-                Text(step.subtitle, style: AppText.caption.copyWith(color: AppColors.grey500)),
+                Text(step.title,
+                    style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
+                Text(step.subtitle,
+                    style: AppText.caption.copyWith(color: AppColors.grey500)),
               ],
             ),
           ),

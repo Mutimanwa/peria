@@ -13,4 +13,3 @@ class AuthValidators {
     return value.trim().isNotEmpty;
   }
 }
-

@@ -30,8 +30,8 @@ class UserProfile {
     if (dob == null) return null;
     final now = DateTime.now();
     var years = now.year - dob.year;
-    final hasHadBirthdayThisYear =
-        (now.month > dob.month) || (now.month == dob.month && now.day >= dob.day);
+    final hasHadBirthdayThisYear = (now.month > dob.month) ||
+        (now.month == dob.month && now.day >= dob.day);
     if (!hasHadBirthdayThisYear) years -= 1;
     return years;
   }
@@ -64,4 +64,3 @@ class UserProfile {
     };
   }
 }
-

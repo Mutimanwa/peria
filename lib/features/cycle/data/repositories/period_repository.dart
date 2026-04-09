@@ -22,4 +22,3 @@ class PeriodRepository {
     await prefs.setStringList(_periodsKey, raw);
   }
 }
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 
 // ═══════════════════════════════════════════════════════════════════
 //  BOUTON PRIMAIRE — fond noir, texte blanc, pill shape
@@ -128,7 +129,7 @@ class BackIconButton extends StatelessWidget {
           border: Border.all(color: AppColors.grey200),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: 6,
                 offset: const Offset(0, 2)),
           ],
@@ -177,17 +178,16 @@ class PillTextField extends StatelessWidget {
         hintStyle: AppText.caption.copyWith(fontSize: 14),
         filled: true,
         fillColor: AppColors.grey100,
-        suffixIcon: suffix != null 
-          ? Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: suffix,
-            )
-          : null,
+        suffixIcon: suffix != null
+            ? Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: suffix,
+              )
+            : null,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          // borderSide: const BorderSide(color: AppColors.black, width: 1.5),
-          borderSide: BorderSide.none
-        ),
+            borderRadius: BorderRadius.circular(50),
+            // borderSide: const BorderSide(color: AppColors.black, width: 1.5),
+            borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50),
           borderSide: const BorderSide(color: AppColors.black, width: 1.5),
@@ -242,7 +242,7 @@ class OnboardingScaffold extends StatelessWidget {
                   right: 20,
                   child: GestureDetector(
                     onTap: onSkip,
-                    child: Text('Skip',
+                    child: Text(AppLocalizations.of(context)!.skip,
                         style: AppText.body.copyWith(
                             color: AppColors.grey500,
                             fontWeight: FontWeight.w500)),
@@ -285,19 +285,19 @@ class PageScaffold extends StatelessWidget {
             children: [
               // ── Contenu principal
               child,
-              
+
               // ── Bouton retour (à gauche)
               if (showBack)
-                 Positioned(
+                Positioned(
                   top: 12,
                   left: 20,
-                  child: BackIconButton(onPressed: onBack), 
+                  child: BackIconButton(onPressed: onBack),
                 ),
-              
+
               // ── Titre (au milieu)
               if (showTitle && title != null)
                 Positioned(
-                  top: 20,  
+                  top: 20,
                   left: 0,
                   right: 0,
                   child: Center(

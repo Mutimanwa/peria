@@ -7,7 +7,8 @@ final journalRepositoryProvider = Provider<JournalRepository>((ref) {
 });
 
 final journalProvider =
-    StateNotifierProvider<JournalNotifier, AsyncValue<List<JournalEntry>>>((ref) {
+    StateNotifierProvider<JournalNotifier, AsyncValue<List<JournalEntry>>>(
+        (ref) {
   final notifier = JournalNotifier(ref.read(journalRepositoryProvider));
   notifier.load();
   return notifier;

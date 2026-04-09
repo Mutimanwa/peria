@@ -1,4 +1,3 @@
 enum CreateAccountNavigationTarget {
   otp,
 }
-

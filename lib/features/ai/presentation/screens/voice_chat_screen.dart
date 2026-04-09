@@ -57,14 +57,15 @@ class VoiceChatScreen extends StatelessWidget {
                         color: const Color(0xFFC798F0),
                         shape: BoxShape.circle,
                         boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFD5B2F4).withOpacity(.45),
+  BoxShadow(
+                            color: const Color(0xFFD5B2F4).withAlpha(115),
                             blurRadius: 30,
                             spreadRadius: 8,
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.graphic_eq_rounded, color: AppColors.white, size: 62),
+                      child: const Icon(Icons.graphic_eq_rounded,
+                          color: AppColors.white, size: 62),
                     ),
                   ],
                 ),

@@ -1,0 +1,96 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Peria",
+
+  "welcomeTitle": "Welcome To Peria",
+  "welcomeSubtitle": "Peria helps you understand your body\\nwith calm, personalized guidance.",
+  "turnOnNotifications": "Turn on notification",
+  "anotherTime": "Another time",
+
+  "registerTitle": "Let's get you started",
+  "registerSubtitle": "Login or create an account to get started.",
+  "continueWithEmail": "Continue with email",
+  "continueWithGoogle": "Continue with Google",
+  "continueWithApple": "Continue with Apple",
+  "orDivider": "Or",
+
+  "enterYourEmailTitle": "Enter your email",
+  "enterYourEmailSubtitle": "We'll check if you already have an account",
+  "emailAddressLabel": "Email Address",
+  "yourEmailAddressHint": "Your email address",
+  "continueCta": "Continue",
+  "skip": "Skip",
+
+  "createAccountTitle": "Create your account",
+  "createAccountSubtitle": "Set a password to create your Peria account.",
+  "passwordLabel": "Password",
+  "confirmPasswordLabel": "Confirm Password",
+  "enterYourPasswordHint": "Enter your password",
+  "forgotYourPassword": "Forgot your password?",
+
+  "setGoalsTitle": "What's your goal?",
+  "setGoalsSubtitle": "Choose what you'd like to focus on so we can\\ntailor your experience.",
+
+  "askNameTitle": "What should we call you?",
+  "askNameSubtitle": "Let's make this experience truly yours.",
+  "enterYourNameHint": "Enter your name",
+
+  "dateOfBirthTitle": "Date of birth",
+  "dateOfBirthSubtitle": "This helps us personalize your experience.",
+
+  "whenWasYourLastPeriodTitle": "When was your last period?",
+  "whenWasYourLastPeriodSubtitle": "Select the days your last period started.",
+  "notSure": "Not sure",
+  "today": "Today",
+
+  "madeByIm": "Made by IM",
+
+  "nextPeriodUnknown": "Next period: unknown",
+  "periodIsDue": "Period is due",
+  "nextPeriodInDays": "Next period in {days} days",
+  "day": "Day",
+  "@nextPeriodInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
+  ,
+  "otpTitle": "Enter verification code",
+  "otpSubtitle": "We sent a code to {email}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "didntGetCode": "Didn't get the code?",
+  "resendIn": "Resend in {seconds}s",
+  "@resendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "resendNow": "Resend now",
+  "otpContinue": "Continue",
+
+  "journalTitle": "Journal",
+  "journalSubtitle": "Your private space to note feelings, thoughts and body patterns.",
+  "searchJournalHint": "Search journal...",
+  "clearAll": "Clear all",
+  "newEntry": "New entry",
+  "noMatchingNotes": "No matching notes",
+  "journalEmpty": "Your journal is empty",
+  "tryAnotherKeyword": "Try another keyword.",
+  "startFirstNote": "Start your first private note. It stays on this device.",
+  "untitledNote": "Untitled note",
+  "noDetailsYet": "No details yet.",
+  "delete": "Delete",
+  "saveEntry": "Save entry",
+  "writeFreelyHint": "Write freely. This note stays on your device."
+}

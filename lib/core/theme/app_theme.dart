@@ -205,7 +205,7 @@ class AppTheme {
         cardTheme: const CardThemeData(
           color: AppColors.neutral900,
           elevation: 0,
-          shape:  RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: AppRadius.br16,
             side: BorderSide(color: AppColors.neutral800),
           ),
@@ -227,8 +227,7 @@ class AppTheme {
           backgroundColor: AppColors.neutral800,
           selectedColor: AppColors.primary800,
           labelStyle: AppTypography.captionMedium,
-          shape:
-              RoundedRectangleBorder(borderRadius: AppRadius.brRounded),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.brRounded),
           side: BorderSide.none,
         ),
         snackBarTheme: SnackBarThemeData(

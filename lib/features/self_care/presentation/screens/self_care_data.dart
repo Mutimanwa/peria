@@ -110,12 +110,36 @@ const List<SelfCareStep> kSkinCareSteps = [
 ];
 
 const List<Map<String, String>> kSleepTracks = [
-  {'title': 'Calm Flow', 'subtitle': 'Brath of Life', 'image': 'moc/relaxing details-1.png'},
-  {'title': 'Soul Drift', 'subtitle': 'Sounds Of Serenity', 'image': 'moc/relaxing details-2.png'},
-  {'title': 'Inner Peace', 'subtitle': 'Mindful Journey', 'image': 'moc/relaxing details-3.png'},
-  {'title': 'Whispering Nature', 'subtitle': "Nature's Rhythm", 'image': 'moc/relaxing details-4.png'},
-  {'title': 'Golden Dawn', 'subtitle': 'Harmony Within', 'image': 'moc/Sleep Meditation-1.png'},
-  {'title': 'Breathe In Silence', 'subtitle': 'Deep Rest Session', 'image': 'moc/Meditation details-1.png'},
+  {
+    'title': 'Calm Flow',
+    'subtitle': 'Brath of Life',
+    'image': 'moc/relaxing details-1.png'
+  },
+  {
+    'title': 'Soul Drift',
+    'subtitle': 'Sounds Of Serenity',
+    'image': 'moc/relaxing details-2.png'
+  },
+  {
+    'title': 'Inner Peace',
+    'subtitle': 'Mindful Journey',
+    'image': 'moc/relaxing details-3.png'
+  },
+  {
+    'title': 'Whispering Nature',
+    'subtitle': "Nature's Rhythm",
+    'image': 'moc/relaxing details-4.png'
+  },
+  {
+    'title': 'Golden Dawn',
+    'subtitle': 'Harmony Within',
+    'image': 'moc/Sleep Meditation-1.png'
+  },
+  {
+    'title': 'Breathe In Silence',
+    'subtitle': 'Deep Rest Session',
+    'image': 'moc/Meditation details-1.png'
+  },
 ];
 
 const List<SelfCareSection> kSelfCareSections = [

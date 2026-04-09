@@ -34,4 +34,3 @@ class CycleStatus {
     required this.daysUntilNextPeriod,
   });
 }
-

@@ -7,7 +7,8 @@ import 'package:perla_app/core/storage/app_settings.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/features/cycle/domain/cycle_status.dart';
 import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
-import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
 // ════════════════════════════════════════════════════════════════════
@@ -73,7 +74,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
   // ── Config couleurs + données par phase ─────────────────────────
   _PhaseConfig get _config {
-    final dayLabel = 'Day $_dayOfCycle';
+    final  l10n = AppLocalizations.of(context);
+    final dayLabel = '${l10n.day} $_dayOfCycle';
 
     switch (_phase) {
       case CyclePhase.menstrual:
@@ -173,10 +175,16 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+final l10n = AppLocalizations.of(context);
     final status = ref.watch(cycleStatusProvider);
+    final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
     final dayOfCycle = status?.dayOfCycle ?? 1;
     final daysUntilNext = status?.daysUntilNextPeriod;
     final nextPhase = _phaseFromStatus(status);
+    final cycleLengthDays =
+        settings.cycleLengthDays > 0 ? settings.cycleLengthDays : 1;
+    final cycleProgress =
+        (dayOfCycle / cycleLengthDays).clamp(0.0, 1.0).toDouble();
 
     if (_dayOfCycle != dayOfCycle || _daysUntilNextPeriod != daysUntilNext) {
       // Avoid setState during build.
@@ -233,10 +241,10 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                 // Texte subtitle
                 Text(
                   _daysUntilNextPeriod == null
-                      ? 'Next period: unknown'
+                      ? l10n.nextPeriodUnknown
                       : _daysUntilNextPeriod! <= 0
-                          ? 'Period is due'
-                          : 'Next period in $_daysUntilNextPeriod days',
+                          ? l10n.periodIsDue
+                          : l10n.nextPeriodInDays(_daysUntilNextPeriod!),
                   style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
@@ -259,6 +267,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                         wave1: _wave1Ctrl.value,
                         wave2: _wave2Ctrl.value,
                         phaseAnim: _phaseAnim.value,
+                        progress: cycleProgress,
                       ),
                     );
                   },
@@ -482,12 +491,14 @@ class _CycleWheel extends StatelessWidget {
   final double wave1; // 0.0 → 1.0 (animation vague 1)
   final double wave2; // 0.0 → 1.0 (animation vague 2)
   final double phaseAnim;
+  final double progress;
 
   const _CycleWheel({
     required this.config,
     required this.wave1,
     required this.wave2,
     required this.phaseAnim,
+    required this.progress,
   });
 
   @override
@@ -498,6 +509,7 @@ class _CycleWheel extends StatelessWidget {
         wave1: wave1,
         wave2: wave2,
         phaseAnim: phaseAnim,
+        progress: progress,
       ),
       // ── Texte centré dans la roue ──────────────────────────
       child: Center(
@@ -540,12 +552,14 @@ class _CycleWheelPainter extends CustomPainter {
   final double wave1;
   final double wave2;
   final double phaseAnim;
+  final double progress;
 
   _CycleWheelPainter({
     required this.config,
     required this.wave1,
     required this.wave2,
     required this.phaseAnim,
+    required this.progress,
   });
 
   @override
@@ -568,10 +582,14 @@ class _CycleWheelPainter extends CustomPainter {
     canvas.drawCircle(center, outerR - ringW / 2, ringPaint);
 
     // 2. Points
-    final dotPaint = Paint()..color = config.dotColor;
     const dotCount = 40;
     const dotR = 3.2;
+    final filledDots = (dotCount * progress).round().clamp(0, dotCount) as int;
     for (int i = 0; i < dotCount; i++) {
+      final dotPaint = Paint()
+        ..color = i < filledDots
+            ? config.colorBottom
+            : config.dotColor.withOpacity(0.45);
       final angle = (i / dotCount) * 2 * math.pi - math.pi / 2;
       final dotCx = cx + (outerR - ringW / 2) * math.cos(angle);
       final dotCy = cy + (outerR - ringW / 2) * math.sin(angle);
@@ -710,6 +728,7 @@ class _CycleWheelPainter extends CustomPainter {
   bool shouldRepaint(_CycleWheelPainter old) =>
       old.wave1 != wave1 ||
       old.wave2 != wave2 ||
+      old.progress != progress ||
       old.config.label != config.label;
 }
 

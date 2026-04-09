@@ -35,7 +35,8 @@ class ActivityStepScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Text(step.subtitle, style: AppText.body.copyWith(color: AppColors.grey500)),
+            Text(step.subtitle,
+                style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 18),
             Expanded(
               child: Column(
@@ -60,14 +61,19 @@ class ActivityStepScreen extends StatelessWidget {
                           value: .22,
                           strokeWidth: 6,
                           backgroundColor: AppColors.grey200,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary400),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.primary400),
                         ),
                       ),
                       Column(
                         children: [
-                          Text('00:05', style: AppText.h3.copyWith(fontWeight: FontWeight.w700)),
+                          Text('00:05',
+                              style: AppText.h3
+                                  .copyWith(fontWeight: FontWeight.w700)),
                           const SizedBox(height: 22),
-                          Text('00:24', style: AppText.h6.copyWith(color: AppColors.grey600)),
+                          Text('00:24',
+                              style: AppText.h6
+                                  .copyWith(color: AppColors.grey600)),
                         ],
                       ),
                     ],
@@ -80,7 +86,8 @@ class ActivityStepScreen extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.skip_previous_rounded, size: 34, color: AppColors.grey900),
+                  icon: const Icon(Icons.skip_previous_rounded,
+                      size: 34, color: AppColors.grey900),
                 ),
                 const SizedBox(width: 10),
                 GestureDetector(
@@ -92,13 +99,15 @@ class ActivityStepScreen extends StatelessWidget {
                       color: AppColors.grey900,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.play_arrow_rounded, color: AppColors.white, size: 36),
+                    child: const Icon(Icons.play_arrow_rounded,
+                        color: AppColors.white, size: 36),
                   ),
                 ),
                 const SizedBox(width: 10),
                 IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.skip_next_rounded, size: 34, color: AppColors.grey900),
+                  icon: const Icon(Icons.skip_next_rounded,
+                      size: 34, color: AppColors.grey900),
                 ),
               ],
             ),

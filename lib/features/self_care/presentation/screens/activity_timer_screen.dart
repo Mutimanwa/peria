@@ -38,7 +38,8 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                 ],
               ),
             ),
-            Text('Full-body cardio', style: AppText.body.copyWith(color: AppColors.grey500)),
+            Text('Full-body cardio',
+                style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 18),
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
@@ -63,21 +64,26 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                           value: .35,
                           strokeWidth: 5,
                           backgroundColor: AppColors.grey200,
-                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary400),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.primary400),
                         ),
                       ),
-                      Text('02:00', style: AppText.h3.copyWith(fontWeight: FontWeight.w700)),
+                      Text('02:00',
+                          style:
+                              AppText.h3.copyWith(fontWeight: FontWeight.w700)),
                     ],
                   ),
                   const SizedBox(height: 14),
-                  Text('04:00', style: AppText.h5.copyWith(color: AppColors.grey700)),
+                  Text('04:00',
+                      style: AppText.h5.copyWith(color: AppColors.grey700)),
                   const Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () {},
-                        icon: const Icon(Icons.skip_previous_rounded, size: 34, color: AppColors.grey900),
+                        icon: const Icon(Icons.skip_previous_rounded,
+                            size: 34, color: AppColors.grey900),
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
@@ -89,13 +95,16 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                             color: AppColors.grey900,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.pause_rounded, color: AppColors.white, size: 36),
+                          child: const Icon(Icons.pause_rounded,
+                              color: AppColors.white, size: 36),
                         ),
                       ),
                       const SizedBox(width: 10),
                       IconButton(
-                        onPressed: () => context.go('/self-care/congratulations'),
-                        icon: const Icon(Icons.skip_next_rounded, size: 34, color: AppColors.grey900),
+                        onPressed: () =>
+                            context.go('/self-care/congratulations'),
+                        icon: const Icon(Icons.skip_next_rounded,
+                            size: 34, color: AppColors.grey900),
                       ),
                     ],
                   ),
@@ -114,12 +123,14 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
           contentPadding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset('moc/Chat Page-68.png', width: 86, height: 86, fit: BoxFit.cover),
+              Image.asset('moc/Chat Page-68.png',
+                  width: 86, height: 86, fit: BoxFit.cover),
               const SizedBox(height: 12),
               const Text('Wait!', style: AppText.h4),
               const SizedBox(height: 6),
@@ -137,7 +148,9 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                         Navigator.of(context).pop();
                         this.context.go('/self-care/congratulations');
                       },
-                      child: Text('Quit', style: AppText.label.copyWith(color: AppColors.grey700)),
+                      child: Text('Quit',
+                          style:
+                              AppText.label.copyWith(color: AppColors.grey700)),
                     ),
                   ),
                   Expanded(
@@ -149,7 +162,9 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                           backgroundColor: AppColors.grey900,
                           shape: const StadiumBorder(),
                         ),
-                        child: Text('Keep', style: AppText.label.copyWith(color: AppColors.white)),
+                        child: Text('Keep',
+                            style:
+                                AppText.label.copyWith(color: AppColors.white)),
                       ),
                     ),
                   ),

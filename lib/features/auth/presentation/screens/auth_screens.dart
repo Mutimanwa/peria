@@ -6,6 +6,7 @@ import 'package:perla_app/features/auth/domain/create_account_navigation_target.
 import 'package:perla_app/features/auth/domain/email_flow_navigation_target.dart';
 import 'package:perla_app/features/auth/presentation/controllers/continue_with_email_controller.dart';
 import 'package:perla_app/features/auth/presentation/controllers/create_account_controller.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -50,7 +51,8 @@ class _ContinueWithEmailScreenState
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(continueWithEmailControllerProvider);
+final l10n = AppLocalizations.of(context); 
+  final state = ref.watch(continueWithEmailControllerProvider);
 
     void goTo(EmailFlowNavigationTarget target) {
       switch (target) {
@@ -79,14 +81,11 @@ class _ContinueWithEmailScreenState
             const SizedBox(height: 32),
 
             // ── Titre ───────────────────────────────────────────
-            const Text('Enter your email',
+            Text(l10n.enterYourEmailTitle,
                 style: AppText.h1, textAlign: TextAlign.center),
             const SizedBox(height: 10),
-            const Text(
-              "We'll check if you already have an account",
-              style: AppText.body,
-              textAlign: TextAlign.center,
-            ),
+            Text(l10n.enterYourEmailSubtitle,
+                style: AppText.body, textAlign: TextAlign.center),
             const SizedBox(height: 60),
 
             // ── Champ email ─────────────────────────────────────
@@ -95,10 +94,10 @@ class _ContinueWithEmailScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Email Address', style: AppText.label),
+                  Text(l10n.emailAddressLabel, style: AppText.label),
                   const SizedBox(height: 8),
                   PillTextField(
-                    hint: 'Your email address',
+                    hint: l10n.yourEmailAddressHint,
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                   ),
@@ -112,7 +111,7 @@ class _ContinueWithEmailScreenState
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
-                label: 'Continue',
+                label: l10n.continueCta,
                 onPressed: state.canContinue
                     ? () => goTo(ref
                         .read(continueWithEmailControllerProvider.notifier)
@@ -178,7 +177,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(createAccountControllerProvider);
+final l10n = AppLocalizations.of(context)!;   final state = ref.watch(createAccountControllerProvider);
 
     void goTo(CreateAccountNavigationTarget target) {
       switch (target) {
@@ -202,14 +201,11 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
             ),
             const SizedBox(height: 32),
 
-            const Text('Create your account',
+            Text(l10n.createAccountTitle,
                 style: AppText.h1, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            const Text(
-              'Set a password to create your Peria account.',
-              style: AppText.body,
-              textAlign: TextAlign.center,
-            ),
+            Text(l10n.createAccountSubtitle,
+                style: AppText.body, textAlign: TextAlign.center),
             const SizedBox(height: 32),
 
             // ── Champs mot de passe ─────────────────────────────
@@ -219,10 +215,10 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Password
-                  const Text('Password', style: AppText.label),
+                  Text(l10n.passwordLabel, style: AppText.label),
                   const SizedBox(height: 8),
                   PillTextField(
-                    hint: 'Enter your password',
+                    hint: l10n.enterYourPasswordHint,
                     obscure: !state.showPassword,
                     controller: _pwdController,
                     suffix: IconButton(
@@ -241,7 +237,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {/* TODO: mot de passe oublié */},
-                      child: Text('Forgot your password?',
+                      child: Text(l10n.forgotYourPassword,
                           style: AppText.caption
                               .copyWith(color: AppColors.grey500)),
                     ),
@@ -249,10 +245,10 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   const SizedBox(height: 8),
 
                   // Confirm Password
-                  const Text('Confirm Password', style: AppText.label),
+                  Text(l10n.confirmPasswordLabel, style: AppText.label),
                   const SizedBox(height: 8),
                   PillTextField(
-                    hint: 'Enter your password',
+                    hint: l10n.enterYourPasswordHint,
                     obscure: !state.showConfirmPassword,
                     controller: _confirmController,
                     suffix: IconButton(
@@ -271,7 +267,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {},
-                      child: Text('Forgot your password?',
+                      child: Text(l10n.forgotYourPassword,
                           style: AppText.caption
                               .copyWith(color: AppColors.grey500)),
                     ),
@@ -285,7 +281,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
-                label: 'Continue',
+                label: l10n.continueCta,
                 onPressed: state.canContinue
                     ? () => goTo(ref
                         .read(createAccountControllerProvider.notifier)

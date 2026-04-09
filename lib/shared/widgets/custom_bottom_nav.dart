@@ -21,16 +21,16 @@ class CustomBottomNav extends StatelessWidget {
       height: 72,
       margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
+        color: Colors.white.withAlpha(179),
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withAlpha(15),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.5), width: 1.5),
+        border: Border.all(color: Colors.white.withAlpha(128), width: 1.5),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),

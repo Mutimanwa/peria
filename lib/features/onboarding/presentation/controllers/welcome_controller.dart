@@ -17,4 +17,3 @@ class WelcomeController {
     return OnboardingNavigationTarget.register;
   }
 }
-
