@@ -65,7 +65,7 @@ class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context)!;
+final l10n = AppLocalizations.of(context);
     final bool canContinue = _selected.isNotEmpty;
 
     return OnboardingScaffold(
@@ -78,12 +78,12 @@ final l10n = AppLocalizations.of(context)!;
 
           // ── Titre ──────────────────────────────────────────
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
                 Text(l10n.setGoalsTitle,
                     style: AppText.h1, textAlign: TextAlign.center),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   l10n.setGoalsSubtitle,
                   style: AppText.body,

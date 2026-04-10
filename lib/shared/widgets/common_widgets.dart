@@ -242,7 +242,7 @@ class OnboardingScaffold extends StatelessWidget {
                   right: 20,
                   child: GestureDetector(
                     onTap: onSkip,
-                    child: Text(AppLocalizations.of(context)!.skip,
+                    child: Text(AppLocalizations.of(context).skip,
                         style: AppText.body.copyWith(
                             color: AppColors.grey500,
                             fontWeight: FontWeight.w500)),

@@ -287,7 +287,7 @@ class _SymptomsCard extends StatelessWidget {
                 style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
           ]),
           const Divider(height: 24),
-          Wrap(spacing: 10, runSpacing: 10, children: const [
+          const Wrap(spacing: 10, runSpacing: 10, children: [
             _Chip(label: 'Cramps'),
             _Chip(label: 'Headache'),
             _Chip(label: 'Sad'),
@@ -339,9 +339,9 @@ class _CalendarCard extends StatelessWidget {
           border: Border.all(color: AppColors.grey200),
         ),
         child: Column(children: [
-          Row(
+          const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 _MiniButton(icon: Icons.chevron_left_rounded),
                 Text('Sep', style: AppText.h6),
                 _MiniButton(icon: Icons.chevron_right_rounded),

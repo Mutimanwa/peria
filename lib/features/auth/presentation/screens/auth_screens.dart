@@ -177,7 +177,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context)!;   final state = ref.watch(createAccountControllerProvider);
+final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccountControllerProvider);
 
     void goTo(CreateAccountNavigationTarget target) {
       switch (target) {

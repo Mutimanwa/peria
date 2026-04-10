@@ -29,9 +29,9 @@ class VoiceChatScreen extends StatelessWidget {
                 bottom: -12,
                 child: Container(
                   height: 168,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE7DAFB),
-                    borderRadius: const BorderRadius.only(
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE7DAFB),
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(100),
                       topRight: Radius.circular(100),
                     ),

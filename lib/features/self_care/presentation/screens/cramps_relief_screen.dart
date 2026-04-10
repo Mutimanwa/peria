@@ -36,6 +36,7 @@ class CrampsReliefScreen extends StatelessWidget {
                           color: AppColors.primary50,
                           borderRadius: BorderRadius.circular(32),
                         ),
+                        // ignore: prefer_const_constructors
                         child: Icon(Icons.local_hospital,
                             size: 80, color: AppColors.primary400),
                       ),

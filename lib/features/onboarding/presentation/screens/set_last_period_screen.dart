@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/core/services/onboarding_service.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
@@ -101,7 +102,7 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context)!;
+final l10n = AppLocalizations.of(context);
     // Générer les jours du mois
     final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
@@ -111,7 +112,9 @@ final l10n = AppLocalizations.of(context)!;
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () {/* TODO */},
+      onSkip: () {
+        context.pop();
+      },
       child: Column(
         children: [
           const SizedBox(height: 72),
@@ -220,9 +223,8 @@ final l10n = AppLocalizations.of(context)!;
                       // - user explicitly doesn't know the last period start date
                       // - we proceed without setting lastPeriodStart (keeps it null)
                       // - downstream cycle logic will show "unknown" predictions until user logs a period
-                      ref
-                          .read(userProfileProvider.notifier)
-                          .patch((p) => p.copyWith(lastPeriodStart: null));
+                      ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(lastPeriodStart: null));
+                       OnboardingService.setOnboardingCompleted();
                       context.go('/home');
                     },
                   ),
@@ -236,6 +238,7 @@ final l10n = AppLocalizations.of(context)!;
                             final start = _startDate!;
                             ref.read(userProfileProvider.notifier).patch(
                                 (p) => p.copyWith(lastPeriodStart: start));
+                            OnboardingService.setOnboardingCompleted();
                             context.go("/home");
                           }
                         : null,

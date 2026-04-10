@@ -57,14 +57,14 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 180,
                         height: 180,
                         child: CircularProgressIndicator(
                           value: .35,
                           strokeWidth: 5,
                           backgroundColor: AppColors.grey200,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
+                          valueColor: AlwaysStoppedAnimation<Color>(
                               AppColors.primary400),
                         ),
                       ),

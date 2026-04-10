@@ -44,7 +44,7 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
@@ -155,7 +155,7 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context)!;
+final l10n = AppLocalizations.of(context);
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,

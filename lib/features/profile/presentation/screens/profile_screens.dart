@@ -12,49 +12,52 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return _SimplePage(
       title: 'My Profile',
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          const CircleAvatar(
-            radius: 46,
-            backgroundImage:
-                AssetImage('assets/images/onboarding/Avatar-21.png'),
-          ),
-          const SizedBox(height: 16),
-          const Text('Sara Hoseini', style: AppText.h3),
-          const SizedBox(height: 4),
-          Text('Sarahoseini@gmail.com',
-              style: AppText.body.copyWith(color: AppColors.grey500)),
-          const SizedBox(height: 28),
-          const _SectionLabel('My Account'),
-          _MenuGroup(items: [
-            _MenuItemData('Personal Information', Icons.person_outline,
-                () => context.go('/profile/personal-info')),
-            _MenuItemData('Partner', Icons.favorite_border,
-                () => context.go('/profile/partner')),
-            _MenuItemData('Account & Security', Icons.shield_outlined,
-                () => context.go('/profile/account-security')),
-          ]),
-          const SizedBox(height: 22),
-          const _SectionLabel('App Setting'),
-          _MenuGroup(items: [
-            _MenuItemData('Settings', Icons.settings_outlined,
-                () => context.go('/profile/settings')),
-            _MenuItemData('Notifications', Icons.notifications_none_rounded,
-                () => context.go('/profile/notifications')),
-          ]),
-          const SizedBox(height: 22),
-          const _SectionLabel('Support & Legal'),
-          _MenuGroup(items: [
-            _MenuItemData('Help & Support', Icons.help_outline_rounded, () {}),
-            _MenuItemData('Log out', Icons.logout_rounded, () {}, danger: true),
-          ]),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            const CircleAvatar(
+              radius: 46,
+              backgroundImage:
+                  AssetImage('assets/images/onboarding/Avatar-21.png'),
+            ),
+            const SizedBox(height: 16),
+            const Text('Sara Hoseini', style: AppText.h3),
+            const SizedBox(height: 4),
+            Text('Sarahoseini@gmail.com',
+                style: AppText.body.copyWith(color: AppColors.grey500)),
+            const SizedBox(height: 28),
+            const _SectionLabel('My Account'),
+            _MenuGroup(items: [
+              _MenuItemData('Personal Information', Icons.person_outline,
+                  () => context.go('/profile/personal-info')),
+              _MenuItemData('Partner', Icons.favorite_border,
+                  () => context.go('/profile/partner')),
+              _MenuItemData('Account & Security', Icons.shield_outlined,
+                  () => context.go('/profile/account-security')),
+            ]),
+            const SizedBox(height: 22),
+            const _SectionLabel('App Setting'),
+            _MenuGroup(items: [
+              _MenuItemData('Settings', Icons.settings_outlined,
+                  () => context.go('/profile/settings')),
+              _MenuItemData('Notifications', Icons.notifications_none_rounded,
+                  () => context.go('/profile/notifications')),
+            ]),
+            const SizedBox(height: 22),
+            const _SectionLabel('Support & Legal'),
+            _MenuGroup(items: [
+              _MenuItemData('Help & Support', Icons.help_outline_rounded, () {}),
+              _MenuItemData('Log out', Icons.logout_rounded, () {}, danger: true),
+            ]),
+          ],
+        ),
       ),
     );
   }
 }
 
+// Rest of the file unchanged...
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({super.key});
 
@@ -70,71 +73,70 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   Widget build(BuildContext context) {
     return _SimplePage(
       title: 'Personal Information',
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          Stack(
-            children: [
-              const CircleAvatar(
-                radius: 48,
-                backgroundImage:
-                    AssetImage('assets/images/onboarding/Avatar-21.png'),
-              ),
-              if (_editing)
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.grey300),
-                    ),
-                    child: const Icon(Icons.edit_outlined, size: 16),
-                  ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Stack(
+              children: [
+                const CircleAvatar(
+                  radius: 48,
+                  backgroundImage:
+                      AssetImage('assets/images/onboarding/Avatar-21.png'),
                 ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          if (!_editing)
-            SizedBox(
-              width: 150,
-              child: OutlineButton(
-                label: 'Edit Profile',
-                onPressed: () => setState(() => _editing = true),
+                if (_editing)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.grey300),
+                      ),
+                      child: const Icon(Icons.edit_outlined, size: 16),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            if (!_editing)
+              SizedBox(
+                width: 150,
+                child: OutlineButton(
+                  label: 'Edit Profile',
+                  onPressed: () => setState(() => _editing = true),
+                ),
               ),
-            ),
-          const SizedBox(height: 28),
-          const _FieldLabel('Full Name'),
-          const _InfoField(text: 'Sara Hoseini'),
-          const SizedBox(height: 18),
-          const _FieldLabel('Email Address'),
-          const _InfoField(text: 'Sarahoseini@gmail.com'),
-          const SizedBox(height: 18),
-          const _FieldLabel('Date of Birth'),
-          const _InfoField(
-              text: '17.08.1998', trailing: Icons.calendar_today_outlined),
-          const SizedBox(height: 18),
-          const _FieldLabel('My Goal'),
-          const _InfoField(
-              text: '2 Selected', trailing: Icons.keyboard_arrow_down_rounded),
-          if (_editing) ...[
-            const SizedBox(height: 40),
-            PrimaryButton(
-              label: 'Save Changes',
-              onPressed: () => setState(() => _editing = false),
-            ),
+            const SizedBox(height: 28),
+            const _FieldLabel('Full Name'),
+            const _InfoField(text: 'Sara Hoseini'),
+            const SizedBox(height: 18),
+            const _FieldLabel('Email Address'),
+            const _InfoField(text: 'Sarahoseini@gmail.com'),
+            const SizedBox(height: 18),
+            const _FieldLabel('Date of Birth'),
+            const _InfoField(
+                text: '17.08.1998', trailing: Icons.calendar_today_outlined),
+            const SizedBox(height: 18),
+            const _FieldLabel('My Goal'),
+            const _InfoField(
+                text: '2 Selected', trailing: Icons.keyboard_arrow_down_rounded),
+            if (_editing) ...[
+              const SizedBox(height: 40),
+              PrimaryButton(
+                label: 'Save Changes',
+                onPressed: () => setState(() => _editing = false),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
 }
-
-class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -208,7 +210,7 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
-}
+
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});

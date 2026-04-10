@@ -101,7 +101,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           // Couleur des dots de l'anneau
           dotColor: AppColors.secondary300,
           // Couleur de fond du gap (anneau blanc entre outer et inner)
-          ringBg: Color(0xFFF5D6E0),
+          ringBg: const Color(0xFFF5D6E0),
         );
       case CyclePhase.luteal:
         return _PhaseConfig(
@@ -584,7 +584,7 @@ class _CycleWheelPainter extends CustomPainter {
     // 2. Points
     const dotCount = 40;
     const dotR = 3.2;
-    final filledDots = (dotCount * progress).round().clamp(0, dotCount) as int;
+    final filledDots = (dotCount * progress).round().clamp(0, dotCount);
     for (int i = 0; i < dotCount; i++) {
       final dotPaint = Paint()
         ..color = i < filledDots

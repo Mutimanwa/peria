@@ -54,14 +54,14 @@ class ActivityStepScreen extends StatelessWidget {
                   Stack(
                     alignment: Alignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 170,
                         height: 170,
                         child: CircularProgressIndicator(
                           value: .22,
                           strokeWidth: 6,
                           backgroundColor: AppColors.grey200,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
+                          valueColor: AlwaysStoppedAnimation<Color>(
                               AppColors.primary400),
                         ),
                       ),

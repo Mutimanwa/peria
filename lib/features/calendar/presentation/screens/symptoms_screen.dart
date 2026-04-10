@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/theme/app_typography.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
@@ -78,8 +77,8 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ── Date Scroller ──────────
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -87,7 +86,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                         Row(
                           children: [
                             Icon(Icons.chevron_left, color: AppColors.grey600),
-                            const SizedBox(width: 16),
+                            SizedBox(width: 16),
                             Icon(Icons.chevron_right, color: AppColors.black),
                           ],
                         )
@@ -169,7 +168,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                                 style: AppText.body
                                     .copyWith(color: AppColors.grey400)),
                           ),
-                          Icon(Icons.search, color: AppColors.grey400),
+                          const Icon(Icons.search, color: AppColors.grey400),
                         ],
                       ),
                     ),
@@ -178,106 +177,106 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
 
                   // ── Symptom Categories ──────────
                   _buildCategoryCard('Pregnancy test', [
-                    _Pill(
+                    const _Pill(
                         label: 'Faint line',
                         icon: Icons.favorite_border,
                         isSelected: true),
-                    _Pill(label: 'Positive', icon: Icons.add_circle_outline),
-                    _Pill(label: 'No tests', icon: Icons.cancel_outlined),
-                    _Pill(
+                    const _Pill(label: 'Positive', icon: Icons.add_circle_outline),
+                    const _Pill(label: 'No tests', icon: Icons.cancel_outlined),
+                    const _Pill(
                         label: 'Negative',
                         icon: Icons.remove_circle_outline,
                         isSelected: true),
                   ]),
 
                   _buildCategoryCard('Sexual activity', [
-                    _Pill(
+                    const _Pill(
                         label: 'Protected Sex',
                         icon: Icons.female,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Orgasm',
                         icon: Icons.favorite_border,
                         isSelected: true),
-                    _Pill(label: 'High activity', icon: Icons.search),
-                    _Pill(label: 'Unprotected sex', icon: Icons.male),
+                    const _Pill(label: 'High activity', icon: Icons.search),
+                    const _Pill(label: 'Unprotected sex', icon: Icons.male),
                   ]),
 
                   _buildCategoryCard('Mental', [
-                    _Pill(
+                    const _Pill(
                         label: 'Breathing Exercises',
                         icon: Icons.directions_run,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Stress',
                         icon: Icons.self_improvement,
                         isSelected: true),
-                    _Pill(label: 'Yoga', icon: Icons.cloud_outlined),
-                    _Pill(label: 'Meditation', icon: Icons.self_improvement),
+                    const _Pill(label: 'Yoga', icon: Icons.cloud_outlined),
+                    const _Pill(label: 'Meditation', icon: Icons.self_improvement),
                   ]),
 
                   _buildCategoryCard('Discharge', [
-                    _Pill(label: 'Unusual', icon: Icons.water_drop_outlined),
-                    _Pill(
+                    const _Pill(label: 'Unusual', icon: Icons.water_drop_outlined),
+                    const _Pill(
                         label: 'Sticky',
                         icon: Icons.water_drop,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Bleeding',
                         icon: Icons.water_drop,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Heavy Bleeding',
                         icon: Icons.water_drop_outlined),
-                    _Pill(
+                    const _Pill(
                         label: 'Low Bleeding', icon: Icons.water_drop_outlined),
                   ]),
 
                   _buildCategoryCard('Physical activity', [
-                    _Pill(
+                    const _Pill(
                         label: 'No Exercise',
                         icon: Icons.remove,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Team sports',
                         icon: Icons.sports_basketball,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Cycling',
                         icon: Icons.directions_bike,
                         isSelected: true),
-                    _Pill(label: 'Gym', icon: Icons.fitness_center),
-                    _Pill(label: 'Dancing', icon: Icons.accessibility_new),
-                    _Pill(label: 'Aerobics', icon: Icons.directions_walk),
-                    _Pill(
+                    const _Pill(label: 'Gym', icon: Icons.fitness_center),
+                    const _Pill(label: 'Dancing', icon: Icons.accessibility_new),
+                    const _Pill(label: 'Aerobics', icon: Icons.directions_walk),
+                    const _Pill(
                         label: 'Swimming', icon: Icons.pool, isSelected: true),
                   ]),
 
                   _buildCategoryCard('Mood', [
-                    _Pill(
+                    const _Pill(
                         label: 'Anxious',
                         icon: Icons.sentiment_dissatisfied,
                         isSelected: true),
-                    _Pill(label: 'Sad', icon: Icons.sentiment_dissatisfied),
-                    _Pill(
+                    const _Pill(label: 'Sad', icon: Icons.sentiment_dissatisfied),
+                    const _Pill(
                         label: 'Happy',
                         icon: Icons.sentiment_very_satisfied,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Calm',
                         icon: Icons.sentiment_satisfied,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Angry',
                         icon: Icons.sentiment_very_dissatisfied),
-                    _Pill(
+                    const _Pill(
                         label: 'Energetic',
                         icon: Icons.sentiment_satisfied_alt),
-                    _Pill(
+                    const _Pill(
                         label: 'Confused',
                         icon: Icons.sentiment_neutral,
                         isSelected: true),
-                    _Pill(
+                    const _Pill(
                         label: 'Depressed',
                         icon: Icons.sentiment_very_dissatisfied,
                         isSelected: true),
@@ -452,9 +451,9 @@ class _WaterBottomSheetState extends State<_WaterBottomSheet> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: AppColors.primary50, shape: BoxShape.circle),
-                    child: Icon(Icons.local_drink_outlined,
+                    child: const Icon(Icons.local_drink_outlined,
                         color: AppColors.primary, size: 20),
                   ),
                   const SizedBox(width: 12),
@@ -465,7 +464,7 @@ class _WaterBottomSheetState extends State<_WaterBottomSheet> {
                 onTap: () => context.pop(),
                 child: Container(
                   padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppColors.grey100, shape: BoxShape.circle),
                   child: const Icon(Icons.close, size: 20),
                 ),
@@ -492,10 +491,11 @@ class _WaterBottomSheetState extends State<_WaterBottomSheet> {
                       (index) => GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (index < _glasses)
+                              if (index < _glasses) {
                                 _glasses = index;
-                              else
+                              } else {
                                 _glasses = index + 1;
+                              }
                             });
                           },
                           child: _WaterGlass(
@@ -509,10 +509,11 @@ class _WaterBottomSheetState extends State<_WaterBottomSheet> {
                       (index) => GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (index + 4 < _glasses)
+                              if (index + 4 < _glasses) {
                                 _glasses = index + 4;
-                              else
+                              } else {
                                 _glasses = index + 5;
+                              }
                             });
                           },
                           child: _WaterGlass(
@@ -597,9 +598,9 @@ class _WeightBottomSheetState extends State<_WeightBottomSheet> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: AppColors.primary50, shape: BoxShape.circle),
-                    child: Icon(Icons.monitor_weight_outlined,
+                    child: const Icon(Icons.monitor_weight_outlined,
                         color: AppColors.primary, size: 20),
                   ),
                   const SizedBox(width: 12),
@@ -610,7 +611,7 @@ class _WeightBottomSheetState extends State<_WeightBottomSheet> {
                 onTap: () => context.pop(),
                 child: Container(
                   padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppColors.grey100, shape: BoxShape.circle),
                   child: const Icon(Icons.close, size: 20),
                 ),
@@ -693,9 +694,9 @@ class _NoteBottomSheetState extends State<_NoteBottomSheet> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: AppColors.primary50, shape: BoxShape.circle),
-                    child: Icon(Icons.calendar_today_outlined,
+                    child: const Icon(Icons.calendar_today_outlined,
                         color: AppColors.primary, size: 20),
                   ),
                   const SizedBox(width: 12),
@@ -706,7 +707,7 @@ class _NoteBottomSheetState extends State<_NoteBottomSheet> {
                 onTap: () => context.pop(),
                 child: Container(
                   padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: AppColors.grey100, shape: BoxShape.circle),
                   child: const Icon(Icons.close, size: 20),
                 ),

@@ -1,3 +1,4 @@
+import 'package:perla_app/core/services/onboarding_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/splash.dart';
@@ -29,10 +30,23 @@ import 'package:perla_app/features/self_care/presentation/screens/strength_detai
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
+// Modifie l'initialLocation pour pointer vers /check-onboarding
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: '/splash',
+  initialLocation: '/check-onboarding', // ← changement ici
   routes: [
+    // Nouvelle route : décide où rediriger
+    GoRoute(
+      path: '/check-onboarding',
+      redirect: (context, state) async {
+        // Attendre la vérification (sans bloquer l'UI)
+        final completed = await OnboardingService.isOnboardingCompleted();
+        // Si onboarding déjà fait, aller à /home, sinon à /welcome
+        return completed ? '/home' : '/welcome';
+      },
+    ),
+    
+    // Route splash (gardée au cas où, mais plus utilisée par défaut)
     GoRoute(
       path: '/splash',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
@@ -41,7 +55,7 @@ final GoRouter appRouter = GoRouter(
         const SplashScreen(),
       ),
     ),
-    GoRoute(
+     GoRoute(
       path: '/welcome',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context,
@@ -231,11 +245,11 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _buildSlideTransitionPage(
           context, state, const PersonalInformationScreen()),
     ),
-    GoRoute(
-      path: '/profile/settings',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const SettingsScreen()),
-    ),
+    // GoRoute(
+    //   path: '/profile/settings',
+    //   pageBuilder: (context, state) =>
+    //       _buildSlideTransitionPage(context, state, const SettingsScreen()),
+    // ),
     GoRoute(
       path: '/profile/notifications',
       pageBuilder: (context, state) => _buildSlideTransitionPage(

@@ -259,7 +259,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
           const SizedBox(height: 8),
           _buildCalendarGrid(firstDay, lastDay, startOffset, monthDate),
           const SizedBox(height: 16),
-          Divider(color: AppColors.grey100, thickness: 1),
+          const Divider(color: AppColors.grey100, thickness: 1),
         ],
       ),
     );
