@@ -5,7 +5,6 @@ import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/journal/data/models/journal_entry.dart';
 import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
-import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
 
 class JournalScreen extends ConsumerStatefulWidget {
@@ -16,7 +15,8 @@ class JournalScreen extends ConsumerStatefulWidget {
 }
 
 class _JournalScreenState extends ConsumerState<JournalScreen> {
-  NavItem _activeTab = NavItem.journal;
+  // Navigation state is now managed by ShellNavigation
+  // NavItem _activeTab = NavItem.journal; // Removed - managed by shell
   String _query = '';
 
   @override
@@ -142,24 +142,6 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                   ),
                 ],
               ),
-            ),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: CustomBottomNav(
-              currentIndex: _activeTab,
-              onTap: (tab) {
-                setState(() => _activeTab = tab);
-                if (tab == NavItem.cycle) {
-                  context.go('/home');
-                } else if (tab == NavItem.ai) {
-                  context.go('/ai');
-                } else if (tab == NavItem.journal) {
-                  context.go('/journal');
-                }
-              },
             ),
           ),
         ],

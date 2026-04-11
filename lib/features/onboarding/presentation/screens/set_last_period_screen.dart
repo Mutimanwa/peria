@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/core/router/router.dart';
 import 'package:perla_app/core/services/onboarding_service.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
@@ -225,7 +226,8 @@ final l10n = AppLocalizations.of(context);
                       // - downstream cycle logic will show "unknown" predictions until user logs a period
                       ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(lastPeriodStart: null));
                        OnboardingService.setOnboardingCompleted();
-                      context.go('/home');
+                      updateOnboardingState(true);
+                      context.go('/cycle');
                     },
                   ),
                 ),
@@ -239,7 +241,8 @@ final l10n = AppLocalizations.of(context);
                             ref.read(userProfileProvider.notifier).patch(
                                 (p) => p.copyWith(lastPeriodStart: start));
                             OnboardingService.setOnboardingCompleted();
-                            context.go("/home");
+                            updateOnboardingState(true);
+                            context.go("/cycle");
                           }
                         : null,
                   ),

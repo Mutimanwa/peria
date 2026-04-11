@@ -1,52 +1,72 @@
-import 'package:perla_app/core/services/onboarding_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:perla_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:perla_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:perla_app/features/auth/presentation/screens/register_screen.dart';
-import 'package:perla_app/features/ai/presentation/screens/ai_chat_screen.dart';
-import 'package:perla_app/features/ai/presentation/screens/appointment_confirmation_screen.dart';
-import 'package:perla_app/features/ai/presentation/screens/voice_chat_screen.dart';
-import 'package:perla_app/features/calendar/presentation/screens/calendar_screen.dart';
-import 'package:perla_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
-import 'package:perla_app/features/calendar/presentation/screens/symptoms_screen.dart';
 import 'package:perla_app/features/home/presentation/screens/cycle_home_screen.dart';
 import 'package:perla_app/features/journal/presentation/screens/journal_screens.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/onboarding_screens.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/welcome_screen.dart';
-import 'package:perla_app/features/profile/presentation/screens/profile_screens.dart';
-import 'package:perla_app/features/self_care/presentation/screens/self_care_home_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/article_detail_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/activity_detail_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/activity_step_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/activity_timer_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/congratulations_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/meditation_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/skincare_screen.dart';
-import 'package:perla_app/features/self_care/presentation/screens/strength_detail_screen.dart';
+import 'package:perla_app/features/educatif/presentation/screens/self_care_home_screen.dart';
+import 'package:perla_app/core/router/shell_navigation.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
+
+// Authentication state - replace with actual auth service
+bool isAuthenticated = true; // Assume user is authenticated for MVP
+bool hasCompletedOnboarding = false; // Will be updated when onboarding completes
+
+// Function to update onboarding state
+void updateOnboardingState(bool completed) {
+  hasCompletedOnboarding = completed;
+}
 
 // Modifie l'initialLocation pour pointer vers /check-onboarding
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: '/check-onboarding', // ← changement ici
+  initialLocation: '/splash',
+  redirect: (context, state) {
+    // Redirect logic for authentication and onboarding flow
+    final isGoingSplash = state.matchedLocation == '/splash';
+    final isGoingAuth = state.matchedLocation.startsWith('/welcome') ||
+        state.matchedLocation.startsWith('/register') ||
+        state.matchedLocation.startsWith('/email') ||
+        state.matchedLocation.startsWith('/create-account') ||
+        state.matchedLocation.startsWith('/otp') ||
+        state.matchedLocation.startsWith('/ask-name') ||
+        state.matchedLocation.startsWith('/date-of-birth') ||
+        state.matchedLocation.startsWith('/cycle-length') ||
+        state.matchedLocation.startsWith('/set-goals') ||
+        state.matchedLocation.startsWith('/last-period');
+
+    // If on splash, stay there (loading state)
+    if (isGoingSplash) {
+      return null;
+    }
+
+    // If not authenticated and not going to auth flow, redirect to welcome
+    if (!isAuthenticated && !isGoingAuth) {
+      return '/welcome';
+    }
+
+    // If authenticated but hasn't completed onboarding and not on onboarding screens
+    if (isAuthenticated && !hasCompletedOnboarding && !isGoingAuth) {
+      return '/ask-name';
+    }
+
+    // If authenticated and completed onboarding, allow access to main app
+    if (isAuthenticated && hasCompletedOnboarding && isGoingAuth) {
+      return '/cycle';
+    }
+
+    // No redirect needed
+    return null;
+  },
   routes: [
-    // Nouvelle route : décide où rediriger
-    GoRoute(
-      path: '/check-onboarding',
-      redirect: (context, state) async {
-        // Attendre la vérification (sans bloquer l'UI)
-        final completed = await OnboardingService.isOnboardingCompleted();
-        // Si onboarding déjà fait, aller à /home, sinon à /welcome
-        return completed ? '/home' : '/welcome';
-      },
-    ),
-    
-    // Route splash (gardée au cas où, mais plus utilisée par défaut)
     GoRoute(
       path: '/splash',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
@@ -127,163 +147,55 @@ final GoRouter appRouter = GoRouter(
         const SetLastPeriodScreen(),
       ),
     ),
-    GoRoute(
-      path: '/home',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const CycleHomeScreen(),
-      ),
-    ),
-    GoRoute(
-      path: '/journal',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const JournalScreen()),
-    ),
-    GoRoute(
-      path: '/journal/new',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const JournalEditorScreen()),
-    ),
-    GoRoute(
-      path: '/journal/edit/:id',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        JournalEditorScreen(entryId: state.pathParameters['id']),
-      ),
-    ),
-    // calendrier
-    GoRoute(
-      path: '/calendar',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const CalendarScreen()),
-    ),
-    GoRoute(
-      path: '/ai',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const AiChatScreen()),
-    ),
-    GoRoute(
-      path: '/ai/voice',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const VoiceChatScreen()),
-    ),
-    GoRoute(
-      path: '/ai/appointment',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const AppointmentConfirmationScreen()),
-    ),
-    GoRoute(
-      path: '/edit-calendar',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const EditCalendarScreen()),
-    ),
-    GoRoute(
-      path: '/symptoms',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const SymptomsScreen()),
-    ),
-    // self-care
-    GoRoute(
-      path: '/self-care',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const SelfCareHomeScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/article',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const ArticleDetailScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/activity-detail',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const ActivityDetailScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/activity-step',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const ActivityStepScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/timer',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const ActivityTimerScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/meditation',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const MeditationScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/skincare',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const SkincareScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/strength',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const StrengthDetailScreen()),
-    ),
-    GoRoute(
-      path: '/self-care/congratulations',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const CongratulationsScreen()),
-    ),
-    GoRoute(
-      path: '/notification',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const NotificationsScreen()),
-    ),
-    GoRoute(
-      path: '/profile',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const ProfileScreen()),
-    ),
-    GoRoute(
-      path: '/profile/personal-info',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const PersonalInformationScreen()),
-    ),
-    // GoRoute(
-    //   path: '/profile/settings',
-    //   pageBuilder: (context, state) =>
-    //       _buildSlideTransitionPage(context, state, const SettingsScreen()),
-    // ),
-    GoRoute(
-      path: '/profile/notifications',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const NotificationsScreen()),
-    ),
-    GoRoute(
-      path: '/profile/account-security',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const AccountSecurityScreen()),
-    ),
-    GoRoute(
-      path: '/profile/partner',
-      pageBuilder: (context, state) =>
-          _buildSlideTransitionPage(context, state, const PartnerScreen()),
-    ),
-    GoRoute(
-      path: '/profile/partner/invite',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const InvitePartnerScreen()),
-    ),
-    GoRoute(
-      path: '/profile/partner/pending',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const PartnerInvitationPendingScreen()),
-    ),
-    GoRoute(
-      path: '/profile/partner/connected',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const ConnectedPartnerScreen()),
-    ),
-    GoRoute(
-      path: '/profile/partner/sharing',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-          context, state, const SharingSettingsScreen()),
+    // Shell route for main app navigation with CustomBottomNav
+    ShellRoute(
+      navigatorKey: shellNavigatorKey,
+      pageBuilder: (context, state, child) {
+        return _buildSlideTransitionPage(
+          context,
+          state,
+          ShellNavigation(child: child),
+        );
+      },
+      routes: [
+        // CYCLE - Main cycle tracking and calendar
+        GoRoute(
+          path: '/cycle',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            const CycleHomeScreen(),
+          ),
+        ),
+        // JOURNAL - Personal mood and symptom tracking
+        GoRoute(
+          path: '/journal',
+          pageBuilder: (context, state) =>
+              _buildSlideTransitionPage(context, state, const JournalScreen()),
+        ),
+        GoRoute(
+          path: '/journal/new',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context, state, const JournalEditorScreen()),
+        ),
+        GoRoute(
+          path: '/journal/edit/:id',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            JournalEditorScreen(entryId: state.pathParameters['id']),
+          ),
+        ),
+        // EDUCATION - Educational content about cycles, fertility, health
+        GoRoute(
+          path: '/education',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            const SelfCareHomeScreen(), // Will be renamed to EducationHomeScreen
+          ),
+        ),
+      ],
     ),
   ],
 );

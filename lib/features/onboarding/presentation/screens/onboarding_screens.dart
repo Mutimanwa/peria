@@ -48,7 +48,7 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () => context.go('/home'),
+      onSkip: () => context.go('/cycle'),
       child: Padding(
         padding: const EdgeInsets.only(top: 70),
         child: Column(
@@ -159,7 +159,7 @@ final l10n = AppLocalizations.of(context);
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () => context.go('/home'),
+      onSkip: () => context.go('/cycle'),
       child: Padding(
         padding: const EdgeInsets.only(top: 70),
         child: Column(

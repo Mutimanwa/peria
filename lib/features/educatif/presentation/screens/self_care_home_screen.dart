@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/educatif/presentation/screens/self_care_data.dart';
+import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
 class SelfCareHomeScreen extends StatefulWidget {
   const SelfCareHomeScreen({super.key});
@@ -11,8 +12,7 @@ class SelfCareHomeScreen extends StatefulWidget {
 }
 
 class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
-  // Navigation state is now managed by ShellNavigation
-  // NavItem _activeTab = NavItem.journal; // Removed - managed by shell
+  NavItem _activeTab = NavItem.journal;
   String _selectedFilter = 'All';
 
   static const List<String> _filters = [
@@ -127,6 +127,24 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                   ),
                 ],
               ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: CustomBottomNav(
+              currentIndex: _activeTab,
+              onTap: (tab) {
+                setState(() => _activeTab = tab);
+                if (tab == NavItem.cycle) {
+                  context.go('/cycle');
+                } else if (tab == NavItem.education) {
+                  context.go('/education');
+                } else if (tab == NavItem.journal) {
+                  context.go('/journal');
+                }
+              },
             ),
           ),
         ],

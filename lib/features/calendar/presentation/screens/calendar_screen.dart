@@ -7,7 +7,6 @@ import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
-import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -19,7 +18,8 @@ class CalendarScreen extends ConsumerStatefulWidget {
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selectedDate = DateTime.now();
-  NavItem _activeTab = NavItem.cycle;
+  // Navigation state is now managed by ShellNavigation
+  // NavItem _activeTab = NavItem.cycle; // Removed - managed by shell
 
   static const List<String> _monthNames = [
     'January',
@@ -357,24 +357,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 ],
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: CustomBottomNav(
-              currentIndex: _activeTab,
-              onTap: (tab) {
-                setState(() => _activeTab = tab);
-                if (tab == NavItem.cycle) {
-                  context.go('/home');
-                } else if (tab == NavItem.ai) {
-                  context.go('/ai');
-                } else if (tab == NavItem.journal) {
-                  context.go('/journal');
-                }
-              },
             ),
           ),
         ],

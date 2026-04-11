@@ -9,7 +9,6 @@ import 'package:perla_app/features/cycle/domain/cycle_status.dart';
 import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
 
 import 'package:perla_app/l10n/app_localizations.dart';
-import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
 
 // ════════════════════════════════════════════════════════════════════
 //  ENUM — 4 phases du cycle (computed from startDate)
@@ -32,7 +31,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   CyclePhase _phase = CyclePhase.follicular;
   int _dayOfCycle = 1;
   int? _daysUntilNextPeriod;
-  NavItem _activeTab = NavItem.cycle;
+  // Navigation state is now managed by ShellNavigation
+  // NavItem _activeTab = NavItem.cycle; // Removed - managed by shell
 
   // ── Controllers d'animation de vague ────────────────────────────
   late AnimationController _wave1Ctrl;
@@ -314,25 +314,7 @@ final l10n = AppLocalizations.of(context);
                           child: _ArticlesRow(),
                         ),
                       ),
-                      // Floating Bottom Nav
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: CustomBottomNav(
-                          currentIndex: _activeTab,
-                          onTap: (tab) {
-                            setState(() => _activeTab = tab);
-                            if (tab == NavItem.cycle) {
-                              context.go('/');
-                            } else if (tab == NavItem.ai) {
-                              context.go('/ai');
-                            } else if (tab == NavItem.journal) {
-                              context.go('/journal');
-                            }
-                          },
-                        ),
-                      ),
+                      // Floating Bottom Nav - Now managed by Shell
                     ],
                   ),
                 ),
