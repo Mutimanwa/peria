@@ -94,10 +94,11 @@ class _NavItemWidget extends StatelessWidget {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          constraints: const BoxConstraints(minWidth: 80, minHeight: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: AppColors.neutral900,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(25),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
