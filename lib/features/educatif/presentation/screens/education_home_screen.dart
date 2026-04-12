@@ -12,35 +12,16 @@ class EducationHomeScreen extends ConsumerStatefulWidget {
   ConsumerState<EducationHomeScreen> createState() => _EducationHomeScreenState();
 }
 
-class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
+  EducationAxis _selectedAxis = EducationAxis.cycleBasics;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      length: 5,
-      vsync: this,
-      initialIndex: 0,
-    );
-    _tabController.addListener(_onTabChanged);
   }
 
-  void _onTabChanged() {
-    if (_tabController.indexIsChanging) {
-      final axes = [
-        EducationAxis.cycleBasics,
-        EducationAxis.ovulationFertility,
-        EducationAxis.menstruationSymptoms,
-        EducationAxis.normalVsAbnormal,
-        EducationAxis.solutionsWellbeing,
-      ];
-      ref.read(selectedEducationAxisProvider.notifier).selectAxis(axes[_tabController.index]);
-    }
-  }
 
   void _clearSearch() {
     _searchController.clear();
@@ -50,14 +31,16 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen>
 
   @override
   void dispose() {
-    _tabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final filteredArticles = ref.watch(filteredArticlesByAxisProvider);
+    final searchQuery = ref.watch(educationSearchProvider);
+    final filteredArticles = searchQuery.isEmpty
+        ? ref.watch(educationArticlesByAxisProvider(_selectedAxis))
+        : ref.watch(filteredEducationArticlesProvider);
     final categories = ref.watch(educationCategoriesProvider);
 
     return Scaffold(
@@ -68,147 +51,206 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen>
             decoration: const BoxDecoration(gradient: AppColors.bgGradient),
           ),
           SafeArea(
-            child: Column(
-              children: [
-                // Header with search
-                Container(
-                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
-                  color: AppColors.white.withOpacity(0.95),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (!_isSearching)
-                            const Text(
-                              'Biblioteca\nEducatif',
-                              style: AppText.h3,
-                            )
-                          else
-                            Expanded(
-                              child: TextField(
-                                controller: _searchController,
-                                autofocus: true,
-                                style: AppText.body,
-                                decoration: InputDecoration(
-                                  hintText: 'Rechercher un article...',
-                                  hintStyle: AppText.caption.copyWith(
-                                    color: AppColors.grey500,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => context.go('/profile'),
+                                  child: const CircleAvatar(
+                                    radius: 18,
+                                    backgroundImage: AssetImage(
+                                        'assets/images/onboarding/Avatar-21.png'),
                                   ),
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.zero,
                                 ),
-                                onChanged: (value) {
-                                  ref
-                                      .read(
-                                          educationSearchProvider.notifier)
-                                      .updateQuery(value);
-                                },
+                                const SizedBox(width: 12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Bonjour Perla',
+                                      style: AppText.label.copyWith(
+                                        color: AppColors.grey900,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Votre espace éducatif',
+                                      style: AppText.caption.copyWith(
+                                        color: AppColors.grey600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => context.go('/notification'),
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white.withOpacity(0.75),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(color: AppColors.grey200),
+                                ),
+                                child: const Icon(
+                                  Icons.notifications_none_rounded,
+                                  size: 20,
+                                ),
                               ),
                             ),
-                          GestureDetector(
-                            onTap: () {
-                              if (_isSearching) {
-                                _clearSearch();
-                              } else {
-                                setState(() => _isSearching = true);
-                              }
-                            },
-                            child: Icon(
-                              _isSearching ? Icons.close : Icons.search,
-                              color: AppColors.grey700,
-                              size: 24,
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        const Text(
+                          'Que voulez-vous apprendre aujourd\'hui?',
+                          style: AppText.h2,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildAxisChips(categories),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              searchQuery.isEmpty
+                                  ? 'Articles récents'
+                                  : 'Résultats de recherche',
+                              style: AppText.h5.copyWith(
+                                color: AppColors.grey900,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() => _isSearching = !_isSearching);
+                              },
+                              child: Text(
+                                _isSearching ? 'Annuler' : 'Rechercher',
+                                style: AppText.caption.copyWith(
+                                  color: AppColors.primary400,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_isSearching) ...[
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.grey100,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: TextField(
+                              controller: _searchController,
+                              autofocus: true,
+                              style: AppText.body,
+                              decoration: InputDecoration(
+                                hintText: 'Rechercher un article...',
+                                hintStyle: AppText.caption.copyWith(
+                                  color: AppColors.grey500,
+                                ),
+                                border: InputBorder.none,
+                                isDense: true,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                              onChanged: (value) {
+                                ref
+                                    .read(educationSearchProvider.notifier)
+                                    .updateQuery(value);
+                              },
                             ),
                           ),
                         ],
-                      ),
-                      if (!_isSearching) ...[
-                        const SizedBox(height: 12),
-                        Text(
-                          'Comprendre votre cycle et votre bien-être',
-                          style: AppText.caption.copyWith(
-                            color: AppColors.grey600,
-                          ),
-                        ),
                       ],
-                    ],
+                    ),
                   ),
-                ),
-
-                // Tabs
-                Container(
-                  color: AppColors.white.withOpacity(0.95),
-                  child: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    indicatorColor: AppColors.grey900,
-                    labelColor: AppColors.grey900,
-                    unselectedLabelColor: AppColors.grey600,
-                    labelStyle: AppText.caption.copyWith(fontWeight: FontWeight.w600),
-                    unselectedLabelStyle: AppText.caption,
-                    tabs: [
-                      _buildTabLabel('Comprendre\nle cycle', categories[0].articleCount),
-                      _buildTabLabel('Ovulation &\nfertilité', categories[1].articleCount),
-                      _buildTabLabel('Règles &\nsymptômes', categories[2].articleCount),
-                      _buildTabLabel('Normal vs\npas normal', categories[3].articleCount),
-                      _buildTabLabel('Solutions &\nbien-être', categories[4].articleCount),
-                    ],
-                  ),
-                ),
-
-                // Articles list
-                Expanded(
-                  child: filteredArticles.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.search_off,
-                                size: 48,
-                                color: AppColors.grey400,
+                  const SizedBox(height: 24),
+                  if (filteredArticles.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 48),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.search_off,
+                              size: 48,
+                              color: AppColors.grey400,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              _isSearching
+                                  ? 'Aucun article trouvé'
+                                  : 'Pas d\'articles',
+                              style: AppText.h5.copyWith(
+                                color: AppColors.grey600,
                               ),
-                              const SizedBox(height: 12),
-                              Text(
-                                _isSearching
-                                    ? 'Aucun article trouvé'
-                                    : 'Pas d\'articles',
-                                style: AppText.h5.copyWith(
-                                  color: AppColors.grey600,
-                                ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              _isSearching
+                                  ? 'Essayez une autre recherche'
+                                  : 'Choisissez une catégorie',
+                              style: AppText.caption.copyWith(
+                                color: AppColors.grey500,
                               ),
-                              const SizedBox(height: 6),
-                              Text(
-                                _isSearching
-                                    ? 'Essayez une autre recherche'
-                                    : 'Choisissez une catégorie',
-                                style: AppText.caption.copyWith(
-                                  color: AppColors.grey500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(18, 16, 18, 120),
-                          itemCount: filteredArticles.length,
-                          itemBuilder: (context, index) {
-                            final article = filteredArticles[index];
-                            return _ArticleCard(
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      height: 200,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        itemCount: filteredArticles.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 14),
+                        itemBuilder: (context, index) {
+                          final article = filteredArticles[index];
+                          return SizedBox(
+                            width: 280,
+                            child: _ArticleCard(
                               article: article,
                               onTap: () {
-                                context.push(
-                                  '/education/article/${article.id}',
-                                );
+                                context.push('/education/article/${article.id}');
                               },
-                            );
-                          },
-                        ),
-                )
-              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  const SizedBox(height: 24),
+                  const _EducationHeroCard(
+                    title: 'Apprendre en douceur',
+                    subtitle:
+                        'Explorez des réponses simples à vos questions les plus fréquentes.',
+                    accent: AppColors.primary300,
+                  ),
+                  const SizedBox(height: 80),
+                ],
+              ),
             ),
           ),
         ],
@@ -216,27 +258,114 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen>
     );
   }
 
-  Widget _buildTabLabel(String label, int count) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label),
-        const SizedBox(height: 4),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(
-            color: AppColors.grey100,
-            borderRadius: BorderRadius.circular(8),
+  Widget _buildAxisChips(List<EducationCategory> categories) {
+    return SizedBox(
+      height: 42,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          final selected = _selectedAxis == category.axis;
+          return GestureDetector(
+            onTap: () => setState(() => _selectedAxis = category.axis),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              decoration: BoxDecoration(
+                color: selected ? AppColors.grey900 : AppColors.grey100,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                category.axis.label,
+                style: AppText.caption.copyWith(
+                  color: selected ? AppColors.white : AppColors.grey700,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _EducationHeroCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Color accent;
+
+  const _EducationHeroCard({
+    required this.title,
+    required this.subtitle,
+    required this.accent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        gradient: LinearGradient(
+          colors: [accent.withOpacity(0.95), accent.withOpacity(0.45)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accent.withOpacity(0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 12),
           ),
-          child: Text(
-            '$count articles',
-            style: AppText.caption.copyWith(
-              fontSize: 10,
-              color: AppColors.grey600,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: AppText.h4.copyWith(
+              color: AppColors.white,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 10),
+          Text(
+            subtitle,
+            style: AppText.body.copyWith(
+              color: AppColors.white.withOpacity(0.92),
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.white.withOpacity(0.16),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.lightbulb_outline,
+                    color: AppColors.white, size: 18),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Accédez à des réponses claires, étape par étape.',
+                    style: AppText.caption.copyWith(
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -368,7 +497,7 @@ class _ArticleCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.schedule,
                         size: 12,
                         color: AppColors.grey600,

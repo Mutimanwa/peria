@@ -304,10 +304,10 @@ final l10n = AppLocalizations.of(context);
                 const SizedBox(height: 18),
 
                 // ── Cartes articles ──────────────────────────────
-                Expanded(
+                const Expanded(
                   child: Stack(
                     children: [
-                      const Positioned.fill(
+                      Positioned.fill(
                         child: Padding(
                           padding: EdgeInsets.only(
                               bottom: 10), // Increased to clear floating nav

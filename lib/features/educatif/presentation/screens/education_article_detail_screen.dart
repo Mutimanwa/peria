@@ -35,253 +35,326 @@ class EducationArticleDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () => context.pop(),
-          child: const Icon(Icons.arrow_back, color: AppColors.grey900),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 18),
-            child: GestureDetector(
-              onTap: () {
-                // TODO: Bookmark article
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Article ajouté à vos favoris'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.bookmark_outline,
-                color: AppColors.grey700,
-              ),
-            ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(gradient: AppColors.bgGradient),
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(18, 0, 18, 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ════════════════════════════════════════════════════════════════
-            // HEADER
-            // ════════════════════════════════════════════════════════════════
-
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: article.axis.color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(18, 12, 18, 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Axis badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: article.axis.color,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      article.axis.label,
-                      style: AppText.caption.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Title
-                  Text(
-                    article.title,
-                    style: AppText.h3.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Meta info
+                  // ════════════════════════════════════════════════════════════════
+                  // HEADER WITH BACK BUTTON
+                  // ════════════════════════════════════════════════════════════════
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.grey100,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.schedule,
-                              size: 12,
-                              color: AppColors.grey600,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${article.readingTimeMinutes}min',
-                              style: AppText.label.copyWith(
-                                color: AppColors.grey600,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () => context.pop(),
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withOpacity(0.75),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.grey200),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: AppColors.grey900,
+                            size: 18,
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                      Text(
+                        article.axis.label,
+                        style: AppText.caption.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.grey700,
                         ),
-                        decoration: BoxDecoration(
-                          color: _getDifficultyColor(article.difficultyLevel)
-                              .withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          _getDifficultyLabel(article.difficultyLevel),
-                          style: AppText.label.copyWith(
-                            color: _getDifficultyColor(article.difficultyLevel),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Article ajouté aux favoris ♥'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withOpacity(0.75),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.grey200),
+                          ),
+                          child: const Icon(
+                            Icons.bookmark_outline,
+                            color: AppColors.grey700,
+                            size: 18,
                           ),
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
-            // ════════════════════════════════════════════════════════════════
-            // CONTENT SECTIONS
-            // ════════════════════════════════════════════════════════════════
-
-            // Explanation
-            _ContentSection(
-              icon: Icons.lightbulb_outline,
-              title: 'Explication',
-              content: article.explanation,
-            ),
-            const SizedBox(height: 20),
-
-            // Observations
-            _ContentSection(
-              icon: Icons.visibility_outlined,
-              title: 'À observer',
-              content: article.observations,
-            ),
-            const SizedBox(height: 20),
-
-            // Advice
-            _ContentSection(
-              icon: Icons.recommend_outlined,
-              title: 'Conseils',
-              content: article.advice,
-            ),
-            const SizedBox(height: 20),
-
-            // When to consult
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.error.withOpacity(0.3),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.warning_outlined,
-                        color: AppColors.error,
-                        size: 20,
+                  // ════════════════════════════════════════════════════════════════
+                  // HERO CARD WITH TITLE & META
+                  // ════════════════════════════════════════════════════════════════
+                  Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          article.axis.color.withOpacity(0.12),
+                          article.axis.color.withOpacity(0.04),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Quand consulter',
-                        style: AppText.h6.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.error,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: article.axis.color.withOpacity(0.2),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: article.axis.color.withOpacity(0.08),
+                          offset: const Offset(0, 4),
+                          blurRadius: 12,
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    article.whenToConsult,
-                    style: AppText.body.copyWith(
-                      color: AppColors.grey800,
-                      height: 1.6,
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // ════════════════════════════════════════════════════════════════
-            // TAGS & METADATA
-            // ════════════════════════════════════════════════════════════════
-
-            if (article.tags.isNotEmpty) ...[
-              Text(
-                'Tags',
-                style: AppText.h6.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: article.tags
-                    .map((tag) => Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Axis badge
+                        Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.grey100,
-                            borderRadius: BorderRadius.circular(16),
+                            color: article.axis.color,
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            tag,
+                            article.axis.label,
                             style: AppText.caption.copyWith(
-                              color: AppColors.grey700,
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                        ))
-                    .toList(),
-              ),
-              const SizedBox(height: 20),
-            ],
+                        ),
+                        const SizedBox(height: 12),
 
-            // Last updated
-            Text(
-              'Mis à jour: ${_formatDate(article.lastUpdated)}',
-              style: AppText.caption.copyWith(
-                color: AppColors.grey500,
+                        // Title
+                        Text(
+                          article.title,
+                          style: AppText.h4.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.grey900,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Meta row
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.grey100,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.schedule,
+                                    size: 12,
+                                    color: AppColors.grey600,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${article.readingTimeMinutes}min',
+                                    style: AppText.label.copyWith(
+                                      color: AppColors.grey600,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _getDifficultyColor(
+                                        article.difficultyLevel)
+                                    .withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                _getDifficultyLabel(article.difficultyLevel),
+                                style: AppText.label.copyWith(
+                                  color: _getDifficultyColor(
+                                      article.difficultyLevel),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // ════════════════════════════════════════════════════════════════
+                  // CONTENT CARDS
+                  // ════════════════════════════════════════════════════════════════
+
+                  // Explanation card
+                  _ArticleContentCard(
+                    icon: Icons.lightbulb_outline,
+                    title: 'Explication',
+                    content: article.explanation,
+                    accentColor: article.axis.color,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Observations card
+                  _ArticleContentCard(
+                    icon: Icons.visibility_outlined,
+                    title: 'À observer',
+                    content: article.observations,
+                    accentColor: article.axis.color,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Advice card
+                  _ArticleContentCard(
+                    icon: Icons.recommend_outlined,
+                    title: 'Conseils',
+                    content: article.advice,
+                    accentColor: article.axis.color,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // When to consult (alert style)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: AppColors.error.withOpacity(0.25),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: AppColors.error,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.warning_outlined,
+                                color: AppColors.white,
+                                size: 16,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Quand consulter',
+                              style: AppText.h6.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          article.whenToConsult,
+                          style: AppText.body.copyWith(
+                            color: AppColors.grey800,
+                            height: 1.6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // ════════════════════════════════════════════════════════════════
+                  // TAGS
+                  // ════════════════════════════════════════════════════════════════
+                  if (article.tags.isNotEmpty) ...[
+                    Text(
+                      'Tags associés',
+                      style: AppText.h6.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: article.tags
+                          .map((tag) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey100,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Text(
+                                  tag,
+                                  style: AppText.caption.copyWith(
+                                    color: AppColors.grey700,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Footer metadata
+                  Center(
+                    child: Text(
+                      'Mise à jour: ${_formatDate(article.lastUpdated)}',
+                      style: AppText.caption.copyWith(
+                        color: AppColors.grey500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -319,50 +392,80 @@ class EducationArticleDetailScreen extends ConsumerWidget {
 }
 
 // ════════════════════════════════════════════════════════════════
-// CONTENT SECTION COMPONENT
+// ARTICLE CONTENT CARD COMPONENT
 // ════════════════════════════════════════════════════════════════
 
-class _ContentSection extends StatelessWidget {
+class _ArticleContentCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String content;
+  final Color accentColor;
 
-  const _ContentSection({
+  const _ArticleContentCard({
     required this.icon,
     required this.title,
     required this.content,
+    required this.accentColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(
-              icon,
-              color: AppColors.grey700,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: AppText.h6.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.grey200,
+          width: 1,
         ),
-        const SizedBox(height: 10),
-        Text(
-          content,
-          style: AppText.body.copyWith(
-            color: AppColors.grey800,
-            height: 1.6,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withOpacity(0.04),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
           ),
-        ),
-      ],
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: accentColor,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: AppText.h6.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            content,
+            style: AppText.body.copyWith(
+              color: AppColors.grey800,
+              height: 1.6,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
+
