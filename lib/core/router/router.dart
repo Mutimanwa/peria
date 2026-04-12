@@ -10,7 +10,8 @@ import 'package:perla_app/features/onboarding/presentation/screens/onboarding_sc
 import 'package:perla_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/welcome_screen.dart';
-import 'package:perla_app/features/educatif/presentation/screens/self_care_home_screen.dart';
+import 'package:perla_app/features/educatif/presentation/screens/education_home_screen.dart';
+import 'package:perla_app/features/educatif/presentation/screens/education_article_detail_screen.dart';
 import 'package:perla_app/core/router/shell_navigation.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -192,7 +193,17 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => _buildSlideTransitionPage(
             context,
             state,
-            const SelfCareHomeScreen(), // Will be renamed to EducationHomeScreen
+            const EducationHomeScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/education/article/:id',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            EducationArticleDetailScreen(
+              articleId: state.pathParameters['id'] ?? '',
+            ),
           ),
         ),
       ],
