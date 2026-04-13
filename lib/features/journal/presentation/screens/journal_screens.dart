@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/journal/data/models/journal_entry.dart';
 import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
-import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
+import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 class JournalScreen extends ConsumerStatefulWidget {
   const JournalScreen({super.key});
@@ -17,383 +18,447 @@ class JournalScreen extends ConsumerStatefulWidget {
 
 class _JournalScreenState extends ConsumerState<JournalScreen> {
   late DateTime _selectedDate;
+  final _searchController = TextEditingController();
+  final _quickLogController = TextEditingController();
   bool _searchOpen = false;
   String _query = '';
-  bool _isLocked = true;
-  bool _showLockOverlay = false;
-  final TextEditingController _searchController = TextEditingController();
+  String _quickMood = 'calm';
+
+  static const _moods = [
+    ('calm', 'Calm'),
+    ('happy', 'Happy'),
+    ('sad', 'Sad'),
+    ('anxious', 'Anxious'),
+    ('tired', 'Tired'),
+  ];
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    // Simuler l'état verrouillé au démarrage (à intégrer avec biométrie réelle)
-    _showLockOverlay = _isLocked;
+    _quickLogController.addListener(_refresh);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _quickLogController
+      ..removeListener(_refresh)
+      ..dispose();
     super.dispose();
   }
 
+  void _refresh() {
+    if (mounted) setState(() {});
+  }
+
   List<DateTime> _getWeekDays() {
-    final now = _selectedDate;
-    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final monday = _selectedDate.subtract(Duration(days: _selectedDate.weekday - 1));
     return List.generate(7, (i) => monday.add(Duration(days: i)));
   }
 
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
-  /// Logique de filtrage disjointe : date OU recherche globale
   List<JournalEntry> _filterEntries(List<JournalEntry> entries) {
     if (_query.isNotEmpty) {
-      // Mode recherche global : ignorer le filtre date
       return entries.where((entry) {
         return entry.title.toLowerCase().contains(_query) ||
             entry.content.toLowerCase().contains(_query) ||
             entry.mood.toLowerCase().contains(_query);
       }).toList();
-    } else {
-      // Mode normal : filtrer par jour sélectionné
-      return entries.where((entry) {
-        return _isSameDay(entry.createdAt, _selectedDate);
-      }).toList();
     }
+    return entries.where((entry) => _isSameDay(entry.createdAt, _selectedDate)).toList();
   }
 
-  /// Vérifier si un jour a des entrées (pour l'indicateur)
   bool _dayHasEntries(DateTime day, List<JournalEntry> entries) {
     return entries.any((entry) => _isSameDay(entry.createdAt, day));
   }
 
-  /// Déverrouiller le journal (biométrie à implémenter)
-  void _unlockJournal() async {
-    // TODO: Intégrer avec local_auth pour biométrie réelle
-    setState(() => _showLockOverlay = false);
+  Future<void> _saveQuickEntry() async {
+    final note = _quickLogController.text.trim();
+    if (note.isEmpty) return;
+    final now = DateTime.now();
+    await ref.read(journalProvider.notifier).upsert(
+          JournalEntry(
+            id: now.microsecondsSinceEpoch.toString(),
+            createdAt: now,
+            updatedAt: now,
+            title: '',
+            content: note,
+            mood: _quickMood,
+          ),
+        );
+    if (!mounted) return;
+    setState(() {
+      _selectedDate = now;
+      _quickMood = 'calm';
+      _quickLogController.clear();
+    });
+  }
+
+  Future<void> _openQuickLogSheet(AppLocalizations l10n) async {
+    final controller = TextEditingController(text: _quickLogController.text);
+    var mood = _quickMood;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final canSave = controller.text.trim().isNotEmpty;
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+              ),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 42,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.grey300,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Text(l10n.newEntry, style: AppText.h4),
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.writeFreelyHint,
+                      style: AppText.body.copyWith(color: AppColors.grey600),
+                    ),
+                    const SizedBox(height: 18),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: _moods.map((item) {
+                        final selected = mood == item.$1;
+                        final tone = _JournalMoodTone.fromMood(item.$1);
+                        return GestureDetector(
+                          onTap: () => setModalState(() => mood = item.$1),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 180),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: selected ? tone.softBackground : AppColors.grey100,
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: selected ? tone.accent : AppColors.grey200,
+                              ),
+                            ),
+                            child: Text(
+                              item.$2,
+                              style: AppText.caption.copyWith(
+                                color: selected ? tone.accent : AppColors.grey700,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.grey100,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: TextField(
+                        controller: controller,
+                        minLines: 5,
+                        maxLines: 8,
+                        onChanged: (_) => setModalState(() {}),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: l10n.writeFreelyHint,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlineButton(
+                            label: 'Open editor',
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              this.context.go('/journal/new');
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: PrimaryButton(
+                            label: l10n.saveEntry,
+                            onPressed: canSave
+                                ? () async {
+                                    final now = DateTime.now();
+                                    await ref.read(journalProvider.notifier).upsert(
+                                          JournalEntry(
+                                            id: now.microsecondsSinceEpoch.toString(),
+                                            createdAt: now,
+                                            updatedAt: now,
+                                            title: '',
+                                            content: controller.text.trim(),
+                                            mood: mood,
+                                          ),
+                                        );
+                                    if (!mounted) return;
+                                    setState(() {
+                                      _selectedDate = now;
+                                      _quickMood = 'calm';
+                                      _quickLogController.clear();
+                                    });
+                                    Navigator.of(context).pop();
+                                  }
+                                : null,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    controller.dispose();
+  }
+
+  String _summaryLabel(DateTime date, int count) {
+    final day = DateFormat('EEEE, d MMMM').format(date);
+    final suffix = count <= 1 ? 'note' : 'notes';
+    return '$day � $count $suffix';
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(journalProvider);
-    final weekDays = _getWeekDays();
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Stack(
-        children: [
-          Container(decoration: const BoxDecoration(gradient: AppColors.bgGradient)),
-          SafeArea(
-            child: Column(
-              children: [
-                // ════ HEADER CENTRÉ (sans profil) ════
-                _buildCenteredHeader(context, l10n),
-
-                // ════ WEEK CALENDAR avec indicateurs ════
-                state.when(
-                  data: (entries) => _buildWeekCalendarWithIndicators(weekDays, entries),
-                  loading: () => const SizedBox(height: 70),
-                  error: (_, __) => const SizedBox(height: 70),
-                ),
-
-                // ════ ENTRIES LIST avec animations ════
-                Expanded(
-                  child: state.when(
-                    data: (entries) {
-                      final filtered = _filterEntries(entries);
-
-                      if (filtered.isEmpty) {
-                        return _EmptyJournal(
-                          hasQuery: _query.isNotEmpty,
-                          selectedDate: _selectedDate,
-                        );
-                      }
-
-                      return AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: ListView.builder(
-                          key: ValueKey(filtered.length),
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-                          itemCount: filtered.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: _JournalCard(entry: filtered[index]),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (_, __) => Center(
-                      child: Text('Unable to load journal'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // ════ ÉCRAN DE VERROUILLAGE BIOMÉTRIQUE ════
-          if (_showLockOverlay) _buildLockOverlay(context, l10n),
-        ],
-      ),
-      floatingActionButton: _buildFAB(context, l10n),
-    );
-  }
-
-  /// Header centré avec actions contextuelles (recherche + verrou)
-  Widget _buildCenteredHeader(BuildContext context, AppLocalizations l10n) {
-    return Container(
-      color: AppColors.white,
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-      child: Column(
-        children: [
-          // Titre centré
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                l10n.journalTitle,
-                style: AppText.h4,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // Actions contextuelles en bas
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Search icon
-              GestureDetector(
-                onTap: () => setState(() => _searchOpen = !_searchOpen),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: _searchOpen ? AppColors.primary100 : AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: _searchOpen ? AppColors.primary : AppColors.grey200,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.search,
-                    size: 18,
-                    color: _searchOpen ? AppColors.primary : AppColors.grey700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-
-              // Lock icon (toggle biométrie)
-              GestureDetector(
-                onTap: () => setState(() => _isLocked = !_isLocked),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: _isLocked ? AppColors.primary100 : AppColors.grey100,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: _isLocked ? AppColors.primary : AppColors.grey300,
-                    ),
-                  ),
-                  child: Icon(
-                    _isLocked ? Icons.lock : Icons.lock_open,
-                    size: 18,
-                    color: _isLocked ? AppColors.primary : AppColors.grey600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Week calendar avec indicateurs de contenu (petit point si entrée existe)
-  Widget _buildWeekCalendarWithIndicators(List<DateTime> weekDays, List<JournalEntry> entries) {
-    return Container(
-      color: AppColors.white,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        children: [
-          // Inline search field (apparaît quand search est ouvert)
-          if (_searchOpen)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (value) => setState(() => _query = value.trim().toLowerCase()),
-                decoration: InputDecoration(
-                  hintText: 'Search entries...',
-                  hintStyle: AppText.body.copyWith(color: AppColors.grey400),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.grey400, size: 20),
-                  suffixIcon: _query.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () {
-                            _searchController.clear();
-                            setState(() => _query = '');
-                          },
-                          child: const Icon(Icons.close, color: AppColors.grey400, size: 20),
-                        )
-                      : null,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grey200),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.grey200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primary),
-                  ),
-                ),
-              ),
-            ),
-
-          // Week calendar avec indicateurs
-          SizedBox(
-            height: 70,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: 7,
-              itemBuilder: (context, index) {
-                final day = weekDays[index];
-                final isSelected = _isSameDay(day, _selectedDate);
-                final isToday = _isSameDay(day, DateTime.now());
-                final hasEntry = _dayHasEntries(day, entries);
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedDate = day;
-                      _query = ''; // Clear search when changing day
-                      _searchOpen = false;
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary : Colors.transparent,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected ? AppColors.primary : AppColors.grey200,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppColors.bgGradient),
+        child: SafeArea(
+          child: state.when(
+            data: (entries) {
+              final filtered = _filterEntries(entries);
+              final weekDays = _getWeekDays();
+              return Column(
+                children: [
+                  _buildHeader(l10n),
+                  _buildWeekCalendar(weekDays, entries),
+                  _buildSummaryBar(filtered.length),
+                  Expanded(
+                    child: ListView(
+                      key: ValueKey('journal-${_selectedDate.toIso8601String()}-$_query-${filtered.length}'),
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
                       children: [
-                        Text(
-                          DateFormat('EEE').format(day).substring(0, 1),
-                          style: AppText.caption.copyWith(
-                            color: isSelected ? AppColors.white : AppColors.grey600,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${day.day}',
-                          style: AppText.label.copyWith(
-                            color: isSelected ? AppColors.white : AppColors.black,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        // Indicateur de contenu
-                        if (hasEntry || isToday)
+                        if (_query.isEmpty)
                           Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Container(
-                              width: 4,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: isSelected ? AppColors.white : AppColors.primary,
-                                shape: BoxShape.circle,
-                              ),
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _QuickLogComposer(
+                              value: _quickLogController.text,
+                              selectedMood: _quickMood,
+                              moods: _moods,
+                              onMoodSelected: (mood) => setState(() => _quickMood = mood),
+                              onOpenSheet: () => _openQuickLogSheet(l10n),
+                              controller: _quickLogController,
+                              onSave: _saveQuickEntry,
+                            ),
+                          ),
+                        if (filtered.isEmpty)
+                          _EmptyJournal(hasQuery: _query.isNotEmpty, selectedDate: _selectedDate)
+                        else
+                          ...filtered.map(
+                            (entry) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: _JournalCard(entry: entry),
                             ),
                           ),
                       ],
                     ),
                   ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Écran de verrouillage biométrique (overlay)
-  Widget _buildLockOverlay(BuildContext context, AppLocalizations l10n) {
-    return Positioned.fill(
-      child: GestureDetector(
-        onTap: () {}, // Empêcher les clicks en dessous
-        child: Container(
-          color: Colors.black87,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.lock_outline, size: 80, color: AppColors.white),
-                const SizedBox(height: 24),
-                Text(
-                  'Journal verrouillé',
-                  style: AppText.h4.copyWith(color: AppColors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Authentifiez-vous pour accéder',
-                  style: AppText.body.copyWith(color: AppColors.grey300),
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  onPressed: _unlockJournal,
-                  icon: const Icon(Icons.fingerprint),
-                  label: const Text('Déverrouiller'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (_, __) => const Center(child: Text('Unable to load journal')),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildFAB(BuildContext context, AppLocalizations l10n) {
-    return FloatingActionButton(
-      onPressed: () => context.go('/journal/new'),
-      backgroundColor: AppColors.primary,
-      child: const Icon(Icons.add, size: 28),
+  Widget _buildHeader(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _query.isNotEmpty ? l10n.searchJournalHint : l10n.journalTitle,
+                      style: AppText.h3.copyWith(fontSize: 22),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _query.isNotEmpty ? l10n.tryAnotherKeyword : l10n.journalSubtitle,
+                      style: AppText.caption.copyWith(color: AppColors.grey600),
+                    ),
+                  ],
+                ),
+              ),
+              _HeaderIconButton(
+                icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
+                onTap: () {
+                  setState(() {
+                    _searchOpen = !_searchOpen;
+                    if (!_searchOpen) {
+                      _searchController.clear();
+                      _query = '';
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (_searchOpen)
+            Container(
+              height: 52,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.grey200),
+              ),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) => setState(() => _query = value.trim().toLowerCase()),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: l10n.searchJournalHint,
+                  hintStyle: AppText.body.copyWith(color: AppColors.grey400),
+                  icon: const Icon(Icons.search_rounded, color: AppColors.grey500, size: 20),
+                ),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.white.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.grey200),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.shield_outlined, size: 18, color: AppColors.grey600),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Private by default on this device.',
+                      style: AppText.caption.copyWith(
+                        color: AppColors.grey700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWeekCalendar(List<DateTime> weekDays, List<JournalEntry> entries) {
+    return SizedBox(
+      height: 80,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemBuilder: (context, index) {
+          final day = weekDays[index];
+          return _WeekDayChip(
+            date: day,
+            isSelected: _isSameDay(day, _selectedDate),
+            isToday: _isSameDay(day, DateTime.now()),
+            hasEntry: _dayHasEntries(day, entries),
+            onTap: () => setState(() => _selectedDate = day),
+          );
+        },
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemCount: weekDays.length,
+      ),
+    );
+  }
+
+  Widget _buildSummaryBar(int count) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.white.withOpacity(0.72),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.grey200),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              _summaryLabel(_selectedDate, count),
+              style: AppText.body.copyWith(
+                color: AppColors.grey800,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Text(
+            _isSameDay(_selectedDate, DateTime.now()) ? 'Today' : DateFormat('EEE').format(_selectedDate),
+            style: AppText.caption.copyWith(
+              color: AppColors.primary500,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
 class JournalEditorScreen extends ConsumerStatefulWidget {
   const JournalEditorScreen({super.key, this.entryId});
 
   final String? entryId;
 
   @override
-  ConsumerState<JournalEditorScreen> createState() =>
-      _JournalEditorScreenState();
+  ConsumerState<JournalEditorScreen> createState() => _JournalEditorScreenState();
 }
 
 class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
@@ -425,14 +490,27 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
         _mood = _existing!.mood;
       }
     }
+    _titleController.addListener(_refresh);
+    _contentController.addListener(_refresh);
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _contentController.dispose();
+    _titleController
+      ..removeListener(_refresh)
+      ..dispose();
+    _contentController
+      ..removeListener(_refresh)
+      ..dispose();
     super.dispose();
   }
+
+  void _refresh() {
+    if (mounted) setState(() {});
+  }
+
+  bool get _canSave =>
+      _titleController.text.trim().isNotEmpty || _contentController.text.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -451,32 +529,28 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
               _formattedDate(_existing?.createdAt ?? DateTime.now()),
               style: AppText.caption.copyWith(color: AppColors.grey500),
             ),
-            const SizedBox(height: 16),
-            const Text('How are you feeling?', style: AppText.label),
+            const SizedBox(height: 18),
+            Text('Mood', style: AppText.label.copyWith(color: AppColors.grey800)),
             const SizedBox(height: 10),
             Wrap(
               spacing: 10,
               runSpacing: 10,
               children: _moods.map((mood) {
                 final selected = _mood == mood.$1;
+                final tone = _JournalMoodTone.fromMood(mood.$1);
                 return GestureDetector(
                   onTap: () => setState(() => _mood = mood.$1),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: selected ? AppColors.primary50 : AppColors.grey100,
+                      color: selected ? tone.softBackground : AppColors.grey100,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                          color: selected
-                              ? AppColors.primary300
-                              : AppColors.grey200),
+                      border: Border.all(color: selected ? tone.accent : AppColors.grey200),
                     ),
                     child: Text(
                       mood.$2,
                       style: AppText.label.copyWith(
-                        color:
-                            selected ? AppColors.primary400 : AppColors.grey700,
+                        color: selected ? tone.accent : AppColors.grey700,
                       ),
                     ),
                   ),
@@ -484,19 +558,15 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
               }).toList(),
             ),
             const SizedBox(height: 18),
-            const Text('Title', style: AppText.label),
+            Text('Title', style: AppText.label.copyWith(color: AppColors.grey800)),
             const SizedBox(height: 8),
-            PillTextField(
-              hint: 'Today I want to remember...',
-              controller: _titleController,
-            ),
+            PillTextField(hint: 'Today I want to remember...', controller: _titleController),
             const SizedBox(height: 18),
-            const Text('Your note', style: AppText.label),
+            Text('Your note', style: AppText.label.copyWith(color: AppColors.grey800)),
             const SizedBox(height: 8),
             Expanded(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: AppColors.grey100,
                   borderRadius: BorderRadius.circular(24),
@@ -520,9 +590,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                     child: OutlineButton(
                       label: l10n.delete,
                       onPressed: () async {
-                        await ref
-                            .read(journalProvider.notifier)
-                            .delete(_existing!.id);
+                        await ref.read(journalProvider.notifier).delete(_existing!.id);
                         if (mounted) context.go('/journal');
                       },
                     ),
@@ -531,10 +599,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                 Expanded(
                   child: PrimaryButton(
                     label: l10n.saveEntry,
-                    onPressed: _contentController.text.trim().isEmpty &&
-                            _titleController.text.trim().isEmpty
-                        ? null
-                        : _save,
+                    onPressed: _canSave ? _save : null,
                   ),
                 ),
               ],
@@ -566,8 +631,193 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
     if (mounted) context.go('/journal');
   }
 
-  String _formattedDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  String _formattedDate(DateTime date) =>
+      '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+}
+
+class _QuickLogComposer extends StatelessWidget {
+  const _QuickLogComposer({
+    required this.value,
+    required this.selectedMood,
+    required this.moods,
+    required this.onMoodSelected,
+    required this.onOpenSheet,
+    required this.controller,
+    required this.onSave,
+  });
+
+  final String value;
+  final String selectedMood;
+  final List<(String, String)> moods;
+  final ValueChanged<String> onMoodSelected;
+  final VoidCallback onOpenSheet;
+  final TextEditingController controller;
+  final Future<void> Function() onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final canSave = value.trim().isNotEmpty;
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.white.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(color: AppColors.grey200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(l10n.newEntry, style: AppText.h5)),
+              TextButton(
+                onPressed: onOpenSheet,
+                child: Text(
+                  'Expand',
+                  style: AppText.caption.copyWith(
+                    color: AppColors.primary500,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.writeFreelyHint,
+            style: AppText.caption.copyWith(color: AppColors.grey600),
+          ),
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: moods.map((item) {
+              final selected = selectedMood == item.$1;
+              final tone = _JournalMoodTone.fromMood(item.$1);
+              return GestureDetector(
+                onTap: () => onMoodSelected(item.$1),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: selected ? tone.softBackground : AppColors.grey100,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: selected ? tone.accent : AppColors.grey200),
+                  ),
+                  child: Text(
+                    item.$2,
+                    style: AppText.caption.copyWith(
+                      color: selected ? tone.accent : AppColors.grey700,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.grey100,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            child: TextField(
+              controller: controller,
+              minLines: 3,
+              maxLines: 5,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: l10n.writeFreelyHint,
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Quick log',
+                  style: AppText.caption.copyWith(
+                    color: AppColors.grey600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 132,
+                child: PrimaryButton(
+                  label: l10n.saveEntry,
+                  onPressed: canSave ? onSave : null,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+class _WeekDayChip extends StatelessWidget {
+  const _WeekDayChip({
+    required this.date,
+    required this.isSelected,
+    required this.isToday,
+    required this.hasEntry,
+    required this.onTap,
+  });
+
+  final DateTime date;
+  final bool isSelected;
+  final bool isToday;
+  final bool hasEntry;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 68,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.white : AppColors.white.withOpacity(0.55),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: isSelected ? AppColors.primary200 : AppColors.grey200),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              DateFormat('E').format(date),
+              style: AppText.caption.copyWith(
+                color: isToday ? AppColors.primary500 : AppColors.grey600,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '${date.day}',
+              style: AppText.label.copyWith(
+                color: AppColors.grey900,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(
+                color: hasEntry ? AppColors.primary400 : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -579,72 +829,78 @@ class _JournalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final tone = _JournalMoodTone.fromMood(entry.mood);
+    final title = entry.title.isEmpty ? l10n.untitledNote : entry.title;
+    final preview = entry.content.isEmpty ? l10n.noDetailsYet : entry.content;
     return GestureDetector(
       onTap: () => context.go('/journal/edit/${entry.id}'),
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.white.withOpacity(0.85),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(color: AppColors.grey200),
         ),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                _MoodBadge(mood: entry.mood),
-                const Spacer(),
-                Text(
-                  '${entry.updatedAt.day}/${entry.updatedAt.month}/${entry.updatedAt.year}',
-                  style: AppText.caption.copyWith(color: AppColors.grey500),
-                ),
-              ],
+            Container(
+              width: 10,
+              height: 10,
+              margin: const EdgeInsets.only(top: 6),
+              decoration: BoxDecoration(color: tone.accent, shape: BoxShape.circle),
             ),
-            const SizedBox(height: 12),
-            Text(
-              entry.title.isEmpty ? l10n.untitledNote : entry.title,
-              style: AppText.h6,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              entry.content.isEmpty ? l10n.noDetailsYet : entry.content,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: AppText.body.copyWith(color: AppColors.grey700),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.label.copyWith(
+                            color: AppColors.grey900,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        DateFormat('HH:mm').format(entry.updatedAt),
+                        style: AppText.caption.copyWith(color: AppColors.grey500),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    preview,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppText.body.copyWith(color: AppColors.grey700, height: 1.4),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: tone.softBackground,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      tone.label,
+                      style: AppText.caption.copyWith(
+                        color: tone.accent,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MoodBadge extends StatelessWidget {
-  const _MoodBadge({required this.mood});
-
-  final String mood;
-
-  @override
-  Widget build(BuildContext context) {
-    final map = <String, String>{
-      'calm': 'Calm',
-      'happy': 'Happy',
-      'sad': 'Sad',
-      'anxious': 'Anxious',
-      'tired': 'Tired',
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.primary50,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Text(
-        map[mood] ?? mood,
-        style: AppText.caption.copyWith(
-          color: AppColors.primary400,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -660,38 +916,127 @@ class _EmptyJournal extends StatelessWidget {
   final bool hasQuery;
   final DateTime selectedDate;
 
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return now.year == date.year && now.month == date.month && now.day == date.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final isToday = DateTime.now().day == selectedDate.day &&
-        DateTime.now().month == selectedDate.month &&
-        DateTime.now().year == selectedDate.year;
-
-    return Center(
+    return Container(
+      padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
+      decoration: BoxDecoration(
+        color: AppColors.white.withOpacity(0.78),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.grey200),
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.menu_book_outlined,
-              size: 64, color: AppColors.grey400),
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.primary50,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Icon(Icons.edit_note_rounded, size: 30, color: AppColors.primary500),
+          ),
           const SizedBox(height: 14),
           Text(
             hasQuery
                 ? l10n.noMatchingNotes
-                : (isToday ? l10n.journalEmpty : 'No entry for this day'),
+                : (_isToday(selectedDate) ? l10n.journalEmpty : 'No entry for this day'),
+            textAlign: TextAlign.center,
             style: AppText.h5,
           ),
           const SizedBox(height: 8),
           Text(
             hasQuery
                 ? l10n.tryAnotherKeyword
-                : (isToday
+                : (_isToday(selectedDate)
                     ? l10n.startFirstNote
-                    : 'Start writing to capture your thoughts'),
+                    : 'Use quick log to capture this moment.'),
             textAlign: TextAlign.center,
             style: AppText.body.copyWith(color: AppColors.grey600),
           ),
         ],
       ),
     );
+  }
+}
+
+class _HeaderIconButton extends StatelessWidget {
+  const _HeaderIconButton({
+    required this.icon,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.grey200),
+        ),
+        child: Icon(icon, color: AppColors.grey700, size: 21),
+      ),
+    );
+  }
+}
+
+class _JournalMoodTone {
+  const _JournalMoodTone({
+    required this.label,
+    required this.accent,
+    required this.softBackground,
+  });
+
+  final String label;
+  final Color accent;
+  final Color softBackground;
+
+  factory _JournalMoodTone.fromMood(String mood) {
+    switch (mood) {
+      case 'happy':
+        return const _JournalMoodTone(
+          label: 'Happy',
+          accent: Color(0xFFB46900),
+          softBackground: Color(0xFFFFF1D6),
+        );
+      case 'sad':
+        return const _JournalMoodTone(
+          label: 'Sad',
+          accent: AppColors.info700,
+          softBackground: AppColors.info50,
+        );
+      case 'anxious':
+        return const _JournalMoodTone(
+          label: 'Anxious',
+          accent: AppColors.secondary600,
+          softBackground: AppColors.secondary100,
+        );
+      case 'tired':
+        return const _JournalMoodTone(
+          label: 'Tired',
+          accent: Color(0xFF8A6A43),
+          softBackground: Color(0xFFF2E9DF),
+        );
+      default:
+        return const _JournalMoodTone(
+          label: 'Calm',
+          accent: AppColors.primary500,
+          softBackground: AppColors.primary50,
+        );
+    }
   }
 }

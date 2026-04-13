@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/features/calendar/presentation/screens/calendar_screen.dart';
+import 'package:perla_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
+import 'package:perla_app/features/calendar/presentation/screens/symptoms_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:perla_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:perla_app/features/auth/presentation/screens/otp_screen.dart';
@@ -19,7 +22,8 @@ final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
 // Authentication state - replace with actual auth service
 bool isAuthenticated = true; // Assume user is authenticated for MVP
-bool hasCompletedOnboarding = false; // Will be updated when onboarding completes
+bool hasCompletedOnboarding =
+    false; // Will be updated when onboarding completes
 
 // Function to update onboarding state
 void updateOnboardingState(bool completed) {
@@ -76,7 +80,7 @@ final GoRouter appRouter = GoRouter(
         const SplashScreen(),
       ),
     ),
-     GoRoute(
+    GoRoute(
       path: '/welcome',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context,
@@ -168,6 +172,16 @@ final GoRouter appRouter = GoRouter(
             const CycleHomeScreen(),
           ),
         ),
+        GoRoute(
+          path: '/calendar',
+          pageBuilder: (context, state) =>
+              _buildSlideTransitionPage(context, state, const CalendarScreen()),
+        ),
+        GoRoute(
+          path: '/edit-calendar',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context, state, const EditCalendarScreen()),
+        ),
         // JOURNAL - Personal mood and symptom tracking
         GoRoute(
           path: '/journal',
@@ -186,6 +200,12 @@ final GoRouter appRouter = GoRouter(
             state,
             JournalEditorScreen(entryId: state.pathParameters['id']),
           ),
+        ),
+        GoRoute(
+            path: '/symptoms',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+                context, state, const SymptomsScreen()
+        ),
         ),
         // EDUCATION - Educational content about cycles, fertility, health
         GoRoute(
