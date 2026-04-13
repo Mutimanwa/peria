@@ -35,13 +35,13 @@ class ActivityDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            Row(
+            const Row(
               children: [
                 _MetaChip(
                   icon: Icons.local_fire_department_outlined,
                   label: '345 Kcal',
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _MetaChip(
                   icon: Icons.schedule_rounded,
                   label: '20 Min',

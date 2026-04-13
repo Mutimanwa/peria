@@ -189,6 +189,14 @@ final GoRouter appRouter = GoRouter(
               _buildSlideTransitionPage(context, state, const JournalScreen()),
         ),
         GoRoute(
+          path: '/journal/detail/:id',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
+          ),
+        ),
+        GoRoute(
           path: '/journal/new',
           pageBuilder: (context, state) => _buildSlideTransitionPage(
               context, state, const JournalEditorScreen()),

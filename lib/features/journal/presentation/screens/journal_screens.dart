@@ -1,4 +1,4 @@
-
+﻿
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -247,7 +247,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
   String _summaryLabel(DateTime date, int count) {
     final day = DateFormat('EEEE, d MMMM').format(date);
     final suffix = count <= 1 ? 'note' : 'notes';
-    return '$day � $count $suffix';
+    return '$day • $count $suffix';
   }
 
   @override
@@ -299,6 +299,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 80)
                 ],
               );
             },
@@ -307,6 +308,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           ),
         ),
       ),
+      
     );
   }
 
@@ -452,6 +454,257 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
     );
   }
 }
+
+class JournalDetailScreen extends ConsumerWidget {
+  const JournalDetailScreen({super.key, required this.entryId});
+
+  final String entryId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final entries = ref.watch(journalProvider).value ?? const <JournalEntry>[];
+    JournalEntry? entry;
+
+    for (final item in entries) {
+      if (item.id == entryId) {
+        entry = item;
+        break;
+      }
+    }
+
+    if (entry == null) {
+      return PageScaffold(
+        showBack: true,
+        onBack: () => context.pop(),
+        showTitle: true,
+        title: l10n.journalTitle,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(22, 88, 22, 24),
+          child: Center(
+            child: _EmptyJournal(
+              hasQuery: false,
+              selectedDate: DateTime.now(),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final resolvedEntry = entry;
+    final tone = _JournalMoodTone.fromMood(resolvedEntry.mood);
+
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(gradient: AppColors.bgGradient),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(18, 12, 18, 100),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => context.pop(),
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withOpacity(0.75),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.grey200),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: AppColors.grey900,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        l10n.journalTitle,
+                        style: AppText.caption.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.grey700,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.go('/journal/edit/${resolvedEntry.id}'),
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withOpacity(0.75),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.grey200),
+                          ),
+                          child: const Icon(
+                            Icons.edit_outlined,
+                            color: AppColors.grey700,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          tone.accent.withOpacity(0.14),
+                          tone.softBackground.withOpacity(0.65),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: tone.accent.withOpacity(0.22),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: tone.accent.withOpacity(0.08),
+                          offset: const Offset(0, 4),
+                          blurRadius: 12,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: tone.accent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            tone.label,
+                            style: AppText.caption.copyWith(
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          resolvedEntry.title.isEmpty ? l10n.untitledNote : resolvedEntry.title,
+                          style: AppText.h4.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.grey900,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _JournalMetaChip(
+                              icon: Icons.calendar_today_outlined,
+                              label: DateFormat('d MMM yyyy').format(resolvedEntry.createdAt),
+                            ),
+                            _JournalMetaChip(
+                              icon: Icons.schedule,
+                              label: DateFormat('HH:mm').format(resolvedEntry.updatedAt),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _JournalDetailCard(
+                    icon: Icons.menu_book_outlined,
+                    title: 'Note',
+                    content: resolvedEntry.content.isEmpty ? l10n.noDetailsYet : resolvedEntry.content,
+                    accentColor: tone.accent,
+                  ),
+                  const SizedBox(height: 14),
+                  _JournalDetailCard(
+                    icon: Icons.info_outline,
+                    title: 'Details',
+                    content:
+                        'Created ${DateFormat('EEEE, d MMMM yyyy').format(resolvedEntry.createdAt)} at ${DateFormat('HH:mm').format(resolvedEntry.createdAt)}\nUpdated ${DateFormat('EEEE, d MMMM yyyy').format(resolvedEntry.updatedAt)} at ${DateFormat('HH:mm').format(resolvedEntry.updatedAt)}',
+                    accentColor: AppColors.grey700,
+                  ),
+                  const SizedBox(height: 14),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: AppColors.error.withOpacity(0.25),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: AppColors.error,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.delete_outline,
+                                color: AppColors.white,
+                                size: 16,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              l10n.delete,
+                              style: AppText.h6.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Remove this note only if you no longer want to keep it in your private history.',
+                          style: AppText.body.copyWith(
+                            color: AppColors.grey800,
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlineButton(
+                            label: l10n.delete,
+                            onPressed: () async {
+                              await ref.read(journalProvider.notifier).delete(resolvedEntry.id);
+                              if (context.mounted) context.go('/journal');
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class JournalEditorScreen extends ConsumerStatefulWidget {
   const JournalEditorScreen({super.key, this.entryId});
 
@@ -821,6 +1074,119 @@ class _WeekDayChip extends StatelessWidget {
   }
 }
 
+class _JournalMetaChip extends StatelessWidget {
+  const _JournalMetaChip({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.grey100,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 12,
+            color: AppColors.grey600,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: AppText.label.copyWith(
+              color: AppColors.grey600,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _JournalDetailCard extends StatelessWidget {
+  const _JournalDetailCard({
+    required this.icon,
+    required this.title,
+    required this.content,
+    required this.accentColor,
+  });
+
+  final IconData icon;
+  final String title;
+  final String content;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.grey200,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withOpacity(0.04),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: accentColor,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: AppText.h6.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            content,
+            style: AppText.body.copyWith(
+              color: AppColors.grey800,
+              height: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _JournalCard extends StatelessWidget {
   const _JournalCard({required this.entry});
 
@@ -833,7 +1199,7 @@ class _JournalCard extends StatelessWidget {
     final title = entry.title.isEmpty ? l10n.untitledNote : entry.title;
     final preview = entry.content.isEmpty ? l10n.noDetailsYet : entry.content;
     return GestureDetector(
-      onTap: () => context.go('/journal/edit/${entry.id}'),
+      onTap: () => context.go('/journal/detail/${entry.id}'),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
         decoration: BoxDecoration(

@@ -23,6 +23,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
   }
 
 
+  // ignore: unused_element
   void _clearSearch() {
     _searchController.clear();
     ref.read(educationSearchProvider.notifier).clear();

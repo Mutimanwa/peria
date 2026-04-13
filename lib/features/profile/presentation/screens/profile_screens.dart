@@ -1062,10 +1062,8 @@ class _ToggleGroup extends StatelessWidget {
   }
 
   IconData _toggleIcon(String title) {
-    if (title.contains('Cycle') || title.contains('Period'))
-      return Icons.autorenew_rounded;
-    if (title.contains('Logged') || title.contains('Log'))
-      return Icons.add_circle_outline_rounded;
+    if (title.contains('Cycle') || title.contains('Period')) return Icons.autorenew_rounded;
+    if (title.contains('Logged') || title.contains('Log')) return Icons.add_circle_outline_rounded;
     if (title.contains('Mood')) return Icons.sentiment_satisfied_alt_outlined;
     if (title.contains('Face ID')) return Icons.fingerprint_rounded;
     if (title.contains('Two Factor')) return Icons.shield_outlined;
