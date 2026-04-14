@@ -8,8 +8,8 @@ class ShellNavigation extends StatefulWidget {
 
   const ShellNavigation({
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ShellNavigation> createState() => _ShellNavigationState();

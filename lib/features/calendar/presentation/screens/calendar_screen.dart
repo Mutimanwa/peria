@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/storage/app_settings.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/cycle/data/models/period_log.dart';
 import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
@@ -57,6 +58,143 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     setState(() {
       _selectedDate = day;
     });
+  }
+
+  Future<void> _showQuickPeriodSheet() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final today = DateTime.now();
+        final todayStart = DateTime(today.year, today.month, today.day);
+
+        Future<void> savePeriodLog({
+          required DateTime start,
+          required DateTime end,
+        }) async {
+          final log = PeriodLog(
+            id: DateTime.now().microsecondsSinceEpoch.toString(),
+            startDate: start,
+            endDate: end,
+            isEstimated: false,
+          );
+          await ref.read(periodLogsProvider.notifier).add(log);
+
+          final currentProfile = ref.read(userProfileProvider).value;
+          final currentLast = currentProfile?.lastPeriodStart;
+          if (currentLast == null || start.isAfter(currentLast)) {
+            await ref.read(userProfileProvider.notifier).patch(
+                  (p) => p.copyWith(lastPeriodStart: start),
+                );
+          }
+
+          if (mounted) Navigator.of(context).pop();
+        }
+
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          ),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey300,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text('Log period', style: AppText.h4),
+                const SizedBox(height: 6),
+                Text(
+                  'Quick daily capture. Use Edit Calendar when you need a precise correction.',
+                  style: AppText.body.copyWith(color: AppColors.grey600),
+                ),
+                const SizedBox(height: 18),
+                _QuickActionTile(
+                  icon: Icons.play_arrow_rounded,
+                  title: 'Period started today',
+                  subtitle: 'Save today as the first day of your period.',
+                  color: AppColors.primary400,
+                  onTap: () => savePeriodLog(start: todayStart, end: todayStart),
+                ),
+                const SizedBox(height: 12),
+                _QuickActionTile(
+                  icon: Icons.water_drop_outlined,
+                  title: 'Add today as a period day',
+                  subtitle: 'Extend your latest period log with one more day.',
+                  color: AppColors.primary500,
+                  onTap: () {
+                    final logs = ref.read(periodLogsProvider).value ?? const [];
+                    if (logs.isEmpty) {
+                      savePeriodLog(start: todayStart, end: todayStart);
+                      return;
+                    }
+                    final latest = logs.first;
+                    final updated = PeriodLog(
+                      id: latest.id,
+                      startDate: latest.startDate,
+                      endDate: todayStart.isAfter(latest.endDate)
+                          ? todayStart
+                          : latest.endDate,
+                      isEstimated: latest.isEstimated,
+                    );
+                    ref.read(periodLogsProvider.notifier).add(updated);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const SizedBox(height: 12),
+                _QuickActionTile(
+                  icon: Icons.stop_rounded,
+                  title: 'Period ended today',
+                  subtitle: 'Close your latest log with today as the end date.',
+                  color: AppColors.warning700,
+                  onTap: () {
+                    final logs = ref.read(periodLogsProvider).value ?? const [];
+                    if (logs.isEmpty) {
+                      Navigator.of(context).pop();
+                      return;
+                    }
+                    final latest = logs.first;
+                    final updated = PeriodLog(
+                      id: latest.id,
+                      startDate: latest.startDate,
+                      endDate: todayStart,
+                      isEstimated: latest.isEstimated,
+                    );
+                    ref.read(periodLogsProvider.notifier).add(updated);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                const SizedBox(height: 16),
+                OutlineButton(
+                  label: 'Open structured edit',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    context.push('/edit-calendar');
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   DateTime _startOfDay(DateTime d) => DateTime(d.year, d.month, d.day);
@@ -175,7 +313,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       showBack: true,
       onBack: () => context.push('/home'),
       showTitle: true,
-      title: 'My Calendar',
+      title: 'Cycle Calendar',
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -295,26 +433,100 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Légende
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildLegendItem('pms day', AppColors.warning50),
-                              const SizedBox(width: 16),
-                              _buildLegendItem(
-                                  'period day', AppColors.primary50),
-                              const SizedBox(width: 16),
-                              _buildLegendItem(
-                                  'ovulation day', AppColors.secondary100),
-                            ],
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: AppColors.grey50,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: AppColors.grey200),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Monthly overview',
+                                  style: AppText.label.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.grey900,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'This screen is for reading the cycle across time. Use quick log for daily capture and Edit Calendar for corrections.',
+                                  style: AppText.caption.copyWith(
+                                    color: AppColors.grey600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 16),
 
-                          PrimaryButton(
-                            label: 'Edit Period',
-                            onPressed: () {
-                              context.push("/edit-calendar");
-                            },
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 16,
+                            runSpacing: 10,
+                            children: [
+                              _buildLegendItem('pms day', AppColors.warning50),
+                              _buildLegendItem('period day', AppColors.primary50),
+                              _buildLegendItem('ovulation day', AppColors.secondary100),
+                              _buildLegendItem('today', AppColors.grey900),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.grey200),
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Quick capture', style: AppText.h4),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Fast daily actions for period and symptoms, without opening the structured editor.',
+                            style: AppText.body.copyWith(color: AppColors.grey600),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: PrimaryButton(
+                                  label: 'Log Period',
+                                  onPressed: _showQuickPeriodSheet,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: OutlineButton(
+                                  label: 'Log Symptoms',
+                                  onPressed: () => context.go('/symptoms'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Need to define or fix a date range? Use Edit Calendar.',
+                            style: AppText.caption.copyWith(color: AppColors.grey600),
+                          ),
+                          const SizedBox(height: 12),
+                          OutlineButton(
+                            label: 'Edit Calendar',
+                            onPressed: () => context.push('/edit-calendar'),
                           ),
                         ],
                       ),
@@ -336,18 +548,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('How are you feeling today?', style: AppText.h4),
+                          const Text('Symptoms snapshot', style: AppText.h4),
                           const SizedBox(height: 8),
                           Text(
-                            'tell us more about your body to get analyze',
+                            'Track daily observations like pain, mood, fatigue or discharge.',
                             style:
                                 AppText.body.copyWith(color: AppColors.grey600),
                           ),
                           const SizedBox(height: 16),
                           OutlineButton(
-                            label: '+ Add Symptom',
+                            label: '+ Log Symptoms',
                             onPressed: () {
-                              // Navigation à venir vers screen ajouter symptomes
                               context.go("/symptoms");
                             },
                           ),
@@ -367,6 +578,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   // Légende
   Widget _buildLegendItem(String label, Color color) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           width: 8,
@@ -570,6 +782,75 @@ class _NavArrow extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(icon, size: 20, color: AppColors.grey700),
+      ),
+    );
+  }
+}
+
+class _QuickActionTile extends StatelessWidget {
+  const _QuickActionTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.grey50,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.grey200),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppText.label.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.grey900,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: AppText.caption.copyWith(color: AppColors.grey600),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.grey500,
+            ),
+          ],
+        ),
       ),
     );
   }

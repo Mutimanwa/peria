@@ -16,6 +16,7 @@ import 'package:perla_app/features/onboarding/presentation/screens/welcome_scree
 import 'package:perla_app/features/educatif/presentation/screens/education_home_screen.dart';
 import 'package:perla_app/features/educatif/presentation/screens/education_article_detail_screen.dart';
 import 'package:perla_app/core/router/shell_navigation.dart';
+import 'package:perla_app/features/profile/presentation/screens/profile_screens.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -152,6 +153,30 @@ final GoRouter appRouter = GoRouter(
         const SetLastPeriodScreen(),
       ),
     ),
+            GoRoute(
+          path: '/calendar',
+          pageBuilder: (context, state) =>
+              _buildSlideTransitionPage(context, state, const CalendarScreen()),
+        ),
+        GoRoute(
+          path: '/edit-calendar',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context, state, const EditCalendarScreen()),
+        ),
+        GoRoute(
+            path: '/symptoms',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+                context, state, const SymptomsScreen()
+        ),
+        ),
+        GoRoute(
+            path: '/profile',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const ProfileScreen()
+            )
+        ),
     // Shell route for main app navigation with CustomBottomNav
     ShellRoute(
       navigatorKey: shellNavigatorKey,
@@ -171,16 +196,6 @@ final GoRouter appRouter = GoRouter(
             state,
             const CycleHomeScreen(),
           ),
-        ),
-        GoRoute(
-          path: '/calendar',
-          pageBuilder: (context, state) =>
-              _buildSlideTransitionPage(context, state, const CalendarScreen()),
-        ),
-        GoRoute(
-          path: '/edit-calendar',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context, state, const EditCalendarScreen()),
         ),
         // JOURNAL - Personal mood and symptom tracking
         GoRoute(
@@ -209,12 +224,7 @@ final GoRouter appRouter = GoRouter(
             JournalEditorScreen(entryId: state.pathParameters['id']),
           ),
         ),
-        GoRoute(
-            path: '/symptoms',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-                context, state, const SymptomsScreen()
-        ),
-        ),
+
         // EDUCATION - Educational content about cycles, fertility, health
         GoRoute(
           path: '/education',

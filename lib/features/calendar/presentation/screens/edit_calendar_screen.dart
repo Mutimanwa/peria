@@ -83,20 +83,20 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
 
   String get _selectionTitle {
     final start = _startDate;
-    if (start == null) return 'Select your period days';
+    if (start == null) return 'Structured period edit';
     final end = _endDate;
     if (end == null) return 'Start date selected';
-    return 'Period range selected';
+    return 'Period range ready';
   }
 
   String get _selectionSubtitle {
     final start = _startDate;
     if (start == null) {
-      return 'Tap the first day of your period, then tap the last day.';
+      return 'Use this screen to define or correct an exact period range.';
     }
     final end = _endDate;
     if (end == null) {
-      return '${_formatDate(start)} selected. Now choose the last day.';
+      return '${_formatDate(start)} selected. Now choose the last day for this structured edit.';
     }
     final duration = end.difference(start).inDays + 1;
     return '${_formatDate(start)} - ${_formatDate(end)} • $duration days';
@@ -108,7 +108,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
       showBack: true,
       onBack: () => context.pop(),
       showTitle: true,
-      title: 'Calendar',
+      title: 'Edit Calendar',
       child: Padding(
         padding: const EdgeInsets.only(top: 80, bottom: 20),
         child: Container(
@@ -179,6 +179,22 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.grey50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.grey200),
+                  ),
+                  child: Text(
+                    'This screen is for precise corrections. For quick daily updates, use Log Period from the calendar overview.',
+                    style: AppText.caption.copyWith(color: AppColors.grey600),
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                   padding:
@@ -195,7 +211,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: PrimaryButton(
-                  label: _endDate == null ? 'Save Start Date' : 'Save Period',
+                  label: _endDate == null ? 'Save start date' : 'Save period range',
                   onPressed: _canSave
                       ? () {
                           final start = _startDate!;

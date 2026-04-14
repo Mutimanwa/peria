@@ -22,45 +22,6 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
     _selectedDate = _dates[3]; // Le 21, comme sur la maquette
   }
 
-  void _showWaterSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-      ),
-      builder: (context) => const _WaterBottomSheet(),
-    );
-  }
-
-  void _showWeightSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-      ),
-      builder: (context) => const _WeightBottomSheet(),
-    );
-  }
-
-  void _showNoteSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-      ),
-      builder: (context) => const _NoteBottomSheet(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
@@ -150,44 +111,6 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  // ── Search Bar ──────────
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppColors.grey100,
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text('Search sympton...',
-                                style: AppText.body
-                                    .copyWith(color: AppColors.grey400)),
-                          ),
-                          const Icon(Icons.search, color: AppColors.grey400),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // ── Symptom Categories ──────────
-                  _buildCategoryCard('Pregnancy test', [
-                    const _Pill(
-                        label: 'Faint line',
-                        icon: Icons.favorite_border,
-                        isSelected: true),
-                    const _Pill(label: 'Positive', icon: Icons.add_circle_outline),
-                    const _Pill(label: 'No tests', icon: Icons.cancel_outlined),
-                    const _Pill(
-                        label: 'Negative',
-                        icon: Icons.remove_circle_outline,
-                        isSelected: true),
-                  ]),
 
                   _buildCategoryCard('Sexual activity', [
                     const _Pill(
@@ -281,14 +204,6 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                         icon: Icons.sentiment_very_dissatisfied,
                         isSelected: true),
                   ]),
-
-                  // ── Tracking Cards ──────────
-                  _buildTrackingCard('Weight', Icons.monitor_weight_outlined,
-                      '75.02 kg', _showWeightSheet),
-                  _buildTrackingCard('Note', Icons.calendar_today_outlined,
-                      'I had a very good day.', _showNoteSheet),
-                  _buildTrackingCard('Water', Icons.local_drink_outlined,
-                      '750 ml / 2000 ml', _showWaterSheet),
                 ],
               ),
             ),
@@ -336,50 +251,6 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
     );
   }
 
-  Widget _buildTrackingCard(
-      String title, IconData icon, String value, VoidCallback onEdit) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, color: AppColors.primary),
-                    const SizedBox(width: 12),
-                    Text(title, style: AppText.h4),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: onEdit,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.grey200),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.edit_outlined, size: 16),
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(value, style: AppText.body),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _Pill extends StatelessWidget {
@@ -387,8 +258,7 @@ class _Pill extends StatelessWidget {
   final IconData icon;
   final bool isSelected;
 
-  const _Pill(
-      {required this.label, required this.icon, this.isSelected = false});
+  const _Pill({required this.label, required this.icon, this.isSelected = false});
 
   @override
   Widget build(BuildContext context) {
@@ -398,339 +268,25 @@ class _Pill extends StatelessWidget {
         color: isSelected ? AppColors.primary50 : AppColors.grey50,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-            color: isSelected ? AppColors.primary100 : AppColors.grey200),
+          color: isSelected ? AppColors.primary100 : AppColors.grey200,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon,
-              size: 18,
-              color: isSelected ? AppColors.primary : AppColors.grey600),
-          const SizedBox(width: 8),
-          Text(label,
-              style: AppTypography.bodySmall.copyWith(
-                color: isSelected ? AppColors.primary : AppColors.grey800,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              )),
-        ],
-      ),
-    );
-  }
-}
-
-// ── BOTTOM SHEETS ──
-
-class _WaterBottomSheet extends StatefulWidget {
-  const _WaterBottomSheet();
-
-  @override
-  State<_WaterBottomSheet> createState() => _WaterBottomSheetState();
-}
-
-class _WaterBottomSheetState extends State<_WaterBottomSheet> {
-  int _glasses = 3; // Initial mock value
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                  color: AppColors.grey200,
-                  borderRadius: BorderRadius.circular(2))),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                        color: AppColors.primary50, shape: BoxShape.circle),
-                    child: const Icon(Icons.local_drink_outlined,
-                        color: AppColors.primary, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text('Water', style: AppText.h3),
-                ],
-              ),
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                      color: AppColors.grey100, shape: BoxShape.circle),
-                  child: const Icon(Icons.close, size: 20),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.grey50,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                const Text('750 ml / 2000 ml', style: AppText.h4),
-                const SizedBox(height: 24),
-                // Pseudo grid for glasses
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                      4,
-                      (index) => GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (index < _glasses) {
-                                _glasses = index;
-                              } else {
-                                _glasses = index + 1;
-                              }
-                            });
-                          },
-                          child: _WaterGlass(
-                              isFilled: index < _glasses, isPlus: false))),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                      4,
-                      (index) => GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (index + 4 < _glasses) {
-                                _glasses = index + 4;
-                              } else {
-                                _glasses = index + 5;
-                              }
-                            });
-                          },
-                          child: _WaterGlass(
-                              isFilled: (index + 4) < _glasses,
-                              isPlus: false))),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 32),
-          PrimaryButton(label: 'Save', onPressed: () => context.pop()),
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-}
-
-class _WaterGlass extends StatelessWidget {
-  final bool isFilled;
-  final bool isPlus;
-
-  const _WaterGlass({required this.isFilled, required this.isPlus});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          Text('250 ml',
-              style: AppTypography.captionSmall.copyWith(
-                  color: isFilled ? AppColors.info : AppColors.grey400)),
-          const SizedBox(height: 4),
           Icon(
-            isPlus
-                ? Icons.add_box_outlined
-                : (isFilled ? Icons.local_drink : Icons.local_drink_outlined),
-            color: isFilled ? AppColors.info : AppColors.grey300,
-            size: 32,
+            icon,
+            size: 18,
+            color: isSelected ? AppColors.primary : AppColors.grey600,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _WeightBottomSheet extends StatefulWidget {
-  const _WeightBottomSheet();
-
-  @override
-  State<_WeightBottomSheet> createState() => _WeightBottomSheetState();
-}
-
-class _WeightBottomSheetState extends State<_WeightBottomSheet> {
-  final TextEditingController _weightCtrl =
-      TextEditingController(text: '75.02');
-
-  @override
-  Widget build(BuildContext context) {
-    // Dans une vraie app on aurait un controleur texte + numpad custom
-    return Padding(
-      padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 24,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                  color: AppColors.grey200,
-                  borderRadius: BorderRadius.circular(2))),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                        color: AppColors.primary50, shape: BoxShape.circle),
-                    child: const Icon(Icons.monitor_weight_outlined,
-                        color: AppColors.primary, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text('Weight', style: AppText.h3),
-                ],
-              ),
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                      color: AppColors.grey100, shape: BoxShape.circle),
-                  child: const Icon(Icons.close, size: 20),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-                color: AppColors.grey50,
-                borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              children: [
-                TextField(
-                  controller: _weightCtrl,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  textAlign: TextAlign.center,
-                  style: AppText.h3,
-                  decoration: const InputDecoration(border: InputBorder.none),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                      color: AppColors.primary50,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Text('kg',
-                      style:
-                          AppText.caption.copyWith(color: AppColors.primary)),
-                ),
-              ],
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: AppTypography.bodySmall.copyWith(
+              color: isSelected ? AppColors.primary : AppColors.grey800,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
-          const SizedBox(height: 24),
-          Text('please type a value from 25 kg to 300 kg',
-              style: AppText.body.copyWith(color: AppColors.grey700)),
-          const SizedBox(height: 24),
-          PrimaryButton(label: 'Save', onPressed: () => context.pop()),
-        ],
-      ),
-    );
-  }
-}
-
-class _NoteBottomSheet extends StatefulWidget {
-  const _NoteBottomSheet();
-
-  @override
-  State<_NoteBottomSheet> createState() => _NoteBottomSheetState();
-}
-
-class _NoteBottomSheetState extends State<_NoteBottomSheet> {
-  final TextEditingController _noteCtrl = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 24,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                  color: AppColors.grey200,
-                  borderRadius: BorderRadius.circular(2))),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                        color: AppColors.primary50, shape: BoxShape.circle),
-                    child: const Icon(Icons.calendar_today_outlined,
-                        color: AppColors.primary, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text('Note', style: AppText.h3),
-                ],
-              ),
-              GestureDetector(
-                onTap: () => context.pop(),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                      color: AppColors.grey100, shape: BoxShape.circle),
-                  child: const Icon(Icons.close, size: 20),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-                color: AppColors.grey50,
-                borderRadius: BorderRadius.circular(16)),
-            child: TextField(
-              controller: _noteCtrl,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: 'I had a very good day.',
-              ),
-              maxLines: 5,
-            ),
-          ),
-          const SizedBox(height: 32),
-          PrimaryButton(label: 'Save', onPressed: () => context.pop()),
         ],
       ),
     );
