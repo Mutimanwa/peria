@@ -90,7 +90,7 @@ class AppTheme {
         ),
 
         // Card
-        cardTheme: const CardThemeData(
+        cardTheme: const CardTheme(
           color: AppColors.neutral50,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -202,7 +202,7 @@ class AppTheme {
           labelStyle:
               AppTypography.bodySmall.copyWith(color: AppColors.neutral400),
         ),
-        cardTheme: const CardThemeData(
+        cardTheme: const CardTheme(
           color: AppColors.neutral900,
           elevation: 0,
           shape: RoundedRectangleBorder(
