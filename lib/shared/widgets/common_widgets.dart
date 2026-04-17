@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
 
@@ -312,6 +313,35 @@ class PageScaffold extends StatelessWidget {
                 ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// ==========================================
+// SIMPLE PAGE SCAFFOLD - 
+// ==========================================
+class SimplePage extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const SimplePage({super.key, required this.title, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return PageScaffold(
+      showBack: true,
+      onBack: () => context.pop(),
+      showTitle: true,
+      title: title,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(22, 80, 22, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: child),
+          ],
         ),
       ),
     );

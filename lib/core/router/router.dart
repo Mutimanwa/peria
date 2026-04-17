@@ -16,15 +16,22 @@ import 'package:perla_app/features/onboarding/presentation/screens/welcome_scree
 import 'package:perla_app/features/educatif/presentation/screens/education_home_screen.dart';
 import 'package:perla_app/features/educatif/presentation/screens/education_article_detail_screen.dart';
 import 'package:perla_app/core/router/shell_navigation.dart';
+import 'package:perla_app/features/profile/presentation/screens/connect_partner.dart';
+import 'package:perla_app/features/profile/presentation/screens/invite_partner_pending.dart';
+import 'package:perla_app/features/profile/presentation/screens/invite_partner_screen.dart';
+import 'package:perla_app/features/profile/presentation/screens/notification.dart';
+import 'package:perla_app/features/profile/presentation/screens/partner_screen.dart';
+import 'package:perla_app/features/profile/presentation/screens/personal_info.dart';
 import 'package:perla_app/features/profile/presentation/screens/profile_screens.dart';
+import 'package:perla_app/features/profile/presentation/screens/security.dart';
+import 'package:perla_app/features/profile/presentation/screens/sharing_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
 // Authentication state - replace with actual auth service
 bool isAuthenticated = true; // Assume user is authenticated for MVP
-bool hasCompletedOnboarding =
-    false; // Will be updated when onboarding completes
+bool hasCompletedOnboarding = false; // Will be updated when onboarding completes
 
 // Function to update onboarding state
 void updateOnboardingState(bool completed) {
@@ -177,6 +184,71 @@ final GoRouter appRouter = GoRouter(
               const ProfileScreen()
             )
         ),
+        GoRoute(
+            path: '/profile/personal-info',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const PersonalInformationScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/notifications',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const NotificationsScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/account-security',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const AccountSecurityScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/partner',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const PartnerScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/invite-partner',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const InvitePartnerScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/partner-pending',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const PartnerInvitationPendingScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/connected-partner',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const ConnectedPartnerScreen()
+            )
+        ),
+        GoRoute(
+            path: '/profile/sharing-settings',
+            pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context,
+              state,
+              const SharingSettingsScreen()
+            )
+        ),
+        
     // Shell route for main app navigation with CustomBottomNav
     ShellRoute(
       navigatorKey: shellNavigatorKey,
