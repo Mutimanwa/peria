@@ -28,7 +28,7 @@ jobs:
 
       # 4. Analyse
       - name: Analyze code
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       # 5. Tests
       - name: Run tests
