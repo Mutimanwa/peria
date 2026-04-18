@@ -1,24 +1,38 @@
-import 'dart:convert';
-
+import 'package:hive/hive.dart';
+import 'package:perla_app/core/storage/hive_boxes.dart';
 import 'package:perla_app/features/cycle/data/models/period_log.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PeriodRepository {
-  static const _periodsKey = 'cycle.periods.v1';
-
   Future<List<PeriodLog>> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getStringList(_periodsKey) ?? <String>[];
-    final items = raw
-        .map((s) => PeriodLog.fromJson(jsonDecode(s) as Map<String, dynamic>))
-        .toList();
-    items.sort((a, b) => b.startDate.compareTo(a.startDate));
-    return items;
+    final box = Hive.box<PeriodLog>(HiveBoxes.periodLogs);
+    return box.values.toList()
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
   }
 
   Future<void> save(List<PeriodLog> logs) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = logs.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList(_periodsKey, raw);
+    final box = Hive.box<PeriodLog>(HiveBoxes.periodLogs);
+    await box.clear();
+    await box.addAll(logs);
+  }
+
+  Future<void> addLog(PeriodLog log) async {
+    final box = Hive.box<PeriodLog>(HiveBoxes.periodLogs);
+    await box.add(log);
+  }
+
+  Future<void> updateLog(String id, PeriodLog updated) async {
+    final box = Hive.box<PeriodLog>(HiveBoxes.periodLogs);
+    final index = box.values.toList().indexWhere((e) => e.id == id);
+    if (index != -1) {
+      await box.putAt(index, updated);
+    }
+  }
+
+  Future<void> deleteLog(String id) async {
+    final box = Hive.box<PeriodLog>(HiveBoxes.periodLogs);
+    final index = box.values.toList().indexWhere((e) => e.id == id);
+    if (index != -1) {
+      await box.deleteAt(index);
+    }
   }
 }

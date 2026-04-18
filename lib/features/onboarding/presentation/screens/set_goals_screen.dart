@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+// import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
@@ -126,12 +125,12 @@ final l10n = AppLocalizations.of(context);
               label: l10n.continueCta,
               onPressed: canContinue
                   ? () {
-                      final goals =
-                          _selected.map((i) => _goals[i].label).toList();
-                      ref
-                          .read(userProfileProvider.notifier)
-                          .patch((p) => p.copyWith(goals: goals));
-                      context.go("/last-period");
+                      // final goals =
+                      //     _selected.map((i) => _goals[i].label).toList();
+                      // ref
+                      //     .read(userProfileProvider.notifier)
+                      //     .patch((p) => p.copyWith(goals: goals));
+                      // context.go("/last-period");
                     }
                   : null,
             ),

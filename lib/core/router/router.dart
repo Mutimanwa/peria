@@ -248,6 +248,29 @@ final GoRouter appRouter = GoRouter(
               const SharingSettingsScreen()
             )
         ),
+
+        // JOURNAL - Personal mood and symptom tracking
+        GoRoute(
+          path: '/journal/detail/:id',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
+          ),
+        ),
+        GoRoute(
+          path: '/journal/new',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context, state, const JournalEditorScreen()),
+        ),
+        GoRoute(
+          path: '/journal/edit/:id',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            JournalEditorScreen(entryId: state.pathParameters['id']),
+          ),
+        ),
         
     // Shell route for main app navigation with CustomBottomNav
     ShellRoute(
@@ -275,27 +298,7 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) =>
               _buildSlideTransitionPage(context, state, const JournalScreen()),
         ),
-        GoRoute(
-          path: '/journal/detail/:id',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-            context,
-            state,
-            JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
-          ),
-        ),
-        GoRoute(
-          path: '/journal/new',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context, state, const JournalEditorScreen()),
-        ),
-        GoRoute(
-          path: '/journal/edit/:id',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-            context,
-            state,
-            JournalEditorScreen(entryId: state.pathParameters['id']),
-          ),
-        ),
+        
 
         // EDUCATION - Educational content about cycles, fertility, health
         GoRoute(

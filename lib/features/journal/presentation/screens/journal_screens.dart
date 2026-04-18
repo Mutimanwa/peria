@@ -113,7 +113,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 100,
               ),
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
@@ -855,6 +855,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                     onPressed: _canSave ? _save : null,
                   ),
                 ),
+                
               ],
             ),
           ],

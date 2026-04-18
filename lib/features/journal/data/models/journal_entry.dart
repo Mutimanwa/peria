@@ -1,9 +1,20 @@
+import 'package:hive/hive.dart';
+
+part 'journal_entry.g.dart';
+
+@HiveType(typeId: 1)
 class JournalEntry {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final DateTime createdAt;
+  @HiveField(2)
   final DateTime updatedAt;
+  @HiveField(3)
   final String title;
+  @HiveField(4)
   final String content;
+  @HiveField(5)
   final String mood;
 
   const JournalEntry({

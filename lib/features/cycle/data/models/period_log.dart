@@ -1,7 +1,16 @@
+import 'package:hive/hive.dart';
+
+part 'period_log.g.dart';
+
+@HiveType(typeId: 2)
 class PeriodLog {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final DateTime startDate;
+  @HiveField(2)
   final DateTime endDate;
+  @HiveField(3)
   final bool isEstimated;
 
   const PeriodLog({
