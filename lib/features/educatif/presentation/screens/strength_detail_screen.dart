@@ -11,7 +11,7 @@ class StrengthDetailScreen extends StatefulWidget {
 }
 
 class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
-  double _progress = 0.25;
+  final double _progress = 0.25;
 
   @override
   Widget build(BuildContext context) {

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
+import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/features/profile/presentation/providers/security_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
+import 'package:perla_app/shared/widgets/pin_code_input.dart';
 
 class AccountSecurityScreen extends ConsumerStatefulWidget {
   const AccountSecurityScreen({super.key});
@@ -15,87 +17,97 @@ class AccountSecurityScreen extends ConsumerStatefulWidget {
 
 class _AccountSecurityScreenState
     extends ConsumerState<AccountSecurityScreen> {
-  final _pinController = TextEditingController();
-  final _confirmPinController = TextEditingController();
+
 
   @override
   void dispose() {
-    _pinController.dispose();
-    _confirmPinController.dispose();
     super.dispose();
   }
 
   Future<void> _showPinDialog({required bool isNew}) async {
-    _pinController.clear();
-    _confirmPinController.clear();
-    final formKey = GlobalKey<FormState>();
+    final pinController = TextEditingController();
+    final confirmController = TextEditingController();
+    String? pinError;
+    String? confirmError;
     await showDialog<void>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(isNew ? 'Set PIN lock' : 'Change PIN'),
-          content: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: _pinController,
-                  keyboardType: TextInputType.number,
-                  obscureText: true,
-                  maxLength: 6,
-                  decoration: const InputDecoration(
-                    labelText: 'PIN',
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(isNew ? 'Set PIN lock' : 'Change PIN'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('${isNew ? 'Enter' : 'New'} PIN:', style: AppText.label),
+                  const SizedBox(height: 12),
+                  PinCodeInput(
+                    length: 4,
+                    autoFocus: true,
+                    onChanged: (pin) {
+                      pinController.text = pin;
+                      setDialogState(() {
+                        pinError = null;
+                      });
+                    },
+                    error: pinError, onCompleted: (String p1) {  },
                   ),
-                  validator: (value) {
-                    if (value == null || value.trim().length < 4) {
-                      return 'Enter at least 4 digits';
-                    }
-                    return null;
-                  },
+                  const SizedBox(height: 24),
+                  const Text('Confirm PIN:', style: AppText.label),
+                  const SizedBox(height: 12),
+                  PinCodeInput(
+                    length: 4,
+                    onChanged: (confirm) {
+                      confirmController.text = confirm;
+                      setDialogState(() {
+                        if (confirm.length == 4 && confirm == pinController.text) {
+                          confirmError = null;
+                        } else if (confirm.length == 4) {
+                          confirmError = 'PINs do not match';
+                        }
+                      });
+                    },
+                    error: confirmError, 
+                    onCompleted: (String p1) {  },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _confirmPinController,
-                  keyboardType: TextInputType.number,
-                  obscureText: true,
-                  maxLength: 6,
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm PIN',
-                  ),
-                  validator: (value) {
-                    if (value != _pinController.text) {
-                      return 'PINs do not match';
+                TextButton(
+                  onPressed: () async {
+                    if (pinController.text.length == 4 && 
+                        confirmController.text.length == 4 && 
+                        pinController.text == confirmController.text) {
+                      await ref
+                          .read(securityProvider.notifier)
+                          .savePin(pinController.text);
+                      if (isNew) {
+                        await ref
+                            .read(securityProvider.notifier)
+                            .setAppLockEnabled(true);
+                      }
+                      Navigator.of(context).pop();
+                    } else {
+                      setDialogState(() {
+                        if (pinController.text.length != 4) pinError = 'Enter 4 digits';
+                        if (confirmController.text.length != 4) confirmError = 'Enter 4 digits';
+                      });
                     }
-                    return null;
                   },
+                  child: const Text('Save'),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (formKey.currentState?.validate() ?? false) {
-                  await ref
-                      .read(securityProvider.notifier)
-                      .savePin(_pinController.text.trim());
-                  await ref
-                      .read(securityProvider.notifier)
-                      .setAppLockEnabled(true);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
+    pinController.dispose();
+    confirmController.dispose();
   }
 
   @override
@@ -130,6 +142,11 @@ class _AccountSecurityScreenState
                             .read(securityProvider.notifier)
                             .setAppLockEnabled(v);
                       },
+                    ),
+                    ToggleItemData(
+                      'Journal Lock',
+                      security.journalLockEnabled,
+                      (v) => ref.read(securityProvider.notifier).setJournalLockEnabled(v),
                     ),
                     ToggleItemData(
                       'Face ID',

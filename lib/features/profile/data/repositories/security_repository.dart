@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SecurityRepository {
   static const _appLockKey = 'security.app_lock_enabled.v1';
   static const _pinKey = 'security.pin.v1';
+  static const _journalLockKey = 'security.journal_lock_enabled.v1';
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
@@ -13,6 +14,15 @@ class SecurityRepository {
 
   Future<void> setAppLockEnabled(bool enabled) async {
     await _secureStorage.write(key: _appLockKey, value: enabled.toString());
+  }
+
+  Future<bool> loadJournalLockEnabled() async {
+    final raw = await _secureStorage.read(key: _journalLockKey);
+    return raw == 'true';
+  }
+
+  Future<void> setJournalLockEnabled(bool enabled) async {
+    await _secureStorage.write(key: _journalLockKey, value: enabled.toString());
   }
 
   Future<bool> hasPin() async {

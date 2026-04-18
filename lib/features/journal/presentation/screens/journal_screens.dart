@@ -62,13 +62,16 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
 
   List<JournalEntry> _filterEntries(List<JournalEntry> entries) {
     if (_query.isNotEmpty) {
+      // Global search across all entries
       return entries.where((entry) {
         return entry.title.toLowerCase().contains(_query) ||
             entry.content.toLowerCase().contains(_query) ||
             entry.mood.toLowerCase().contains(_query);
       }).toList();
+    } else {
+      // Date filter only when no query
+      return entries.where((entry) => _isSameDay(entry.createdAt, _selectedDate)).toList();
     }
-    return entries.where((entry) => _isSameDay(entry.createdAt, _selectedDate)).toList();
   }
 
   bool _dayHasEntries(DateTime day, List<JournalEntry> entries) {

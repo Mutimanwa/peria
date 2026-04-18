@@ -25,6 +25,7 @@ import 'package:perla_app/features/profile/presentation/screens/personal_info.da
 import 'package:perla_app/features/profile/presentation/screens/profile_screens.dart';
 import 'package:perla_app/features/profile/presentation/screens/security.dart';
 import 'package:perla_app/features/profile/presentation/screens/sharing_screen.dart';
+import 'package:perla_app/features/journal/presentation/guards/journal_lock_guard.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -255,20 +256,26 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => _buildSlideTransitionPage(
             context,
             state,
-            JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
+            JournalLockGuard(
+              child: JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
+            ),
           ),
         ),
         GoRoute(
           path: '/journal/new',
           pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context, state, const JournalEditorScreen()),
+              context, state, 
+              JournalLockGuard(child: const JournalEditorScreen()),
+          ),
         ),
         GoRoute(
           path: '/journal/edit/:id',
           pageBuilder: (context, state) => _buildSlideTransitionPage(
             context,
             state,
-            JournalEditorScreen(entryId: state.pathParameters['id']),
+            JournalLockGuard(
+              child: JournalEditorScreen(entryId: state.pathParameters['id']),
+            ),
           ),
         ),
         
@@ -292,11 +299,14 @@ final GoRouter appRouter = GoRouter(
             const CycleHomeScreen(),
           ),
         ),
-        // JOURNAL - Personal mood and symptom tracking
+        // JOURNAL - Personal mood and symptom tracking (guarded)
         GoRoute(
           path: '/journal',
-          pageBuilder: (context, state) =>
-              _buildSlideTransitionPage(context, state, const JournalScreen()),
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, 
+            state, 
+            JournalLockGuard(child: const JournalScreen()),
+          ),
         ),
         
 

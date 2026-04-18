@@ -119,7 +119,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 ),
                 const SizedBox(height: 18),
-                Text('Log period', style: AppText.h4),
+                const Text('Log period', style: AppText.h4),
                 const SizedBox(height: 6),
                 Text(
                   'Quick daily capture. Use Edit Calendar when you need a precise correction.',
@@ -494,7 +494,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Quick capture', style: AppText.h4),
+                          const Text('Quick capture', style: AppText.h4),
                           const SizedBox(height: 8),
                           Text(
                             'Fast daily actions for period and symptoms, without opening the structured editor.',
