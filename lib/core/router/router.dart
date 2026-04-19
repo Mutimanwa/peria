@@ -26,60 +26,52 @@ import 'package:perla_app/features/profile/presentation/screens/profile_screens.
 import 'package:perla_app/features/profile/presentation/screens/security.dart';
 import 'package:perla_app/features/profile/presentation/screens/sharing_screen.dart';
 import 'package:perla_app/features/journal/presentation/guards/journal_lock_guard.dart';
+import 'package:perla_app/features/auth/presentation/providers/auth_provider.dart';
+import 'auth_guard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
-// Authentication state - replace with actual auth service
-bool isAuthenticated = true; // Assume user is authenticated for MVP
-bool hasCompletedOnboarding = false; // Will be updated when onboarding completes
+bool hasCompletedOnboarding = false;
+
+// Authentication state managed by Firebase AuthProvider
 
 // Function to update onboarding state
 void updateOnboardingState(bool completed) {
   hasCompletedOnboarding = completed;
 }
 
+String? routerRedirect(BuildContext context, GoRouterState state) {
+  final user = FirebaseAuth.instance.currentUser;
+  
+  // If no user, redirect to splash (unless already there)
+  if (user == null) {
+    if (state.matchedLocation == '/splash') return null;
+    return '/splash';
+  }
+  
+  // User authenticated, block auth routes
+  if (state.matchedLocation.startsWith('/register') || 
+      state.matchedLocation.startsWith('/otp') ||
+      state.matchedLocation.startsWith('/email') ||
+      state.matchedLocation.startsWith('/create-account')) {
+    return '/cycle';
+  }
+  
+  // Check onboarding
+  if (!hasCompletedOnboarding && state.matchedLocation != '/welcome' && !state.matchedLocation.startsWith('/onboarding')) {
+    return '/welcome';
+  }
+  
+  return null;
+}
+
 // Modifie l'initialLocation pour pointer vers /check-onboarding
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/splash',
-  redirect: (context, state) {
-    // Redirect logic for authentication and onboarding flow
-    final isGoingSplash = state.matchedLocation == '/splash';
-    final isGoingAuth = state.matchedLocation.startsWith('/welcome') ||
-        state.matchedLocation.startsWith('/register') ||
-        state.matchedLocation.startsWith('/email') ||
-        state.matchedLocation.startsWith('/create-account') ||
-        state.matchedLocation.startsWith('/otp') ||
-        state.matchedLocation.startsWith('/ask-name') ||
-        state.matchedLocation.startsWith('/date-of-birth') ||
-        state.matchedLocation.startsWith('/cycle-length') ||
-        state.matchedLocation.startsWith('/set-goals') ||
-        state.matchedLocation.startsWith('/last-period');
-
-    // If on splash, stay there (loading state)
-    if (isGoingSplash) {
-      return null;
-    }
-
-    // If not authenticated and not going to auth flow, redirect to welcome
-    if (!isAuthenticated && !isGoingAuth) {
-      return '/welcome';
-    }
-
-    // If authenticated but hasn't completed onboarding and not on onboarding screens
-    if (isAuthenticated && !hasCompletedOnboarding && !isGoingAuth) {
-      return '/ask-name';
-    }
-
-    // If authenticated and completed onboarding, allow access to main app
-    if (isAuthenticated && hasCompletedOnboarding && isGoingAuth) {
-      return '/cycle';
-    }
-
-    // No redirect needed
-    return null;
-  },
+  redirect: routerRedirect,
   routes: [
     GoRoute(
       path: '/splash',
@@ -174,8 +166,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
             path: '/symptoms',
             pageBuilder: (context, state) => _buildSlideTransitionPage(
-                context, state, const SymptomsScreen()
-        ),
+                context, state, const SymptomsScreen()),
         ),
         GoRoute(
             path: '/profile',
@@ -183,7 +174,7 @@ final GoRouter appRouter = GoRouter(
               context,
               state,
               const ProfileScreen()
-            )
+            ),
         ),
         GoRoute(
             path: '/profile/personal-info',

@@ -1,20 +1,13 @@
-# Journal Module - COMPLETE ✅
+# Router Fixes TODO
 
-## Final Polish Applied:
-- ✅ PIN input: 4 separate OTP-style fields (auto-advance focus, obscured, shake error anim, paste support)
-  - Journal lock modal: Modern 4-digit input + biometric
-  - Profile security: PIN setup/change with confirm matching
-- All specs satisfied:
-  - Persistent local entries (Hive encrypted via secure storage) 
-  - Date-linked chronological views + global search
-  - Detail/edit/quick log with moods
-  - Configurable PIN/biometric lock (Profile Security toggle → guarded routes/modal)
-  - Fluid UX (animations, auto-save/timestamps, responsive)
+## Steps:
+- [x] 1. Fix syntax errors in router.dart (missing parens in routes)
+- [x] 2. Declare `hasCompletedOnboarding` bool and add FirebaseAuth import
+- [x] 3. Create new synchronous `routerRedirect` function without WidgetRef
+- [x] 4. Update GoRouter `redirect` to use `routerRedirect`
+- [x] 5. Cleanup/rename `authRedirect` in auth_guard.dart
+- [x] 6. Run `flutter analyze` to verify fixes
+- [ ] 7. Test navigation
 
-## Test Flow:
-1. Profile > Security > Journal Lock **ON** (set 4-digit PIN: e.g. 1234)
-2. Navigate to /journal → **Lock modal** (try biometric fallback → PIN fields auto-advance)
-3. Unlock → Create/search notes → persist on relaunch/app restart
+Current progress: Starting step 1.
 
-## Status: PRODUCTION READY 🎉
-Run `flutter pub get && flutter run` to test.

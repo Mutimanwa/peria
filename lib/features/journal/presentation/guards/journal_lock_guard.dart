@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:perla_app/features/profile/presentation/providers/security_provider.dart';
-import 'package:perla_app/features/profile/data/repositories/security_repository.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/pin_code_input.dart';
