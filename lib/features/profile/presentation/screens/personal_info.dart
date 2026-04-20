@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
@@ -12,7 +13,8 @@ class PersonalInformationScreen extends ConsumerWidget {
   Future<DateTime?> _pickDate(BuildContext context, DateTime? initialDate) {
     return showDatePicker(
       context: context,
-      initialDate: initialDate ?? DateTime.now().subtract(const Duration(days: 365 * 25)),
+      initialDate:
+          initialDate ?? DateTime.now().subtract(const Duration(days: 365 * 25)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
@@ -63,7 +65,9 @@ class PersonalInformationScreen extends ConsumerWidget {
                       onTap: () => Navigator.of(context).pop(value),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: value == currentValue
                               ? AppColors.primary50
@@ -96,9 +100,10 @@ class PersonalInformationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final profileState = ref.watch(userProfileProvider);
     return SimplePage(
-      title: 'Personal Information',
+      title: l10n.personalInformation,
       child: profileState.when(
         data: (profile) {
           return SingleChildScrollView(
@@ -106,16 +111,16 @@ class PersonalInformationScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                const SectionLabel('Cycle profile'),
-                const Text(
-                  'Ces paramètres sont la source de vérité pour le calcul de tes prochaines règles et de tes fenêtres de fertilité.',
+                SectionLabel(l10n.cycleProfile),
+                Text(
+                  l10n.cycleProfileDescription,
                   style: AppText.caption,
                 ),
                 const SizedBox(height: 24),
-                const FieldLabel('Date de naissance'),
+                FieldLabel(l10n.dateOfBirth),
                 PillTextField(
                   hint: profile.dateOfBirth == null
-                      ? 'Sélectionner une date'
+                      ? l10n.selectDate
                       : '${profile.dateOfBirth!.day.toString().padLeft(2, '0')}/${profile.dateOfBirth!.month.toString().padLeft(2, '0')}/${profile.dateOfBirth!.year}',
                   readOnly: true,
                   onTap: () async {
@@ -128,14 +133,14 @@ class PersonalInformationScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 18),
-                const FieldLabel('Durée moyenne du cycle'),
+                FieldLabel(l10n.averageCycleLength),
                 PillTextField(
-                  hint: '${profile.averageCycleLengthDays} jours',
+                  hint: l10n.daysCount(profile.averageCycleLengthDays),
                   readOnly: true,
                   onTap: () async {
                     final selected = await _pickNumber(
                       context,
-                      title: 'Durée moyenne du cycle',
+                      title: l10n.averageCycleLength,
                       currentValue: profile.averageCycleLengthDays,
                       min: 21,
                       max: 35,
@@ -150,14 +155,14 @@ class PersonalInformationScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 18),
-                const FieldLabel('Durée des règles'),
+                FieldLabel(l10n.periodLength),
                 PillTextField(
-                  hint: '${profile.periodLengthDays} jours',
+                  hint: l10n.daysCount(profile.periodLengthDays),
                   readOnly: true,
                   onTap: () async {
                     final selected = await _pickNumber(
                       context,
-                      title: 'Durée des règles',
+                      title: l10n.periodLength,
                       currentValue: profile.periodLengthDays,
                       min: 2,
                       max: 12,
@@ -172,26 +177,28 @@ class PersonalInformationScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 18),
-                const FieldLabel('Date du dernier début de règles'),
+                FieldLabel(l10n.lastPeriodStartDate),
                 PillTextField(
                   hint: profile.lastPeriodStart == null
-                      ? 'Sélectionner une date'
+                      ? l10n.selectDate
                       : '${profile.lastPeriodStart!.day.toString().padLeft(2, '0')}/${profile.lastPeriodStart!.month.toString().padLeft(2, '0')}/${profile.lastPeriodStart!.year}',
                   readOnly: true,
                   onTap: () async {
-                    final selected = await _pickDate(context, profile.lastPeriodStart);
+                    final selected =
+                        await _pickDate(context, profile.lastPeriodStart);
                     if (selected != null) {
                       ref.read(userProfileProvider.notifier).patch(
-                            (current) => current.copyWith(lastPeriodStart: selected),
+                            (current) =>
+                                current.copyWith(lastPeriodStart: selected),
                           );
                     }
                   },
                 ),
                 const SizedBox(height: 18),
-                const FieldLabel('Cycle régulier ?'),
+                FieldLabel(l10n.regularCycleQuestion),
                 ToggleGroup(items: [
                   ToggleItemData(
-                    profile.isCycleRegular ? 'Régulier' : 'Irrégulier',
+                    profile.isCycleRegular ? l10n.regular : l10n.irregular,
                     profile.isCycleRegular,
                     (value) => ref.read(userProfileProvider.notifier).patch(
                           (current) => current.copyWith(isCycleRegular: value),
@@ -200,7 +207,7 @@ class PersonalInformationScreen extends ConsumerWidget {
                 ]),
                 const SizedBox(height: 24),
                 Text(
-                  'Les modifications sont enregistrées automatiquement dès que tu changes une valeur.',
+                  l10n.changesSavedAutomatically,
                   style: AppText.caption,
                 ),
                 const SizedBox(height: 24),
@@ -209,7 +216,7 @@ class PersonalInformationScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Impossible de charger le profil')), 
+        error: (_, __) => Center(child: Text(l10n.unableToLoadProfile)),
       ),
     );
   }

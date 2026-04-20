@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/features/profile/presentation/providers/partner_settings_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 class PartnerScreen extends ConsumerWidget {
@@ -11,43 +12,48 @@ class PartnerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final partnerAsync = ref.watch(partnerSettingsProvider);
     return SimplePage(
-      title: 'Partner',
+      title: l10n.partner,
       child: partnerAsync.when(
         data: (partner) => Column(
           children: [
             const SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
-              child: Image.asset('moc/Partner Pending Screen.png',
-                  height: 185, width: double.infinity, fit: BoxFit.cover),
+              child: Image.asset(
+                'moc/Partner Pending Screen.png',
+                height: 185,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 24),
             Text(
               partner.isConnected
-                  ? 'Your partner is connected'
+                  ? l10n.yourPartnerIsConnected
                   : (partner.isPending
-                      ? 'Invitation pending'
-                      : 'Connect with your partner'),
+                      ? l10n.invitationPending
+                      : l10n.connectWithYourPartner),
               style: AppText.h2,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12),
             Text(
               partner.isConnected
-                  ? 'Manage what your partner can see from your cycle and wellbeing data.'
+                  ? l10n.partnerConnectedBody
                   : (partner.isPending
-                      ? 'Your invitation has been sent. You can manage or resend it from the next screen.'
-                      : 'Securely share key cycle dates, predictions, and ovulation windows.'),
+                      ? l10n.partnerPendingBody
+                      : l10n.partnerInviteBody),
               style: AppText.body.copyWith(color: AppColors.grey600),
               textAlign: TextAlign.center,
             ),
             const Spacer(),
             PrimaryButton(
               label: partner.isConnected
-                  ? 'Manage Sharing'
-                  : (partner.isPending ? 'View Invitation' : 'Invite Partner'),
+                  ? l10n.manageSharing
+                  : (partner.isPending ? l10n.viewInvitation : l10n.invitePartner),
               onPressed: () => context.go(
                 partner.isConnected
                     ? '/profile/sharing-settings'
@@ -58,7 +64,7 @@ class PartnerScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             OutlineButton(
-              label: partner.isConnected ? 'Disconnect' : 'Learn More',
+              label: partner.isConnected ? l10n.disconnect : l10n.learnMore,
               onPressed: partner.isConnected
                   ? () async {
                       await ref
@@ -70,7 +76,7 @@ class PartnerScreen extends ConsumerWidget {
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Unable to load partner settings')),
+        error: (_, __) => Center(child: Text(l10n.unableToLoadPartnerSettings)),
       ),
     );
   }

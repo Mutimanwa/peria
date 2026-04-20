@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/features/profile/presentation/providers/security_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
-import 'package:perla_app/shared/widgets/profile_widgets.dart';
 import 'package:perla_app/shared/widgets/pin_code_input.dart';
+import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
 class AccountSecurityScreen extends ConsumerStatefulWidget {
   const AccountSecurityScreen({super.key});
@@ -15,16 +16,9 @@ class AccountSecurityScreen extends ConsumerStatefulWidget {
       _AccountSecurityScreenState();
 }
 
-class _AccountSecurityScreenState
-    extends ConsumerState<AccountSecurityScreen> {
-
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
   Future<void> _showPinDialog({required bool isNew}) async {
+    final l10n = AppLocalizations.of(context);
     final pinController = TextEditingController();
     final confirmController = TextEditingController();
     String? pinError;
@@ -35,11 +29,11 @@ class _AccountSecurityScreenState
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: Text(isNew ? 'Set PIN lock' : 'Change PIN'),
+              title: Text(isNew ? l10n.setPinLock : l10n.changePin),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('${isNew ? 'Enter' : 'New'} PIN:', style: AppText.label),
+                  Text(isNew ? l10n.enterPin : l10n.newPin, style: AppText.label),
                   const SizedBox(height: 12),
                   PinCodeInput(
                     length: 4,
@@ -50,10 +44,11 @@ class _AccountSecurityScreenState
                         pinError = null;
                       });
                     },
-                    error: pinError, onCompleted: (String p1) {  },
+                    error: pinError,
+                    onCompleted: (String p1) {},
                   ),
                   const SizedBox(height: 24),
-                  const Text('Confirm PIN:', style: AppText.label),
+                  Text(l10n.confirmPin, style: AppText.label),
                   const SizedBox(height: 12),
                   PinCodeInput(
                     length: 4,
@@ -63,24 +58,25 @@ class _AccountSecurityScreenState
                         if (confirm.length == 4 && confirm == pinController.text) {
                           confirmError = null;
                         } else if (confirm.length == 4) {
-                          confirmError = 'PINs do not match';
+                          confirmError = l10n.pinsDoNotMatch;
                         }
                       });
                     },
-                    error: confirmError, 
-                    onCompleted: (String p1) {  },
+                    error: confirmError,
+                    onCompleted: (String p1) {},
                   ),
                 ],
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 TextButton(
                   onPressed: () async {
-                    if (pinController.text.length == 4 && 
-                        confirmController.text.length == 4 && 
+                    final navigator = Navigator.of(context);
+                    if (pinController.text.length == 4 &&
+                        confirmController.text.length == 4 &&
                         pinController.text == confirmController.text) {
                       await ref
                           .read(securityProvider.notifier)
@@ -90,15 +86,20 @@ class _AccountSecurityScreenState
                             .read(securityProvider.notifier)
                             .setAppLockEnabled(true);
                       }
-                      Navigator.of(context).pop();
+                      if (!mounted) return;
+                      navigator.pop();
                     } else {
                       setDialogState(() {
-                        if (pinController.text.length != 4) pinError = 'Enter 4 digits';
-                        if (confirmController.text.length != 4) confirmError = 'Enter 4 digits';
+                        if (pinController.text.length != 4) {
+                          pinError = l10n.enter4Digits;
+                        }
+                        if (confirmController.text.length != 4) {
+                          confirmError = l10n.enter4Digits;
+                        }
                       });
                     }
                   },
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ],
             );
@@ -112,26 +113,27 @@ class _AccountSecurityScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final settingsState = ref.watch(appSettingsProvider);
     final securityState = ref.watch(securityProvider);
     return SimplePage(
-      title: 'Account & Security',
+      title: l10n.accountSecurity,
       child: settingsState.when(
         data: (settings) => Column(
           children: [
             const SizedBox(height: 6),
             Image.asset('assets/images/icons/security.png', width: 96, height: 96),
             const SizedBox(height: 24),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: SectionLabel('Security'),
+              child: SectionLabel(l10n.security),
             ),
             securityState.when(
               data: (security) => Column(
                 children: [
                   ToggleGroup(items: [
                     ToggleItemData(
-                      'App Lock',
+                      l10n.appLock,
                       security.appLockEnabled,
                       (v) async {
                         if (!security.pinConfigured && v) {
@@ -144,12 +146,14 @@ class _AccountSecurityScreenState
                       },
                     ),
                     ToggleItemData(
-                      'Journal Lock',
+                      l10n.journalLock,
                       security.journalLockEnabled,
-                      (v) => ref.read(securityProvider.notifier).setJournalLockEnabled(v),
+                      (v) => ref
+                          .read(securityProvider.notifier)
+                          .setJournalLockEnabled(v),
                     ),
                     ToggleItemData(
-                      'Face ID',
+                      l10n.faceId,
                       settings.faceIdEnabled,
                       (v) => ref.read(appSettingsProvider.notifier).patch(
                             (current) => current.copyWith(faceIdEnabled: v),
@@ -159,14 +163,13 @@ class _AccountSecurityScreenState
                   const SizedBox(height: 24),
                   if (security.pinConfigured)
                     PrimaryButton(
-                      label: 'Change PIN',
+                      label: l10n.changePinButton,
                       onPressed: () => _showPinDialog(isNew: false),
                     ),
-                  if (security.pinConfigured)
-                    const SizedBox(height: 12),
+                  if (security.pinConfigured) const SizedBox(height: 12),
                   if (security.pinConfigured)
                     OutlineButton(
-                      label: 'Disable PIN lock',
+                      label: l10n.disablePinLock,
                       onPressed: () async {
                         await ref.read(securityProvider.notifier).clearPin();
                       },
@@ -175,12 +178,12 @@ class _AccountSecurityScreenState
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (_, __) =>
-                  const Center(child: Text('Unable to load security settings')),
+                  Center(child: Text(l10n.unableToLoadSecuritySettings)),
             ),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Unable to load account settings')),
+        error: (_, __) => Center(child: Text(l10n.unableToLoadAccountSettings)),
       ),
     );
   }

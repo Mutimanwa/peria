@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
@@ -9,16 +10,17 @@ class NotificationsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final settingsState = ref.watch(appSettingsProvider);
     return SimplePage(
-      title: 'Notifications',
+      title: l10n.notifications,
       child: settingsState.when(
         data: (settings) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ToggleGroup(items: [
               ToggleItemData(
-                'Allow Notifications',
+                l10n.allowNotifications,
                 settings.allowNotifications,
                 (v) => ref.read(appSettingsProvider.notifier).patch(
                       (current) => current.copyWith(allowNotifications: v),
@@ -26,24 +28,24 @@ class NotificationsScreen extends ConsumerWidget {
               ),
             ]),
             const SizedBox(height: 28),
-            const SectionLabel('Cycle Predictions'),
+            SectionLabel(l10n.cyclePredictions),
             ToggleGroup(items: [
               ToggleItemData(
-                'Period Starting',
+                l10n.periodStarting,
                 settings.notifyPeriodStarting,
                 (v) => ref.read(appSettingsProvider.notifier).patch(
                       (current) => current.copyWith(notifyPeriodStarting: v),
                     ),
               ),
               ToggleItemData(
-                'Fertile Window',
+                l10n.fertileWindow,
                 settings.notifyFertileWindow,
                 (v) => ref.read(appSettingsProvider.notifier).patch(
                       (current) => current.copyWith(notifyFertileWindow: v),
                     ),
               ),
               ToggleItemData(
-                'Ovulation Day',
+                l10n.ovulationDay,
                 settings.notifyOvulationDay,
                 (v) => ref.read(appSettingsProvider.notifier).patch(
                       (current) => current.copyWith(notifyOvulationDay: v),
@@ -51,17 +53,17 @@ class NotificationsScreen extends ConsumerWidget {
               ),
             ]),
             const SizedBox(height: 28),
-            const SectionLabel('Reminders'),
+            SectionLabel(l10n.reminders),
             ToggleGroup(items: [
               ToggleItemData(
-                'Log Symptoms',
+                l10n.logSymptoms,
                 settings.remindLogSymptoms,
                 (v) => ref.read(appSettingsProvider.notifier).patch(
                       (current) => current.copyWith(remindLogSymptoms: v),
                     ),
               ),
               ToggleItemData(
-                'Partner Updates',
+                l10n.partnerUpdates,
                 settings.notifyPartnerUpdates,
                 (v) => ref.read(appSettingsProvider.notifier).patch(
                       (current) => current.copyWith(notifyPartnerUpdates: v),
@@ -71,8 +73,7 @@ class NotificationsScreen extends ConsumerWidget {
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) =>
-            const Center(child: Text('Unable to load notifications')),
+        error: (_, __) => Center(child: Text(l10n.unableToLoadNotifications)),
       ),
     );
   }

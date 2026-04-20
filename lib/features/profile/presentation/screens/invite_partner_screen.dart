@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/features/profile/presentation/providers/partner_settings_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
@@ -20,23 +21,24 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SimplePage(
-      title: 'Invite Partner',
+      title: l10n.invitePartner,
       child: Column(
         children: [
           const SizedBox(height: 16),
           Image.asset('moc/Invite Partner.png', height: 150),
           const SizedBox(height: 18),
-          const Text('Invite your partner',
+          Text(l10n.inviteYourPartner,
               style: AppText.h2, textAlign: TextAlign.center),
           const SizedBox(height: 10),
           Text(
-            "We'll send a secure, private invitation link for your partner.",
+            l10n.partnerInviteDescription,
             style: AppText.body.copyWith(color: AppColors.grey600),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
-          const FieldLabel("Partner's Email Address"),
+          FieldLabel(l10n.partnerEmailAddress),
           TextField(
             controller: _email,
             decoration: InputDecoration(
@@ -50,23 +52,24 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           ),
           const Spacer(),
           PrimaryButton(
-            label: 'Send Invitation',
+            label: l10n.sendInvitation,
             onPressed: () async {
               await ref
                   .read(partnerSettingsProvider.notifier)
                   .invitePartner(_email.text);
               if (!mounted) return;
-              _showInvitationDialog(context);
+              _showInvitationDialog();
             },
           ),
           const SizedBox(height: 12),
-          OutlineButton(label: 'Share Link Manually', onPressed: () {}),
+          OutlineButton(label: l10n.shareLinkManually, onPressed: () {}),
         ],
       ),
     );
   }
 
-  void _showInvitationDialog(BuildContext context) {
+  void _showInvitationDialog() {
+    final l10n = AppLocalizations.of(context);
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
@@ -79,16 +82,16 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
               width: 68,
               height: 68,
               decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.success, width: 2)),
-              child:
-                  const Icon(Icons.check, color: AppColors.success, size: 36),
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.success, width: 2),
+              ),
+              child: const Icon(Icons.check, color: AppColors.success, size: 36),
             ),
             const SizedBox(height: 18),
-            const Text('Invitation Sent!', style: AppText.h4),
+            Text(l10n.invitationSent, style: AppText.h4),
             const SizedBox(height: 8),
             Text(
-              'Your partner has been sent an invitation to accept.',
+              l10n.partnerInvitationSentDescription,
               textAlign: TextAlign.center,
               style: AppText.body.copyWith(color: AppColors.grey600),
             ),
@@ -101,10 +104,13 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
                   this.context.go('/profile/partner-pending');
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.grey900,
-                    shape: const StadiumBorder()),
-                child: Text('Got it',
-                    style: AppText.label.copyWith(color: AppColors.white)),
+                  backgroundColor: AppColors.grey900,
+                  shape: const StadiumBorder(),
+                ),
+                child: Text(
+                  l10n.gotIt,
+                  style: AppText.label.copyWith(color: AppColors.white),
+                ),
               ),
             ),
           ],

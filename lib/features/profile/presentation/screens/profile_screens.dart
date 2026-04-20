@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
@@ -9,8 +10,9 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SimplePage(
-      title: 'My Profile',
+      title: l10n.myProfile,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -23,31 +25,48 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 16),
             const Text('Sara Hoseini', style: AppText.h3),
             const SizedBox(height: 4),
-            Text('Sarahoseini@gmail.com',
-                style: AppText.body.copyWith(color: AppColors.grey500)),
+            Text(
+              'Sarahoseini@gmail.com',
+              style: AppText.body.copyWith(color: AppColors.grey500),
+            ),
             const SizedBox(height: 28),
-            const SectionLabel('My Account'),
+            SectionLabel(l10n.myAccount),
             MenuGroup(items: [
-              MenuItemData('Personal Information', Icons.person_outline,
-                  () => context.go('/profile/personal-info')),
-              MenuItemData('Partner', Icons.favorite_border,
-                  () => context.go('/profile/partner')),
-              MenuItemData('Account & Security', Icons.shield_outlined,
-                  () => context.go('/profile/account-security')),
+              MenuItemData(
+                l10n.personalInformation,
+                Icons.person_outline,
+                () => context.go('/profile/personal-info'),
+              ),
+              MenuItemData(
+                l10n.partner,
+                Icons.favorite_border,
+                () => context.go('/profile/partner'),
+              ),
+              MenuItemData(
+                l10n.accountSecurity,
+                Icons.shield_outlined,
+                () => context.go('/profile/account-security'),
+              ),
             ]),
             const SizedBox(height: 22),
-            const SectionLabel('App Setting'),
+            SectionLabel(l10n.appSetting),
             MenuGroup(items: [
-              MenuItemData('Settings', Icons.settings_outlined,
-                  () => context.go('/profile/settings')),
-              MenuItemData('Notifications', Icons.notifications_none_rounded,
-                  () => context.go('/profile/notifications')),
+              MenuItemData(
+                l10n.settings,
+                Icons.settings_outlined,
+                () => context.go('/profile/settings'),
+              ),
+              MenuItemData(
+                l10n.notifications,
+                Icons.notifications_none_rounded,
+                () => context.go('/profile/notifications'),
+              ),
             ]),
             const SizedBox(height: 22),
-            const SectionLabel('Support & Legal'),
+            SectionLabel(l10n.supportLegal),
             MenuGroup(items: [
-              MenuItemData('Help & Support', Icons.help_outline_rounded, () {}),
-              MenuItemData('Log out', Icons.logout_rounded, () {}, danger: true),
+              MenuItemData(l10n.helpSupport, Icons.help_outline_rounded, () {}),
+              MenuItemData(l10n.logOut, Icons.logout_rounded, () {}, danger: true),
             ]),
           ],
         ),
@@ -55,6 +74,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
-

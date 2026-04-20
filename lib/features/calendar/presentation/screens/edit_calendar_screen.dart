@@ -106,7 +106,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
   Widget build(BuildContext context) {
     return PageScaffold(
       showBack: true,
-      onBack: () => context.pop(),
+      onBack: () => safeRouterBack(context, fallbackRoute: '/calendar'),
       showTitle: true,
       title: 'Edit Calendar',
       child: Padding(
@@ -237,7 +237,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
                                 );
                           }
 
-                          context.pop();
+                          safeRouterBack(context, fallbackRoute: '/calendar');
                         }
                       : null,
                 ),

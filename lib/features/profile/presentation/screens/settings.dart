@@ -3,35 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
-
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final settingsState = ref.watch(appSettingsProvider);
     return SimplePage(
-      title: 'Settings',
+      title: l10n.settings,
       child: settingsState.when(
         data: (settings) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionLabel('Appearance'),
+            SectionLabel(l10n.appearance),
             MenuGroup(items: [
-              MenuItemData('Theme', Icons.palette_outlined, () {}),
+              MenuItemData(l10n.theme, Icons.palette_outlined, () {}),
             ]),
             const SizedBox(height: 22),
-            const SectionLabel('Cycle Settings'),
+            SectionLabel(l10n.cycleSettings),
             MenuGroup(items: [
               MenuItemData(
-                'Period Length',
+                l10n.periodLength,
                 Icons.water_drop_outlined,
                 () => _showCycleLengthPicker(
                   context,
-                  title: 'Period Length',
+                  title: l10n.periodLength,
                   currentValue: settings.periodLengthDays,
                   min: 2,
                   max: 12,
@@ -41,14 +42,14 @@ class SettingScreen extends ConsumerWidget {
                                 current.copyWith(periodLengthDays: value),
                           ),
                 ),
-                trailingText: '${settings.periodLengthDays} Days',
+                trailingText: l10n.daysCount(settings.periodLengthDays),
               ),
               MenuItemData(
-                'Cycle Length',
+                l10n.cycleLength,
                 Icons.calendar_month_outlined,
                 () => _showCycleLengthPicker(
                   context,
-                  title: 'Cycle Length',
+                  title: l10n.cycleLength,
                   currentValue: settings.cycleLengthDays,
                   min: 20,
                   max: 40,
@@ -58,33 +59,29 @@ class SettingScreen extends ConsumerWidget {
                                 current.copyWith(cycleLengthDays: value),
                           ),
                 ),
-                trailingText: '${settings.cycleLengthDays} Days',
+                trailingText: l10n.daysCount(settings.cycleLengthDays),
               ),
             ]),
             const SizedBox(height: 22),
-            const SectionLabel('Integrations & Sync'),
+            SectionLabel(l10n.integrationsSync),
             MenuGroup(items: [
-              MenuItemData(
-                  'Connected Apps', Icons.all_inclusive_rounded, () {}),
+              MenuItemData(l10n.connectedApps, Icons.all_inclusive_rounded, () {}),
             ]),
             const SizedBox(height: 22),
-            const SectionLabel('About'),
+            SectionLabel(l10n.about),
             MenuGroup(items: [
-              MenuItemData(
-                  'Privacy Policy', Icons.verified_user_outlined, () {}),
-              MenuItemData('App Version', Icons.info_outline_rounded, () {},
+              MenuItemData(l10n.privacyPolicy, Icons.verified_user_outlined, () {}),
+              MenuItemData(l10n.appVersion, Icons.info_outline_rounded, () {},
                   trailingText: '1.0.2'),
             ]),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Unable to load settings')),
+        error: (_, __) => Center(child: Text(l10n.unableToLoadSettings)),
       ),
     );
   }
-
 }
-
 
 Future<void> _showCycleLengthPicker(
   BuildContext context, {
@@ -132,7 +129,9 @@ Future<void> _showCycleLengthPicker(
                     onTap: () => Navigator.of(context).pop(value),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: value == currentValue
                             ? AppColors.primary50
@@ -166,7 +165,3 @@ Future<void> _showCycleLengthPicker(
     onSelected(result);
   }
 }
-
-
-
-

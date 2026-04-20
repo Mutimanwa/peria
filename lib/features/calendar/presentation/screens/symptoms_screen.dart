@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
 import 'package:perla_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 class SymptomsScreen extends ConsumerStatefulWidget {
@@ -79,7 +79,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
       }
     }
     _selectedByCategory = next;
-    _loadedDocumentId = log?.id ?? ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
+    _loadedDocumentId =
+        log?.id ?? ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
   }
 
   bool _isSelected(String category, String label) {
@@ -117,11 +118,14 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     );
 
     await repository.saveForDate(log);
-    if (mounted) context.pop();
+    if (mounted) {
+      safeRouterBack(context, fallbackRoute: '/cycle');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final asyncLog = ref.watch(symptomLogProvider(_selectedDate));
     final expectedId =
         ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
@@ -134,9 +138,9 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
 
     return PageScaffold(
       showBack: true,
-      onBack: () => context.pop(),
+      onBack: () => safeRouterBack(context, fallbackRoute: '/cycle'),
       showTitle: true,
-      title: 'Log Symptoms',
+      title: l10n.logSymptoms,
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -228,7 +232,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                         border: Border.all(color: AppColors.grey200),
                       ),
                       child: Text(
-                        'Quick daily symptom capture. Tap everything that matches how you feel today.',
+                        l10n.quickDailySymptomCapture,
                         style: AppText.body.copyWith(color: AppColors.grey600),
                       ),
                     ),
@@ -241,7 +245,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                     )
                   else
                     ..._categories.entries.map(
-                      (entry) => _buildCategoryCard(entry.key, entry.value),
+                      (entry) => _buildCategoryCard(context, entry.key, entry.value),
                     ),
                 ],
               ),
@@ -252,7 +256,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
             left: 24,
             right: 24,
             child: PrimaryButton(
-              label: 'Save',
+              label: l10n.save,
               onPressed: _save,
             ),
           ),
@@ -261,7 +265,11 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, List<_SymptomOption> options) {
+  Widget _buildCategoryCard(
+    BuildContext context,
+    String categoryKey,
+    List<_SymptomOption> options,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Container(
@@ -275,7 +283,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: AppText.h4),
+            Text(_label(context, categoryKey), style: AppText.h4),
             const SizedBox(height: 16),
             Wrap(
               spacing: 12,
@@ -283,10 +291,10 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
               children: options
                   .map(
                     (option) => _Pill(
-                      label: option.label,
+                      label: _label(context, option.label),
                       icon: option.icon,
-                      isSelected: _isSelected(title, option.label),
-                      onTap: () => _toggleSelection(title, option.label),
+                      isSelected: _isSelected(categoryKey, option.label),
+                      onTap: () => _toggleSelection(categoryKey, option.label),
                     ),
                   )
                   .toList(),
@@ -295,6 +303,80 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
         ),
       ),
     );
+  }
+
+  String _label(BuildContext context, String key) {
+    final l10n = AppLocalizations.of(context);
+    switch (key) {
+      case 'Sexual activity':
+        return l10n.sexualActivity;
+      case 'Protected Sex':
+        return l10n.protectedSex;
+      case 'Orgasm':
+        return l10n.orgasm;
+      case 'High activity':
+        return l10n.highActivity;
+      case 'Unprotected sex':
+        return l10n.unprotectedSex;
+      case 'Mental':
+        return l10n.mental;
+      case 'Breathing Exercises':
+        return l10n.breathingExercises;
+      case 'Stress':
+        return l10n.stress;
+      case 'Yoga':
+        return l10n.yoga;
+      case 'Meditation':
+        return l10n.meditation;
+      case 'Discharge':
+        return l10n.discharge;
+      case 'Unusual':
+        return l10n.unusual;
+      case 'Sticky':
+        return l10n.sticky;
+      case 'Bleeding':
+        return l10n.bleeding;
+      case 'Heavy Bleeding':
+        return l10n.heavyBleeding;
+      case 'Low Bleeding':
+        return l10n.lowBleeding;
+      case 'Physical activity':
+        return l10n.physicalActivity;
+      case 'No Exercise':
+        return l10n.noExercise;
+      case 'Team sports':
+        return l10n.teamSports;
+      case 'Cycling':
+        return l10n.cycling;
+      case 'Gym':
+        return l10n.gym;
+      case 'Dancing':
+        return l10n.dancing;
+      case 'Aerobics':
+        return l10n.aerobics;
+      case 'Swimming':
+        return l10n.swimming;
+      case 'Mood':
+        return l10n.mood;
+      case 'Anxious':
+        return l10n.anxious;
+      case 'Sad':
+        return l10n.sad;
+      case 'Happy':
+        return l10n.happy;
+      case 'Calm':
+        return l10n.calm;
+      case 'Angry':
+        return l10n.angry;
+      case 'Energetic':
+        return l10n.energetic;
+      case 'Confused':
+        return l10n.confused;
+      case 'Depressed':
+        return l10n.depressed;
+      default:
+        return key;
+    }
   }
 }
 

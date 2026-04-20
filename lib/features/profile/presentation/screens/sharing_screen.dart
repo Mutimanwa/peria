@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
 import 'package:perla_app/features/profile/presentation/providers/partner_settings_provider.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
@@ -12,23 +13,24 @@ class SharingSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(partnerSettingsProvider);
     return SimplePage(
-      title: 'Sharing Settings',
+      title: l10n.sharingSettings,
       child: state.when(
         data: (settings) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Choose What to Share', style: AppText.h3),
+            Text(l10n.chooseWhatToShare, style: AppText.h3),
             const SizedBox(height: 10),
             Text(
-              'You can now manage your shared cycle data and insights below.',
+              l10n.manageSharedCycleData,
               style: AppText.body.copyWith(color: AppColors.grey600),
             ),
             const SizedBox(height: 22),
             ToggleGroup(items: [
               ToggleItemData(
-                'Cycle Predictions',
+                l10n.cyclePredictions,
                 settings.shareCyclePredictions,
                 (v) => ref.read(partnerSettingsProvider.notifier).patch(
                       (current) =>
@@ -36,21 +38,21 @@ class SharingSettingsScreen extends ConsumerWidget {
                     ),
               ),
               ToggleItemData(
-                'Logged Symptoms',
+                l10n.loggedSymptoms,
                 settings.shareLoggedSymptoms,
                 (v) => ref.read(partnerSettingsProvider.notifier).patch(
                       (current) => current.copyWith(shareLoggedSymptoms: v),
                     ),
               ),
               ToggleItemData(
-                'Period Dates',
+                l10n.periodDates,
                 settings.sharePeriodDates,
                 (v) => ref.read(partnerSettingsProvider.notifier).patch(
                       (current) => current.copyWith(sharePeriodDates: v),
                     ),
               ),
               ToggleItemData(
-                'Mood Entries',
+                l10n.moodEntries,
                 settings.shareMoodEntries,
                 (v) => ref.read(partnerSettingsProvider.notifier).patch(
                       (current) => current.copyWith(shareMoodEntries: v),
@@ -58,11 +60,15 @@ class SharingSettingsScreen extends ConsumerWidget {
               ),
             ]),
             const Spacer(),
-            PrimaryButton(label: 'Save Changes', onPressed: () => context.pop()),
+            PrimaryButton(
+              label: l10n.saveChanges,
+              onPressed: () => context.pop(),
+            ),
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Unable to load sharing settings')),
+        error: (_, __) =>
+            Center(child: Text(l10n.unableToLoadSharingSettings)),
       ),
     );
   }
