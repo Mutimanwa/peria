@@ -1,13 +1,19 @@
-# Router Fixes TODO
+# Firestore Isolation TODO
 
-## Steps:
-- [x] 1. Fix syntax errors in router.dart (missing parens in routes)
-- [x] 2. Declare `hasCompletedOnboarding` bool and add FirebaseAuth import
-- [x] 3. Create new synchronous `routerRedirect` function without WidgetRef
-- [x] 4. Update GoRouter `redirect` to use `routerRedirect`
-- [x] 5. Cleanup/rename `authRedirect` in auth_guard.dart
-- [x] 6. Run `flutter analyze` to verify fixes
-- [ ] 7. Test navigation
+✅ Step 1: Plan/TODO
 
-Current progress: Starting step 1.
+**Step 2**: Update FirebaseService (offline + user init)
 
+**Step 3**: New UserRepository
+
+**Step 4**: New JournalFirestoreRepository (users/uid/journal/id)
+
+**Step 5**: Update journal provider/repo
+
+**Step 6**: firestore.rules
+
+**Step 7**: Test/deploy rules
+
+✅ Steps 1-3 (TODO, FirebaseService, UserRepo, rules)
+
+**Step 4**: Journal Firestore repo

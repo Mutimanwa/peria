@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
@@ -26,8 +27,6 @@ import 'package:perla_app/features/profile/presentation/screens/profile_screens.
 import 'package:perla_app/features/profile/presentation/screens/security.dart';
 import 'package:perla_app/features/profile/presentation/screens/sharing_screen.dart';
 import 'package:perla_app/features/journal/presentation/guards/journal_lock_guard.dart';
-import 'package:perla_app/features/auth/presentation/providers/auth_provider.dart';
-import 'auth_guard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -45,32 +44,50 @@ void updateOnboardingState(bool completed) {
 String? routerRedirect(BuildContext context, GoRouterState state) {
   final user = FirebaseAuth.instance.currentUser;
   
-  // If no user, redirect to splash (unless already there)
+  // Routes accessibles sans être connecté
+  final bool isAuthRoute = state.matchedLocation == '/welcome' || 
+                           state.matchedLocation.startsWith('/register') || 
+                           state.matchedLocation == '/splash';
+
+  // 1. Si l'utilisateur n'est pas connecté (même pas en anonyme)
   if (user == null) {
-    if (state.matchedLocation == '/splash') return null;
-    return '/splash';
-  }
-  
-  // User authenticated, block auth routes
-  if (state.matchedLocation.startsWith('/register') || 
-      state.matchedLocation.startsWith('/otp') ||
-      state.matchedLocation.startsWith('/email') ||
-      state.matchedLocation.startsWith('/create-account')) {
-    return '/cycle';
-  }
-  
-  // Check onboarding
-  if (!hasCompletedOnboarding && state.matchedLocation != '/welcome' && !state.matchedLocation.startsWith('/onboarding')) {
+    // Si on est déjà sur une route autorisée, on ne bouge pas
+    if (isAuthRoute) return null;
+    // Sinon, on redirige vers Welcome pour qu'il s'enregistre ou continue en anonyme
     return '/welcome';
   }
-  
+
+  // 2. Si l'utilisateur est connecté (Anonyme ou Réel)
+  // On lui interdit de revenir sur le Splash ou le Welcome
+  if (state.matchedLocation == '/splash' || state.matchedLocation == '/welcome') {
+    // S'il a fini l'onboarding -> Home, sinon -> Onboarding
+    return hasCompletedOnboarding ? '/home' : '/ask-name'; 
+  }
+
   return null;
+}
+
+// Utilitaire pour lier les changements d'auth Firebase au GoRouter
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }
 
 // Modifie l'initialLocation pour pointer vers /check-onboarding
 final GoRouter appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/splash',
+  refreshListenable: GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
   redirect: routerRedirect,
   routes: [
     GoRoute(

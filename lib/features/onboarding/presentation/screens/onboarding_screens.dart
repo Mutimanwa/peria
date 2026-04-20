@@ -7,8 +7,6 @@ import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
-///  ÉCRAN 6 — Ask Name
-///  Maquette : Ask_Name_2x.png
 ///
 ///  Structure :
 ///   • Bouton retour + Skip (haut)
