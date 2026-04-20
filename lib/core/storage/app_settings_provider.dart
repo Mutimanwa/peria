@@ -1,9 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:perla_app/core/repositories/user_repository.dart';
 import 'app_settings.dart';
 import 'app_settings_repository.dart';
 
+final settingsUserRepositoryProvider = Provider<UserRepository>((ref) {
+  return UserRepository();
+});
+
 final appSettingsRepositoryProvider = Provider<AppSettingsRepository>((ref) {
-  return AppSettingsRepository();
+  return AppSettingsRepository(
+    userRepository: ref.read(settingsUserRepositoryProvider),
+  );
 });
 
 final appSettingsProvider =

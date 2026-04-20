@@ -43,6 +43,9 @@ void updateOnboardingState(bool completed) {
 
 String? routerRedirect(BuildContext context, GoRouterState state) {
   final user = FirebaseAuth.instance.currentUser;
+  debugPrint(
+    '[Router] redirect check location=${state.matchedLocation} uid=${user?.uid}',
+  );
   
   // Routes accessibles sans être connecté
   final bool isAuthRoute = state.matchedLocation == '/welcome' || 
@@ -54,6 +57,7 @@ String? routerRedirect(BuildContext context, GoRouterState state) {
     // Si on est déjà sur une route autorisée, on ne bouge pas
     if (isAuthRoute) return null;
     // Sinon, on redirige vers Welcome pour qu'il s'enregistre ou continue en anonyme
+    debugPrint('[Router] redirect -> /welcome (no authenticated user)');
     return '/welcome';
   }
 
@@ -61,7 +65,9 @@ String? routerRedirect(BuildContext context, GoRouterState state) {
   // On lui interdit de revenir sur le Splash ou le Welcome
   if (state.matchedLocation == '/splash' || state.matchedLocation == '/welcome') {
     // S'il a fini l'onboarding -> Home, sinon -> Onboarding
-    return hasCompletedOnboarding ? '/home' : '/ask-name'; 
+    final destination = hasCompletedOnboarding ? '/cycle' : '/ask-name';
+    debugPrint('[Router] redirect -> $destination');
+    return destination; 
   }
 
   return null;

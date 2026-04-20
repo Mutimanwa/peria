@@ -3,6 +3,19 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
 
+void safeRouterBack(BuildContext context, {String fallbackRoute = '/cycle'}) {
+  final router = GoRouter.of(context);
+  final canPop = router.canPop();
+  debugPrint(
+    '[Navigation] safeRouterBack canPop=$canPop fallback=$fallbackRoute',
+  );
+  if (canPop) {
+    router.pop();
+    return;
+  }
+  router.go(fallbackRoute);
+}
+
 // ═══════════════════════════════════════════════════════════════════
 //  BOUTON PRIMAIRE — fond noir, texte blanc, pill shape
 // ═══════════════════════════════════════════════════════════════════
@@ -325,14 +338,20 @@ class PageScaffold extends StatelessWidget {
 class SimplePage extends StatelessWidget {
   final String title;
   final Widget child;
+  final String fallbackRoute;
 
-  const SimplePage({super.key, required this.title, required this.child});
+  const SimplePage({
+    super.key,
+    required this.title,
+    required this.child,
+    this.fallbackRoute = '/cycle',
+  });
 
   @override
   Widget build(BuildContext context) {
     return PageScaffold(
       showBack: true,
-      onBack: () => context.pop(),
+      onBack: () => safeRouterBack(context, fallbackRoute: fallbackRoute),
       showTitle: true,
       title: title,
       child: Padding(

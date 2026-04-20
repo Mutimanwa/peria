@@ -6,6 +6,9 @@ import 'package:perla_app/firebase_options.dart';
 class FirebaseService {
   static Future<void> initialize() async {
     try {
+      if (kDebugMode) {
+        debugPrint('[FirebaseService] initialize start');
+      }
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
@@ -13,11 +16,11 @@ class FirebaseService {
         const PersistenceSettings(synchronizeTabs: true)
       );
       if (kDebugMode) {
-        print('✅ Firebase + Firestore offline ready');
+        debugPrint('[FirebaseService] Firebase + Firestore offline ready');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Firebase initialization failed: $e');
+        debugPrint('[FirebaseService] Firebase initialization failed: $e');
       }
    }
   }

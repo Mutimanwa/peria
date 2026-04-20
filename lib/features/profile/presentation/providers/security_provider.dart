@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:perla_app/core/repositories/user_repository.dart';
 import 'package:perla_app/features/profile/data/repositories/security_repository.dart';
 
 class SecurityConfig {
@@ -25,8 +26,14 @@ class SecurityConfig {
   }
 }
 
+final securityUserRepositoryProvider = Provider<UserRepository>((ref) {
+  return UserRepository();
+});
+
 final securityRepositoryProvider = Provider<SecurityRepository>((ref) {
-  return SecurityRepository();
+  return SecurityRepository(
+    userRepository: ref.read(securityUserRepositoryProvider),
+  );
 });
 
 final securityProvider = StateNotifierProvider<SecurityNotifier, AsyncValue<SecurityConfig>>(

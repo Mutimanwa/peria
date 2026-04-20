@@ -1,34 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
+import 'package:perla_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
-class SymptomsScreen extends StatefulWidget {
+class SymptomsScreen extends ConsumerStatefulWidget {
   const SymptomsScreen({super.key});
 
   @override
-  State<SymptomsScreen> createState() => _SymptomsScreenState();
+  ConsumerState<SymptomsScreen> createState() => _SymptomsScreenState();
 }
 
-class _SymptomsScreenState extends State<SymptomsScreen> {
-  // Liste des dates pour le scroller horizontal
-  final List<DateTime> _dates = List.generate(
-      7, (index) => DateTime(2025, 9, 18).add(Duration(days: index)));
+class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
+  late List<DateTime> _dates;
   late DateTime _selectedDate;
+  Map<String, Set<String>> _selectedByCategory = {};
+  String? _loadedDocumentId;
+
+  static const Map<String, List<_SymptomOption>> _categories = {
+    'Sexual activity': [
+      _SymptomOption('Protected Sex', Icons.female),
+      _SymptomOption('Orgasm', Icons.favorite_border),
+      _SymptomOption('High activity', Icons.local_fire_department_outlined),
+      _SymptomOption('Unprotected sex', Icons.male),
+    ],
+    'Mental': [
+      _SymptomOption('Breathing Exercises', Icons.air),
+      _SymptomOption('Stress', Icons.self_improvement),
+      _SymptomOption('Yoga', Icons.accessibility_new),
+      _SymptomOption('Meditation', Icons.spa_outlined),
+    ],
+    'Discharge': [
+      _SymptomOption('Unusual', Icons.water_drop_outlined),
+      _SymptomOption('Sticky', Icons.water_drop),
+      _SymptomOption('Bleeding', Icons.opacity),
+      _SymptomOption('Heavy Bleeding', Icons.bloodtype_outlined),
+      _SymptomOption('Low Bleeding', Icons.invert_colors_off_outlined),
+    ],
+    'Physical activity': [
+      _SymptomOption('No Exercise', Icons.remove),
+      _SymptomOption('Team sports', Icons.sports_basketball),
+      _SymptomOption('Cycling', Icons.directions_bike),
+      _SymptomOption('Gym', Icons.fitness_center),
+      _SymptomOption('Dancing', Icons.music_note_outlined),
+      _SymptomOption('Aerobics', Icons.directions_walk),
+      _SymptomOption('Swimming', Icons.pool),
+    ],
+    'Mood': [
+      _SymptomOption('Anxious', Icons.sentiment_dissatisfied),
+      _SymptomOption('Sad', Icons.sentiment_dissatisfied_outlined),
+      _SymptomOption('Happy', Icons.sentiment_very_satisfied),
+      _SymptomOption('Calm', Icons.sentiment_satisfied),
+      _SymptomOption('Angry', Icons.sentiment_very_dissatisfied),
+      _SymptomOption('Energetic', Icons.bolt_outlined),
+      _SymptomOption('Confused', Icons.sentiment_neutral),
+      _SymptomOption('Depressed', Icons.cloud_outlined),
+    ],
+  };
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = _dates[3]; // Le 21, comme sur la maquette
+    final today = DateTime.now();
+    final weekStart = DateTime(today.year, today.month, today.day)
+        .subtract(Duration(days: today.weekday - 1));
+    _dates = List.generate(7, (index) => weekStart.add(Duration(days: index)));
+    _selectedDate = DateTime(today.year, today.month, today.day);
+  }
+
+  void _applyLog(SymptomLog? log) {
+    final next = <String, Set<String>>{};
+    if (log != null) {
+      for (final entry in log.selections.entries) {
+        next[entry.key] = entry.value.toSet();
+      }
+    }
+    _selectedByCategory = next;
+    _loadedDocumentId = log?.id ?? ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
+  }
+
+  bool _isSelected(String category, String label) {
+    return _selectedByCategory[category]?.contains(label) ?? false;
+  }
+
+  void _toggleSelection(String category, String label) {
+    setState(() {
+      final current = {...(_selectedByCategory[category] ?? <String>{})};
+      if (current.contains(label)) {
+        current.remove(label);
+      } else {
+        current.add(label);
+      }
+      _selectedByCategory[category] = current;
+    });
+  }
+
+  Future<void> _save() async {
+    final repository = ref.read(symptomRepositoryProvider);
+    final normalizedDate =
+        DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+    final selections = <String, List<String>>{};
+    for (final entry in _selectedByCategory.entries) {
+      if (entry.value.isNotEmpty) {
+        selections[entry.key] = entry.value.toList()..sort();
+      }
+    }
+
+    final log = SymptomLog(
+      id: repository.documentIdForDate(normalizedDate),
+      date: normalizedDate,
+      selections: selections,
+      updatedAt: DateTime.now(),
+    );
+
+    await repository.saveForDate(log);
+    if (mounted) context.pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final asyncLog = ref.watch(symptomLogProvider(_selectedDate));
+    final expectedId =
+        ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
+    if (_loadedDocumentId != expectedId && asyncLog.hasValue) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() => _applyLog(asyncLog.value));
+      });
+    }
+
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
       showTitle: true,
-      title: 'Add Symptoms',
+      title: 'Log Symptoms',
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -37,20 +145,22 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Date Scroller ──────────
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('September', style: AppText.h3),
-                        Row(
-                          children: [
-                            Icon(Icons.chevron_left, color: AppColors.grey600),
-                            SizedBox(width: 16),
-                            Icon(Icons.chevron_right, color: AppColors.black),
-                          ],
-                        )
+                        Text(
+                          DateFormat('MMMM').format(_selectedDate),
+                          style: AppText.h3,
+                        ),
+                        Text(
+                          DateFormat('y').format(_selectedDate),
+                          style: AppText.caption.copyWith(
+                            color: AppColors.grey600,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -64,20 +174,12 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                       itemBuilder: (context, index) {
                         final date = _dates[index];
                         final isSelected = date == _selectedDate;
-                        final dayName = [
-                          'Mo',
-                          'Tu',
-                          'We',
-                          'Th',
-                          'Fr',
-                          'Sa',
-                          'Su'
-                        ][date.weekday - 1];
+                        final dayName = DateFormat('E').format(date);
 
                         return GestureDetector(
                           onTap: () => setState(() => _selectedDate = date),
                           child: Container(
-                            width: 50,
+                            width: 56,
                             margin: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
                               color: isSelected
@@ -88,21 +190,25 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('${date.day}',
-                                    style: AppTypography.bodyLarge.copyWith(
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : AppColors.black,
-                                      fontWeight: isSelected
-                                          ? FontWeight.w600
-                                          : FontWeight.w400,
-                                    )),
-                                Text(dayName,
-                                    style: AppText.caption.copyWith(
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : AppColors.grey500,
-                                    )),
+                                Text(
+                                  '${date.day}',
+                                  style: AppTypography.bodyLarge.copyWith(
+                                    color: isSelected
+                                        ? AppColors.primary
+                                        : AppColors.black,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  dayName,
+                                  style: AppText.caption.copyWith(
+                                    color: isSelected
+                                        ? AppColors.primary
+                                        : AppColors.grey500,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -111,112 +217,43 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  _buildCategoryCard('Sexual activity', [
-                    const _Pill(
-                        label: 'Protected Sex',
-                        icon: Icons.female,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Orgasm',
-                        icon: Icons.favorite_border,
-                        isSelected: true),
-                    const _Pill(label: 'High activity', icon: Icons.search),
-                    const _Pill(label: 'Unprotected sex', icon: Icons.male),
-                  ]),
-
-                  _buildCategoryCard('Mental', [
-                    const _Pill(
-                        label: 'Breathing Exercises',
-                        icon: Icons.directions_run,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Stress',
-                        icon: Icons.self_improvement,
-                        isSelected: true),
-                    const _Pill(label: 'Yoga', icon: Icons.cloud_outlined),
-                    const _Pill(label: 'Meditation', icon: Icons.self_improvement),
-                  ]),
-
-                  _buildCategoryCard('Discharge', [
-                    const _Pill(label: 'Unusual', icon: Icons.water_drop_outlined),
-                    const _Pill(
-                        label: 'Sticky',
-                        icon: Icons.water_drop,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Bleeding',
-                        icon: Icons.water_drop,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Heavy Bleeding',
-                        icon: Icons.water_drop_outlined),
-                    const _Pill(
-                        label: 'Low Bleeding', icon: Icons.water_drop_outlined),
-                  ]),
-
-                  _buildCategoryCard('Physical activity', [
-                    const _Pill(
-                        label: 'No Exercise',
-                        icon: Icons.remove,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Team sports',
-                        icon: Icons.sports_basketball,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Cycling',
-                        icon: Icons.directions_bike,
-                        isSelected: true),
-                    const _Pill(label: 'Gym', icon: Icons.fitness_center),
-                    const _Pill(label: 'Dancing', icon: Icons.accessibility_new),
-                    const _Pill(label: 'Aerobics', icon: Icons.directions_walk),
-                    const _Pill(
-                        label: 'Swimming', icon: Icons.pool, isSelected: true),
-                  ]),
-
-                  _buildCategoryCard('Mood', [
-                    const _Pill(
-                        label: 'Anxious',
-                        icon: Icons.sentiment_dissatisfied,
-                        isSelected: true),
-                    const _Pill(label: 'Sad', icon: Icons.sentiment_dissatisfied),
-                    const _Pill(
-                        label: 'Happy',
-                        icon: Icons.sentiment_very_satisfied,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Calm',
-                        icon: Icons.sentiment_satisfied,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Angry',
-                        icon: Icons.sentiment_very_dissatisfied),
-                    const _Pill(
-                        label: 'Energetic',
-                        icon: Icons.sentiment_satisfied_alt),
-                    const _Pill(
-                        label: 'Confused',
-                        icon: Icons.sentiment_neutral,
-                        isSelected: true),
-                    const _Pill(
-                        label: 'Depressed',
-                        icon: Icons.sentiment_very_dissatisfied,
-                        isSelected: true),
-                  ]),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.grey50,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: AppColors.grey200),
+                      ),
+                      child: Text(
+                        'Quick daily symptom capture. Tap everything that matches how you feel today.',
+                        style: AppText.body.copyWith(color: AppColors.grey600),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (asyncLog.isLoading)
+                    const Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else
+                    ..._categories.entries.map(
+                      (entry) => _buildCategoryCard(entry.key, entry.value),
+                    ),
                 ],
               ),
             ),
           ),
-
-          // ── Bottom Save Button ──────────
           Positioned(
             bottom: 24,
             left: 24,
             right: 24,
             child: PrimaryButton(
-              label: 'save',
-              onPressed: () => context.pop(),
+              label: 'Save',
+              onPressed: _save,
             ),
           ),
         ],
@@ -224,7 +261,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
     );
   }
 
-  Widget _buildCategoryCard(String title, List<Widget> children) {
+  Widget _buildCategoryCard(String title, List<_SymptomOption> options) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Container(
@@ -243,52 +280,76 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
             Wrap(
               spacing: 12,
               runSpacing: 12,
-              children: children,
+              children: options
+                  .map(
+                    (option) => _Pill(
+                      label: option.label,
+                      icon: option.icon,
+                      isSelected: _isSelected(title, option.label),
+                      onTap: () => _toggleSelection(title, option.label),
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),
       ),
     );
   }
-
 }
 
 class _Pill extends StatelessWidget {
+  const _Pill({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
   final String label;
   final IconData icon;
   final bool isSelected;
-
-  const _Pill({required this.label, required this.icon, this.isSelected = false});
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.primary50 : AppColors.grey50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isSelected ? AppColors.primary100 : AppColors.grey200,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary50 : AppColors.grey50,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.primary100 : AppColors.grey200,
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 18,
-            color: isSelected ? AppColors.primary : AppColors.grey600,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: AppTypography.bodySmall.copyWith(
-              color: isSelected ? AppColors.primary : AppColors.grey800,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? AppColors.primary : AppColors.grey600,
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: AppTypography.bodySmall.copyWith(
+                color: isSelected ? AppColors.primary : AppColors.grey800,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+class _SymptomOption {
+  const _SymptomOption(this.label, this.icon);
+
+  final String label;
+  final IconData icon;
 }

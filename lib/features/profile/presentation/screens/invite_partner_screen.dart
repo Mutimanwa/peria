@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/theme/app_colors.dart';
 import 'package:perla_app/core/theme/app_text.dart';
+import 'package:perla_app/features/profile/presentation/providers/partner_settings_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 import 'package:perla_app/shared/widgets/profile_widgets.dart';
 
-class InvitePartnerScreen extends StatefulWidget {
+class InvitePartnerScreen extends ConsumerStatefulWidget {
   const InvitePartnerScreen({super.key});
 
   @override
-  State<InvitePartnerScreen> createState() => _InvitePartnerScreenState();
+  ConsumerState<InvitePartnerScreen> createState() => _InvitePartnerScreenState();
 }
 
-class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
+class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
   final TextEditingController _email =
       TextEditingController(text: 'Samrad@gmail.com');
 
@@ -49,7 +51,13 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
           const Spacer(),
           PrimaryButton(
             label: 'Send Invitation',
-            onPressed: () => _showInvitationDialog(context),
+            onPressed: () async {
+              await ref
+                  .read(partnerSettingsProvider.notifier)
+                  .invitePartner(_email.text);
+              if (!mounted) return;
+              _showInvitationDialog(context);
+            },
           ),
           const SizedBox(height: 12),
           OutlineButton(label: 'Share Link Manually', onPressed: () {}),
@@ -90,7 +98,7 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  this.context.go('/profile/partner/pending');
+                  this.context.go('/profile/partner-pending');
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.grey900,

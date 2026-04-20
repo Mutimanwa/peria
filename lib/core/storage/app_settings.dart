@@ -52,4 +52,36 @@ class AppSettings {
       cycleLengthDays: cycleLengthDays ?? this.cycleLengthDays,
     );
   }
+
+  factory AppSettings.fromJson(Map<String, dynamic> json) {
+    return AppSettings(
+      allowNotifications: json['allowNotifications'] as bool? ?? false,
+      notifyPeriodStarting: json['notifyPeriodStarting'] as bool? ?? false,
+      notifyFertileWindow: json['notifyFertileWindow'] as bool? ?? true,
+      notifyOvulationDay: json['notifyOvulationDay'] as bool? ?? false,
+      remindLogSymptoms: json['remindLogSymptoms'] as bool? ?? false,
+      notifyPartnerUpdates: json['notifyPartnerUpdates'] as bool? ?? true,
+      twoFactorEnabled: json['twoFactorEnabled'] as bool? ?? false,
+      faceIdEnabled: json['faceIdEnabled'] as bool? ?? true,
+      discreetModeEnabled: json['discreetModeEnabled'] as bool? ?? false,
+      periodLengthDays: json['periodLengthDays'] as int? ?? 7,
+      cycleLengthDays: json['cycleLengthDays'] as int? ?? 28,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'allowNotifications': allowNotifications,
+      'notifyPeriodStarting': notifyPeriodStarting,
+      'notifyFertileWindow': notifyFertileWindow,
+      'notifyOvulationDay': notifyOvulationDay,
+      'remindLogSymptoms': remindLogSymptoms,
+      'notifyPartnerUpdates': notifyPartnerUpdates,
+      'twoFactorEnabled': twoFactorEnabled,
+      'faceIdEnabled': faceIdEnabled,
+      'discreetModeEnabled': discreetModeEnabled,
+      'periodLengthDays': periodLengthDays,
+      'cycleLengthDays': cycleLengthDays,
+    };
+  }
 }

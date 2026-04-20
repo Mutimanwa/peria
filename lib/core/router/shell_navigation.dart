@@ -16,25 +16,38 @@ class ShellNavigation extends StatefulWidget {
 }
 
 class _ShellNavigationState extends State<ShellNavigation> {
+  GoRouter? _router;
+
   @override
   void initState() {
     super.initState();
-    // Listen to route changes to update the selected index
-    GoRouter.of(context).routerDelegate.addListener(_onRouteChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final router = GoRouter.of(context);
+    if (_router == router) return;
+    _router?.routerDelegate.removeListener(_onRouteChanged);
+    _router = router;
+    _router?.routerDelegate.addListener(_onRouteChanged);
   }
 
   @override
   void dispose() {
-    GoRouter.of(context).routerDelegate.removeListener(_onRouteChanged);
+    _router?.routerDelegate.removeListener(_onRouteChanged);
     super.dispose();
   }
 
   void _onRouteChanged() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   NavItem get _currentItem {
-    final route = GoRouter.of(context).routerDelegate.currentConfiguration.uri.toString();
+    final route =
+        _router?.routerDelegate.currentConfiguration.uri.toString() ?? '';
     if (route.startsWith('/cycle')) {
       return NavItem.cycle;
     } else if (route.startsWith('/journal')) {

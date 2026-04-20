@@ -311,7 +311,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     return PageScaffold(
       showBack: true,
-      onBack: () => context.push('/home'),
+      onBack: () => safeRouterBack(context, fallbackRoute: '/cycle'),
       showTitle: true,
       title: 'Cycle Calendar',
       child: Stack(

@@ -114,7 +114,7 @@ final l10n = AppLocalizations.of(context);
       showBack: true,
       showSkip: true,
       onSkip: () {
-        context.pop();
+        safeRouterBack(context, fallbackRoute: '/welcome');
       },
       child: Column(
         children: [
