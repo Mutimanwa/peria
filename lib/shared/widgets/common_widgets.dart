@@ -155,6 +155,47 @@ class BackIconButton extends StatelessWidget {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// ICON BOUTON - carré arrondi avec icône au centre
+// ══════════════════════════════════════════════════════════════════
+class IconButtonWidget extends StatelessWidget {
+  final VoidCallback? onPressed;
+  final IconData icon;
+  final Color backgroundColor;
+  final Color iconColor;
+
+  const IconButtonWidget({
+    super.key,
+    this.onPressed,
+    required this.icon,
+    this.backgroundColor = AppColors.white,
+    this.iconColor = AppColors.black,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.grey200),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withAlpha(13),
+                blurRadius: 6,
+                offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Icon(icon, color: iconColor, size: 24),
+      ),
+    );
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════════
 //  CHAMP DE SAISIE — pill shape, fond gris clair
 // ═══════════════════════════════════════════════════════════════════
@@ -279,6 +320,7 @@ class PageScaffold extends StatelessWidget {
   final bool showTitle;
   final VoidCallback? onBack;
   final String? title;
+  final List<Widget>? actions; // Optionnel : pour ajouter des boutons à droite
 
   const PageScaffold({
     super.key,
@@ -287,6 +329,7 @@ class PageScaffold extends StatelessWidget {
     this.showTitle = true,
     this.onBack,
     this.title,
+    this.actions,
   });
 
   @override
@@ -297,33 +340,51 @@ class PageScaffold extends StatelessWidget {
         child: SafeArea(
           child: Stack(
             children: [
-              // ── Contenu principal
+              // 1. LE CONTENU PRINCIPAL
               child,
 
-              // ── Bouton retour (à gauche)
-              if (showBack)
-                Positioned(
-                  top: 12,
-                  left: 20,
-                  child: BackIconButton(onPressed: onBack),
-                ),
+              // 2. LE HEADER FIXE (Placé après le child pour être au-dessus)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 60, // Hauteur fixe du header
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    // On utilise le blanc avec une légère opacité ou le début du dégradé
+                    // pour masquer les éléments qui scrollent derrière.
+                    color: AppColors.white.withOpacity(0.98),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Bouton retour (à gauche)
+                      if (showBack)
+                        Positioned(
+                          left: 0,
+                          child: BackIconButton(onPressed: onBack),
+                        ),
 
-              // ── Titre (au milieu)
-              if (showTitle && title != null)
-                Positioned(
-                  top: 20,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Text(
-                      title!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                      // Titre (centré)
+                      if (showTitle && title != null)
+                        Text(
+                          title!,
+                          style: AppText.h3.copyWith( // Utilise ton thème AppText
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      
+                      // Actions (à droite si tu en as besoin, comme le bouton Edit)
+                      if (actions != null)
+                        Positioned(
+                          right: 0,
+                          child: Row(children: actions!),
+                        ),
+                    ],
                   ),
                 ),
+              ),
             ],
           ),
         ),
@@ -331,7 +392,6 @@ class PageScaffold extends StatelessWidget {
     );
   }
 }
-
 // ==========================================
 // SIMPLE PAGE SCAFFOLD - 
 // ==========================================
@@ -366,3 +426,188 @@ class SimplePage extends StatelessWidget {
     );
   }
 }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// JOURNAL COMPONENTS
+// ═══════════════════════════════════════════════════════════════════
+class JournalMoodTone  {
+  const JournalMoodTone({
+    required this.label,
+    required this.accent,
+    required this.softBackground,
+  });
+
+  final String label;
+  final Color accent;
+  final Color softBackground;
+
+  factory JournalMoodTone.fromMood(String mood) {
+    switch (mood) {
+      case 'happy':
+        return const JournalMoodTone(
+          label: 'Happy',
+          accent: Color(0xFFB46900),
+          softBackground: Color(0xFFFFF1D6),
+        );
+      case 'sad':
+        return const JournalMoodTone(
+          label: 'Sad',
+          accent: AppColors.info700,
+          softBackground: AppColors.info50,
+        );
+      case 'anxious':
+        return const JournalMoodTone(
+          label: 'Anxious',
+          accent: AppColors.secondary600,
+          softBackground: AppColors.secondary100,
+        );
+      case 'tired':
+        return const JournalMoodTone(
+          label: 'Tired',
+          accent: Color(0xFF8A6A43),
+          softBackground: Color(0xFFF2E9DF),
+        );
+      default:
+        return const JournalMoodTone(
+          label: 'Calm',
+          accent: AppColors.primary500,
+          softBackground: AppColors.primary50,
+        );
+    }
+  }
+}
+
+class EmptyJournal extends StatelessWidget {
+  const EmptyJournal({super.key, 
+    required this.hasQuery,
+    required this.selectedDate,
+  });
+
+  final bool hasQuery;
+  final DateTime selectedDate;
+
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    return now.year == date.year && now.month == date.month && now.day == date.day;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
+      decoration: BoxDecoration(
+        color: AppColors.white.withOpacity(0.78),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.grey200),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.primary50,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Icon(Icons.edit_note_rounded, size: 30, color: AppColors.primary500),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            hasQuery
+                ? l10n.noMatchingNotes
+                : (_isToday(selectedDate) ? l10n.journalEmpty : 'No entry for this day'),
+            textAlign: TextAlign.center,
+            style: AppText.h5,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            hasQuery
+                ? l10n.tryAnotherKeyword
+                : (_isToday(selectedDate)
+                    ? l10n.startFirstNote
+                    : 'Use quick log to capture this moment.'),
+            textAlign: TextAlign.center,
+            style: AppText.body.copyWith(color: AppColors.grey600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class JournalMetaChip extends StatelessWidget {
+  const JournalMetaChip({
+    super.key,
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.grey100,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 12,
+            color: AppColors.grey600,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: AppText.label.copyWith(
+              color: AppColors.grey600,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HeaderIconButton extends StatelessWidget {
+  const HeaderIconButton({super.key, 
+    required this.icon,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.grey200),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withAlpha(13),
+                blurRadius: 6,
+                offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Icon(icon, color: AppColors.grey700, size: 21),
+      ),
+    );
+  }
+}
+

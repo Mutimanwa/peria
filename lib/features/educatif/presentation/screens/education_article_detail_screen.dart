@@ -27,7 +27,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
           elevation: 0,
           leading: GestureDetector(
             onTap: () => context.pop(),
-            child: const Icon(Icons.arrow_back, color: AppColors.grey900),
+            child: const Icon(Icons.chevron_left_rounded, color: AppColors.grey900),
           ),
         ),
         body: Center(
@@ -63,7 +63,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                             border: Border.all(color: AppColors.grey200),
                           ),
                           child: const Icon(
-                            Icons.arrow_back,
+                            Icons.chevron_left_rounded,
                             color: AppColors.grey900,
                             size: 18,
                           ),
@@ -71,7 +71,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                       ),
                       Text(
                         article.axis.localizedLabel(l10n),
-                        style: AppText.caption.copyWith(
+                        style: AppText.h4.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.grey700,
                         ),
@@ -102,6 +102,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   Container(
+                    width: double.infinity,
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(

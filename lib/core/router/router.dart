@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
 import 'package:perla_app/features/calendar/presentation/screens/symptoms_screen.dart';
+import 'package:perla_app/features/journal/presentation/screens/journal_detail_screen.dart';
+import 'package:perla_app/features/journal/presentation/screens/journal_editor_screen.dart';
 import 'package:perla_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:perla_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:perla_app/features/auth/presentation/screens/otp_screen.dart';
@@ -279,7 +281,7 @@ final GoRouter appRouter = GoRouter(
           path: '/journal/new',
           pageBuilder: (context, state) => _buildSlideTransitionPage(
               context, state, 
-              JournalLockGuard(child: const JournalEditorScreen()),
+             const JournalLockGuard(child:  JournalEditorScreen()),
           ),
         ),
         GoRoute(
@@ -319,7 +321,7 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => _buildSlideTransitionPage(
             context, 
             state, 
-            JournalLockGuard(child: const JournalScreen()),
+           const JournalLockGuard(child:  JournalScreen()),
           ),
         ),
         

@@ -88,8 +88,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           final currentLast = currentProfile?.lastPeriodStart;
           if (currentLast == null || start.isAfter(currentLast)) {
             await ref.read(userProfileProvider.notifier).patch(
-                (p) => p.copyWith(lastPeriodStart: start),
-              );
+                  (p) => p.copyWith(lastPeriodStart: start),
+                );
           }
 
           if (mounted) navigator.pop();
@@ -134,7 +134,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   title: 'Period started today',
                   subtitle: 'Save today as the first day of your period.',
                   color: AppColors.primary400,
-                  onTap: () => savePeriodLog(start: todayStart, end: todayStart),
+                  onTap: () =>
+                      savePeriodLog(start: todayStart, end: todayStart),
                 ),
                 const SizedBox(height: 12),
                 _QuickActionTile(
@@ -487,6 +488,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               _buildLegendItem('pms day', AppColors.warning50),
                               _buildLegendItem('period day', AppColors.primary50),
                               _buildLegendItem('ovulation day', AppColors.secondary100),
+                              _buildLegendItem('symptoms', AppColors.success),
+                              _buildLegendItem('journal', AppColors.grey700),
                               _buildLegendItem('today', AppColors.grey900),
                             ],
                           ),
@@ -514,7 +517,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           const SizedBox(height: 8),
                           Text(
                             'Fast daily actions for period and symptoms, without opening the structured editor.',
-                            style: AppText.body.copyWith(color: AppColors.grey600),
+                            style:
+                                AppText.body.copyWith(color: AppColors.grey600),
                           ),
                           const SizedBox(height: 16),
                           Row(
@@ -537,7 +541,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           const SizedBox(height: 12),
                           Text(
                             'Need to define or fix a date range? Use Edit Calendar.',
-                            style: AppText.caption.copyWith(color: AppColors.grey600),
+                            style: AppText.caption
+                                .copyWith(color: AppColors.grey600),
                           ),
                           const SizedBox(height: 12),
                           OutlineButton(
@@ -548,40 +553,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  // ── Résumé des symptômes Card ────────
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary50,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Symptoms snapshot', style: AppText.h4),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Track daily observations like pain, mood, fatigue or discharge.',
-                            style:
-                                AppText.body.copyWith(color: AppColors.grey600),
-                          ),
-                          const SizedBox(height: 16),
-                          OutlineButton(
-                            label: '+ Log Symptoms',
-                            onPressed: () {
-                              context.go("/symptoms");
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

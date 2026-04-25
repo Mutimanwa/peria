@@ -101,153 +101,153 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
     });
   }
 
-  Future<void> _openQuickLogSheet(AppLocalizations l10n) async {
-    final controller = TextEditingController(text: _quickLogController.text);
-    var mood = _quickMood;
+  // Future<void> _openQuickLogSheet(AppLocalizations l10n) async {
+  //   final controller = TextEditingController(text: _quickLogController.text);
+  //   var mood = _quickMood;
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            final canSave = controller.text.trim().isNotEmpty;
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 100,
-              ),
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 42,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: AppColors.grey300,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Text(l10n.newEntry, style: AppText.h4),
-                    const SizedBox(height: 6),
-                    Text(
-                      l10n.writeFreelyHint,
-                      style: AppText.body.copyWith(color: AppColors.grey600),
-                    ),
-                    const SizedBox(height: 18),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: _moods.map((item) {
-                        final selected = mood == item.$1;
-                        final tone = _JournalMoodTone.fromMood(item.$1);
-                        return GestureDetector(
-                          onTap: () => setModalState(() => mood = item.$1),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 180),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: selected ? tone.softBackground : AppColors.grey100,
-                              borderRadius: BorderRadius.circular(999),
-                              border: Border.all(
-                                color: selected ? tone.accent : AppColors.grey200,
-                              ),
-                            ),
-                            child: Text(
-                              item.$2,
-                              style: AppText.caption.copyWith(
-                                color: selected ? tone.accent : AppColors.grey700,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.grey100,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: TextField(
-                        controller: controller,
-                        minLines: 5,
-                        maxLines: 8,
-                        onChanged: (_) => setModalState(() {}),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: l10n.writeFreelyHint,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlineButton(
-                            label: 'Open editor',
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              this.context.go('/journal/new');
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: PrimaryButton(
-                            label: l10n.saveEntry,
-                            onPressed: canSave
-                                ? () async {
-                                    final navigator = Navigator.of(context);
-                                    final now = DateTime.now();
-                                    await ref.read(journalProvider.notifier).upsert(
-                                          JournalEntry(
-                                            id: now.microsecondsSinceEpoch.toString(),
-                                            createdAt: now,
-                                            updatedAt: now,
-                                            title: '',
-                                            content: controller.text.trim(),
-                                            mood: mood,
-                                          ),
-                                        );
-                                    if (!mounted) return;
-                                    setState(() {
-                                      _selectedDate = now;
-                                      _quickMood = 'calm';
-                                      _quickLogController.clear();
-                                    });
-                                    navigator.pop();
-                                  }
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
+  //   await showModalBottomSheet<void>(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (context) {
+  //       return StatefulBuilder(
+  //         builder: (context, setModalState) {
+  //           final canSave = controller.text.trim().isNotEmpty;
+  //           return Padding(
+  //             padding: EdgeInsets.only(
+  //               left: 16,
+  //               right: 16,
+  //               bottom: MediaQuery.of(context).viewInsets.bottom + 100,
+  //             ),
+  //             child: Container(
+  //               padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.white,
+  //                 borderRadius: BorderRadius.circular(28),
+  //               ),
+  //               child: Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Center(
+  //                     child: Container(
+  //                       width: 42,
+  //                       height: 4,
+  //                       decoration: BoxDecoration(
+  //                         color: AppColors.grey300,
+  //                         borderRadius: BorderRadius.circular(999),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 18),
+  //                   Text(l10n.newEntry, style: AppText.h4),
+  //                   const SizedBox(height: 6),
+  //                   Text(
+  //                     l10n.writeFreelyHint,
+  //                     style: AppText.body.copyWith(color: AppColors.grey600),
+  //                   ),
+  //                   const SizedBox(height: 18),
+  //                   Wrap(
+  //                     spacing: 8,
+  //                     runSpacing: 8,
+  //                     children: _moods.map((item) {
+  //                       final selected = mood == item.$1;
+  //                       final tone = JournalMoodTone.fromMood(item.$1);
+  //                       return GestureDetector(
+  //                         onTap: () => setModalState(() => mood = item.$1),
+  //                         child: AnimatedContainer(
+  //                           duration: const Duration(milliseconds: 180),
+  //                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+  //                           decoration: BoxDecoration(
+  //                             color: selected ? tone.softBackground : AppColors.grey100,
+  //                             borderRadius: BorderRadius.circular(999),
+  //                             border: Border.all(
+  //                               color: selected ? tone.accent : AppColors.grey200,
+  //                             ),
+  //                           ),
+  //                           child: Text(
+  //                             item.$2,
+  //                             style: AppText.caption.copyWith(
+  //                               color: selected ? tone.accent : AppColors.grey700,
+  //                               fontWeight: FontWeight.w700,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       );
+  //                     }).toList(),
+  //                   ),
+  //                   const SizedBox(height: 16),
+  //                   Container(
+  //                     decoration: BoxDecoration(
+  //                       color: AppColors.grey100,
+  //                       borderRadius: BorderRadius.circular(24),
+  //                     ),
+  //                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //                     child: TextField(
+  //                       controller: controller,
+  //                       minLines: 5,
+  //                       maxLines: 8,
+  //                       onChanged: (_) => setModalState(() {}),
+  //                       decoration: InputDecoration(
+  //                         border: InputBorder.none,
+  //                         hintText: l10n.writeFreelyHint,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   const SizedBox(height: 16),
+  //                   Row(
+  //                     children: [
+  //                       Expanded(
+  //                         child: OutlineButton(
+  //                           label: 'Open editor',
+  //                           onPressed: () {
+  //                             Navigator.of(context).pop();
+  //                             this.context.go('/journal/new');
+  //                           },
+  //                         ),
+  //                       ),
+  //                       const SizedBox(width: 12),
+  //                       Expanded(
+  //                         child: PrimaryButton(
+  //                           label: l10n.saveEntry,
+  //                           onPressed: canSave
+  //                               ? () async {
+  //                                   final navigator = Navigator.of(context);
+  //                                   final now = DateTime.now();
+  //                                   await ref.read(journalProvider.notifier).upsert(
+  //                                         JournalEntry(
+  //                                           id: now.microsecondsSinceEpoch.toString(),
+  //                                           createdAt: now,
+  //                                           updatedAt: now,
+  //                                           title: '',
+  //                                           content: controller.text.trim(),
+  //                                           mood: mood,
+  //                                         ),
+  //                                       );
+  //                                   if (!mounted) return;
+  //                                   setState(() {
+  //                                     _selectedDate = now;
+  //                                     _quickMood = 'calm';
+  //                                     _quickLogController.clear();
+  //                                   });
+  //                                   navigator.pop();
+  //                                 }
+  //                               : null,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
 
-    controller.dispose();
-  }
+  //   controller.dispose();
+  // }
 
   String _summaryLabel(DateTime date, int count) {
     final day = DateFormat('EEEE, d MMMM').format(date);
@@ -287,13 +287,13 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                               selectedMood: _quickMood,
                               moods: _moods,
                               onMoodSelected: (mood) => setState(() => _quickMood = mood),
-                              onOpenSheet: () => _openQuickLogSheet(l10n),
+                              onOpenSheet: () => context.go('/journal/new'),
                               controller: _quickLogController,
                               onSave: _saveQuickEntry,
                             ),
                           ),
                         if (filtered.isEmpty)
-                          _EmptyJournal(hasQuery: _query.isNotEmpty, selectedDate: _selectedDate)
+                          EmptyJournal(hasQuery: _query.isNotEmpty, selectedDate: _selectedDate)
                         else
                           ...filtered.map(
                             (entry) => Padding(
@@ -331,17 +331,17 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                   children: [
                     Text(
                       _query.isNotEmpty ? l10n.searchJournalHint : l10n.journalTitle,
-                      style: AppText.h3.copyWith(fontSize: 22),
+                      style: AppText.h2,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       _query.isNotEmpty ? l10n.tryAnotherKeyword : l10n.journalSubtitle,
-                      style: AppText.caption.copyWith(color: AppColors.grey600),
+                      style: AppText.body.copyWith(color: AppColors.grey600),
                     ),
                   ],
                 ),
               ),
-              _HeaderIconButton(
+              HeaderIconButton(
                 icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
                 onTap: () {
                   setState(() {
@@ -433,7 +433,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: AppColors.white.withOpacity(0.72),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.grey200),
       ),
       child: Row(
@@ -460,440 +460,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
   }
 }
 
-class JournalDetailScreen extends ConsumerWidget {
-  const JournalDetailScreen({super.key, required this.entryId});
 
-  final String entryId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final entryContext = ref.watch(journalEntryContextByIdProvider(entryId));
-    final entry = entryContext?.entry;
-
-    if (entry == null) {
-      return PageScaffold(
-        showBack: true,
-        onBack: () => context.pop(),
-        showTitle: true,
-        title: l10n.journalTitle,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(22, 88, 22, 24),
-          child: Center(
-            child: _EmptyJournal(
-              hasQuery: false,
-              selectedDate: DateTime.now(),
-            ),
-          ),
-        ),
-      );
-    }
-
-    final resolvedEntry = entry;
-    final tone = _JournalMoodTone.fromMood(resolvedEntry.mood);
-
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(gradient: AppColors.bgGradient),
-          ),
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.75),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.grey200),
-                          ),
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: AppColors.grey900,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        l10n.journalTitle,
-                        style: AppText.caption.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.grey700,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => context.go('/journal/edit/${resolvedEntry.id}'),
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.75),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.grey200),
-                          ),
-                          child: const Icon(
-                            Icons.edit_outlined,
-                            color: AppColors.grey700,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          tone.accent.withOpacity(0.14),
-                          tone.softBackground.withOpacity(0.65),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color: tone.accent.withOpacity(0.22),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: tone.accent.withOpacity(0.08),
-                          offset: const Offset(0, 4),
-                          blurRadius: 12,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: tone.accent,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            tone.label,
-                            style: AppText.caption.copyWith(
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          resolvedEntry.title.isEmpty ? l10n.untitledNote : resolvedEntry.title,
-                          style: AppText.h4.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.grey900,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            _JournalMetaChip(
-                              icon: Icons.calendar_today_outlined,
-                              label: DateFormat('d MMM yyyy').format(resolvedEntry.createdAt),
-                            ),
-                            _JournalMetaChip(
-                              icon: Icons.schedule,
-                              label: DateFormat('HH:mm').format(resolvedEntry.updatedAt),
-                            ),
-                            if (entryContext?.cycleDay != null)
-                              _JournalMetaChip(
-                                icon: Icons.autorenew_rounded,
-                                label: '${l10n.day} ${entryContext!.cycleDay}',
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _JournalDetailCard(
-                    icon: Icons.menu_book_outlined,
-                    title: 'Note',
-                    content: resolvedEntry.content.isEmpty ? l10n.noDetailsYet : resolvedEntry.content,
-                    accentColor: tone.accent,
-                  ),
-                  const SizedBox(height: 14),
-                  _JournalDetailCard(
-                    icon: Icons.info_outline,
-                    title: 'Details',
-                    content:
-                        'Created ${DateFormat('EEEE, d MMMM yyyy').format(resolvedEntry.createdAt)} at ${DateFormat('HH:mm').format(resolvedEntry.createdAt)}\nUpdated ${DateFormat('EEEE, d MMMM yyyy').format(resolvedEntry.updatedAt)} at ${DateFormat('HH:mm').format(resolvedEntry.updatedAt)}',
-                    accentColor: AppColors.grey700,
-                  ),
-                  const SizedBox(height: 14),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.error.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: AppColors.error.withOpacity(0.25),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 28,
-                              height: 28,
-                              decoration: BoxDecoration(
-                                color: AppColors.error,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.delete_outline,
-                                color: AppColors.white,
-                                size: 16,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              l10n.delete,
-                              style: AppText.h6.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.error,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Remove this note only if you no longer want to keep it in your private history.',
-                          style: AppText.body.copyWith(
-                            color: AppColors.grey800,
-                            height: 1.6,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlineButton(
-                            label: l10n.delete,
-                            onPressed: () async {
-                              await ref.read(journalProvider.notifier).delete(resolvedEntry.id);
-                              if (context.mounted) context.go('/journal');
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class JournalEditorScreen extends ConsumerStatefulWidget {
-  const JournalEditorScreen({super.key, this.entryId});
-
-  final String? entryId;
-
-  @override
-  ConsumerState<JournalEditorScreen> createState() => _JournalEditorScreenState();
-}
-
-class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
-  final _titleController = TextEditingController();
-  final _contentController = TextEditingController();
-  String _mood = 'calm';
-  JournalEntry? _existing;
-
-  static const _moods = [
-    ('calm', 'Calm'),
-    ('happy', 'Happy'),
-    ('sad', 'Sad'),
-    ('anxious', 'Anxious'),
-    ('tired', 'Tired'),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    final entries = ref.read(journalProvider).value ?? const <JournalEntry>[];
-    if (widget.entryId != null) {
-      _existing = entries.cast<JournalEntry?>().firstWhere(
-            (item) => item?.id == widget.entryId,
-            orElse: () => null,
-          );
-      if (_existing != null) {
-        _titleController.text = _existing!.title;
-        _contentController.text = _existing!.content;
-        _mood = _existing!.mood;
-      }
-    }
-    _titleController.addListener(_refresh);
-    _contentController.addListener(_refresh);
-  }
-
-  @override
-  void dispose() {
-    _titleController
-      ..removeListener(_refresh)
-      ..dispose();
-    _contentController
-      ..removeListener(_refresh)
-      ..dispose();
-    super.dispose();
-  }
-
-  void _refresh() {
-    if (mounted) setState(() {});
-  }
-
-  bool get _canSave =>
-      _titleController.text.trim().isNotEmpty || _contentController.text.trim().isNotEmpty;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return PageScaffold(
-      showBack: true,
-      onBack: () => context.pop(),
-      showTitle: true,
-      title: widget.entryId == null ? l10n.newEntry : l10n.saveEntry,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(22, 88, 22, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _formattedDate(_existing?.createdAt ?? DateTime.now()),
-              style: AppText.caption.copyWith(color: AppColors.grey500),
-            ),
-            const SizedBox(height: 18),
-            Text('Mood', style: AppText.label.copyWith(color: AppColors.grey800)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: _moods.map((mood) {
-                final selected = _mood == mood.$1;
-                final tone = _JournalMoodTone.fromMood(mood.$1);
-                return GestureDetector(
-                  onTap: () => setState(() => _mood = mood.$1),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: selected ? tone.softBackground : AppColors.grey100,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: selected ? tone.accent : AppColors.grey200),
-                    ),
-                    child: Text(
-                      mood.$2,
-                      style: AppText.label.copyWith(
-                        color: selected ? tone.accent : AppColors.grey700,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 18),
-            Text('Title', style: AppText.label.copyWith(color: AppColors.grey800)),
-            const SizedBox(height: 8),
-            PillTextField(hint: 'Today I want to remember...', controller: _titleController),
-            const SizedBox(height: 18),
-            Text('Your note', style: AppText.label.copyWith(color: AppColors.grey800)),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.grey100,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: TextField(
-                  controller: _contentController,
-                  maxLines: null,
-                  expands: true,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: l10n.writeFreelyHint,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                if (_existing != null)
-                  Expanded(
-                    child: OutlineButton(
-                      label: l10n.delete,
-                      onPressed: () async {
-                        await ref.read(journalProvider.notifier).delete(_existing!.id);
-                        if (!context.mounted) return;
-                        context.go('/journal');
-                      },
-                    ),
-                  ),
-                if (_existing != null) const SizedBox(width: 12),
-                Expanded(
-                  child: PrimaryButton(
-                    label: l10n.saveEntry,
-                    onPressed: _canSave ? _save : null,
-                  ),
-                ),
-                
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _save() async {
-    final now = DateTime.now();
-    final entry = (_existing ??
-            JournalEntry(
-              id: now.microsecondsSinceEpoch.toString(),
-              createdAt: now,
-              updatedAt: now,
-              title: '',
-              content: '',
-              mood: 'calm',
-            ))
-        .copyWith(
-      updatedAt: now,
-      title: _titleController.text.trim(),
-      content: _contentController.text.trim(),
-      mood: _mood,
-    );
-    await ref.read(journalProvider.notifier).upsert(entry);
-    if (!context.mounted) return;
-    // ignore: use_build_context_synchronously
-    context.go('/journal');
-  }
-
-  String _formattedDate(DateTime date) =>
-      '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
-}
 
 class _QuickLogComposer extends StatelessWidget {
   const _QuickLogComposer({
@@ -917,12 +484,12 @@ class _QuickLogComposer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final canSave = value.trim().isNotEmpty;
+    final canSave = value.trim().length > 5;
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.grey200),
       ),
       child: Column(
@@ -954,7 +521,7 @@ class _QuickLogComposer extends StatelessWidget {
             runSpacing: 8,
             children: moods.map((item) {
               final selected = selectedMood == item.$1;
-              final tone = _JournalMoodTone.fromMood(item.$1);
+              final tone = JournalMoodTone.fromMood(item.$1);
               return GestureDetector(
                 onTap: () => onMoodSelected(item.$1),
                 child: AnimatedContainer(
@@ -980,7 +547,7 @@ class _QuickLogComposer extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               color: AppColors.grey100,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             child: TextField(
@@ -1007,9 +574,11 @@ class _QuickLogComposer extends StatelessWidget {
               ),
               SizedBox(
                 width: 132,
+                height: 45,
                 child: PrimaryButton(
                   label: l10n.saveEntry,
                   onPressed: canSave ? onSave : null,
+                  fullWidth: true,
                 ),
               ),
             ],
@@ -1019,6 +588,7 @@ class _QuickLogComposer extends StatelessWidget {
     );
   }
 }
+
 class _WeekDayChip extends StatelessWidget {
   const _WeekDayChip({
     required this.date,
@@ -1040,11 +610,11 @@ class _WeekDayChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: 68,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        width: 58,
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.white : AppColors.white.withOpacity(0.55),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(color: isSelected ? AppColors.primary200 : AppColors.grey200),
         ),
         child: Column(
@@ -1057,7 +627,7 @@ class _WeekDayChip extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 5),
             Text(
               '${date.day}',
               style: AppText.label.copyWith(
@@ -1065,7 +635,7 @@ class _WeekDayChip extends StatelessWidget {
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Container(
               width: 6,
               height: 6,
@@ -1081,119 +651,6 @@ class _WeekDayChip extends StatelessWidget {
   }
 }
 
-class _JournalMetaChip extends StatelessWidget {
-  const _JournalMetaChip({
-    required this.icon,
-    required this.label,
-  });
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.grey100,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 12,
-            color: AppColors.grey600,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: AppText.label.copyWith(
-              color: AppColors.grey600,
-              fontSize: 10,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _JournalDetailCard extends StatelessWidget {
-  const _JournalDetailCard({
-    required this.icon,
-    required this.title,
-    required this.content,
-    required this.accentColor,
-  });
-
-  final IconData icon;
-  final String title;
-  final String content;
-  final Color accentColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: AppColors.grey200,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withOpacity(0.04),
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  icon,
-                  color: accentColor,
-                  size: 16,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                title,
-                style: AppText.h6.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey900,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            content,
-            style: AppText.body.copyWith(
-              color: AppColors.grey800,
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _JournalCard extends StatelessWidget {
   const _JournalCard({required this.entry});
 
@@ -1204,7 +661,7 @@ class _JournalCard extends StatelessWidget {
     return Consumer(
       builder: (context, ref, _) {
         final l10n = AppLocalizations.of(context);
-        final tone = _JournalMoodTone.fromMood(entry.mood);
+        final tone = JournalMoodTone.fromMood(entry.mood);
         final title = entry.title.isEmpty ? l10n.untitledNote : entry.title;
         final preview = entry.content.isEmpty ? l10n.noDetailsYet : entry.content;
         final cycleDay = ref.watch(cycleDayForDateProvider(entry.createdAt));
@@ -1214,7 +671,7 @@ class _JournalCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
             decoration: BoxDecoration(
               color: AppColors.white.withOpacity(0.85),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.grey200),
             ),
             child: Row(
@@ -1285,7 +742,7 @@ class _JournalCard extends StatelessWidget {
                             ),
                           ),
                           if (cycleDay != null)
-                            _JournalMetaChip(
+                            JournalMetaChip(
                               icon: Icons.autorenew_rounded,
                               label: '${l10n.day} $cycleDay',
                             ),
@@ -1303,136 +760,3 @@ class _JournalCard extends StatelessWidget {
   }
 }
 
-class _EmptyJournal extends StatelessWidget {
-  const _EmptyJournal({
-    required this.hasQuery,
-    required this.selectedDate,
-  });
-
-  final bool hasQuery;
-  final DateTime selectedDate;
-
-  bool _isToday(DateTime date) {
-    final now = DateTime.now();
-    return now.year == date.year && now.month == date.month && now.day == date.day;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
-      decoration: BoxDecoration(
-        color: AppColors.white.withOpacity(0.78),
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: AppColors.grey200),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Icon(Icons.edit_note_rounded, size: 30, color: AppColors.primary500),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            hasQuery
-                ? l10n.noMatchingNotes
-                : (_isToday(selectedDate) ? l10n.journalEmpty : 'No entry for this day'),
-            textAlign: TextAlign.center,
-            style: AppText.h5,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            hasQuery
-                ? l10n.tryAnotherKeyword
-                : (_isToday(selectedDate)
-                    ? l10n.startFirstNote
-                    : 'Use quick log to capture this moment.'),
-            textAlign: TextAlign.center,
-            style: AppText.body.copyWith(color: AppColors.grey600),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HeaderIconButton extends StatelessWidget {
-  const _HeaderIconButton({
-    required this.icon,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        child: Icon(icon, color: AppColors.grey700, size: 21),
-      ),
-    );
-  }
-}
-
-class _JournalMoodTone {
-  const _JournalMoodTone({
-    required this.label,
-    required this.accent,
-    required this.softBackground,
-  });
-
-  final String label;
-  final Color accent;
-  final Color softBackground;
-
-  factory _JournalMoodTone.fromMood(String mood) {
-    switch (mood) {
-      case 'happy':
-        return const _JournalMoodTone(
-          label: 'Happy',
-          accent: Color(0xFFB46900),
-          softBackground: Color(0xFFFFF1D6),
-        );
-      case 'sad':
-        return const _JournalMoodTone(
-          label: 'Sad',
-          accent: AppColors.info700,
-          softBackground: AppColors.info50,
-        );
-      case 'anxious':
-        return const _JournalMoodTone(
-          label: 'Anxious',
-          accent: AppColors.secondary600,
-          softBackground: AppColors.secondary100,
-        );
-      case 'tired':
-        return const _JournalMoodTone(
-          label: 'Tired',
-          accent: Color(0xFF8A6A43),
-          softBackground: Color(0xFFF2E9DF),
-        );
-      default:
-        return const _JournalMoodTone(
-          label: 'Calm',
-          accent: AppColors.primary500,
-          softBackground: AppColors.primary50,
-        );
-    }
-  }
-}

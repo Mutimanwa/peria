@@ -63,6 +63,12 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     ],
   };
 
+  bool get _hasExistingLog =>
+      _loadedDocumentId != null &&
+      (_selectedByCategory.isNotEmpty ||
+          _notesController.text.trim().isNotEmpty ||
+          _intensity != null);
+
   @override
   void initState() {
     super.initState();
@@ -90,8 +96,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     _selectedByCategory = next;
     _notesController.text = log?.freeNotes ?? '';
     _intensity = log?.intensity;
-    _loadedDocumentId =
-        log?.id ?? ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
+    _loadedDocumentId = log?.id ??
+        ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
   }
 
   bool _isSelected(String category, String label) {
@@ -192,17 +198,20 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                         final date = _dates[index];
                         final isSelected = date == _selectedDate;
                         final dayName = DateFormat('E').format(date);
+                        final isFutureDate = date.isAfter(DateTime.now());
 
                         return GestureDetector(
-                          onTap: () => setState(() => _selectedDate = date),
+                          onTap: isFutureDate
+                              ? null
+                              : () => setState(() => _selectedDate = date),
                           child: Container(
                             width: 56,
                             margin: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                              color: isSelected
+                              color: isSelected && !isFutureDate
                                   ? AppColors.primary100
                                   : Colors.transparent,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -210,10 +219,12 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                                 Text(
                                   '${date.day}',
                                   style: AppTypography.bodyLarge.copyWith(
-                                    color: isSelected
-                                        ? AppColors.primary
-                                        : AppColors.black,
-                                    fontWeight: isSelected
+                                    color: isFutureDate
+                                        ? AppColors.grey400
+                                        : (isSelected
+                                            ? AppColors.primary
+                                            : AppColors.black),
+                                    fontWeight: isSelected && !isFutureDate
                                         ? FontWeight.w600
                                         : FontWeight.w400,
                                   ),
@@ -258,7 +269,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                     )
                   else
                     ..._categories.entries.map(
-                      (entry) => _buildCategoryCard(context, entry.key, entry.value),
+                      (entry) =>
+                          _buildCategoryCard(context, entry.key, entry.value),
                     ),
                   _buildDailyContextCard(context),
                 ],
@@ -270,7 +282,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
             left: 24,
             right: 24,
             child: PrimaryButton(
-              label: l10n.save,
+              label: _hasExistingLog ? 'Mettre à jour' : 'Enregistrer',
               onPressed: _save,
             ),
           ),
@@ -446,7 +458,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                     height: 42,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary50 : AppColors.grey50,
+                      color:
+                          isSelected ? AppColors.primary50 : AppColors.grey50,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: isSelected
@@ -457,9 +470,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                     child: Text(
                       '$value',
                       style: AppText.label.copyWith(
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.grey700,
+                        color:
+                            isSelected ? AppColors.primary : AppColors.grey700,
                         fontWeight:
                             isSelected ? FontWeight.w700 : FontWeight.w500,
                       ),
@@ -474,6 +486,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     );
   }
 }
+
+
 
 class _Pill extends StatelessWidget {
   const _Pill({

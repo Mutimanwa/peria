@@ -5,6 +5,7 @@ import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/educatif/data/models/education_article.dart';
 import 'package:perla_app/features/educatif/presentation/providers/education_provider.dart';
+import 'package:perla_app/shared/widgets/common_widgets.dart';
 
 class EducationHomeScreen extends ConsumerStatefulWidget {
   const EducationHomeScreen({super.key});
@@ -99,21 +100,15 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                                 ),
                               ],
                             ),
-                            GestureDetector(
-                              onTap: () => context.go('/profile/notifications'),
-                              child: Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: AppColors.white.withOpacity(0.75),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: AppColors.grey200),
-                                ),
-                                child: const Icon(
-                                  Icons.notifications_none_rounded,
-                                  size: 20,
-                                ),
-                              ),
+                             HeaderIconButton(
+                              icon: _isSearching ? Icons.close_rounded : Icons.search_rounded,
+                              onTap: () {
+                                if (_isSearching && _searchController.text.isNotEmpty) {
+                                  _clearSearch();
+                                  return;
+                                }
+                                setState(() => _isSearching = !_isSearching);
+                              },
                             ),
                           ],
                         ),
@@ -136,22 +131,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                                 color: AppColors.grey900,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                if (_isSearching && _searchController.text.isNotEmpty) {
-                                  _clearSearch();
-                                  return;
-                                }
-                                setState(() => _isSearching = !_isSearching);
-                              },
-                              child: Text(
-                                _isSearching ? l10n.cancelAction : l10n.searchAction,
-                                style: AppText.caption.copyWith(
-                                  color: AppColors.primary400,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
+                           
                           ],
                         ),
                         if (_isSearching) ...[
@@ -163,7 +143,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.grey100,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: TextField(
                               controller: _searchController,
@@ -238,7 +218,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                       height: 200,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        // padding: const EdgeInsets.symmetric(horizontal: 5),
                         itemCount: filteredArticles.length,
                         separatorBuilder: (_, __) => const SizedBox(width: 14),
                         itemBuilder: (context, index) {
@@ -260,7 +240,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                     title: l10n.educationHeroTitle,
                     subtitle: l10n.educationHeroSubtitle,
                     footer: l10n.educationHeroFooter,
-                    accent: AppColors.primary300,
+                    accent: AppColors.primary400,
                   ),
                   const SizedBox(height: 80),
                 ],
@@ -277,7 +257,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
     AppLocalizations l10n,
   ) {
     return SizedBox(
-      height: 42,
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -296,7 +276,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
               ),
               child: Text(
                 category.axis.localizedLabel(l10n),
-                style: AppText.caption.copyWith(
+                style: AppText.label.copyWith(
                   color: selected ? AppColors.white : AppColors.grey700,
                   fontWeight: FontWeight.w600,
                 ),
