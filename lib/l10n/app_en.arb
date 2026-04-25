@@ -114,6 +114,9 @@
   "logSymptoms": "Log Symptoms",
   "quickDailySymptomCapture": "Quick daily symptom capture. Tap everything that matches how you feel today.",
   "save": "Save",
+  "notes": "Notes",
+  "writeHowYouFeelToday": "Write how you feel today...",
+  "intensity": "Intensity",
   "sexualActivity": "Sexual activity",
   "protectedSex": "Protected Sex",
   "orgasm": "Orgasm",
@@ -237,5 +240,71 @@
   "changePinButton": "Change PIN",
   "disablePinLock": "Disable PIN lock",
   "unableToLoadSecuritySettings": "Unable to load security settings",
-  "unableToLoadAccountSettings": "Unable to load account settings"
+  "unableToLoadAccountSettings": "Unable to load account settings",
+  "educationGreeting": "Hello Peria",
+  "educationSpace": "Your education space",
+  "educationWhatToLearn": "What would you like to learn today?",
+  "educationRecentArticles": "Recent articles",
+  "educationSearchResults": "Search results",
+  "searchAction": "Search",
+  "cancelAction": "Cancel",
+  "educationSearchHint": "Search an article...",
+  "educationNoArticleFound": "No article found",
+  "educationNoArticles": "No articles",
+  "educationTryAnotherSearch": "Try another search",
+  "educationChooseCategory": "Choose a category",
+  "educationHeroTitle": "Learn gently",
+  "educationHeroSubtitle": "Explore simple answers to your most common questions.",
+  "educationHeroFooter": "Access clear answers, step by step.",
+  "educationSuggestionsTitle": "Suggestions for you",
+  "educationSuggestionsSubtitle": "Based on your cycle and recent entries.",
+  "educationArticleNotFound": "Article not found",
+  "educationArticleSaved": "Article added to favorites",
+  "educationExplanation": "Explanation",
+  "educationObserve": "What to observe",
+  "educationAdvice": "Advice",
+  "educationWhenToConsult": "When to consult",
+  "educationRelatedTags": "Related tags",
+  "educationUpdated": "Updated: {value}",
+  "@educationUpdated": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "difficultyEasy": "Easy",
+  "difficultyMedium": "Medium",
+  "difficultyAdvanced": "Advanced",
+  "educationAxisCycleBasics": "Understand the cycle",
+  "educationAxisOvulationFertility": "Ovulation and fertility",
+  "educationAxisMenstruationSymptoms": "Periods and symptoms",
+  "educationAxisNormalVsAbnormal": "Normal vs abnormal",
+  "educationAxisSolutionsWellbeing": "Relief and wellbeing",
+  "todayLabel": "Today",
+  "yesterdayLabel": "Yesterday",
+  "daysAgo": "{count} days ago",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weeksAgo": "{count} week(s) ago",
+  "@weeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthsAgo": "{count} month(s) ago",
+  "@monthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

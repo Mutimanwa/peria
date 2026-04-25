@@ -36,6 +36,14 @@ class SymptomRepository {
     return SymptomLog.fromJson(data);
   }
 
+  Future<List<SymptomLog>> loadAll() async {
+    await _userRepository.ensureUserDocument();
+    _log('loading all symptom logs from users/${_userRepository.currentUid}/symptoms');
+    final snap = await _symptomsCollection.orderBy('date', descending: true).get();
+    _log('loaded ${snap.docs.length} symptom logs');
+    return snap.docs.map((doc) => SymptomLog.fromJson(doc.data())).toList();
+  }
+
   Future<void> saveForDate(SymptomLog log) async {
     await _userRepository.ensureUserDocument();
     _log('saving symptom log docId=${log.id} categories=${log.selections.keys.toList()}');

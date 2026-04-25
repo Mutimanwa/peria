@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:perla_app/features/journal/data/models/journal_entry.dart';
 import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:perla_app/l10n/app_localizations.dart';
@@ -211,6 +212,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                             label: l10n.saveEntry,
                             onPressed: canSave
                                 ? () async {
+                                    final navigator = Navigator.of(context);
                                     final now = DateTime.now();
                                     await ref.read(journalProvider.notifier).upsert(
                                           JournalEntry(
@@ -228,7 +230,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                                       _quickMood = 'calm';
                                       _quickLogController.clear();
                                     });
-                                    Navigator.of(context).pop();
+                                    navigator.pop();
                                   }
                                 : null,
                           ),
@@ -466,15 +468,8 @@ class JournalDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final entries = ref.watch(journalProvider).value ?? const <JournalEntry>[];
-    JournalEntry? entry;
-
-    for (final item in entries) {
-      if (item.id == entryId) {
-        entry = item;
-        break;
-      }
-    }
+    final entryContext = ref.watch(journalEntryContextByIdProvider(entryId));
+    final entry = entryContext?.entry;
 
     if (entry == null) {
       return PageScaffold(
@@ -618,6 +613,11 @@ class JournalDetailScreen extends ConsumerWidget {
                               icon: Icons.schedule,
                               label: DateFormat('HH:mm').format(resolvedEntry.updatedAt),
                             ),
+                            if (entryContext?.cycleDay != null)
+                              _JournalMetaChip(
+                                icon: Icons.autorenew_rounded,
+                                label: '${l10n.day} ${entryContext!.cycleDay}',
+                              ),
                           ],
                         ),
                       ],
@@ -847,7 +847,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                       label: l10n.delete,
                       onPressed: () async {
                         await ref.read(journalProvider.notifier).delete(_existing!.id);
-                        if (mounted) context.go('/journal');
+                        if (!context.mounted) return;
+                        context.go('/journal');
                       },
                     ),
                   ),
@@ -885,7 +886,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
       mood: _mood,
     );
     await ref.read(journalProvider.notifier).upsert(entry);
-    if (mounted) context.go('/journal');
+    if (!context.mounted) return;
+    // ignore: use_build_context_synchronously
+    context.go('/journal');
   }
 
   String _formattedDate(DateTime date) =>
@@ -1198,81 +1201,104 @@ class _JournalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final tone = _JournalMoodTone.fromMood(entry.mood);
-    final title = entry.title.isEmpty ? l10n.untitledNote : entry.title;
-    final preview = entry.content.isEmpty ? l10n.noDetailsYet : entry.content;
-    return GestureDetector(
-      onTap: () => context.go('/journal/detail/${entry.id}'),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-        decoration: BoxDecoration(
-          color: AppColors.white.withOpacity(0.85),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 10,
-              height: 10,
-              margin: const EdgeInsets.only(top: 6),
-              decoration: BoxDecoration(color: tone.accent, shape: BoxShape.circle),
+    return Consumer(
+      builder: (context, ref, _) {
+        final l10n = AppLocalizations.of(context);
+        final tone = _JournalMoodTone.fromMood(entry.mood);
+        final title = entry.title.isEmpty ? l10n.untitledNote : entry.title;
+        final preview = entry.content.isEmpty ? l10n.noDetailsYet : entry.content;
+        final cycleDay = ref.watch(cycleDayForDateProvider(entry.createdAt));
+        return GestureDetector(
+          onTap: () => context.go('/journal/detail/${entry.id}'),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+            decoration: BoxDecoration(
+              color: AppColors.white.withOpacity(0.85),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppColors.grey200),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 10,
+                  height: 10,
+                  margin: const EdgeInsets.only(top: 6),
+                  decoration:
+                      BoxDecoration(color: tone.accent, shape: BoxShape.circle),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppText.label.copyWith(
-                            color: AppColors.grey900,
-                            fontWeight: FontWeight.w700,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppText.label.copyWith(
+                                color: AppColors.grey900,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
+                          const SizedBox(width: 10),
+                          Text(
+                            DateFormat('HH:mm').format(entry.updatedAt),
+                            style: AppText.caption.copyWith(color: AppColors.grey500),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        preview,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.body.copyWith(
+                          color: AppColors.grey700,
+                          height: 1.4,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Text(
-                        DateFormat('HH:mm').format(entry.updatedAt),
-                        style: AppText.caption.copyWith(color: AppColors.grey500),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: tone.softBackground,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              tone.label,
+                              style: AppText.caption.copyWith(
+                                color: tone.accent,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          if (cycleDay != null)
+                            _JournalMetaChip(
+                              icon: Icons.autorenew_rounded,
+                              label: '${l10n.day} $cycleDay',
+                            ),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    preview,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.body.copyWith(color: AppColors.grey700, height: 1.4),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: tone.softBackground,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      tone.label,
-                      style: AppText.caption.copyWith(
-                        color: tone.accent,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

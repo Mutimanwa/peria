@@ -19,6 +19,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   late DateTime _selectedDate;
   Map<String, Set<String>> _selectedByCategory = {};
   String? _loadedDocumentId;
+  late final TextEditingController _notesController;
+  int? _intensity;
 
   static const Map<String, List<_SymptomOption>> _categories = {
     'Sexual activity': [
@@ -64,11 +66,18 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   @override
   void initState() {
     super.initState();
+    _notesController = TextEditingController();
     final today = DateTime.now();
     final weekStart = DateTime(today.year, today.month, today.day)
         .subtract(Duration(days: today.weekday - 1));
     _dates = List.generate(7, (index) => weekStart.add(Duration(days: index)));
     _selectedDate = DateTime(today.year, today.month, today.day);
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
   }
 
   void _applyLog(SymptomLog? log) {
@@ -79,6 +88,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
       }
     }
     _selectedByCategory = next;
+    _notesController.text = log?.freeNotes ?? '';
+    _intensity = log?.intensity;
     _loadedDocumentId =
         log?.id ?? ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
   }
@@ -115,6 +126,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
       date: normalizedDate,
       selections: selections,
       updatedAt: DateTime.now(),
+      freeNotes: _notesController.text.trim(),
+      intensity: _intensity,
     );
 
     await repository.saveForDate(log);
@@ -247,6 +260,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                     ..._categories.entries.map(
                       (entry) => _buildCategoryCard(context, entry.key, entry.value),
                     ),
+                  _buildDailyContextCard(context),
                 ],
               ),
             ),
@@ -377,6 +391,87 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
       default:
         return key;
     }
+  }
+
+  Widget _buildDailyContextCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.grey200),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.notes, style: AppText.h4),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _notesController,
+              maxLines: 4,
+              decoration: InputDecoration(
+                hintText: l10n.writeHowYouFeelToday,
+                hintStyle: AppText.body.copyWith(color: AppColors.grey400),
+                filled: true,
+                fillColor: AppColors.grey50,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: const BorderSide(color: AppColors.grey300),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(l10n.intensity, style: AppText.label),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: List.generate(5, (index) {
+                final value = index + 1;
+                final isSelected = _intensity == value;
+                return GestureDetector(
+                  onTap: () => setState(() {
+                    _intensity = isSelected ? null : value;
+                  }),
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isSelected ? AppColors.primary50 : AppColors.grey50,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: isSelected
+                            ? AppColors.primary100
+                            : AppColors.grey200,
+                      ),
+                    ),
+                    child: Text(
+                      '$value',
+                      style: AppText.label.copyWith(
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.grey700,
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

@@ -614,6 +614,24 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get save;
 
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @writeHowYouFeelToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Write how you feel today...'**
+  String get writeHowYouFeelToday;
+
+  /// No description provided for @intensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensity'**
+  String get intensity;
+
   /// No description provided for @sexualActivity.
   ///
   /// In en, this message translates to:
@@ -1273,6 +1291,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load account settings'**
   String get unableToLoadAccountSettings;
+
+  /// No description provided for @educationGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello Peria'**
+  String get educationGreeting;
+
+  /// No description provided for @educationSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Your education space'**
+  String get educationSpace;
+
+  /// No description provided for @educationWhatToLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to learn today?'**
+  String get educationWhatToLearn;
+
+  /// No description provided for @educationRecentArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent articles'**
+  String get educationRecentArticles;
+
+  /// No description provided for @educationSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results'**
+  String get educationSearchResults;
+
+  /// No description provided for @searchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchAction;
+
+  /// No description provided for @cancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelAction;
+
+  /// No description provided for @educationSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search an article...'**
+  String get educationSearchHint;
+
+  /// No description provided for @educationNoArticleFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No article found'**
+  String get educationNoArticleFound;
+
+  /// No description provided for @educationNoArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'No articles'**
+  String get educationNoArticles;
+
+  /// No description provided for @educationTryAnotherSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another search'**
+  String get educationTryAnotherSearch;
+
+  /// No description provided for @educationChooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category'**
+  String get educationChooseCategory;
+
+  /// No description provided for @educationHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn gently'**
+  String get educationHeroTitle;
+
+  /// No description provided for @educationHeroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore simple answers to your most common questions.'**
+  String get educationHeroSubtitle;
+
+  /// No description provided for @educationHeroFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Access clear answers, step by step.'**
+  String get educationHeroFooter;
+
+  /// No description provided for @educationSuggestionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestions for you'**
+  String get educationSuggestionsTitle;
+
+  /// No description provided for @educationSuggestionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on your cycle and recent entries.'**
+  String get educationSuggestionsSubtitle;
+
+  /// No description provided for @educationArticleNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Article not found'**
+  String get educationArticleNotFound;
+
+  /// No description provided for @educationArticleSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Article added to favorites'**
+  String get educationArticleSaved;
+
+  /// No description provided for @educationExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation'**
+  String get educationExplanation;
+
+  /// No description provided for @educationObserve.
+  ///
+  /// In en, this message translates to:
+  /// **'What to observe'**
+  String get educationObserve;
+
+  /// No description provided for @educationAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Advice'**
+  String get educationAdvice;
+
+  /// No description provided for @educationWhenToConsult.
+  ///
+  /// In en, this message translates to:
+  /// **'When to consult'**
+  String get educationWhenToConsult;
+
+  /// No description provided for @educationRelatedTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Related tags'**
+  String get educationRelatedTags;
+
+  /// No description provided for @educationUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated: {value}'**
+  String educationUpdated(String value);
+
+  /// No description provided for @difficultyEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy'**
+  String get difficultyEasy;
+
+  /// No description provided for @difficultyMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get difficultyMedium;
+
+  /// No description provided for @difficultyAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get difficultyAdvanced;
+
+  /// No description provided for @educationAxisCycleBasics.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand the cycle'**
+  String get educationAxisCycleBasics;
+
+  /// No description provided for @educationAxisOvulationFertility.
+  ///
+  /// In en, this message translates to:
+  /// **'Ovulation and fertility'**
+  String get educationAxisOvulationFertility;
+
+  /// No description provided for @educationAxisMenstruationSymptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'Periods and symptoms'**
+  String get educationAxisMenstruationSymptoms;
+
+  /// No description provided for @educationAxisNormalVsAbnormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal vs abnormal'**
+  String get educationAxisNormalVsAbnormal;
+
+  /// No description provided for @educationAxisSolutionsWellbeing.
+  ///
+  /// In en, this message translates to:
+  /// **'Relief and wellbeing'**
+  String get educationAxisSolutionsWellbeing;
+
+  /// No description provided for @todayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get todayLabel;
+
+  /// No description provided for @yesterdayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterdayLabel;
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String daysAgo(int count);
+
+  /// No description provided for @weeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} week(s) ago'**
+  String weeksAgo(int count);
+
+  /// No description provided for @monthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} month(s) ago'**
+  String monthsAgo(int count);
 }
 
 class _AppLocalizationsDelegate

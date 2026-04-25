@@ -288,6 +288,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get save => 'Enregistrer';
 
   @override
+  String get notes => 'Notes';
+
+  @override
+  String get writeHowYouFeelToday => 'Ecris ce que tu ressens aujourd\'hui...';
+
+  @override
+  String get intensity => 'Intensite';
+
+  @override
   String get sexualActivity => 'Activite sexuelle';
 
   @override
@@ -634,4 +643,129 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get unableToLoadAccountSettings =>
       'Impossible de charger les parametres du compte';
+
+  @override
+  String get educationGreeting => 'Bonjour Peria';
+
+  @override
+  String get educationSpace => 'Votre espace educatif';
+
+  @override
+  String get educationWhatToLearn => 'Que voulez-vous apprendre aujourd\'hui ?';
+
+  @override
+  String get educationRecentArticles => 'Articles recents';
+
+  @override
+  String get educationSearchResults => 'Resultats de recherche';
+
+  @override
+  String get searchAction => 'Rechercher';
+
+  @override
+  String get cancelAction => 'Annuler';
+
+  @override
+  String get educationSearchHint => 'Rechercher un article...';
+
+  @override
+  String get educationNoArticleFound => 'Aucun article trouve';
+
+  @override
+  String get educationNoArticles => 'Pas d\'articles';
+
+  @override
+  String get educationTryAnotherSearch => 'Essayez une autre recherche';
+
+  @override
+  String get educationChooseCategory => 'Choisissez une categorie';
+
+  @override
+  String get educationHeroTitle => 'Apprendre en douceur';
+
+  @override
+  String get educationHeroSubtitle =>
+      'Explorez des reponses simples a vos questions les plus frequentes.';
+
+  @override
+  String get educationHeroFooter =>
+      'Accedez a des reponses claires, etape par etape.';
+
+  @override
+  String get educationSuggestionsTitle => 'Suggestions du moment';
+
+  @override
+  String get educationSuggestionsSubtitle =>
+      'Basees sur votre cycle et vos dernieres entrees.';
+
+  @override
+  String get educationArticleNotFound => 'Article non trouve';
+
+  @override
+  String get educationArticleSaved => 'Article ajoute aux favoris';
+
+  @override
+  String get educationExplanation => 'Explication';
+
+  @override
+  String get educationObserve => 'A observer';
+
+  @override
+  String get educationAdvice => 'Conseils';
+
+  @override
+  String get educationWhenToConsult => 'Quand consulter';
+
+  @override
+  String get educationRelatedTags => 'Tags associes';
+
+  @override
+  String educationUpdated(String value) {
+    return 'Mise a jour : $value';
+  }
+
+  @override
+  String get difficultyEasy => 'Facile';
+
+  @override
+  String get difficultyMedium => 'Moyen';
+
+  @override
+  String get difficultyAdvanced => 'Avance';
+
+  @override
+  String get educationAxisCycleBasics => 'Comprendre le cycle';
+
+  @override
+  String get educationAxisOvulationFertility => 'Ovulation et fertilite';
+
+  @override
+  String get educationAxisMenstruationSymptoms => 'Regles et symptomes';
+
+  @override
+  String get educationAxisNormalVsAbnormal => 'Normal vs pas normal';
+
+  @override
+  String get educationAxisSolutionsWellbeing => 'Solutions et bien-etre';
+
+  @override
+  String get todayLabel => 'Aujourd\'hui';
+
+  @override
+  String get yesterdayLabel => 'Hier';
+
+  @override
+  String daysAgo(int count) {
+    return 'Il y a $count jours';
+  }
+
+  @override
+  String weeksAgo(int count) {
+    return 'Il y a $count semaine(s)';
+  }
+
+  @override
+  String monthsAgo(int count) {
+    return 'Il y a $count mois';
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:perla_app/core/repositories/user_repository.dart';
+import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:perla_app/features/journal/data/models/journal_entry.dart';
 import 'package:perla_app/features/journal/data/repositories/journal_firestore_repository.dart';
 
@@ -18,6 +19,50 @@ final journalProvider =
         (ref) {
   final repository = ref.read(journalRepositoryProvider);
   return JournalNotifier(repository);
+});
+
+DateTime _normalizeJournalDay(DateTime value) =>
+    DateTime(value.year, value.month, value.day);
+
+final journalDaysProvider = Provider<Set<DateTime>>((ref) {
+  final entries = ref.watch(journalProvider).value ?? const <JournalEntry>[];
+  return entries
+      .where((entry) => entry.title.trim().isNotEmpty || entry.content.trim().isNotEmpty)
+      .map((entry) => _normalizeJournalDay(entry.createdAt))
+      .toSet();
+});
+
+class JournalEntryContext {
+  const JournalEntryContext({
+    required this.entry,
+    required this.cycleDay,
+  });
+
+  final JournalEntry entry;
+  final int? cycleDay;
+}
+
+final journalEntryContextsProvider = Provider<List<JournalEntryContext>>((ref) {
+  final entries = ref.watch(journalProvider).value ?? const <JournalEntry>[];
+  return entries
+      .map(
+        (entry) => JournalEntryContext(
+          entry: entry,
+          cycleDay: ref.watch(cycleDayForDateProvider(entry.createdAt)),
+        ),
+      )
+      .toList();
+});
+
+final journalEntryContextByIdProvider =
+    Provider.family<JournalEntryContext?, String>((ref, entryId) {
+  final contexts = ref.watch(journalEntryContextsProvider);
+  for (final context in contexts) {
+    if (context.entry.id == entryId) {
+      return context;
+    }
+  }
+  return null;
 });
 
 // CLASSE PRINCIPALE DU NOTIFIER

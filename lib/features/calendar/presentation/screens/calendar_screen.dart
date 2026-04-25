@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:perla_app/core/storage/app_settings.dart';
 import 'package:perla_app/core/storage/app_settings_provider.dart';
 import 'package:perla_app/core/theme/theme.dart';
+import 'package:perla_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:perla_app/features/cycle/data/models/period_log.dart';
 import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:perla_app/shared/widgets/common_widgets.dart';
 
@@ -73,6 +75,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           required DateTime start,
           required DateTime end,
         }) async {
+          final navigator = Navigator.of(context);
           final log = PeriodLog(
             id: DateTime.now().microsecondsSinceEpoch.toString(),
             startDate: start,
@@ -85,11 +88,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           final currentLast = currentProfile?.lastPeriodStart;
           if (currentLast == null || start.isAfter(currentLast)) {
             await ref.read(userProfileProvider.notifier).patch(
-                  (p) => p.copyWith(lastPeriodStart: start),
-                );
+                (p) => p.copyWith(lastPeriodStart: start),
+              );
           }
 
-          if (mounted) Navigator.of(context).pop();
+          if (mounted) navigator.pop();
         }
 
         return Padding(
@@ -252,6 +255,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return day.year == now.year && day.month == now.month && day.day == now.day;
   }
 
+  bool _containsDay(Set<DateTime> days, DateTime target) {
+    final normalized = _startOfDay(target);
+    return days.any((day) => day == normalized);
+  }
+
   String _formatDate(DateTime date) {
     return '${_monthNames[date.month - 1]} ${date.day}, ${date.year}';
   }
@@ -308,6 +316,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
     int startOffset = firstDay.weekday - 1;
     final selectedState = _dayState(_selectedDate);
+    final symptomDays = ref.watch(symptomDaysProvider);
+    final journalDays = ref.watch(journalDaysProvider);
 
     return PageScaffold(
       showBack: true,
@@ -368,7 +378,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           const SizedBox(height: 12),
 
                           // Grille des jours
-                          _buildCalendarGrid(firstDay, lastDay, startOffset),
+                          _buildCalendarGrid(
+                            firstDay,
+                            lastDay,
+                            startOffset,
+                            symptomDays: symptomDays,
+                            journalDays: journalDays,
+                          ),
                           const SizedBox(height: 16),
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 220),
@@ -593,7 +609,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   // Grille
   Widget _buildCalendarGrid(
-      DateTime firstDay, DateTime lastDay, int startOffset) {
+    DateTime firstDay,
+    DateTime lastDay,
+    int startOffset, {
+    required Set<DateTime> symptomDays,
+    required Set<DateTime> journalDays,
+  }) {
     final int totalDays = lastDay.day;
     final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
 
@@ -633,6 +654,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             isOvulation: _isOvulationDay(day),
             isPms: _isPmsDay(day),
             isToday: _isToday(day),
+            hasSymptoms: _containsDay(symptomDays, day),
+            hasJournal: _containsDay(journalDays, day),
           ),
         );
       },
@@ -647,6 +670,8 @@ class _DayCell extends StatelessWidget {
   final bool isOvulation;
   final bool isPms;
   final bool isToday;
+  final bool hasSymptoms;
+  final bool hasJournal;
 
   const _DayCell({
     required this.day,
@@ -655,6 +680,8 @@ class _DayCell extends StatelessWidget {
     this.isOvulation = false,
     this.isPms = false,
     this.isToday = false,
+    this.hasSymptoms = false,
+    this.hasJournal = false,
   });
 
   @override
@@ -663,6 +690,7 @@ class _DayCell extends StatelessWidget {
     Color textColor = AppColors.neutral900;
     Color borderColor = Colors.transparent;
     IconData? badgeIcon;
+    Color secondaryDotColor = Colors.transparent;
 
     if (isPeriod) {
       bgColor = AppColors.primary50;
@@ -687,6 +715,12 @@ class _DayCell extends StatelessWidget {
       borderColor = AppColors.grey900;
     } else if (isToday) {
       borderColor = AppColors.grey300;
+    }
+
+    if (hasSymptoms) {
+      secondaryDotColor = AppColors.success;
+    } else if (hasJournal) {
+      secondaryDotColor = AppColors.grey700;
     }
 
     return AnimatedContainer(
@@ -724,6 +758,19 @@ class _DayCell extends StatelessWidget {
                 badgeIcon,
                 size: 10,
                 color: textColor.withOpacity(0.75),
+              ),
+            ),
+          if (!isSelected && secondaryDotColor != Colors.transparent)
+            Positioned(
+              left: 5,
+              bottom: 5,
+              child: Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: secondaryDotColor,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
           if (!isSelected && isToday)

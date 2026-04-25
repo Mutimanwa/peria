@@ -286,6 +286,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
+  String get notes => 'Notes';
+
+  @override
+  String get writeHowYouFeelToday => 'Write how you feel today...';
+
+  @override
+  String get intensity => 'Intensity';
+
+  @override
   String get sexualActivity => 'Sexual activity';
 
   @override
@@ -627,4 +636,128 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unableToLoadAccountSettings => 'Unable to load account settings';
+
+  @override
+  String get educationGreeting => 'Hello Peria';
+
+  @override
+  String get educationSpace => 'Your education space';
+
+  @override
+  String get educationWhatToLearn => 'What would you like to learn today?';
+
+  @override
+  String get educationRecentArticles => 'Recent articles';
+
+  @override
+  String get educationSearchResults => 'Search results';
+
+  @override
+  String get searchAction => 'Search';
+
+  @override
+  String get cancelAction => 'Cancel';
+
+  @override
+  String get educationSearchHint => 'Search an article...';
+
+  @override
+  String get educationNoArticleFound => 'No article found';
+
+  @override
+  String get educationNoArticles => 'No articles';
+
+  @override
+  String get educationTryAnotherSearch => 'Try another search';
+
+  @override
+  String get educationChooseCategory => 'Choose a category';
+
+  @override
+  String get educationHeroTitle => 'Learn gently';
+
+  @override
+  String get educationHeroSubtitle =>
+      'Explore simple answers to your most common questions.';
+
+  @override
+  String get educationHeroFooter => 'Access clear answers, step by step.';
+
+  @override
+  String get educationSuggestionsTitle => 'Suggestions for you';
+
+  @override
+  String get educationSuggestionsSubtitle =>
+      'Based on your cycle and recent entries.';
+
+  @override
+  String get educationArticleNotFound => 'Article not found';
+
+  @override
+  String get educationArticleSaved => 'Article added to favorites';
+
+  @override
+  String get educationExplanation => 'Explanation';
+
+  @override
+  String get educationObserve => 'What to observe';
+
+  @override
+  String get educationAdvice => 'Advice';
+
+  @override
+  String get educationWhenToConsult => 'When to consult';
+
+  @override
+  String get educationRelatedTags => 'Related tags';
+
+  @override
+  String educationUpdated(String value) {
+    return 'Updated: $value';
+  }
+
+  @override
+  String get difficultyEasy => 'Easy';
+
+  @override
+  String get difficultyMedium => 'Medium';
+
+  @override
+  String get difficultyAdvanced => 'Advanced';
+
+  @override
+  String get educationAxisCycleBasics => 'Understand the cycle';
+
+  @override
+  String get educationAxisOvulationFertility => 'Ovulation and fertility';
+
+  @override
+  String get educationAxisMenstruationSymptoms => 'Periods and symptoms';
+
+  @override
+  String get educationAxisNormalVsAbnormal => 'Normal vs abnormal';
+
+  @override
+  String get educationAxisSolutionsWellbeing => 'Relief and wellbeing';
+
+  @override
+  String get todayLabel => 'Today';
+
+  @override
+  String get yesterdayLabel => 'Yesterday';
+
+  @override
+  String daysAgo(int count) {
+    return '$count days ago';
+  }
+
+  @override
+  String weeksAgo(int count) {
+    return '$count week(s) ago';
+  }
+
+  @override
+  String monthsAgo(int count) {
+    return '$count month(s) ago';
+  }
 }

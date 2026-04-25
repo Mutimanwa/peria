@@ -114,6 +114,9 @@
   "logSymptoms": "Ajouter des symptomes",
   "quickDailySymptomCapture": "Saisie rapide des symptomes du jour. Appuie sur tout ce qui correspond a ce que tu ressens aujourd'hui.",
   "save": "Enregistrer",
+  "notes": "Notes",
+  "writeHowYouFeelToday": "Ecris ce que tu ressens aujourd'hui...",
+  "intensity": "Intensite",
   "sexualActivity": "Activite sexuelle",
   "protectedSex": "Rapport protege",
   "orgasm": "Orgasme",
@@ -237,5 +240,71 @@
   "changePinButton": "Changer le PIN",
   "disablePinLock": "Desactiver le verrou PIN",
   "unableToLoadSecuritySettings": "Impossible de charger les parametres de securite",
-  "unableToLoadAccountSettings": "Impossible de charger les parametres du compte"
+  "unableToLoadAccountSettings": "Impossible de charger les parametres du compte",
+  "educationGreeting": "Bonjour Peria",
+  "educationSpace": "Votre espace educatif",
+  "educationWhatToLearn": "Que voulez-vous apprendre aujourd'hui ?",
+  "educationRecentArticles": "Articles recents",
+  "educationSearchResults": "Resultats de recherche",
+  "searchAction": "Rechercher",
+  "cancelAction": "Annuler",
+  "educationSearchHint": "Rechercher un article...",
+  "educationNoArticleFound": "Aucun article trouve",
+  "educationNoArticles": "Pas d'articles",
+  "educationTryAnotherSearch": "Essayez une autre recherche",
+  "educationChooseCategory": "Choisissez une categorie",
+  "educationHeroTitle": "Apprendre en douceur",
+  "educationHeroSubtitle": "Explorez des reponses simples a vos questions les plus frequentes.",
+  "educationHeroFooter": "Accedez a des reponses claires, etape par etape.",
+  "educationSuggestionsTitle": "Suggestions du moment",
+  "educationSuggestionsSubtitle": "Basees sur votre cycle et vos dernieres entrees.",
+  "educationArticleNotFound": "Article non trouve",
+  "educationArticleSaved": "Article ajoute aux favoris",
+  "educationExplanation": "Explication",
+  "educationObserve": "A observer",
+  "educationAdvice": "Conseils",
+  "educationWhenToConsult": "Quand consulter",
+  "educationRelatedTags": "Tags associes",
+  "educationUpdated": "Mise a jour : {value}",
+  "@educationUpdated": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "difficultyEasy": "Facile",
+  "difficultyMedium": "Moyen",
+  "difficultyAdvanced": "Avance",
+  "educationAxisCycleBasics": "Comprendre le cycle",
+  "educationAxisOvulationFertility": "Ovulation et fertilite",
+  "educationAxisMenstruationSymptoms": "Regles et symptomes",
+  "educationAxisNormalVsAbnormal": "Normal vs pas normal",
+  "educationAxisSolutionsWellbeing": "Solutions et bien-etre",
+  "todayLabel": "Aujourd'hui",
+  "yesterdayLabel": "Hier",
+  "daysAgo": "Il y a {count} jours",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "weeksAgo": "Il y a {count} semaine(s)",
+  "@weeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthsAgo": "Il y a {count} mois",
+  "@monthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

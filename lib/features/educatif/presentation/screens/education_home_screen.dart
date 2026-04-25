@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/educatif/data/models/education_article.dart';
 import 'package:perla_app/features/educatif/presentation/providers/education_provider.dart';
@@ -17,13 +18,6 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-
-  // ignore: unused_element
   void _clearSearch() {
     _searchController.clear();
     ref.read(educationSearchProvider.notifier).clear();
@@ -38,11 +32,15 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final searchQuery = ref.watch(educationSearchProvider);
     final filteredArticles = searchQuery.isEmpty
         ? ref.watch(educationArticlesByAxisProvider(_selectedAxis))
         : ref.watch(filteredEducationArticlesProvider);
     final categories = ref.watch(educationCategoriesProvider);
+    final personalizedSuggestions =
+        ref.watch(personalizedEducationSuggestionsProvider);
+    final contextTags = ref.watch(educationContextTagsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -76,7 +74,8 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                                   child: const CircleAvatar(
                                     radius: 18,
                                     backgroundImage: AssetImage(
-                                        'assets/images/onboarding/Avatar-21.png'),
+                                      'assets/images/onboarding/Avatar-21.png',
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -84,14 +83,14 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Bonjour Perla',
+                                      l10n.educationGreeting,
                                       style: AppText.label.copyWith(
                                         color: AppColors.grey900,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                     Text(
-                                      'Votre espace éducatif',
+                                      l10n.educationSpace,
                                       style: AppText.caption.copyWith(
                                         color: AppColors.grey600,
                                       ),
@@ -101,7 +100,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                               ],
                             ),
                             GestureDetector(
-                              onTap: () => context.go('/notification'),
+                              onTap: () => context.go('/profile/notifications'),
                               child: Container(
                                 width: 36,
                                 height: 36,
@@ -119,30 +118,34 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                           ],
                         ),
                         const SizedBox(height: 18),
-                        const Text(
-                          'Que voulez-vous apprendre aujourd\'hui?',
+                        Text(
+                          l10n.educationWhatToLearn,
                           style: AppText.h2,
                         ),
                         const SizedBox(height: 16),
-                        _buildAxisChips(categories),
+                        _buildAxisChips(categories, l10n),
                         const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               searchQuery.isEmpty
-                                  ? 'Articles récents'
-                                  : 'Résultats de recherche',
+                                  ? l10n.educationRecentArticles
+                                  : l10n.educationSearchResults,
                               style: AppText.h5.copyWith(
                                 color: AppColors.grey900,
                               ),
                             ),
                             GestureDetector(
                               onTap: () {
+                                if (_isSearching && _searchController.text.isNotEmpty) {
+                                  _clearSearch();
+                                  return;
+                                }
                                 setState(() => _isSearching = !_isSearching);
                               },
                               child: Text(
-                                _isSearching ? 'Annuler' : 'Rechercher',
+                                _isSearching ? l10n.cancelAction : l10n.searchAction,
                                 style: AppText.caption.copyWith(
                                   color: AppColors.primary400,
                                   fontWeight: FontWeight.w700,
@@ -167,7 +170,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                               autofocus: true,
                               style: AppText.body,
                               decoration: InputDecoration(
-                                hintText: 'Rechercher un article...',
+                                hintText: l10n.educationSearchHint,
                                 hintStyle: AppText.caption.copyWith(
                                   color: AppColors.grey500,
                                 ),
@@ -186,6 +189,16 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                       ],
                     ),
                   ),
+                  if (searchQuery.isEmpty && personalizedSuggestions.isNotEmpty) ...[
+                    const SizedBox(height: 18),
+                    _ContextSuggestionsCard(
+                      tags: contextTags,
+                      articles: personalizedSuggestions,
+                      onOpenArticle: (articleId) {
+                        context.push('/education/article/$articleId');
+                      },
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   if (filteredArticles.isEmpty)
                     Padding(
@@ -201,8 +214,8 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                             const SizedBox(height: 12),
                             Text(
                               _isSearching
-                                  ? 'Aucun article trouvé'
-                                  : 'Pas d\'articles',
+                                  ? l10n.educationNoArticleFound
+                                  : l10n.educationNoArticles,
                               style: AppText.h5.copyWith(
                                 color: AppColors.grey600,
                               ),
@@ -210,8 +223,8 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                             const SizedBox(height: 6),
                             Text(
                               _isSearching
-                                  ? 'Essayez une autre recherche'
-                                  : 'Choisissez une catégorie',
+                                  ? l10n.educationTryAnotherSearch
+                                  : l10n.educationChooseCategory,
                               style: AppText.caption.copyWith(
                                 color: AppColors.grey500,
                               ),
@@ -243,10 +256,10 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                       ),
                     ),
                   const SizedBox(height: 24),
-                  const _EducationHeroCard(
-                    title: 'Apprendre en douceur',
-                    subtitle:
-                        'Explorez des réponses simples à vos questions les plus fréquentes.',
+                  _EducationHeroCard(
+                    title: l10n.educationHeroTitle,
+                    subtitle: l10n.educationHeroSubtitle,
+                    footer: l10n.educationHeroFooter,
                     accent: AppColors.primary300,
                   ),
                   const SizedBox(height: 80),
@@ -259,7 +272,10 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
     );
   }
 
-  Widget _buildAxisChips(List<EducationCategory> categories) {
+  Widget _buildAxisChips(
+    List<EducationCategory> categories,
+    AppLocalizations l10n,
+  ) {
     return SizedBox(
       height: 42,
       child: ListView.separated(
@@ -279,7 +295,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                category.axis.label,
+                category.axis.localizedLabel(l10n),
                 style: AppText.caption.copyWith(
                   color: selected ? AppColors.white : AppColors.grey700,
                   fontWeight: FontWeight.w600,
@@ -293,14 +309,170 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
   }
 }
 
+class _ContextSuggestionsCard extends StatelessWidget {
+  const _ContextSuggestionsCard({
+    required this.tags,
+    required this.articles,
+    required this.onOpenArticle,
+  });
+
+  final List<String> tags;
+  final List<EducationArticle> articles;
+  final ValueChanged<String> onOpenArticle;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.white.withOpacity(0.92),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: AppColors.grey200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: AppColors.primary50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.auto_awesome_outlined,
+                  color: AppColors.primary500,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.educationSuggestionsTitle,
+                      style: AppText.h5.copyWith(color: AppColors.grey900),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.educationSuggestionsSubtitle,
+                      style: AppText.caption.copyWith(color: AppColors.grey600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (tags.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: tags.take(5).map((tag) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.grey100,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    tag,
+                    style: AppText.caption.copyWith(
+                      color: AppColors.grey700,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+          const SizedBox(height: 14),
+          ...articles.take(3).map(
+            (article) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: GestureDetector(
+                onTap: () => onOpenArticle(article.id),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.grey50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.grey200),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: article.axis.color.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          article.axis.icon,
+                          color: article.axis.color,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              article.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppText.label.copyWith(
+                                color: AppColors.grey900,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              article.shortDescription,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppText.caption.copyWith(
+                                color: AppColors.grey600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        color: AppColors.grey500,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _EducationHeroCard extends StatelessWidget {
   final String title;
   final String subtitle;
+  final String footer;
   final Color accent;
 
   const _EducationHeroCard({
     required this.title,
     required this.subtitle,
+    required this.footer,
     required this.accent,
   });
 
@@ -351,12 +523,15 @@ class _EducationHeroCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.lightbulb_outline,
-                    color: AppColors.white, size: 18),
+                const Icon(
+                  Icons.lightbulb_outline,
+                  color: AppColors.white,
+                  size: 18,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Accédez à des réponses claires, étape par étape.',
+                    footer,
                     style: AppText.caption.copyWith(
                       color: AppColors.white,
                     ),
@@ -364,16 +539,12 @@ class _EducationHeroCard extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════
-// ARTICLE CARD COMPONENT
-// ════════════════════════════════════════════════════════════════
 
 class _ArticleCard extends StatelessWidget {
   final EducationArticle article;
@@ -386,6 +557,8 @@ class _ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -409,7 +582,6 @@ class _ArticleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title + Difficulty
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,7 +604,7 @@ class _ArticleCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    _getDifficultyLabel(article.difficultyLevel),
+                    _getDifficultyLabel(l10n, article.difficultyLevel),
                     style: AppText.caption.copyWith(
                       color: AppColors.white,
                       fontWeight: FontWeight.w600,
@@ -442,8 +614,6 @@ class _ArticleCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-
-            // Short description
             Text(
               article.shortDescription,
               style: AppText.caption.copyWith(
@@ -453,39 +623,37 @@ class _ArticleCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 10),
-
-            // Tags + Reading time
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Tags
                 Expanded(
                   child: Wrap(
                     spacing: 6,
                     runSpacing: 4,
                     children: article.tags
                         .take(2)
-                        .map((tag) => Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 3,
+                        .map(
+                          (tag) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.grey100,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              tag,
+                              style: AppText.label.copyWith(
+                                color: AppColors.grey700,
+                                fontSize: 11,
                               ),
-                              decoration: BoxDecoration(
-                                color: AppColors.grey100,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                tag,
-                                style: AppText.label.copyWith(
-                                  color: AppColors.grey700,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ))
+                            ),
+                          ),
+                        )
                         .toList(),
                   ),
                 ),
-                // Reading time
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -523,14 +691,14 @@ class _ArticleCard extends StatelessWidget {
   }
 
   Color _getDifficultyColor(int level) {
-    if (level == 1) return AppColors.success; // Facile
-    if (level == 2) return AppColors.warning; // Moyen
-    return AppColors.error; // Difficile
+    if (level == 1) return AppColors.success;
+    if (level == 2) return AppColors.warning;
+    return AppColors.error;
   }
 
-  String _getDifficultyLabel(int level) {
-    if (level == 1) return 'Facile';
-    if (level == 2) return 'Moyen';
-    return 'Avancé';
+  String _getDifficultyLabel(AppLocalizations l10n, int level) {
+    if (level == 1) return l10n.difficultyEasy;
+    if (level == 2) return l10n.difficultyMedium;
+    return l10n.difficultyAdvanced;
   }
 }

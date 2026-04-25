@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:perla_app/core/errors/app_error_handler.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/features/educatif/data/models/education_article.dart';
 import 'package:perla_app/features/educatif/presentation/providers/education_provider.dart';
@@ -15,6 +17,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final article = ref.watch(educationArticleProvider(articleId));
 
     if (article == null) {
@@ -27,8 +30,8 @@ class EducationArticleDetailScreen extends ConsumerWidget {
             child: const Icon(Icons.arrow_back, color: AppColors.grey900),
           ),
         ),
-        body: const Center(
-          child: Text('Article non trouvé'),
+        body: Center(
+          child: Text(l10n.educationArticleNotFound),
         ),
       );
     }
@@ -46,9 +49,6 @@ class EducationArticleDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ════════════════════════════════════════════════════════════════
-                  // HEADER WITH BACK BUTTON
-                  // ════════════════════════════════════════════════════════════════
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -70,7 +70,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        article.axis.label,
+                        article.axis.localizedLabel(l10n),
                         style: AppText.caption.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.grey700,
@@ -78,11 +78,9 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Article ajouté aux favoris ♥'),
-                              duration: Duration(seconds: 2),
-                            ),
+                          AppErrorHandler.showSuccess(
+                            context,
+                            l10n.educationArticleSaved,
                           );
                         },
                         child: Container(
@@ -103,10 +101,6 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-
-                  // ════════════════════════════════════════════════════════════════
-                  // HERO CARD WITH TITLE & META
-                  // ════════════════════════════════════════════════════════════════
                   Container(
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
@@ -133,7 +127,6 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Axis badge
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
@@ -144,7 +137,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            article.axis.label,
+                            article.axis.localizedLabel(l10n),
                             style: AppText.caption.copyWith(
                               color: AppColors.white,
                               fontWeight: FontWeight.w600,
@@ -152,8 +145,6 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-
-                        // Title
                         Text(
                           article.title,
                           style: AppText.h4.copyWith(
@@ -162,8 +153,6 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 12),
-
-                        // Meta row
                         Row(
                           children: [
                             Container(
@@ -202,15 +191,16 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                               ),
                               decoration: BoxDecoration(
                                 color: _getDifficultyColor(
-                                        article.difficultyLevel)
-                                    .withOpacity(0.15),
+                                  article.difficultyLevel,
+                                ).withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                _getDifficultyLabel(article.difficultyLevel),
+                                _getDifficultyLabel(l10n, article.difficultyLevel),
                                 style: AppText.label.copyWith(
                                   color: _getDifficultyColor(
-                                      article.difficultyLevel),
+                                    article.difficultyLevel,
+                                  ),
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -222,39 +212,27 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // ════════════════════════════════════════════════════════════════
-                  // CONTENT CARDS
-                  // ════════════════════════════════════════════════════════════════
-
-                  // Explanation card
                   _ArticleContentCard(
                     icon: Icons.lightbulb_outline,
-                    title: 'Explication',
+                    title: l10n.educationExplanation,
                     content: article.explanation,
                     accentColor: article.axis.color,
                   ),
                   const SizedBox(height: 14),
-
-                  // Observations card
                   _ArticleContentCard(
                     icon: Icons.visibility_outlined,
-                    title: 'À observer',
+                    title: l10n.educationObserve,
                     content: article.observations,
                     accentColor: article.axis.color,
                   ),
                   const SizedBox(height: 14),
-
-                  // Advice card
                   _ArticleContentCard(
                     icon: Icons.recommend_outlined,
-                    title: 'Conseils',
+                    title: l10n.educationAdvice,
                     content: article.advice,
                     accentColor: article.axis.color,
                   ),
                   const SizedBox(height: 14),
-
-                  // When to consult (alert style)
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -284,7 +262,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              'Quand consulter',
+                              l10n.educationWhenToConsult,
                               style: AppText.h6.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.error,
@@ -304,13 +282,9 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // ════════════════════════════════════════════════════════════════
-                  // TAGS
-                  // ════════════════════════════════════════════════════════════════
                   if (article.tags.isNotEmpty) ...[
                     Text(
-                      'Tags associés',
+                      l10n.educationRelatedTags,
                       style: AppText.h6.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -320,31 +294,31 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                       spacing: 8,
                       runSpacing: 8,
                       children: article.tags
-                          .map((tag) => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
+                          .map(
+                            (tag) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.grey100,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Text(
+                                tag,
+                                style: AppText.caption.copyWith(
+                                  color: AppColors.grey700,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.grey100,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Text(
-                                  tag,
-                                  style: AppText.caption.copyWith(
-                                    color: AppColors.grey700,
-                                  ),
-                                ),
-                              ))
+                              ),
+                            ),
+                          )
                           .toList(),
                     ),
                     const SizedBox(height: 16),
                   ],
-
-                  // Footer metadata
                   Center(
                     child: Text(
-                      'Mise à jour: ${_formatDate(article.lastUpdated)}',
+                      l10n.educationUpdated(_formatDate(l10n, article.lastUpdated)),
                       style: AppText.caption.copyWith(
                         color: AppColors.grey500,
                       ),
@@ -365,35 +339,31 @@ class EducationArticleDetailScreen extends ConsumerWidget {
     return AppColors.error;
   }
 
-  String _getDifficultyLabel(int level) {
-    if (level == 1) return 'Facile';
-    if (level == 2) return 'Moyen';
-    return 'Avancé';
+  String _getDifficultyLabel(AppLocalizations l10n, int level) {
+    if (level == 1) return l10n.difficultyEasy;
+    if (level == 2) return l10n.difficultyMedium;
+    return l10n.difficultyAdvanced;
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(AppLocalizations l10n, DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Aujourd\'hui';
+      return l10n.todayLabel;
     } else if (difference.inDays == 1) {
-      return 'Hier';
+      return l10n.yesterdayLabel;
     } else if (difference.inDays < 7) {
-      return 'Il y a ${difference.inDays} jours';
+      return l10n.daysAgo(difference.inDays);
     } else if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
-      return 'Il y a $weeks semaine${weeks > 1 ? 's' : ''}';
+      return l10n.weeksAgo(weeks);
     } else {
       final months = (difference.inDays / 30).floor();
-      return 'Il y a $months mois';
+      return l10n.monthsAgo(months);
     }
   }
 }
-
-// ════════════════════════════════════════════════════════════════
-// ARTICLE CONTENT CARD COMPONENT
-// ════════════════════════════════════════════════════════════════
 
 class _ArticleContentCard extends StatelessWidget {
   final IconData icon;
@@ -468,4 +438,3 @@ class _ArticleContentCard extends StatelessWidget {
     );
   }
 }
-

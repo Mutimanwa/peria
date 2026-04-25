@@ -1,36 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:perla_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:perla_app/features/educatif/data/models/education_article.dart';
-import 'package:perla_app/features/educatif/data/repositories/education_repository.dart';
+import 'package:perla_app/features/educatif/data/repositories/education_content_repository.dart';
+import 'package:perla_app/features/educatif/domain/education_context_service.dart';
+import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
 
-/// Provider pour tous les articles
+final educationContentRepositoryProvider =
+    Provider<EducationContentRepository>((ref) {
+  return const EducationContentRepository();
+});
+
 final allEducationArticlesProvider = Provider<List<EducationArticle>>((ref) {
-  return EducationArticleDatabase.articles;
+  return ref.watch(educationContentRepositoryProvider).getAllArticles();
 });
 
-/// Provider pour les catégories groupées par axe
 final educationCategoriesProvider = Provider<List<EducationCategory>>((ref) {
-  return EducationArticleDatabase.getAllCategories();
+  return ref.watch(educationContentRepositoryProvider).getAllCategories();
 });
 
-/// Provider pour les articles d'un axe spécifique
 final educationArticlesByAxisProvider =
     Provider.family<List<EducationArticle>, EducationAxis>((ref, axis) {
-  return EducationArticleDatabase.getArticlesByAxis(axis);
+  return ref.watch(educationContentRepositoryProvider).getArticlesByAxis(axis);
 });
 
-/// Provider pour un article spécifique par ID
 final educationArticleProvider =
     Provider.family<EducationArticle?, String>((ref, id) {
-  return EducationArticleDatabase.getArticleById(id);
+  return ref.watch(educationContentRepositoryProvider).getArticleById(id);
 });
 
-/// Provider pour recherche par tags
 final educationArticlesByTagProvider =
     Provider.family<List<EducationArticle>, String>((ref, tag) {
-  return EducationArticleDatabase.searchByTag(tag);
+  return ref.watch(educationContentRepositoryProvider).searchByTag(tag);
 });
 
-/// State notifier pour gestion de la recherche
 class EducationSearchNotifier extends StateNotifier<String> {
   EducationSearchNotifier() : super('');
 
@@ -43,15 +46,12 @@ class EducationSearchNotifier extends StateNotifier<String> {
   }
 }
 
-/// Provider pour l'état de recherche
 final educationSearchProvider =
     StateNotifierProvider<EducationSearchNotifier, String>((ref) {
   return EducationSearchNotifier();
 });
 
-/// Provider pour articles filtrés par recherche (tous les axes)
-final filteredEducationArticlesProvider =
-    Provider<List<EducationArticle>>((ref) {
+final filteredEducationArticlesProvider = Provider<List<EducationArticle>>((ref) {
   final query = ref.watch(educationSearchProvider);
   final articles = ref.watch(allEducationArticlesProvider);
 
@@ -61,15 +61,13 @@ final filteredEducationArticlesProvider =
 
   return articles.where((article) {
     final titleMatch = article.title.toLowerCase().contains(query);
-    final descMatch =
-        article.shortDescription.toLowerCase().contains(query);
+    final descMatch = article.shortDescription.toLowerCase().contains(query);
     final tagMatch = article.tags.any((tag) => tag.contains(query));
 
     return titleMatch || descMatch || tagMatch;
   }).toList();
 });
 
-/// State notifier pour sélection d'axe
 class SelectedAxisNotifier extends StateNotifier<EducationAxis> {
   SelectedAxisNotifier() : super(EducationAxis.cycleBasics);
 
@@ -78,19 +76,17 @@ class SelectedAxisNotifier extends StateNotifier<EducationAxis> {
   }
 }
 
-/// Provider pour axe sélectionné
 final selectedEducationAxisProvider =
     StateNotifierProvider<SelectedAxisNotifier, EducationAxis>((ref) {
   return SelectedAxisNotifier();
 });
 
-/// Provider pour articles filtrés par axe sélectionné ET recherche
 final filteredArticlesByAxisProvider = Provider<List<EducationArticle>>((ref) {
   final selectedAxis = ref.watch(selectedEducationAxisProvider);
   final query = ref.watch(educationSearchProvider);
-
-  final articlesByAxis =
-      EducationArticleDatabase.getArticlesByAxis(selectedAxis);
+  final articlesByAxis = ref
+      .watch(educationContentRepositoryProvider)
+      .getArticlesByAxis(selectedAxis);
 
   if (query.isEmpty) {
     return articlesByAxis;
@@ -98,15 +94,13 @@ final filteredArticlesByAxisProvider = Provider<List<EducationArticle>>((ref) {
 
   return articlesByAxis.where((article) {
     final titleMatch = article.title.toLowerCase().contains(query);
-    final descMatch =
-        article.shortDescription.toLowerCase().contains(query);
+    final descMatch = article.shortDescription.toLowerCase().contains(query);
     final tagMatch = article.tags.any((tag) => tag.contains(query));
 
     return titleMatch || descMatch || tagMatch;
   }).toList();
 });
 
-/// State notifier pour gérer les articles lus
 class ReadArticlesNotifier extends StateNotifier<Set<String>> {
   ReadArticlesNotifier() : super(<String>{});
 
@@ -123,28 +117,56 @@ class ReadArticlesNotifier extends StateNotifier<Set<String>> {
   }
 }
 
-/// Compteur d'articles lus (à développer avec persistence)
-final readArticlesProvider = StateNotifierProvider<
-    ReadArticlesNotifier,
-    Set<String>>((ref) {
+final readArticlesProvider =
+    StateNotifierProvider<ReadArticlesNotifier, Set<String>>((ref) {
   return ReadArticlesNotifier();
 });
 
-/// Provider pour temps de lecture total
 final totalReadingTimeProvider = Provider<int>((ref) {
   final articles = ref.watch(allEducationArticlesProvider);
   return articles.fold(0, (sum, article) => sum + article.readingTimeMinutes);
 });
 
-/// Provider pour temps de lecture par axe
 final readingTimeByAxisProvider =
     Provider.family<int, EducationAxis>((ref, axis) {
   final articles = ref.watch(educationArticlesByAxisProvider(axis));
   return articles.fold(0, (sum, article) => sum + article.readingTimeMinutes);
 });
 
-/// Provider pour suggestions contextuelles (exemples de tags)
 final contextualArticleSuggestionsProvider =
     Provider.family<List<EducationArticle>, String>((ref, contextTag) {
-  return EducationArticleDatabase.searchByTag(contextTag);
+  return ref.watch(educationContentRepositoryProvider).searchByTag(contextTag);
+});
+
+final educationContextTagsProvider = Provider<List<String>>((ref) {
+  final cycleStatus = ref.watch(cycleStatusProvider);
+  final symptomLogs = ref.watch(symptomLogsProvider).value ?? const [];
+  final journalEntries = ref.watch(journalProvider).value ?? const [];
+  return EducationContextService.buildTags(
+    cycleStatus: cycleStatus,
+    symptomLogs: symptomLogs,
+    journalEntries: journalEntries,
+  );
+});
+
+final personalizedEducationSuggestionsProvider =
+    Provider<List<EducationArticle>>((ref) {
+  final tags = ref.watch(educationContextTagsProvider);
+  final seen = <String>{};
+  final suggestions = <EducationArticle>[];
+  final repository = ref.watch(educationContentRepositoryProvider);
+
+  for (final tag in tags) {
+    final matches = repository.searchByTag(tag);
+    for (final article in matches) {
+      if (seen.add(article.id)) {
+        suggestions.add(article);
+      }
+      if (suggestions.length >= 6) {
+        return suggestions;
+      }
+    }
+  }
+
+  return suggestions;
 });

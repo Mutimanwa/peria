@@ -15,6 +15,7 @@ class CycleStatus {
   final DateTime ovulationDate;
   final DateTime fertileWindowStart;
   final DateTime fertileWindowEnd;
+  final List<DateTime> pmsDays;
 
   final int daysUntilNextPeriod;
 
@@ -31,6 +32,7 @@ class CycleStatus {
     required this.ovulationDate,
     required this.fertileWindowStart,
     required this.fertileWindowEnd,
+    required this.pmsDays,
     required this.daysUntilNextPeriod,
   });
 }

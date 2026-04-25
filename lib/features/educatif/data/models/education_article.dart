@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perla_app/l10n/app_localizations.dart';
 
 /// Les 5 axes principaux du module éducatif
 enum EducationAxis {
@@ -52,6 +53,16 @@ extension EducationAxisX on EducationAxis {
       EducationAxis.menstruationSymptoms => const Color(0xFFF97316), // Orange
       EducationAxis.normalVsAbnormal => const Color(0xFFF59E0B), // Amber
       EducationAxis.solutionsWellbeing => const Color(0xFF10B981), // Green
+    };
+  }
+
+  String localizedLabel(AppLocalizations l10n) {
+    return switch (this) {
+      EducationAxis.cycleBasics => l10n.educationAxisCycleBasics,
+      EducationAxis.ovulationFertility => l10n.educationAxisOvulationFertility,
+      EducationAxis.menstruationSymptoms => l10n.educationAxisMenstruationSymptoms,
+      EducationAxis.normalVsAbnormal => l10n.educationAxisNormalVsAbnormal,
+      EducationAxis.solutionsWellbeing => l10n.educationAxisSolutionsWellbeing,
     };
   }
 }

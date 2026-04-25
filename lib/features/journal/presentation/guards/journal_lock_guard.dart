@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:perla_app/features/profile/presentation/providers/security_provider.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
 import 'package:perla_app/core/theme/theme.dart';
 import 'package:perla_app/shared/widgets/pin_code_input.dart';
 
@@ -20,7 +19,6 @@ class JournalLockGuard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final securityAsync = ref.watch(securityProvider);
-    final l10n = AppLocalizations.of(context);
 
     return securityAsync.when(
       data: (security) {
@@ -100,7 +98,6 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return Stack(
       children: [
         widget.child,

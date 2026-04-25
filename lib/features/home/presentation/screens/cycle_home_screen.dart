@@ -184,6 +184,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           required DateTime start,
           required DateTime end,
         }) async {
+          final navigator = Navigator.of(context);
           final log = PeriodLog(
             id: DateTime.now().microsecondsSinceEpoch.toString(),
             startDate: start,
@@ -196,11 +197,11 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           final currentLast = currentProfile?.lastPeriodStart;
           if (currentLast == null || start.isAfter(currentLast)) {
             await ref.read(userProfileProvider.notifier).patch(
-                  (p) => p.copyWith(lastPeriodStart: start),
-                );
+                (p) => p.copyWith(lastPeriodStart: start),
+              );
           }
 
-          if (mounted) Navigator.of(context).pop();
+          if (mounted) navigator.pop();
         }
 
         return Padding(

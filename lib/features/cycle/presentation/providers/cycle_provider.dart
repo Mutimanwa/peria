@@ -48,11 +48,57 @@ class PeriodLogsNotifier extends StateNotifier<AsyncValue<List<PeriodLog>>> {
 
 final cycleStatusProvider = Provider<CycleStatus?>((ref) {
   final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
+  final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
   final profile = ref.watch(userProfileProvider).value;
   final lastStart = profile?.lastPeriodStart;
+  final cycleLengthDays =
+      profile?.averageCycleLengthDays ?? settings.cycleLengthDays;
+  final periodLengthDays =
+      profile?.periodLengthDays ?? settings.periodLengthDays;
+
+  if (periodLogs.isNotEmpty) {
+    return CycleEngine.computeFromLogs(
+      logs: periodLogs,
+      cycleLengthDays: cycleLengthDays,
+      periodLengthDays: periodLengthDays,
+    );
+  }
+
   return CycleEngine.compute(
     startDate: lastStart,
-    cycleLengthDays: settings.cycleLengthDays,
-    periodLengthDays: settings.periodLengthDays,
+    cycleLengthDays: cycleLengthDays,
+    periodLengthDays: periodLengthDays,
   );
+});
+
+final cycleStatusForDateProvider =
+    Provider.family<CycleStatus?, DateTime>((ref, date) {
+  final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
+  final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
+  final profile = ref.watch(userProfileProvider).value;
+  final lastStart = profile?.lastPeriodStart;
+  final cycleLengthDays =
+      profile?.averageCycleLengthDays ?? settings.cycleLengthDays;
+  final periodLengthDays =
+      profile?.periodLengthDays ?? settings.periodLengthDays;
+
+  if (periodLogs.isNotEmpty) {
+    return CycleEngine.computeFromLogs(
+      logs: periodLogs,
+      cycleLengthDays: cycleLengthDays,
+      periodLengthDays: periodLengthDays,
+      now: date,
+    );
+  }
+
+  return CycleEngine.compute(
+    startDate: lastStart,
+    cycleLengthDays: cycleLengthDays,
+    periodLengthDays: periodLengthDays,
+    now: date,
+  );
+});
+
+final cycleDayForDateProvider = Provider.family<int?, DateTime>((ref, date) {
+  return ref.watch(cycleStatusForDateProvider(date))?.dayOfCycle;
 });
