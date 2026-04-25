@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:perla_app/core/theme/theme.dart';
+import 'package:peria_app/core/theme/theme.dart';
 
 class PinCodeInput extends StatefulWidget {
   final Function(String) onCompleted;
@@ -83,6 +83,7 @@ class _PinCodeInputState extends State<PinCodeInput>
     }
   }
 
+  // ignore: unused_element
   void _onBackspace(int index) {
     if (_pin.length == index + 1 && _controllers[index].text.isEmpty) {
       if (index > 0) {

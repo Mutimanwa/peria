@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/theme/app_colors.dart';
-import 'package:perla_app/core/theme/app_text.dart';
-import 'package:perla_app/core/theme/app_typography.dart';
-import 'package:perla_app/features/cycle/data/models/period_log.dart';
-import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
-import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
-import 'package:perla_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/core/theme/app_colors.dart';
+import 'package:peria_app/core/theme/app_text.dart';
+import 'package:peria_app/core/theme/app_typography.dart';
+import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class EditCalendarScreen extends ConsumerStatefulWidget {
   const EditCalendarScreen({super.key});

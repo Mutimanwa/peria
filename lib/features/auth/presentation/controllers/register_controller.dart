@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/features/auth/domain/auth_navigation_target.dart';
+import 'package:peria_app/features/auth/domain/auth_navigation_target.dart';
 
 final registerControllerProvider =
     Provider<RegisterController>((ref) => const RegisterController());

@@ -1,9 +1,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:perla_app/core/storage/hive_boxes.dart';
-import 'package:perla_app/core/storage/secure_storage_service.dart';
-import 'package:perla_app/features/cycle/data/models/period_log.dart';
-import 'package:perla_app/features/journal/data/models/journal_entry.dart';
-import 'package:perla_app/features/profile/data/models/user_profile.dart';
+import 'package:peria_app/core/storage/hive_boxes.dart';
+import 'package:peria_app/core/storage/secure_storage_service.dart';
+import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/journal/data/models/journal_entry.dart';
+import 'package:peria_app/features/profile/data/models/user_profile.dart';
 
 class HiveSetup {
   HiveSetup._();

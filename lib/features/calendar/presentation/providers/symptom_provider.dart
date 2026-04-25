@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
-import 'package:perla_app/features/calendar/data/repositories/symptom_repository.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
+import 'package:peria_app/features/calendar/data/repositories/symptom_repository.dart';
 
 final symptomUserRepositoryProvider = Provider<UserRepository>((ref) {
   return UserRepository();

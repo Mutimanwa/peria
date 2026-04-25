@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
-import 'package:perla_app/features/journal/data/models/journal_entry.dart';
-import 'package:perla_app/features/journal/data/repositories/journal_firestore_repository.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:peria_app/features/journal/data/models/journal_entry.dart';
+import 'package:peria_app/features/journal/data/repositories/journal_firestore_repository.dart';
 
 final userRepositoryProvider = Provider<UserRepository>((ref) {
   return UserRepository();

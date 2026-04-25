@@ -2,10 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/router/router.dart';
-import 'package:perla_app/core/storage/hive_setup.dart';
-import 'package:perla_app/firebase_options.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
+import 'package:peria_app/core/router/router.dart';
+import 'package:peria_app/core/storage/hive_setup.dart';
+import 'package:peria_app/firebase_options.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

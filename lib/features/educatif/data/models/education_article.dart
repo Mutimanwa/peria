@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 
 /// Les 5 axes principaux du module éducatif
 enum EducationAxis {

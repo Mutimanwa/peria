@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
-import 'package:perla_app/core/storage/hive_boxes.dart';
-import 'package:perla_app/features/journal/data/models/journal_entry.dart';
+import 'package:peria_app/core/storage/hive_boxes.dart';
+import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 
 class JournalRepository {
   Future<List<JournalEntry>> loadEntries() async {

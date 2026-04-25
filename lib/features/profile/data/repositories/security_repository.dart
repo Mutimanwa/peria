@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
 
 class SecurityRepository {
   static const _appLockKey = 'security.app_lock_enabled.v1';

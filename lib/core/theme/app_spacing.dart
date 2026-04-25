@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Perla App — Spacing, Padding & Radius
+/// Peria App — Spacing, Padding & Radius
 /// Generated from Style Guide
 
 class AppSpacing {

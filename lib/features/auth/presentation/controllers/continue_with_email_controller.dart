@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/features/auth/domain/auth_validators.dart';
-import 'package:perla_app/features/auth/domain/email_flow_navigation_target.dart';
+import 'package:peria_app/features/auth/domain/auth_validators.dart';
+import 'package:peria_app/features/auth/domain/email_flow_navigation_target.dart';
 
 final continueWithEmailControllerProvider =
     StateNotifierProvider<ContinueWithEmailController, ContinueWithEmailState>(

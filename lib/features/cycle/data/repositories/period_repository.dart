@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/features/cycle/data/models/period_log.dart';
 
 class PeriodRepository {
   PeriodRepository({

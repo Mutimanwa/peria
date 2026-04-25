@@ -1,7 +1,7 @@
-import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
-import 'package:perla_app/features/cycle/domain/cycle_phase.dart';
-import 'package:perla_app/features/cycle/domain/cycle_status.dart';
-import 'package:perla_app/features/journal/data/models/journal_entry.dart';
+import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 
 class EducationContextService {
   const EducationContextService._();

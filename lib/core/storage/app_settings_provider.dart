@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
 import 'app_settings.dart';
 import 'app_settings_repository.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
-import 'package:perla_app/features/calendar/presentation/providers/symptom_provider.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
-import 'package:perla_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
+import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class SymptomsScreen extends ConsumerStatefulWidget {
   const SymptomsScreen({super.key});

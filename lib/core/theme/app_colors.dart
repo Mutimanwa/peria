@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Perla App — Color System
+/// Peria App — Color System
 /// Generated from Style Guide
 
 class AppColors {

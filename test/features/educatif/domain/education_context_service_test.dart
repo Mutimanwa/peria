@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
-import 'package:perla_app/features/cycle/domain/cycle_phase.dart';
-import 'package:perla_app/features/cycle/domain/cycle_status.dart';
-import 'package:perla_app/features/educatif/domain/education_context_service.dart';
-import 'package:perla_app/features/journal/data/models/journal_entry.dart';
+import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/educatif/domain/education_context_service.dart';
+import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 
 void main() {
   group('EducationContextService', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/features/onboarding/domain/onboarding_navigation_target.dart';
+import 'package:peria_app/features/onboarding/domain/onboarding_navigation_target.dart';
 
 final welcomeControllerProvider =
     Provider<WelcomeController>((ref) => const WelcomeController());

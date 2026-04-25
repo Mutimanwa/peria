@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/features/profile/data/models/partner_settings.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/features/profile/data/models/partner_settings.dart';
 
 class PartnerSettingsRepository {
   PartnerSettingsRepository({

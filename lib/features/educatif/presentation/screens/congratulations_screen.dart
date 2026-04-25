@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class CongratulationsScreen extends StatelessWidget {
   const CongratulationsScreen({super.key});

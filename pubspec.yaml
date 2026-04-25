@@ -1,5 +1,5 @@
-name: perla_app
-description: Perla App — Flutter application
+name: peria_app
+description: Peria App — Flutter application
 version: 1.0.0+1
 
 environment:
@@ -31,6 +31,7 @@ dependencies:
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4
   equatable: ^2.0.8
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +45,13 @@ flutter:
   generate: true
   uses-material-design: true
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+
+  image_path: "assets/images/logo/logo.png"
+  adaptive_icon_background: "#FFFFFF"
+  
   # ── Custom Fonts ──────────────────────────────────────────────────────────
   # Place your font files in assets/fonts/
   # fonts:

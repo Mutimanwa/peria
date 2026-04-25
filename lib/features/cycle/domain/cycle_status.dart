@@ -1,4 +1,4 @@
-import 'package:perla_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 
 class CycleStatus {
   final DateTime startDate; // first day of last period (reference)

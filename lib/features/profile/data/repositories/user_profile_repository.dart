@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/features/profile/data/models/user_profile.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/features/profile/data/models/user_profile.dart';
 
 class UserProfileRepository {
   UserProfileRepository({

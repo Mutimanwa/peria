@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:perla_app/features/educatif/data/models/education_article.dart';
-import 'package:perla_app/features/educatif/data/repositories/education_content_repository.dart';
+import 'package:peria_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/data/repositories/education_content_repository.dart';
 
 void main() {
   group('EducationContentRepository', () {

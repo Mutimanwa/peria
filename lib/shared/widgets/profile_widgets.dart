@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:perla_app/core/theme/app_colors.dart';
-import 'package:perla_app/core/theme/app_text.dart';
+import 'package:peria_app/core/theme/app_colors.dart';
+import 'package:peria_app/core/theme/app_text.dart';
 
 class SectionLabel extends StatelessWidget {
   final String text;

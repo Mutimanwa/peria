@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/features/calendar/presentation/providers/symptom_provider.dart';
-import 'package:perla_app/features/cycle/presentation/providers/cycle_provider.dart';
-import 'package:perla_app/features/educatif/data/models/education_article.dart';
-import 'package:perla_app/features/educatif/data/repositories/education_content_repository.dart';
-import 'package:perla_app/features/educatif/domain/education_context_service.dart';
-import 'package:perla_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:peria_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/data/repositories/education_content_repository.dart';
+import 'package:peria_app/features/educatif/domain/education_context_service.dart';
+import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 
 final educationContentRepositoryProvider =
     Provider<EducationContentRepository>((ref) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:perla_app/core/errors/app_error.dart';
+import 'package:peria_app/core/errors/app_error.dart';
 
 class AppErrorHandler {
   const AppErrorHandler._();

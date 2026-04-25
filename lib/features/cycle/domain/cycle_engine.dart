@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
-import 'package:perla_app/features/cycle/data/models/period_log.dart';
-import 'package:perla_app/features/cycle/domain/cycle_phase.dart';
-import 'package:perla_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 
 class CycleEngine {
   const CycleEngine._();

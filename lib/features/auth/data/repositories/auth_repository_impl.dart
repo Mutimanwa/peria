@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/core/services/firebase_service.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/core/services/firebase_service.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_profile.dart';

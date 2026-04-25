@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
 import 'app_settings.dart';
 
 class AppSettingsRepository {

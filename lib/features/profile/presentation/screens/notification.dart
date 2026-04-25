@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/storage/app_settings_provider.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
-import 'package:perla_app/shared/widgets/common_widgets.dart';
-import 'package:perla_app/shared/widgets/profile_widgets.dart';
+import 'package:peria_app/core/storage/app_settings_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/shared/widgets/profile_widgets.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});

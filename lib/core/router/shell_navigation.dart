@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/shared/widgets/custom_bottom_nav.dart';
+import 'package:peria_app/shared/widgets/custom_bottom_nav.dart';
 
 /// Shell widget that wraps authenticated routes with custom bottom navigation
 class ShellNavigation extends StatefulWidget {

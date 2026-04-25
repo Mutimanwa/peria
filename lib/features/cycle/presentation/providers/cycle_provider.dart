@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/core/storage/app_settings.dart';
-import 'package:perla_app/core/storage/app_settings_provider.dart';
-import 'package:perla_app/features/cycle/data/models/period_log.dart';
-import 'package:perla_app/features/cycle/data/repositories/period_repository.dart';
-import 'package:perla_app/features/cycle/domain/cycle_engine.dart';
-import 'package:perla_app/features/cycle/domain/cycle_status.dart';
-import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/core/storage/app_settings.dart';
+import 'package:peria_app/core/storage/app_settings_provider.dart';
+import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/cycle/data/repositories/period_repository.dart';
+import 'package:peria_app/features/cycle/domain/cycle_engine.dart';
+import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
 final cycleUserRepositoryProvider = Provider<UserRepository>((ref) {
   return UserRepository();

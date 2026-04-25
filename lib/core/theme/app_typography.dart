@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
-/// Perla App — Typography System
-/// Font: Perla App (regular, medium, bold)
+/// Peria App — Typography System
+/// Font: Peria App (regular, medium, bold)
 /// Fallback: system sans-serif
 
 class AppTypography {

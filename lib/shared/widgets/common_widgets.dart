@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
+import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 
 void safeRouterBack(BuildContext context, {String fallbackRoute = '/cycle'}) {
   final router = GoRouter.of(context);

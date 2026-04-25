@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/features/educatif/presentation/screens/self_care_data.dart';
+import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/features/educatif/presentation/screens/self_care_data.dart';
 
 class SelfCareHomeScreen extends StatefulWidget {
   const SelfCareHomeScreen({super.key});
@@ -158,7 +158,7 @@ class _SelfCareHeader extends StatelessWidget {
             const Icon(Icons.favorite, color: AppColors.primary300, size: 16),
             const SizedBox(width: 6),
             Text(
-              'Perla',
+              'Peria',
               style: AppText.label.copyWith(
                 color: AppColors.primary400,
                 fontWeight: FontWeight.w700,

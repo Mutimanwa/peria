@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:perla_app/features/educatif/data/models/education_article.dart';
-import 'package:perla_app/features/educatif/data/repositories/education_repository.dart';
+import 'package:peria_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/data/repositories/education_repository.dart';
 
 class EducationContentRepository {
   const EducationContentRepository();

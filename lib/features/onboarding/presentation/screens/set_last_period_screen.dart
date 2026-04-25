@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/router/router.dart';
-import 'package:perla_app/core/services/onboarding_service.dart';
-import 'package:perla_app/core/theme/theme.dart';
-import 'package:perla_app/features/profile/presentation/providers/user_profile_provider.dart';
-import 'package:perla_app/l10n/app_localizations.dart';
-import 'package:perla_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/core/router/router.dart';
+import 'package:peria_app/core/services/onboarding_service.dart';
+import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════
 ///  ÉCRAN 9 — Set Last Period Date

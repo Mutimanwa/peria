@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:perla_app/features/calendar/data/models/symptom_log.dart';
+import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
 
 void main() {
   group('SymptomLog', () {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:perla_app/core/theme/theme.dart';
+import 'package:peria_app/core/theme/theme.dart';
 
 class AiChatScreen extends StatelessWidget {
   const AiChatScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:perla_app/features/cycle/data/models/period_log.dart';
-import 'package:perla_app/features/cycle/domain/cycle_engine.dart';
-import 'package:perla_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/cycle/domain/cycle_engine.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 
 void main() {
   group('CycleEngine.compute', () {

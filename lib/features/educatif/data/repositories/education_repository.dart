@@ -1,4 +1,4 @@
-import 'package:perla_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/data/models/education_article.dart';
 
 
 /// Base de données statique des articles éducatifs

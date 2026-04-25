@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:perla_app/core/repositories/user_repository.dart';
-import 'package:perla_app/features/profile/data/models/user_profile.dart';
-import 'package:perla_app/features/profile/data/repositories/user_profile_repository.dart';
+import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/features/profile/data/models/user_profile.dart';
+import 'package:peria_app/features/profile/data/repositories/user_profile_repository.dart';
 
 final profileUserRepositoryProvider = Provider<UserRepository>((ref) {
   return UserRepository();

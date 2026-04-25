@@ -3,7 +3,7 @@ import 'app_colors.dart';
 import 'app_typography.dart';
 import 'app_spacing.dart';
 
-/// Perla App — Theme Configuration
+/// Peria App — Theme Configuration
 /// Light & Dark modes built from the Style Guide tokens.
 
 class AppTheme {
