@@ -74,9 +74,15 @@ class CycleEngine {
     final current = now ?? DateTime.now();
     final normalizedStartDate = _startOfDay(startDate);
 
-    final computedEndDate = periodEndDate != null
+    final daysElapsed = _startOfDay(current).difference(normalizedStartDate).inDays;
+    final cyclesElapsed = daysElapsed >= 0 ? daysElapsed ~/ cycleLengthDays : 0;
+    final currentCycleStart = normalizedStartDate.add(
+      Duration(days: cyclesElapsed * cycleLengthDays),
+    );
+
+    final computedEndDate = (periodEndDate != null && cyclesElapsed == 0)
         ? _endOfDay(periodEndDate)
-        : normalizedStartDate.add(
+        : currentCycleStart.add(
             Duration(
               days: math.max(periodLengthDays - 1, 0),
               hours: 23,
@@ -87,31 +93,30 @@ class CycleEngine {
           );
 
     final isInPeriod =
-        (current.isAtSameMomentAs(normalizedStartDate) ||
-            current.isAfter(normalizedStartDate)) &&
-        (current.isAtSameMomentAs(computedEndDate) ||
-            current.isBefore(computedEndDate));
+        (current.isAtSameMomentAs(currentCycleStart) || current.isAfter(currentCycleStart)) &&
+            (current.isAtSameMomentAs(computedEndDate) || current.isBefore(computedEndDate));
 
-    final daysElapsed = _startOfDay(current).difference(normalizedStartDate).inDays;
-    final dayOfCycle = _positiveModulo(daysElapsed, cycleLengthDays) + 1;
-
-    final nextPeriodStart = _computeFutureNextPeriodStart(
-      startDate: normalizedStartDate,
-      current: current,
-      cycleLengthDays: cycleLengthDays,
-    );
-    final ovulationDate = nextPeriodStart.subtract(const Duration(days: 14));
+    final dayOfCycle = _startOfDay(current).difference(currentCycleStart).inDays + 1;
+    final nextPeriodStart = currentCycleStart.add(Duration(days: cycleLengthDays));
+    final ovulationDate = currentCycleStart.add(Duration(days: (cycleLengthDays - 14).clamp(0, cycleLengthDays)));
     final fertileStart = ovulationDate.subtract(const Duration(days: 5));
     final fertileEnd = ovulationDate.add(const Duration(days: 1));
     final pmsDays = _computePmsDays(nextPeriodStart);
+    final fertileWindow = List.generate(
+      fertileEnd.difference(fertileStart).inDays + 1,
+      (index) => _startOfDay(fertileStart.add(Duration(days: index))),
+    );
+    final periodDays = List.generate(
+      periodLengthDays,
+      (index) => _startOfDay(currentCycleStart.add(Duration(days: index))),
+    );
 
     final ovulationCycleDay = (cycleLengthDays - 14).clamp(1, cycleLengthDays);
 
     CyclePhase phase;
     if (isInPeriod) {
       phase = CyclePhase.menstrual;
-    } else if (dayOfCycle >= ovulationCycleDay - 5 &&
-        dayOfCycle <= ovulationCycleDay + 1) {
+    } else if (dayOfCycle >= ovulationCycleDay - 5 && dayOfCycle <= ovulationCycleDay + 1) {
       phase = CyclePhase.ovulation;
     } else if (dayOfCycle > ovulationCycleDay + 1) {
       phase = CyclePhase.luteal;
@@ -120,6 +125,7 @@ class CycleEngine {
     }
 
     final daysUntilNextPeriod = nextPeriodStart.difference(current).inDays;
+    final isOverdue = current.isAfter(nextPeriodStart) && !isInPeriod;
 
     return CycleStatus(
       startDate: normalizedStartDate,
@@ -134,7 +140,10 @@ class CycleEngine {
       ovulationDate: ovulationDate,
       fertileWindowStart: fertileStart,
       fertileWindowEnd: fertileEnd,
+      fertileWindow: fertileWindow,
+      periodDays: periodDays,
       pmsDays: pmsDays,
+      isOverdue: isOverdue,
       daysUntilNextPeriod: daysUntilNextPeriod,
     );
   }

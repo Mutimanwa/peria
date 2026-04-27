@@ -23,7 +23,10 @@ void main() {
           fertileWindowStart: DateTime(2026, 4, 10),
           fertileWindowEnd: DateTime(2026, 4, 16),
           pmsDays: const [],
-          daysUntilNextPeriod: 6,
+          daysUntilNextPeriod: 6, 
+          fertileWindow: [], 
+          periodDays: [],
+          isOverdue: false,
         ),
         symptomLogs: [
           SymptomLog(

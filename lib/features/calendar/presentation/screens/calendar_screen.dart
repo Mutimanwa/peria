@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:peria_app/core/storage/app_settings.dart';
-import 'package:peria_app/core/storage/app_settings_provider.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
@@ -17,12 +16,9 @@ class CalendarScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
-
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selectedDate = DateTime.now();
-  // Navigation state is now managed by ShellNavigation
-  // NavItem _activeTab = NavItem.cycle; // Removed - managed by shell
 
   static const List<String> _monthNames = [
     'January',
@@ -201,54 +197,26 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     );
   }
 
-  DateTime _startOfDay(DateTime d) => DateTime(d.year, d.month, d.day);
-  DateTime _endOfDay(DateTime d) =>
-      DateTime(d.year, d.month, d.day, 23, 59, 59, 999);
+  DateTime _normalizeDay(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  bool _inRange(DateTime day, DateTime? start, DateTime? end) {
-    if (start == null || end == null) return false;
-    final xStart = _startOfDay(day);
-    final xEnd = _endOfDay(day);
-    return (xStart.isAtSameMomentAs(start) || xStart.isAfter(start)) &&
-        (xEnd.isAtSameMomentAs(end) || xEnd.isBefore(end));
+  bool _isDayInStatus(DateTime day, List<DateTime> days) {
+    final normalized = _normalizeDay(day);
+    return days.any((d) => _normalizeDay(d) == normalized);
   }
 
   bool _isPeriodDay(DateTime day) {
-    final logsState = ref.watch(periodLogsProvider);
-    final logs = logsState.value ?? const [];
-    for (final log in logs) {
-      if (_inRange(day, log.startDate, log.endDate)) return true;
-    }
-
-    // Fallback: if no logs, use onboarding lastPeriodStart as an initial period range.
-    final profile = ref.watch(userProfileProvider).value;
-    final last = profile?.lastPeriodStart;
-    if (last == null) return false;
-    final settings =
-        ref.watch(appSettingsProvider).value ?? const AppSettings();
-    final end = last.add(Duration(
-      days: (settings.periodLengthDays - 1).clamp(0, 60),
-      hours: 23,
-      minutes: 59,
-      seconds: 59,
-      milliseconds: 999,
-    ));
-    return _inRange(day, last, end);
+    final status = ref.watch(cycleStatusForDateProvider(day));
+    return status != null && _isDayInStatus(day, status.periodDays);
   }
 
   bool _isOvulationDay(DateTime day) {
-    final status = ref.watch(cycleStatusProvider);
-    if (status == null) return false;
-    return _inRange(day, status.fertileWindowStart, status.fertileWindowEnd);
+    final status = ref.watch(cycleStatusForDateProvider(day));
+    return status != null && _isDayInStatus(day, status.fertileWindow);
   }
 
   bool _isPmsDay(DateTime day) {
-    final status = ref.watch(cycleStatusProvider);
-    if (status == null) return false;
-    final nextStart = status.nextPeriodStart;
-    final pmsStart = nextStart.subtract(const Duration(days: 5));
-    final pmsEnd = nextStart.subtract(const Duration(days: 1));
-    return _inRange(day, pmsStart, pmsEnd);
+    final status = ref.watch(cycleStatusForDateProvider(day));
+    return status != null && _isDayInStatus(day, status.pmsDays);
   }
 
   bool _isToday(DateTime day) {
@@ -257,37 +225,56 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   bool _containsDay(Set<DateTime> days, DateTime target) {
-    final normalized = _startOfDay(target);
-    return days.any((day) => day == normalized);
+    final normalized = _normalizeDay(target);
+    return days.any((day) => _normalizeDay(day) == normalized);
   }
 
   String _formatDate(DateTime date) {
     return '${_monthNames[date.month - 1]} ${date.day}, ${date.year}';
   }
 
-  _CalendarDayState _dayState(DateTime day) {
-    if (_isPeriodDay(day)) {
+  _CalendarDayState _dayState(DateTime day, CycleStatus? status) {
+    if (status == null) {
+      return const _CalendarDayState(
+        label: 'No cycle data',
+        description: 'No available cycle prediction for this date.',
+        color: AppColors.grey700,
+        softColor: AppColors.grey100,
+        icon: Icons.calendar_today_outlined,
+      );
+    }
+    final normalizedDay = _normalizeDay(day);
+    if (status.isOverdue && _normalizeDay(DateTime.now()) == normalizedDay) {
+      return const _CalendarDayState(
+        label: 'Overdue',
+        description: 'Your period is expected but not logged.',
+        color: AppColors.error,
+        softColor: Color(0xFFFFE6E6),
+        icon: Icons.warning_amber_rounded,
+      );
+    }
+    if (_isDayInStatus(day, status.periodDays)) {
       return const _CalendarDayState(
         label: 'Period day',
-        description: 'Your period is tracked on this date.',
+        description: 'This date is part of the menstrual window.',
         color: AppColors.primary400,
         softColor: AppColors.primary50,
         icon: Icons.water_drop_outlined,
       );
     }
-    if (_isOvulationDay(day)) {
+    if (_isDayInStatus(day, status.fertileWindow)) {
       return const _CalendarDayState(
         label: 'Fertility window',
-        description: 'This date is inside your predicted fertile window.',
+        description: 'This date is inside the predicted fertile window.',
         color: AppColors.secondary500,
         softColor: AppColors.secondary50,
         icon: Icons.auto_awesome,
       );
     }
-    if (_isPmsDay(day)) {
+    if (_isDayInStatus(day, status.pmsDays)) {
       return const _CalendarDayState(
         label: 'PMS day',
-        description: 'This date falls in your predicted PMS phase.',
+        description: 'This date is in the predicted PMS phase.',
         color: AppColors.warning700,
         softColor: AppColors.warning50,
         icon: Icons.bolt_rounded,
@@ -296,7 +283,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     if (_isToday(day)) {
       return const _CalendarDayState(
         label: 'Today',
-        description: 'You selected today in your cycle calendar.',
+        description: 'Selected day.',
         color: AppColors.grey900,
         softColor: AppColors.grey100,
         icon: Icons.today_rounded,
@@ -316,7 +303,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
     int startOffset = firstDay.weekday - 1;
-    final selectedState = _dayState(_selectedDate);
+    final selectedStatus = ref.watch(cycleStatusForDateProvider(_selectedDate));
+    final selectedState = _dayState(_selectedDate, selectedStatus);
     final symptomDays = ref.watch(symptomDaysProvider);
     final journalDays = ref.watch(journalDaysProvider);
 

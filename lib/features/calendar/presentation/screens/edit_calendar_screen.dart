@@ -74,6 +74,23 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
+  DateTime _normalizeDay(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  bool _isDayInStatus(DateTime day, List<DateTime> days) {
+    final normalized = _normalizeDay(day);
+    return days.any((d) => _normalizeDay(d) == normalized);
+  }
+
+  bool _isOldLogDay(DateTime day) {
+    final logs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
+    return logs.any((log) => log.contains(day));
+  }
+
+  bool _isPredictedPeriodDay(DateTime day) {
+    final status = ref.watch(cycleStatusForDateProvider(day));
+    return status != null && _isDayInStatus(day, status.periodDays);
+  }
+
   bool get _canSave => _startDate != null;
 
   String _formatDate(DateTime date) {
@@ -312,9 +329,16 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
         final selected = _isSelected(day);
         final edge = _isRangeEdge(day);
 
+        final isGhost = !selected && (_isPredictedPeriodDay(day) || _isOldLogDay(day));
         return GestureDetector(
           onTap: () => _selectDay(day),
-          child: _DayCell(day: day, selected: selected, isEdge: edge),
+          child: _DayCell(
+            day: day,
+            selected: selected,
+            isEdge: edge,
+            ghost: isGhost,
+            oldLog: _isOldLogDay(day),
+          ),
         );
       },
     );
@@ -325,9 +349,16 @@ class _DayCell extends StatelessWidget {
   final DateTime day;
   final bool selected;
   final bool isEdge;
+  final bool ghost;
+  final bool oldLog;
 
-  const _DayCell(
-      {required this.day, required this.selected, required this.isEdge});
+  const _DayCell({
+    required this.day,
+    required this.selected,
+    required this.isEdge,
+    this.ghost = false,
+    this.oldLog = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -343,6 +374,14 @@ class _DayCell extends StatelessWidget {
       bg = AppColors.primary100;
       textColor = AppColors.primary;
       borderColor = AppColors.primary100;
+    } else if (ghost) {
+      bg = AppColors.primary.withOpacity(0.16);
+      textColor = AppColors.primary;
+      borderColor = Colors.transparent;
+    } else if (oldLog) {
+      bg = AppColors.grey100;
+      textColor = AppColors.grey700;
+      borderColor = AppColors.grey200;
     }
 
     return AnimatedContainer(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
-import 'package:peria_app/features/educatif/presentation/screens/self_care_data.dart';
+import 'package:peria_app/features/self_care/presentation/screens/self_care_data.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class ActivityDetailScreen extends StatelessWidget {

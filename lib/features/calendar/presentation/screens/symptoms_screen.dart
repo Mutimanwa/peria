@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
+import 'package:peria_app/features/calendar/presentation/constants/symptom_constants.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -22,46 +23,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   late final TextEditingController _notesController;
   int? _intensity;
 
-  static const Map<String, List<_SymptomOption>> _categories = {
-    'Sexual activity': [
-      _SymptomOption('Protected Sex', Icons.female),
-      _SymptomOption('Orgasm', Icons.favorite_border),
-      _SymptomOption('High activity', Icons.local_fire_department_outlined),
-      _SymptomOption('Unprotected sex', Icons.male),
-    ],
-    'Mental': [
-      _SymptomOption('Breathing Exercises', Icons.air),
-      _SymptomOption('Stress', Icons.self_improvement),
-      _SymptomOption('Yoga', Icons.accessibility_new),
-      _SymptomOption('Meditation', Icons.spa_outlined),
-    ],
-    'Discharge': [
-      _SymptomOption('Unusual', Icons.water_drop_outlined),
-      _SymptomOption('Sticky', Icons.water_drop),
-      _SymptomOption('Bleeding', Icons.opacity),
-      _SymptomOption('Heavy Bleeding', Icons.bloodtype_outlined),
-      _SymptomOption('Low Bleeding', Icons.invert_colors_off_outlined),
-    ],
-    'Physical activity': [
-      _SymptomOption('No Exercise', Icons.remove),
-      _SymptomOption('Team sports', Icons.sports_basketball),
-      _SymptomOption('Cycling', Icons.directions_bike),
-      _SymptomOption('Gym', Icons.fitness_center),
-      _SymptomOption('Dancing', Icons.music_note_outlined),
-      _SymptomOption('Aerobics', Icons.directions_walk),
-      _SymptomOption('Swimming', Icons.pool),
-    ],
-    'Mood': [
-      _SymptomOption('Anxious', Icons.sentiment_dissatisfied),
-      _SymptomOption('Sad', Icons.sentiment_dissatisfied_outlined),
-      _SymptomOption('Happy', Icons.sentiment_very_satisfied),
-      _SymptomOption('Calm', Icons.sentiment_satisfied),
-      _SymptomOption('Angry', Icons.sentiment_very_dissatisfied),
-      _SymptomOption('Energetic', Icons.bolt_outlined),
-      _SymptomOption('Confused', Icons.sentiment_neutral),
-      _SymptomOption('Depressed', Icons.cloud_outlined),
-    ],
-  };
+  static const Map<String, List<SymptomOption>> _categories = symptomCategories;
 
   bool get _hasExistingLog =>
       _loadedDocumentId != null &&
@@ -146,14 +108,16 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final asyncLog = ref.watch(symptomLogProvider(_selectedDate));
-    final expectedId =
-        ref.read(symptomRepositoryProvider).documentIdForDate(_selectedDate);
-    if (_loadedDocumentId != expectedId && asyncLog.hasValue) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        setState(() => _applyLog(asyncLog.value));
-      });
-    }
+    ref.listen<AsyncValue<SymptomLog?>>(symptomLogProvider(_selectedDate),
+        (previous, next) {
+      if (!mounted) return;
+      if (next.hasValue && next.value != null) {
+        final loaded = next.value!;
+        if (_loadedDocumentId != loaded.id) {
+          setState(() => _applyLog(loaded));
+        }
+      }
+    });
 
     return PageScaffold(
       showBack: true,
@@ -294,7 +258,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   Widget _buildCategoryCard(
     BuildContext context,
     String categoryKey,
-    List<_SymptomOption> options,
+    List<SymptomOption> options,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -538,9 +502,3 @@ class _Pill extends StatelessWidget {
   }
 }
 
-class _SymptomOption {
-  const _SymptomOption(this.label, this.icon);
-
-  final String label;
-  final IconData icon;
-}

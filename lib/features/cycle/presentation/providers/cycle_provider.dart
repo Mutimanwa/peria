@@ -39,10 +39,19 @@ class PeriodLogsNotifier extends StateNotifier<AsyncValue<List<PeriodLog>>> {
   Future<void> add(PeriodLog log) async {
     final current = [...(state.value ?? <PeriodLog>[])];
     current.removeWhere((x) => x.id == log.id);
-    current.add(log);
-    current.sort((a, b) => b.startDate.compareTo(a.startDate));
-    state = AsyncValue.data(current);
-    await _repository.save(current);
+    var mergedLog = log;
+    final remaining = <PeriodLog>[];
+    for (final existing in current) {
+      if (existing.overlapsOrTouches(mergedLog)) {
+        mergedLog = mergedLog.merge(existing);
+      } else {
+        remaining.add(existing);
+      }
+    }
+    remaining.add(mergedLog);
+    remaining.sort((a, b) => b.startDate.compareTo(a.startDate));
+    state = AsyncValue.data(remaining);
+    await _repository.save(remaining);
   }
 }
 
