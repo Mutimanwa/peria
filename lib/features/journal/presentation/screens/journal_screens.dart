@@ -7,6 +7,7 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -160,14 +161,71 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                 ],
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const Center(child: Text('Unable to load journal')),
+            loading: () => Column(
+              children: [
+                _buildHeader(l10n),
+                _buildWeekCalendarSkeleton(),
+                _buildSummaryBarSkeleton(),
+                const Expanded(child: JournalSkeleton(count: 4)),
+              ],
+            ),
+            error: (err, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: AppColors.grey400),
+                  const SizedBox(height: 16),
+                  Text('Unable to load journal',
+                      style: AppText.h3.copyWith(color: AppColors.grey700)),
+                  const SizedBox(height: 8),
+                  Text(err.toString(),
+                      style: AppText.body.copyWith(color: AppColors.grey500),
+                      textAlign: TextAlign.center),
+                ],
+              ),
+            ),
           ),
         ),
       ),
-      
     );
   }
+
+  /// Skeleton for week calendar during loading
+  Widget _buildWeekCalendarSkeleton() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Row(
+        children: List.generate(
+          7,
+          (i) => Expanded(
+            child: Container(
+              height: 80,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: AppColors.grey100,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Skeleton for summary bar during loading
+  Widget _buildSummaryBarSkeleton() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: AppColors.grey100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildHeader(AppLocalizations l10n) {
     return Padding(

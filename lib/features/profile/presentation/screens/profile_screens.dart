@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';

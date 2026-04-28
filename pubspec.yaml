@@ -26,6 +26,8 @@ dependencies:
   dio: ^5.4.0
   # Icons
   flutter_svg: ^2.0.9
+  # Shimmer loading
+  shimmer: ^3.0.0
   # Local persistence
   hive: ^2.2.3
   hive_flutter: ^1.1.0
