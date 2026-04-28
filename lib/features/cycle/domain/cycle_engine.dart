@@ -28,7 +28,7 @@ class CycleEngine {
     required DateTime startDate,
     required DateTime current,
     required int cycleLengthDays,
-  }) {
+  }){
     final daysElapsed = _startOfDay(current).difference(_startOfDay(startDate)).inDays;
     if (daysElapsed < cycleLengthDays) {
       return startDate.add(Duration(days: cycleLengthDays));

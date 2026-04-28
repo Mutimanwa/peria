@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/auth/domain/auth_navigation_target.dart';
 import 'package:peria_app/features/auth/presentation/controllers/register_controller.dart';
@@ -66,7 +67,7 @@ final l10n = AppLocalizations.of(context);
               Expanded(
                 child: Center(
                 child: Image.asset(
-                  "assets/images/onboarding/frame-2.png",
+                  AppAssets.onboardingSecondaryFrame,
                   height: 300,
                 ),
               )

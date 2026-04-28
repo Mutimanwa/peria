@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 
@@ -57,8 +58,7 @@ final l10n = AppLocalizations.of(context);
                   opacity: _fade,
                   child: ScaleTransition(
                     scale: _scale,
-                    child: Image.asset(
-                      'assets/images/logo/logo.png',
+                    child: Image.asset(AppAssets.logo,
                       width: 140,
                       height: 140,
                       fit: BoxFit.contain,

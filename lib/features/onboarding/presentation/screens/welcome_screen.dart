@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
@@ -36,13 +37,13 @@ class WelcomeScreen extends ConsumerWidget {
             children: [
               // ── Logo Peria ────────────────────────
               const SizedBox(height: 36),
-              Center(child: Image.asset("assets/images/logo/logo.png")),
+              Center(child: Image.asset(AppAssets.logo)),
               const SizedBox(height: 36),
 
               // ── Zone illustration 3D ─────────────────────────────
               Expanded(
                 child: Image.asset(
-                  "assets/images/onboarding/frame.png",
+                  AppAssets.onboardingMainFrame,
                   height: 300,
                 ),
               ),

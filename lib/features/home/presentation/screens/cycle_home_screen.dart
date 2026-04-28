@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/core/storage/app_settings.dart';
@@ -523,7 +524,7 @@ class _AppBar extends StatelessWidget {
                       offset: const Offset(0, 2)),
                 ],
               ),
-              child: Image.asset('assets/images/icons/Profile.png',
+              child: Image.asset(AppAssets.avatar,
                   fit: BoxFit.cover),
             ),
           ),
@@ -562,7 +563,7 @@ class _AppBar extends StatelessWidget {
                           context.go("/notification");
                         },
                         child: Image.asset(
-                            "assets/images/icons/notification-1.png")),
+                            AppAssets.notificationBell)),
                     Positioned(
                       top: 1,
                       right: 1,
@@ -586,7 +587,7 @@ class _AppBar extends StatelessWidget {
                   onTap: () {
                     context.go("/calendar");
                   },
-                  child: Image.asset("assets/images/icons/calendar.png"))
+                  child: Image.asset(AppAssets.calendar))
             ],
           ),
         ],

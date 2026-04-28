@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
@@ -56,7 +57,7 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
                 width: 200,
                 height: 200,
                 alignment: Alignment.center,
-                child: Image.asset("assets/images/icons/login1.png")),
+                child: Image.asset(AppAssets.login)),
             const SizedBox(height: 32),
 
             Padding(
@@ -168,7 +169,7 @@ final l10n = AppLocalizations.of(context);
                 width: 200,
                 height: 200,
                 alignment: Alignment.center,
-                child: Image.asset("assets/images/icons/birthday.png")),
+                child: Image.asset(AppAssets.birthday)),
             const SizedBox(height: 28),
 
             Text(l10n.dateOfBirthTitle,

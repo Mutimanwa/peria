@@ -159,7 +159,7 @@ final l10n = AppLocalizations.of(context);
                             icon: Icons.chevron_left_rounded),
                         Expanded(
                           child: Text(
-                            '${_monthNames[_displayMonth.month - 1]}',
+                            _monthNames[_displayMonth.month - 1],
                             style: AppText.h3,
                             textAlign: TextAlign.center,
                           ),
