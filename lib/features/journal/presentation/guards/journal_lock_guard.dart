@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/features/profile/presentation/providers/security_provider.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/shared/widgets/pin_code_input.dart';
@@ -30,7 +31,7 @@ class JournalLockGuard extends ConsumerWidget {
         }
         return child;
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: JournalSkeleton()),
       error: (_, __) => child, // Fallback
     );
   }

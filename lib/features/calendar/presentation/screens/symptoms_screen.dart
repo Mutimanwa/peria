@@ -5,6 +5,7 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
 import 'package:peria_app/features/calendar/presentation/constants/symptom_constants.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/symptoms_squeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -108,6 +109,10 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final asyncLog = ref.watch(symptomLogProvider(_selectedDate));
+    
+    if (asyncLog.isLoading) {
+      return const SymptomsSkeleton();
+    }
     ref.listen<AsyncValue<SymptomLog?>>(symptomLogProvider(_selectedDate),
         (previous, next) {
       if (!mounted) return;
@@ -451,8 +456,6 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   }
 }
 
-
-
 class _Pill extends StatelessWidget {
   const _Pill({
     required this.label,
@@ -501,4 +504,3 @@ class _Pill extends StatelessWidget {
     );
   }
 }
-

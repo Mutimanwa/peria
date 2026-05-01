@@ -199,7 +199,7 @@ class ToggleGroup extends StatelessWidget {
                 ),
               ),
               if (index != items.length - 1)
-                const Divider(height: 1, indent: 16, endIndent: 16),
+                const Divider(height: 1, indent: 16, endIndent: 16 , color: AppColors.grey200),
             ],
           );
         }),

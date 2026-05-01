@@ -1,10 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
-<<<<<<< ours
-=======
 import 'package:peria_app/features/cycle/domain/cycle_regularity.dart';
->>>>>>> theirs
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 import 'package:peria_app/features/educatif/domain/education_context_service.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
@@ -33,7 +30,7 @@ void main() {
           periodDays: [],
           isOverdue: false,
 =======
-          ovulationRangeStart: DateTime(2026, 4, 13),
+          ovulationRangeStart, ovulationRangeStart: null, ovulationRangeEnd: null, confidenceScore: null, isEstimated: null, cycleRegularity: null, cycleVariance: null, useRealData: null: DateTime(2026, 4, 13),
           ovulationRangeEnd: DateTime(2026, 4, 17),
           fertileWindowStart: DateTime(2026, 4, 10),
           fertileWindowEnd: DateTime(2026, 4, 16),
