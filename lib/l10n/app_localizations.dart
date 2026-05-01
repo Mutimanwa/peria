@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'We\'ll check if you already have an account'**
   String get enterYourEmailSubtitle;
 
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullNameLabel;
+
   /// No description provided for @emailAddressLabel.
   ///
   /// In en, this message translates to:
@@ -331,6 +337,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Day'**
   String get day;
+
+  /// No description provided for @days.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get days;
 
   /// No description provided for @otpTitle.
   ///

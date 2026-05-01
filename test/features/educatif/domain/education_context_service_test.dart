@@ -1,6 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
+<<<<<<< ours
+=======
+import 'package:peria_app/features/cycle/domain/cycle_regularity.dart';
+>>>>>>> theirs
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 import 'package:peria_app/features/educatif/domain/education_context_service.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
@@ -20,6 +24,7 @@ void main() {
           phase: CyclePhase.luteal,
           nextPeriodStart: DateTime(2026, 4, 29),
           ovulationDate: DateTime(2026, 4, 15),
+<<<<<<< ours
           fertileWindowStart: DateTime(2026, 4, 10),
           fertileWindowEnd: DateTime(2026, 4, 16),
           pmsDays: const [],
@@ -27,6 +32,20 @@ void main() {
           fertileWindow: [], 
           periodDays: [],
           isOverdue: false,
+=======
+          ovulationRangeStart: DateTime(2026, 4, 13),
+          ovulationRangeEnd: DateTime(2026, 4, 17),
+          fertileWindowStart: DateTime(2026, 4, 10),
+          fertileWindowEnd: DateTime(2026, 4, 16),
+          fertileWindow: const [],
+          periodDays: const [],
+          pmsDays: const [],
+          isOverdue: false,
+          daysUntilNextPeriod: 6,
+          confidenceScore: 0.8,
+          isEstimated: false,
+          cycleRegularity: CycleRegularity.regular,
+>>>>>>> theirs
         ),
         symptomLogs: [
           SymptomLog(

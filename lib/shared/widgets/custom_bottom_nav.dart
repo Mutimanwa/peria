@@ -19,7 +19,7 @@ class CustomBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 72,
-      margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
+      margin: const EdgeInsets.fromLTRB(40, 0, 40, 20),
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(179),
         borderRadius: BorderRadius.circular(40),
@@ -94,7 +94,7 @@ class _NavItemWidget extends StatelessWidget {
       return GestureDetector(
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 80, minHeight: 40),
+          constraints: const BoxConstraints(minWidth: 100, minHeight: 50),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: AppColors.neutral900,

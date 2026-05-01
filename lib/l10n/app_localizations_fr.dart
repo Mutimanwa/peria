@@ -50,6 +50,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enterYourEmailSubtitle => 'On verifie si tu as deja un compte';
 
   @override
+  String get fullNameLabel => 'Nom complet';
+
+  @override
   String get emailAddressLabel => 'Adresse email';
 
   @override
@@ -133,6 +136,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get day => 'Jour';
+
+  @override
+  String get days => 'Jours';
 
   @override
   String get otpTitle => 'Saisis le code de verification';

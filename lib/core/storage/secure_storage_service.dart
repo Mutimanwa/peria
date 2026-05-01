@@ -7,7 +7,7 @@ class SecureStorageService {
   SecureStorageService._();
 
   static const _encryptionKeyName = 'secure.hive_encryption_key.v1';
-  static final _storage = const FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage();
 
   static Future<List<int>> getEncryptionKey() async {
     final rawKey = await _storage.read(key: _encryptionKeyName);

@@ -13,6 +13,7 @@
   "orDivider": "Ou",
   "enterYourEmailTitle": "Saisis ton email",
   "enterYourEmailSubtitle": "On verifie si tu as deja un compte",
+  "fullNameLabel": "Nom complet",
   "emailAddressLabel": "Adresse email",
   "yourEmailAddressHint": "Ton adresse email",
   "continueCta": "Continuer",
@@ -46,6 +47,7 @@
     }
   },
   "day": "Jour",
+  "days": "Jours",
   "otpTitle": "Saisis le code de verification",
   "otpSubtitle": "Nous avons envoye un code a {email}",
   "@otpSubtitle": {

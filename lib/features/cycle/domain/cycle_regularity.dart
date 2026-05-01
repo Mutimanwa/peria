@@ -1,0 +1,4 @@
+enum CycleRegularity {
+  regular,
+  irregular,
+}

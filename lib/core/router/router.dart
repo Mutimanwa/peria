@@ -27,6 +27,7 @@ import 'package:peria_app/features/profile/presentation/screens/partner_screen.d
 import 'package:peria_app/features/profile/presentation/screens/personal_info.dart';
 import 'package:peria_app/features/profile/presentation/screens/profile_screens.dart';
 import 'package:peria_app/features/profile/presentation/screens/security.dart';
+import 'package:peria_app/features/profile/presentation/screens/settings.dart';
 import 'package:peria_app/features/profile/presentation/screens/sharing_screen.dart';
 import 'package:peria_app/features/journal/presentation/guards/journal_lock_guard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -264,6 +265,10 @@ final GoRouter appRouter = GoRouter(
               state,
               const SharingSettingsScreen()
             )
+        ),
+        GoRoute(path: '/profile/settings', 
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+              context, state, const SettingScreen()),
         ),
 
         // JOURNAL - Personal mood and symptom tracking

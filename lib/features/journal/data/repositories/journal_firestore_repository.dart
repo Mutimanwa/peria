@@ -78,7 +78,7 @@ class JournalFirestoreRepository {
       final keys = _hiveBox.keys.toList();
       final entries = <JournalEntry>[];
       for (final key in keys) {
-        final json = _hiveBox.get(key) as Map<String, dynamic>?;
+        final json = _hiveBox.get(key);
         if (json != null) {
           entries.add(JournalEntry.fromJson(json));
         }

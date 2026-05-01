@@ -13,6 +13,7 @@
   "orDivider": "Or",
   "enterYourEmailTitle": "Enter your email",
   "enterYourEmailSubtitle": "We'll check if you already have an account",
+  "fullNameLabel": "Full Name",
   "emailAddressLabel": "Email Address",
   "yourEmailAddressHint": "Your email address",
   "continueCta": "Continue",
@@ -46,6 +47,7 @@
     }
   },
   "day": "Day",
+  "days": "Days",
   "otpTitle": "Enter verification code",
   "otpSubtitle": "We sent a code to {email}",
   "@otpSubtitle": {
