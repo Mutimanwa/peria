@@ -1304,6 +1304,78 @@ abstract class AppLocalizations {
   /// **'Unable to load account settings'**
   String get unableToLoadAccountSettings;
 
+  /// No description provided for @appAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'App Access'**
+  String get appAccess;
+
+  /// No description provided for @confidentiality.
+  ///
+  /// In en, this message translates to:
+  /// **'Confidentiality'**
+  String get confidentiality;
+
+  /// No description provided for @management.
+  ///
+  /// In en, this message translates to:
+  /// **'Management'**
+  String get management;
+
+  /// No description provided for @globalSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Global Security (PIN/FaceID)'**
+  String get globalSecurity;
+
+  /// No description provided for @biometricAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric Authentication'**
+  String get biometricAuth;
+
+  /// No description provided for @multitaskProtection.
+  ///
+  /// In en, this message translates to:
+  /// **'Masquage en multitâche'**
+  String get multitaskProtection;
+
+  /// No description provided for @clearLocalData.
+  ///
+  /// In en, this message translates to:
+  /// **'Supprimer les données locales'**
+  String get clearLocalData;
+
+  /// No description provided for @confirmClearData.
+  ///
+  /// In en, this message translates to:
+  /// **'Effacer toutes les données ?'**
+  String get confirmClearData;
+
+  /// No description provided for @clearDataWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Cette action est irréversible et supprimera tout votre historique.'**
+  String get clearDataWarning;
+
+  /// No description provided for @securityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sécurité requise'**
+  String get securityRequired;
+
+  /// No description provided for @globalSecurityRequiredForJournal.
+  ///
+  /// In en, this message translates to:
+  /// **'L\'accès sécurisé (PIN/FaceID) doit d\'abord être activé pour protéger le journal.'**
+  String get globalSecurityRequiredForJournal;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
   /// No description provided for @educationGreeting.
   ///
   /// In en, this message translates to:

@@ -644,6 +644,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unableToLoadAccountSettings => 'Unable to load account settings';
 
   @override
+  String get appAccess => 'App Access';
+
+  @override
+  String get confidentiality => 'Confidentiality';
+
+  @override
+  String get management => 'Management';
+
+  @override
+  String get globalSecurity => 'Global Security (PIN/FaceID)';
+
+  @override
+  String get biometricAuth => 'Biometric Authentication';
+
+  @override
+  String get multitaskProtection => 'Masquage en multitâche';
+
+  @override
+  String get clearLocalData => 'Supprimer les données locales';
+
+  @override
+  String get confirmClearData => 'Effacer toutes les données ?';
+
+  @override
+  String get clearDataWarning =>
+      'Cette action est irréversible et supprimera tout votre historique.';
+
+  @override
+  String get securityRequired => 'Sécurité requise';
+
+  @override
+  String get globalSecurityRequiredForJournal =>
+      'L\'accès sécurisé (PIN/FaceID) doit d\'abord être activé pour protéger le journal.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
   String get educationGreeting => 'Hello Peria';
 
   @override

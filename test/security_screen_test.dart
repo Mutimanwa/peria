@@ -71,7 +71,7 @@ void main() {
       );
 
       when(() => mockSecurityNotifier.state)
-          .thenReturn(AsyncValue.data(securityState));
+          .thenReturn(const AsyncValue.data(securityState));
 
       await tester.pumpWidget(createTestWidget(mockSecurityNotifier));
       await tester.pumpAndSettle();
@@ -92,7 +92,7 @@ void main() {
       );
 
       when(() => mockSecurityNotifier.state)
-          .thenReturn(AsyncValue.data(securityState));
+          .thenReturn(const AsyncValue.data(securityState));
 
       await tester.pumpWidget(createTestWidget(mockSecurityNotifier));
       await tester.pumpAndSettle();
@@ -117,7 +117,7 @@ void main() {
       );
 
       when(() => mockSecurityNotifier.state)
-          .thenReturn(AsyncValue.data(securityState));
+          .thenReturn(const AsyncValue.data(securityState));
       when(() => mockSecurityNotifier.authenticate())
           .thenAnswer((_) async => AuthResult.pinRequired());
 
@@ -131,7 +131,7 @@ void main() {
           child: MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const LockScreen(),
+            home: LockScreen(),
           ),
         ),
       );

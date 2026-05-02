@@ -13,8 +13,8 @@ class SectionLabel extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(text,
-            style: AppText.caption
-                .copyWith(color: AppColors.grey500, fontWeight: FontWeight.w700)),
+            style: AppText.caption.copyWith(
+                color: AppColors.grey500, fontWeight: FontWeight.w700)),
       ),
     );
   }
@@ -22,7 +22,7 @@ class SectionLabel extends StatelessWidget {
 
 class FieldLabel extends StatelessWidget {
   final String text;
-  const FieldLabel(this.text , {super.key});
+  const FieldLabel(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +67,7 @@ class MenuItemData {
   final bool danger;
 
   MenuItemData(this.title, this.icon, this.onTap,
-      {this.trailingText, this.danger = false}
-    );
+      {this.trailingText, this.danger = false});
 }
 
 class MenuGroup extends StatelessWidget {
@@ -80,7 +79,7 @@ class MenuGroup extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.grey100,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
         children: List.generate(items.length, (index) {
@@ -88,7 +87,7 @@ class MenuGroup extends StatelessWidget {
           return Column(
             children: [
               InkWell(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(22),
                 onTap: item.onTap,
                 child: Padding(
                   padding:
@@ -137,7 +136,12 @@ class MenuGroup extends StatelessWidget {
                 ),
               ),
               if (index != items.length - 1)
-                const Divider(height: 1, indent: 16, endIndent: 16 , color: AppColors.grey200,),
+                const Divider(
+                  height: 1,
+                  indent: 16,
+                  endIndent: 16,
+                  color: AppColors.grey200,
+                ),
             ],
           );
         }),
@@ -163,7 +167,7 @@ class ToggleGroup extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.grey100,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: Column(
         children: List.generate(items.length, (index) {
@@ -195,14 +199,22 @@ class ToggleGroup extends StatelessWidget {
                       inactiveThumbColor: AppColors.white,
                       inactiveTrackColor: AppColors.grey300,
                       trackOutlineColor: MaterialStateProperty.resolveWith(
-                        (states) => item.value ? Colors.transparent : AppColors.grey400,
+                        (states) =>
+                            item.value ? Colors.transparent : AppColors.grey400,
+                      ),
+                      trackOutlineWidth: MaterialStateProperty.resolveWith(
+                        (states) => item.value ? 0 : 1,
                       ),
                     ),
                   ],
                 ),
               ),
               if (index != items.length - 1)
-                const Divider(height: 1, indent: 16, endIndent: 16 , color: AppColors.grey200),
+                const Divider(
+                    height: 1,
+                    indent: 16,
+                    endIndent: 16,
+                    color: AppColors.grey200),
             ],
           );
         }),
@@ -211,17 +223,31 @@ class ToggleGroup extends StatelessWidget {
   }
 
   IconData _toggleIcon(String title) {
-    if (title.contains('Sécurité') || title.contains('Global') || title.contains('PIN')) {
+    if (title.contains('Sécurité') ||
+        title.contains('Global') ||
+        title.contains('PIN')) {
       return Icons.shield_outlined;
     }
     if (title.contains('Verrouillage') || title.contains('Journal')) {
       return Icons.lock_outline;
     }
-    if (title.contains('Face ID') || title.contains('FaceID') || title.contains('Fingerprint')) {
+    if (title.contains('Face ID') ||
+        title.contains('FaceID') ||
+        title.contains('Fingerprint') ||
+        title.contains('Biométr')) {
       return Icons.fingerprint_rounded;
     }
-    if (title.contains('Cycle') || title.contains('Period')) return Icons.autorenew_rounded;
-    if (title.contains('Logged') || title.contains('Log')) return Icons.add_circle_outline_rounded;
+    if (title.contains('multitâche') ||
+        title.contains('Multitasking') ||
+        title.contains('Masquage')) {
+      return Icons.visibility_off_outlined;
+    }
+    if (title.contains('Cycle') || title.contains('Period')) {
+      return Icons.autorenew_rounded;
+    }
+    if (title.contains('Logged') || title.contains('Log')) {
+      return Icons.add_circle_outline_rounded;
+    }
     if (title.contains('Mood')) return Icons.sentiment_satisfied_alt_outlined;
     if (title.contains('Two Factor')) return Icons.shield_outlined;
     if (title.contains('Partner')) return Icons.people_alt_outlined;

@@ -651,6 +651,44 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de charger les parametres du compte';
 
   @override
+  String get appAccess => 'Acces App';
+
+  @override
+  String get confidentiality => 'Confidentialite';
+
+  @override
+  String get management => 'Gestion';
+
+  @override
+  String get globalSecurity => 'Securite Globale (PIN/FaceID)';
+
+  @override
+  String get biometricAuth => 'Authentification Biometrique';
+
+  @override
+  String get multitaskProtection => 'Masquage en multitache';
+
+  @override
+  String get clearLocalData => 'Supprimer les donnees locales';
+
+  @override
+  String get confirmClearData => 'Effacer toutes les donnees ?';
+
+  @override
+  String get clearDataWarning =>
+      'Cette action est irreversible et supprimera tout votre historique.';
+
+  @override
+  String get securityRequired => 'Securite requise';
+
+  @override
+  String get globalSecurityRequiredForJournal =>
+      'L\'acces securise (PIN/FaceID) doit d\'abord etre active pour proteger le journal.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
   String get educationGreeting => 'Bonjour Peria';
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:peria_app/core/router/router.dart';
@@ -14,7 +15,7 @@ class MultitaskProtectionService {
   /// Initialize multitask protection
   static Future<void> initialize() async {
     // Set up platform-specific protection
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       await _enableAndroidSecureFlag();
     }
 

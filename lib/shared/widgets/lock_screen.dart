@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/features/profile/presentation/providers/security_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
 /// Lock screen widget that handles authentication
@@ -96,16 +97,18 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               ],
 
               // PIN input if needed
-              if (_authResult?.requiresPin == true) ...[
-                Text(
-                  'Enter your PIN',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  textAlign: TextAlign.center,
-                ),
+              if (_authResult?.requiresPin == true ||
+                  _authResult?.status == AuthStatus.pinIncorrect) ...[
                 const SizedBox(height: 32),
                 PinCodeInput(
-                  length: 6, // Support 4-6 digits
+                  length: 4,
                   autoFocus: true,
+                  obscureText: true,
+                  showVisibilityToggle: true,
+                  error: _authResult?.status == AuthStatus.pinIncorrect
+                      ? l10n
+                          .pinsDoNotMatch // Or specific "Incorrect PIN" key if available
+                      : null,
                   onCompleted: _authenticateWithPin,
                 ),
               ],
@@ -134,52 +137,42 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
   Widget _buildStatusMessage(AppLocalizations l10n) {
     final result = _authResult!;
+    if (result.status == AuthStatus.pinIncorrect)
+      return const SizedBox.shrink();
+
     String message;
     Color color;
 
     switch (result.status) {
       case AuthStatus.success:
-        message = 'Authentication successful';
+        message = 'Authentification réussie';
         color = Colors.green;
         break;
       case AuthStatus.pinRequired:
-        message = 'PIN required';
-        color = Colors.blue;
-        break;
-      case AuthStatus.pinIncorrect:
-        message = 'Incorrect PIN. ${result.attemptsLeft} attempts remaining.';
-        color = Colors.orange;
+        message = 'PIN requis';
+        color = AppColors.grey500;
         break;
       case AuthStatus.locked:
         final minutes = result.lockTimeRemaining!.inMinutes;
         final seconds = result.lockTimeRemaining!.inSeconds % 60;
-        message = 'Locked for ${minutes}m ${seconds}s';
-        color = Colors.red;
+        message = 'Verrouillé pendant ${minutes}m ${seconds}s';
+        color = AppColors.error;
         break;
-      case AuthStatus.biometricFailed:
-        message = 'Biometric authentication failed. Please use PIN.';
-        color = Colors.orange;
-        break;
-      case AuthStatus.biometricUnavailable:
-        message = 'Biometric authentication not available. Please use PIN.';
-        color = Colors.orange;
-        break;
-      case AuthStatus.biometricError:
-        message = 'Biometric error: ${result.message}';
-        color = Colors.red;
-        break;
+      default:
+        message = result.message ?? 'Erreur d\'authentification';
+        color = AppColors.error;
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         message,
-        style: TextStyle(color: color, fontWeight: FontWeight.w500),
+        style:
+            TextStyle(color: color, fontWeight: FontWeight.w500, fontSize: 13),
         textAlign: TextAlign.center,
       ),
     );

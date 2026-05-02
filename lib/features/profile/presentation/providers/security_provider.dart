@@ -8,6 +8,7 @@ class SecurityState {
   final bool journalLockEnabled;
   final bool biometricsEnabled;
   final bool isSessionValid;
+  final bool multitaskProtectionEnabled;
   final AuthResult? lastAuthResult;
 
   const SecurityState({
@@ -16,6 +17,7 @@ class SecurityState {
     this.journalLockEnabled = false,
     this.biometricsEnabled = false,
     this.isSessionValid = false,
+    this.multitaskProtectionEnabled = true,
     this.lastAuthResult,
   });
 
@@ -25,6 +27,7 @@ class SecurityState {
     bool? journalLockEnabled,
     bool? biometricsEnabled,
     bool? isSessionValid,
+    bool? multitaskProtectionEnabled,
     AuthResult? lastAuthResult,
   }) {
     return SecurityState(
@@ -33,6 +36,8 @@ class SecurityState {
       journalLockEnabled: journalLockEnabled ?? this.journalLockEnabled,
       biometricsEnabled: biometricsEnabled ?? this.biometricsEnabled,
       isSessionValid: isSessionValid ?? this.isSessionValid,
+      multitaskProtectionEnabled:
+          multitaskProtectionEnabled ?? this.multitaskProtectionEnabled,
       lastAuthResult: lastAuthResult ?? this.lastAuthResult,
     );
   }
@@ -59,6 +64,8 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
     final journalLockEnabled = await SecurityService.isJournalLockEnabled();
     final biometricsEnabled = await SecurityService.isBiometricsEnabled();
     final isSessionValid = await SecurityService.isSessionValid();
+    final multitaskProtectionEnabled =
+        await SecurityService.isMultitaskProtectionEnabled();
 
     state = AsyncValue.data(SecurityState(
       appLockEnabled: appLockEnabled,
@@ -66,6 +73,7 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
       journalLockEnabled: journalLockEnabled,
       biometricsEnabled: biometricsEnabled,
       isSessionValid: isSessionValid,
+      multitaskProtectionEnabled: multitaskProtectionEnabled,
     ));
   }
 
@@ -181,6 +189,17 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
     }
   }
 
+  Future<void> setMultitaskProtectionEnabled(bool enabled) async {
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.setMultitaskProtectionEnabled(enabled);
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
+  }
+
   // ===========================================================================
   // SESSION MANAGEMENT
   // ===========================================================================
@@ -194,7 +213,8 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   Future<void> refreshSessionStatus() async {
     final isSessionValid = await SecurityService.isSessionValid();
     final currentState = state.valueOrNull ?? const SecurityState();
-    state = AsyncValue.data(currentState.copyWith(isSessionValid: isSessionValid));
+    state =
+        AsyncValue.data(currentState.copyWith(isSessionValid: isSessionValid));
   }
 
   // ===========================================================================
@@ -214,6 +234,7 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
 }
 
 /// Riverpod provider for security state
-final securityProvider = StateNotifierProvider<SecurityNotifier, AsyncValue<SecurityState>>(
+final securityProvider =
+    StateNotifierProvider<SecurityNotifier, AsyncValue<SecurityState>>(
   (ref) => SecurityNotifier(),
 );

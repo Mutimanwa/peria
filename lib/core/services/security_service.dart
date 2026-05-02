@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:peria_app/core/storage/hive_boxes.dart';
 import 'package:peria_app/core/storage/secure_storage_service.dart';
 
 /// Production-grade security service for handling authentication, PIN management,
@@ -21,6 +23,8 @@ class SecurityService {
       'security.last_failed_timestamp.v2';
   static const String _lockUntilKey = 'security.lock_until.v2';
   static const String _sessionExpiresAtKey = 'security.session_expires_at.v2';
+  static const String _multitaskProtectionEnabledKey =
+      'security.multitask_protection_enabled.v2';
 
   static const int _maxFailedAttempts = 5;
   static const Duration _sessionDuration = Duration(minutes: 5);
@@ -96,6 +100,7 @@ class SecurityService {
       _secureStorage.delete(key: _journalLockEnabledKey),
       _secureStorage.delete(key: _biometricsEnabledKey),
       _secureStorage.delete(key: _sessionExpiresAtKey),
+      _secureStorage.delete(key: _multitaskProtectionEnabledKey),
     ]);
 
     await _resetBruteForceProtection();
@@ -322,6 +327,19 @@ class SecurityService {
     return raw == 'true';
   }
 
+  /// Enable/disable multitask protection
+  static Future<void> setMultitaskProtectionEnabled(bool enabled) async {
+    await _secureStorage.write(
+        key: _multitaskProtectionEnabledKey, value: enabled.toString());
+  }
+
+  /// Check if multitask protection is enabled
+  static Future<bool> isMultitaskProtectionEnabled() async {
+    final raw = await _secureStorage.read(key: _multitaskProtectionEnabledKey);
+    // Enabled by default for security
+    return raw != 'false';
+  }
+
   // ===========================================================================
   // BIOMETRIC AUTHENTICATION
   // ===========================================================================
@@ -368,16 +386,18 @@ class SecurityService {
       _lastFailedTimestampKey,
       _lockUntilKey,
       _sessionExpiresAtKey,
+      _multitaskProtectionEnabledKey,
     ];
 
     await Future.wait(
         securityKeys.map((key) => _secureStorage.delete(key: key)));
 
-    // TODO: Clear Hive boxes (journal, logs, profile)
-    // This should be implemented when integrating with the data layer
-
-    // TODO: Clear app settings
-    // This should be implemented when integrating with settings
+    // Clear all Hive boxes
+    await Future.wait([
+      Hive.deleteBoxFromDisk(HiveBoxes.journalEntries),
+      Hive.deleteBoxFromDisk(HiveBoxes.periodLogs),
+      Hive.deleteBoxFromDisk(HiveBoxes.userProfile),
+    ]);
   }
 
   // ===========================================================================
