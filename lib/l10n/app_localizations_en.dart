@@ -766,4 +766,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String monthsAgo(int count) {
     return '$count month(s) ago';
   }
+
+  @override
+  String get articleHealthyDiet => 'Healthy diet';
+
+  @override
+  String get articleSkinCare => 'Skin care';
+
+  @override
+  String get articleYogaTips => 'Yoga tips';
 }

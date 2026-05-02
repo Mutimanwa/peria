@@ -1,98 +1,219 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:peria_app/core/repositories/user_repository.dart';
-import 'package:peria_app/features/profile/data/repositories/security_repository.dart';
+import 'package:peria_app/core/services/security_service.dart';
 
-class SecurityConfig {
+/// Security configuration state
+class SecurityState {
   final bool appLockEnabled;
   final bool pinConfigured;
   final bool journalLockEnabled;
+  final bool biometricsEnabled;
+  final bool isSessionValid;
+  final AuthResult? lastAuthResult;
 
-  const SecurityConfig({
+  const SecurityState({
     this.appLockEnabled = false,
     this.pinConfigured = false,
     this.journalLockEnabled = false,
+    this.biometricsEnabled = false,
+    this.isSessionValid = false,
+    this.lastAuthResult,
   });
 
-  SecurityConfig copyWith({
+  SecurityState copyWith({
     bool? appLockEnabled,
     bool? pinConfigured,
     bool? journalLockEnabled,
+    bool? biometricsEnabled,
+    bool? isSessionValid,
+    AuthResult? lastAuthResult,
   }) {
-    return SecurityConfig(
+    return SecurityState(
       appLockEnabled: appLockEnabled ?? this.appLockEnabled,
       pinConfigured: pinConfigured ?? this.pinConfigured,
       journalLockEnabled: journalLockEnabled ?? this.journalLockEnabled,
+      biometricsEnabled: biometricsEnabled ?? this.biometricsEnabled,
+      isSessionValid: isSessionValid ?? this.isSessionValid,
+      lastAuthResult: lastAuthResult ?? this.lastAuthResult,
     );
   }
 }
 
-final securityUserRepositoryProvider = Provider<UserRepository>((ref) {
-  return UserRepository();
-});
-
-final securityRepositoryProvider = Provider<SecurityRepository>((ref) {
-  return SecurityRepository(
-    userRepository: ref.read(securityUserRepositoryProvider),
-  );
-});
-
-final securityProvider = StateNotifierProvider<SecurityNotifier, AsyncValue<SecurityConfig>>(
-  (ref) {
-    final repo = ref.read(securityRepositoryProvider);
-    final notifier = SecurityNotifier(repo);
-    notifier.load();
-    return notifier;
-  },
-);
-
-class SecurityNotifier extends StateNotifier<AsyncValue<SecurityConfig>> {
-  SecurityNotifier(this._repository) : super(const AsyncValue.loading());
-
-  final SecurityRepository _repository;
-
-  Future<void> load() async {
-    state = const AsyncValue.loading();
-    final config = await AsyncValue.guard(() async {
-      final appLockEnabled = await _repository.loadAppLockEnabled();
-      final pinConfigured = await _repository.hasPin();
-      final journalLockEnabled = await _repository.loadJournalLockEnabled();
-      return SecurityConfig(
-        appLockEnabled: appLockEnabled,
-        pinConfigured: pinConfigured,
-        journalLockEnabled: journalLockEnabled,
-      );
-    });
-    state = config;
+/// Riverpod StateNotifier for security management
+class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
+  SecurityNotifier() : super(const AsyncValue.loading()) {
+    _initialize();
   }
+
+  Future<void> _initialize() async {
+    try {
+      await SecurityService.initialize();
+      await _loadState();
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> _loadState() async {
+    final appLockEnabled = await SecurityService.isAppLockEnabled();
+    final pinConfigured = await SecurityService.hasPin();
+    final journalLockEnabled = await SecurityService.isJournalLockEnabled();
+    final biometricsEnabled = await SecurityService.isBiometricsEnabled();
+    final isSessionValid = await SecurityService.isSessionValid();
+
+    state = AsyncValue.data(SecurityState(
+      appLockEnabled: appLockEnabled,
+      pinConfigured: pinConfigured,
+      journalLockEnabled: journalLockEnabled,
+      biometricsEnabled: biometricsEnabled,
+      isSessionValid: isSessionValid,
+    ));
+  }
+
+  // ===========================================================================
+  // PIN MANAGEMENT
+  // ===========================================================================
+
+  Future<void> createPin(String pin) async {
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.createPin(pin);
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
+  }
+
+  Future<void> changePin(String oldPin, String newPin) async {
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.changePin(oldPin, newPin);
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
+  }
+
+  Future<void> deletePin() async {
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.deletePin();
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
+  }
+
+  // ===========================================================================
+  // AUTHENTICATION
+  // ===========================================================================
+
+  Future<AuthResult> authenticate() async {
+    try {
+      final result = await SecurityService.authenticate();
+      await _updateAuthResult(result);
+      return result;
+    } catch (error) {
+      final errorResult = AuthResult.biometricError(error.toString());
+      await _updateAuthResult(errorResult);
+      return errorResult;
+    }
+  }
+
+  Future<AuthResult> authenticateWithPin(String pin) async {
+    try {
+      final result = await SecurityService.authenticateWithPin(pin);
+      await _updateAuthResult(result);
+      return result;
+    } catch (error) {
+      final errorResult = AuthResult.biometricError(error.toString());
+      await _updateAuthResult(errorResult);
+      return errorResult;
+    }
+  }
+
+  Future<void> _updateAuthResult(AuthResult result) async {
+    final currentState = state.valueOrNull ?? const SecurityState();
+    final isSessionValid = await SecurityService.isSessionValid();
+
+    state = AsyncValue.data(currentState.copyWith(
+      isSessionValid: isSessionValid,
+      lastAuthResult: result,
+    ));
+  }
+
+  // ===========================================================================
+  // FEATURE TOGGLES
+  // ===========================================================================
 
   Future<void> setAppLockEnabled(bool enabled) async {
-    final current = state.valueOrNull ?? const SecurityConfig();
-    state = AsyncValue.data(current.copyWith(appLockEnabled: enabled));
-    await _repository.setAppLockEnabled(enabled);
-  }
-
-  Future<void> savePin(String pin) async {
-    if (pin.length != 4) throw ArgumentError('PIN must be exactly 4 digits');
-    await _repository.savePin(pin);
-    final current = state.valueOrNull ?? const SecurityConfig();
-    state = AsyncValue.data(current.copyWith(pinConfigured: true));
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.setAppLockEnabled(enabled);
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
   }
 
   Future<void> setJournalLockEnabled(bool enabled) async {
-    final current = state.valueOrNull ?? const SecurityConfig();
-    state = AsyncValue.data(current.copyWith(journalLockEnabled: enabled));
-    await _repository.setJournalLockEnabled(enabled);
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.setJournalLockEnabled(enabled);
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
   }
 
-  Future<void> clearPin() async {
-    await _repository.deletePin();
-    final current = state.valueOrNull ?? const SecurityConfig();
-    state = AsyncValue.data(current.copyWith(
-      pinConfigured: false, 
-      appLockEnabled: false,
-      journalLockEnabled: false,
-    ));
-    await _repository.setAppLockEnabled(false);
-    await _repository.setJournalLockEnabled(false);
+  Future<void> setBiometricsEnabled(bool enabled) async {
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.setBiometricsEnabled(enabled);
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
+  }
+
+  // ===========================================================================
+  // SESSION MANAGEMENT
+  // ===========================================================================
+
+  Future<void> endSession() async {
+    await SecurityService.endSession();
+    final currentState = state.valueOrNull ?? const SecurityState();
+    state = AsyncValue.data(currentState.copyWith(isSessionValid: false));
+  }
+
+  Future<void> refreshSessionStatus() async {
+    final isSessionValid = await SecurityService.isSessionValid();
+    final currentState = state.valueOrNull ?? const SecurityState();
+    state = AsyncValue.data(currentState.copyWith(isSessionValid: isSessionValid));
+  }
+
+  // ===========================================================================
+  // DATA MANAGEMENT
+  // ===========================================================================
+
+  Future<void> clearAllLocalData() async {
+    state = const AsyncValue.loading();
+    try {
+      await SecurityService.clearAllLocalData();
+      await _loadState();
+    } catch (error) {
+      await _loadState();
+      rethrow;
+    }
   }
 }
+
+/// Riverpod provider for security state
+final securityProvider = StateNotifierProvider<SecurityNotifier, AsyncValue<SecurityState>>(
+  (ref) => SecurityNotifier(),
+);

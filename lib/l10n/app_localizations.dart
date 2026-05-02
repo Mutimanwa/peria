@@ -1531,6 +1531,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} month(s) ago'**
   String monthsAgo(int count);
+
+  /// No description provided for @articleHealthyDiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy diet'**
+  String get articleHealthyDiet;
+
+  /// No description provided for @articleSkinCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Skin care'**
+  String get articleSkinCare;
+
+  /// No description provided for @articleYogaTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoga tips'**
+  String get articleYogaTips;
 }
 
 class _AppLocalizationsDelegate

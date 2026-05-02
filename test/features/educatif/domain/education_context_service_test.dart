@@ -21,16 +21,7 @@ void main() {
           phase: CyclePhase.luteal,
           nextPeriodStart: DateTime(2026, 4, 29),
           ovulationDate: DateTime(2026, 4, 15),
-<<<<<<< ours
-          fertileWindowStart: DateTime(2026, 4, 10),
-          fertileWindowEnd: DateTime(2026, 4, 16),
-          pmsDays: const [],
-          daysUntilNextPeriod: 6, 
-          fertileWindow: [], 
-          periodDays: [],
-          isOverdue: false,
-=======
-          ovulationRangeStart, ovulationRangeStart: null, ovulationRangeEnd: null, confidenceScore: null, isEstimated: null, cycleRegularity: null, cycleVariance: null, useRealData: null: DateTime(2026, 4, 13),
+          ovulationRangeStart: DateTime(2026, 4, 13),
           ovulationRangeEnd: DateTime(2026, 4, 17),
           fertileWindowStart: DateTime(2026, 4, 10),
           fertileWindowEnd: DateTime(2026, 4, 16),
@@ -42,7 +33,8 @@ void main() {
           confidenceScore: 0.8,
           isEstimated: false,
           cycleRegularity: CycleRegularity.regular,
->>>>>>> theirs
+          cycleVariance: 2,
+          useRealData: false,
         ),
         symptomLogs: [
           SymptomLog(

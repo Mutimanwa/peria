@@ -194,6 +194,9 @@ class ToggleGroup extends StatelessWidget {
                       activeTrackColor: const Color(0xFF4BE28C),
                       inactiveThumbColor: AppColors.white,
                       inactiveTrackColor: AppColors.grey300,
+                      trackOutlineColor: MaterialStateProperty.resolveWith(
+                        (states) => item.value ? Colors.transparent : AppColors.grey400,
+                      ),
                     ),
                   ],
                 ),
@@ -208,10 +211,18 @@ class ToggleGroup extends StatelessWidget {
   }
 
   IconData _toggleIcon(String title) {
+    if (title.contains('Sécurité') || title.contains('Global') || title.contains('PIN')) {
+      return Icons.shield_outlined;
+    }
+    if (title.contains('Verrouillage') || title.contains('Journal')) {
+      return Icons.lock_outline;
+    }
+    if (title.contains('Face ID') || title.contains('FaceID') || title.contains('Fingerprint')) {
+      return Icons.fingerprint_rounded;
+    }
     if (title.contains('Cycle') || title.contains('Period')) return Icons.autorenew_rounded;
     if (title.contains('Logged') || title.contains('Log')) return Icons.add_circle_outline_rounded;
     if (title.contains('Mood')) return Icons.sentiment_satisfied_alt_outlined;
-    if (title.contains('Face ID')) return Icons.fingerprint_rounded;
     if (title.contains('Two Factor')) return Icons.shield_outlined;
     if (title.contains('Partner')) return Icons.people_alt_outlined;
     if (title.contains('Ovulation')) return Icons.event_available_outlined;

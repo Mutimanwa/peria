@@ -308,5 +308,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "articleHealthyDiet": "Alimentation saine",
+  "articleSkinCare": "Soins de la peau",
+  "articleYogaTips": "Conseils de yoga"
 }

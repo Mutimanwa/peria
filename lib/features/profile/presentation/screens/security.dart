@@ -82,7 +82,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                         pinController.text == confirmController.text) {
                       await ref
                           .read(securityProvider.notifier)
-                          .savePin(pinController.text);
+                            .createPin(pinController.text);
                       if (isNew) {
                         await ref
                             .read(securityProvider.notifier)
@@ -174,7 +174,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                     OutlineButton(
                       label: l10n.disablePinLock,
                       onPressed: () async {
-                        await ref.read(securityProvider.notifier).clearPin();
+                          await ref.read(securityProvider.notifier).deletePin();
                       },
                     ),
                 ],

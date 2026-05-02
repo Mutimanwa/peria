@@ -308,5 +308,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "articleHealthyDiet": "Healthy diet",
+  "articleSkinCare": "Skin care",
+  "articleYogaTips": "Yoga tips"
 }

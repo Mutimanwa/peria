@@ -78,7 +78,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
   // ── Config couleurs + données par phase ─────────────────────────
   _PhaseConfig get _config {
-    final  l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context);
     final dayLabel = '${l10n.day} $_dayOfCycle';
 
     switch (_phase) {
@@ -105,7 +105,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           // Couleur des dots de l'anneau
           dotColor: AppColors.secondary300,
           // Couleur de fond du gap (anneau blanc entre outer et inner)
-          ringBg: const Color(0xFFF5D6E0),
+          ringBg: AppColors.primary100.withOpacity(0.5),
         );
       case CyclePhase.luteal:
         return _PhaseConfig(
@@ -114,13 +114,13 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           colorBottom: AppColors.pmsBase,
           colorMid: AppColors.pmsBase.withOpacity(0.8),
           colorTop: AppColors.pmsLight,
-          textColor: const Color(0xFF7A5200),
+          textColor: AppColors.neutral900,
           badgeDay: _dayOfCycle,
           badgeAngleDeg: -160.0, // gauche ~10h
-          calHighlight: const Color(0xFFFFF5C0),
-          calTextColor: const Color(0xFFD4920F),
-          dotColor: const Color(0xFFD4B8EE),
-          ringBg: const Color(0xFFF5EED4),
+          calHighlight: AppColors.warning50,
+          calTextColor: AppColors.warning700,
+          dotColor: AppColors.secondary200,
+          ringBg: AppColors.warning50.withOpacity(0.5),
         );
       case CyclePhase.ovulation:
         return _PhaseConfig(
@@ -129,13 +129,13 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           colorBottom: AppColors.ovulBase,
           colorMid: AppColors.ovulBase.withOpacity(0.8),
           colorTop: AppColors.ovulLight,
-          textColor: const Color(0xFF4A2080),
+          textColor: AppColors.secondary800,
           badgeDay: _dayOfCycle,
           badgeAngleDeg: 90.0, // bas ~6h
-          calHighlight: const Color(0xFFE8D8FA),
-          calTextColor: const Color(0xFF8B5CF6),
-          dotColor: const Color(0xFFD4B8EE),
-          ringBg: const Color(0xFFF0E4FA),
+          calHighlight: AppColors.secondary100,
+          calTextColor: AppColors.secondary600,
+          dotColor: AppColors.secondary300,
+          ringBg: AppColors.secondary50,
         );
       case CyclePhase.follicular:
         return _PhaseConfig(
@@ -144,13 +144,13 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           colorBottom: AppColors.secondary500,
           colorMid: AppColors.secondary400.withOpacity(0.85),
           colorTop: AppColors.secondary100,
-          textColor: const Color(0xFF4A2080),
+          textColor: AppColors.secondary800,
           badgeDay: _dayOfCycle,
           badgeAngleDeg: -20.0,
-          calHighlight: const Color(0xFFF3EBFC),
-          calTextColor: const Color(0xFF8B5CF6),
-          dotColor: const Color(0xFFD4B8EE),
-          ringBg: const Color(0xFFF0E4FA),
+          calHighlight: AppColors.secondary50,
+          calTextColor: AppColors.secondary600,
+          dotColor: AppColors.secondary200,
+          ringBg: AppColors.secondary50,
         );
     }
   }
@@ -198,8 +198,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           final currentLast = currentProfile?.lastPeriodStart;
           if (currentLast == null || start.isAfter(currentLast)) {
             await ref.read(userProfileProvider.notifier).patch(
-                (p) => p.copyWith(lastPeriodStart: start),
-              );
+                  (p) => p.copyWith(lastPeriodStart: start),
+                );
           }
 
           if (mounted) navigator.pop();
@@ -244,7 +244,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                   title: 'Period started today',
                   subtitle: 'Save today as the first day of your period.',
                   color: AppColors.primary400,
-                  onTap: () => savePeriodLog(start: todayStart, end: todayStart),
+                  onTap: () =>
+                      savePeriodLog(start: todayStart, end: todayStart),
                 ),
                 const SizedBox(height: 12),
                 _QuickActionTile(
@@ -303,7 +304,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                     context.push('/edit-calendar');
                   },
                 ),
-
               ],
             ),
           ),
@@ -319,9 +319,10 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context);
     final status = ref.watch(cycleStatusProvider);
-    final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
+    final settings =
+        ref.watch(appSettingsProvider).value ?? const AppSettings();
     final dayOfCycle = status?.dayOfCycle ?? 1;
     final daysUntilNext = status?.daysUntilNextPeriod;
     final nextPhase = _phaseFromStatus(status);
@@ -363,10 +364,10 @@ final l10n = AppLocalizations.of(context);
                   end: Alignment.bottomCenter,
                   stops: [0.0, 0.35, 0.65, 1.0],
                   colors: [
-                    Color(0xFFFBE4EC), // rose pâle haut
-                    Color(0xFFF3E5F5), // violet pâle milieu
-                    Color(0xFFFAF5FF), // presque blanc
-                    Color(0xFFFFFFFF), // blanc bas
+                    AppColors.primary50, // rose pâle haut
+                    AppColors.secondary50, // violet pâle milieu
+                    AppColors.neutral50, // blanc
+                    AppColors.white, // blanc bas
                   ],
                 ),
               ),
@@ -393,7 +394,7 @@ final l10n = AppLocalizations.of(context);
                     fontFamily: 'Poppins',
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF5A5A5A),
+                    color: AppColors.neutral700,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -524,8 +525,7 @@ class _AppBar extends StatelessWidget {
                       offset: const Offset(0, 2)),
                 ],
               ),
-              child: Image.asset(AppAssets.avatar,
-                  fit: BoxFit.cover),
+              child: Image.asset(AppAssets.avatar, fit: BoxFit.cover),
             ),
           ),
 
@@ -562,8 +562,7 @@ class _AppBar extends StatelessWidget {
                         onTap: () {
                           context.go("/notification");
                         },
-                        child: Image.asset(
-                            AppAssets.notificationBell)),
+                        child: Image.asset(AppAssets.notificationBell)),
                     Positioned(
                       top: 1,
                       right: 1,
@@ -1089,30 +1088,31 @@ class _ArticlesRow extends StatelessWidget {
   Widget build(BuildContext context) {
     // Config des 3 articles
     // Couleurs selon maquette : article 1 et 3 rose, article 2 violet
-    const articles = [
+    final l10n = AppLocalizations.of(context);
+    final articles = [
       _ArticleCfg(
-        title: 'Healthy di',
-        bg: Color(0xFFFFD6DE),
-        textColor: Color(0xFFE03060),
-        image: 'assets/images/skin.png',
+        title: l10n.articleHealthyDiet,
+        bg: AppColors.primary100,
+        textColor: AppColors.primary600,
+        image: AppAssets.imageSkin,
         width: 140,
         height: 140,
         marginTop: 25,
       ),
       _ArticleCfg(
-        title: 'Skin care',
-        bg: Color(0xFFE8D8FA),
-        textColor: Color(0xFF8B5CF6),
-        image: 'assets/images/skin.png',
+        title: l10n.articleSkinCare,
+        bg: AppColors.secondary100,
+        textColor: AppColors.secondary600,
+        image: AppAssets.imageSkin,
         width: 185,
         height: 155,
         marginTop: 0,
       ),
       _ArticleCfg(
-        title: 'Yoga Tipps',
-        bg: Color(0xFFFFD6DE),
-        textColor: Color(0xFFE03060),
-        image: 'assets/images/yoga.png',
+        title: l10n.articleYogaTips,
+        bg: AppColors.primary100,
+        textColor: AppColors.primary600,
+        image: AppAssets.imageYoga,
         width: 140,
         height: 140,
         marginTop: 25,

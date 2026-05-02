@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/features/profile/presentation/providers/security_provider.dart';
+import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
@@ -53,7 +54,6 @@ class _LockOverlay extends ConsumerStatefulWidget {
 }
 
 class _LockOverlayState extends ConsumerState<_LockOverlay> {
-
   final LocalAuthentication _localAuth = LocalAuthentication();
   bool _isBiometric = false;
   String? _error;
@@ -88,8 +88,7 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
   Future<void> _verifyPin(String pin) async {
     if (pin.length != 4) return;
 
-    final repo = ref.read(securityRepositoryProvider);
-    final isValid = await repo.verifyPin(pin);
+    final isValid = await SecurityService.verifyPin(pin);
     if (isValid && mounted) {
       widget.onVerified();
     } else {
@@ -122,7 +121,8 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                       color: AppColors.primary50,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.lock_outline_rounded, size: 32, color: AppColors.primary500),
+                    child: const Icon(Icons.lock_outline_rounded,
+                        size: 32, color: AppColors.primary500),
                   ),
                   const SizedBox(height: 20),
                   const Text('Journal is locked', style: AppText.h5),
@@ -147,7 +147,9 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                         children: [
                           const Icon(Icons.fingerprint, size: 20),
                           const SizedBox(width: 8),
-                          Text('Use biometrics', style: AppText.label.copyWith(color: Colors.white)),
+                          Text('Use biometrics',
+                              style:
+                                  AppText.label.copyWith(color: Colors.white)),
                         ],
                       ),
                     )
@@ -165,7 +167,8 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                   ],
                   if (_error != null) ...[
                     const SizedBox(height: 12),
-                    Text(_error!, style: const TextStyle(color: AppColors.error)),
+                    Text(_error!,
+                        style: const TextStyle(color: AppColors.error)),
                   ],
                 ],
               ),
@@ -176,4 +179,3 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
     );
   }
 }
-

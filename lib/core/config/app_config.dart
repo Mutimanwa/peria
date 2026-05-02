@@ -1,12 +1,17 @@
+enum AppEnvironment { dev, prod }
+
 class AppConfig {
   AppConfig._();
 
-  // =========================================
-  //  URLs de base par environnement
-  // =========================================
+  /// Current environment of the application.
+  /// Toggle this to switch between dev and production APIs.
+  static const AppEnvironment currentEnv = AppEnvironment.dev;
+
+  // ─── URLs de base ──────────────────────────────────────────────────────────
   static const String baseUrlDev = 'https://api.dev.example.com';
   static const String baseUrlProd = 'https://api.example.com';
 
-  // Environnement actuel (dev ou prod)
-  // static const _Env _currentEnv = _Env.dev;
+  /// Returns the base URL based on the current environment.
+  static String get baseUrl =>
+      currentEnv == AppEnvironment.dev ? baseUrlDev : baseUrlProd;
 }

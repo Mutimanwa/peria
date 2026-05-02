@@ -3,16 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/router/router.dart';
+import 'package:peria_app/core/services/multitask_protection_service.dart';
+import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/storage/hive_setup.dart';
 import 'package:peria_app/firebase_options.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize core services
   await HiveSetup.init();
+  await SecurityService.initialize();
+  await MultitaskProtectionService.initialize();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const ProviderScope(child: PeriaApp()));
 }
 

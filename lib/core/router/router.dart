@@ -32,7 +32,7 @@ import 'package:peria_app/features/profile/presentation/screens/sharing_screen.d
 import 'package:peria_app/features/journal/presentation/guards/journal_lock_guard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
 bool hasCompletedOnboarding = false;
@@ -49,11 +49,11 @@ String? routerRedirect(BuildContext context, GoRouterState state) {
   debugPrint(
     '[Router] redirect check location=${state.matchedLocation} uid=${user?.uid}',
   );
-  
+
   // Routes accessibles sans être connecté
-  final bool isAuthRoute = state.matchedLocation == '/welcome' || 
-                           state.matchedLocation.startsWith('/register') || 
-                           state.matchedLocation == '/splash';
+  final bool isAuthRoute = state.matchedLocation == '/welcome' ||
+      state.matchedLocation.startsWith('/register') ||
+      state.matchedLocation == '/splash';
 
   // 1. Si l'utilisateur n'est pas connecté (même pas en anonyme)
   if (user == null) {
@@ -66,11 +66,12 @@ String? routerRedirect(BuildContext context, GoRouterState state) {
 
   // 2. Si l'utilisateur est connecté (Anonyme ou Réel)
   // On lui interdit de revenir sur le Splash ou le Welcome
-  if (state.matchedLocation == '/splash' || state.matchedLocation == '/welcome') {
+  if (state.matchedLocation == '/splash' ||
+      state.matchedLocation == '/welcome') {
     // S'il a fini l'onboarding -> Home, sinon -> Onboarding
     final destination = hasCompletedOnboarding ? '/cycle' : '/ask-name';
     debugPrint('[Router] redirect -> $destination');
-    return destination; 
+    return destination;
   }
 
   return null;
@@ -94,9 +95,10 @@ class GoRouterRefreshStream extends ChangeNotifier {
 
 // Modifie l'initialLocation pour pointer vers /check-onboarding
 final GoRouter appRouter = GoRouter(
-  navigatorKey: rootNavigatorKey,
+  navigatorKey: navigatorKey,
   initialLocation: '/splash',
-  refreshListenable: GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+  refreshListenable:
+      GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
   redirect: routerRedirect,
   routes: [
     GoRoute(
@@ -179,127 +181,94 @@ final GoRouter appRouter = GoRouter(
         const SetLastPeriodScreen(),
       ),
     ),
-            GoRoute(
-          path: '/calendar',
-          pageBuilder: (context, state) =>
-              _buildSlideTransitionPage(context, state, const CalendarScreen()),
-        ),
-        GoRoute(
-          path: '/edit-calendar',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context, state, const EditCalendarScreen()),
-        ),
-        GoRoute(
-            path: '/symptoms',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-                context, state, const SymptomsScreen()),
-        ),
-        GoRoute(
-            path: '/profile',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const ProfileScreen()
-            ),
-        ),
-        GoRoute(
-            path: '/profile/personal-info',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const PersonalInformationScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/notifications',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const NotificationsScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/account-security',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const AccountSecurityScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/partner',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const PartnerScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/invite-partner',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const InvitePartnerScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/partner-pending',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const PartnerInvitationPendingScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/connected-partner',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const ConnectedPartnerScreen()
-            )
-        ),
-        GoRoute(
-            path: '/profile/sharing-settings',
-            pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context,
-              state,
-              const SharingSettingsScreen()
-            )
-        ),
-        GoRoute(path: '/profile/settings', 
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context, state, const SettingScreen()),
-        ),
+    GoRoute(
+      path: '/calendar',
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const CalendarScreen()),
+    ),
+    GoRoute(
+      path: '/edit-calendar',
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const EditCalendarScreen()),
+    ),
+    GoRoute(
+      path: '/symptoms',
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const SymptomsScreen()),
+    ),
+    GoRoute(
+      path: '/profile',
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const ProfileScreen()),
+    ),
+    GoRoute(
+        path: '/profile/personal-info',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const PersonalInformationScreen())),
+    GoRoute(
+        path: '/profile/notifications',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const NotificationsScreen())),
+    GoRoute(
+        path: '/profile/account-security',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const AccountSecurityScreen())),
+    GoRoute(
+        path: '/profile/partner',
+        pageBuilder: (context, state) =>
+            _buildSlideTransitionPage(context, state, const PartnerScreen())),
+    GoRoute(
+        path: '/profile/invite-partner',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const InvitePartnerScreen())),
+    GoRoute(
+        path: '/profile/partner-pending',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const PartnerInvitationPendingScreen())),
+    GoRoute(
+        path: '/profile/connected-partner',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const ConnectedPartnerScreen())),
+    GoRoute(
+        path: '/profile/sharing-settings',
+        pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context, state, const SharingSettingsScreen())),
+    GoRoute(
+      path: '/profile/settings',
+      pageBuilder: (context, state) =>
+          _buildSlideTransitionPage(context, state, const SettingScreen()),
+    ),
 
-        // JOURNAL - Personal mood and symptom tracking
-        GoRoute(
-          path: '/journal/detail/:id',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-            context,
-            state,
-            JournalLockGuard(
-              child: JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
-            ),
-          ),
+    // JOURNAL - Personal mood and symptom tracking
+    GoRoute(
+      path: '/journal/detail/:id',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        JournalLockGuard(
+          child: JournalDetailScreen(entryId: state.pathParameters['id'] ?? ''),
         ),
-        GoRoute(
-          path: '/journal/new',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-              context, state, 
-             const JournalLockGuard(child:  JournalEditorScreen()),
-          ),
+      ),
+    ),
+    GoRoute(
+      path: '/journal/new',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const JournalLockGuard(child: JournalEditorScreen()),
+      ),
+    ),
+    GoRoute(
+      path: '/journal/edit/:id',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        JournalLockGuard(
+          child: JournalEditorScreen(entryId: state.pathParameters['id']),
         ),
-        GoRoute(
-          path: '/journal/edit/:id',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-            context,
-            state,
-            JournalLockGuard(
-              child: JournalEditorScreen(entryId: state.pathParameters['id']),
-            ),
-          ),
-        ),
-        
+      ),
+    ),
+
     // Shell route for main app navigation with CustomBottomNav
     ShellRoute(
       navigatorKey: shellNavigatorKey,
@@ -324,12 +293,11 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/journal',
           pageBuilder: (context, state) => _buildSlideTransitionPage(
-            context, 
-            state, 
-           const JournalLockGuard(child:  JournalScreen()),
+            context,
+            state,
+            const JournalLockGuard(child: JournalScreen()),
           ),
         ),
-        
 
         // EDUCATION - Educational content about cycles, fertility, health
         GoRoute(
