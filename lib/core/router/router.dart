@@ -11,7 +11,10 @@ import 'package:peria_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:peria_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:peria_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:peria_app/features/home/presentation/screens/cycle_home_screen.dart';
-import 'package:peria_app/features/journal/presentation/screens/journal_screens.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_home_screen.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_timeline_screen.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_search_screen.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_insights_screen.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/onboarding_screens.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
@@ -246,6 +249,7 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // JOURNAL - Personal mood and symptom tracking
+
     GoRoute(
       path: '/journal/detail/:id',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
@@ -274,6 +278,14 @@ final GoRouter appRouter = GoRouter(
         ),
       ),
     ),
+    GoRoute(
+      path: '/journal/timeline',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const JournalLockGuard(child: JournalTimelineScreen()),
+      ),
+    ),
 
     // Shell route for main app navigation with CustomBottomNav
     ShellRoute(
@@ -295,13 +307,28 @@ final GoRouter appRouter = GoRouter(
             const CycleHomeScreen(),
           ),
         ),
-        // JOURNAL - Personal mood and symptom tracking (guarded)
         GoRoute(
           path: '/journal',
           pageBuilder: (context, state) => _buildSlideTransitionPage(
             context,
             state,
-            const JournalLockGuard(child: JournalScreen()),
+            const JournalLockGuard(child: JournalHomeScreen()),
+          ),
+        ),
+        GoRoute(
+          path: '/journal/search',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            const JournalLockGuard(child: JournalSearchScreen()),
+          ),
+        ),
+        GoRoute(
+          path: '/journal/insights',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            const JournalLockGuard(child: JournalInsightsScreen()),
           ),
         ),
 
