@@ -8,7 +8,6 @@ import 'package:peria_app/features/journal/data/models/mood.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
-import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class JournalHomeScreen extends ConsumerStatefulWidget {
   const JournalHomeScreen({super.key});
@@ -88,13 +87,16 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: FloatingActionButton.extended(
         onPressed: () => context.go('/journal/new'),
         backgroundColor: AppColors.grey900,
         icon: const Icon(Icons.edit_document, color: Colors.white),
         label: const Text("New Entry",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
+      )
     );
   }
 
@@ -211,7 +213,18 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                           border:
                               isSelected ? Border.all(color: m.accent) : null,
                         ),
-                        child: Text(m.emoji),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                          m.icon,
+                          size: 20,
+                          color:  AppColors.grey500,
+                        ),
+                       const SizedBox( width: 2,),
+                        Text(m.label)
+                          ],
+                        )
                       ),
                     );
                   }).toList(),
@@ -221,6 +234,8 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                   controller: _quickLogController,
                   maxLines: 3,
                   autofocus: true,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _saveQuickEntry(),
                   decoration: InputDecoration(
                     hintText: "What's on your mind?",
                     border: InputBorder.none,
@@ -389,9 +404,8 @@ class _SimpleJournalCard extends StatelessWidget {
               height: 48,
               decoration:
                   BoxDecoration(color: mood.color, shape: BoxShape.circle),
-              child: Center(
-                  child:
-                      Text(mood.emoji, style: const TextStyle(fontSize: 24))),
+              child:
+                  Center(child: Icon(mood.icon, color: mood.accent, size: 24)),
             ),
             const SizedBox(width: 16),
             Expanded(

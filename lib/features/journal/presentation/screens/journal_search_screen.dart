@@ -73,7 +73,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
       padding: const EdgeInsets.all(24.0),
       child: Row(
         children: [
-          BackIconButton(onPressed: () => context.pop()),
+          BackIconButton(onPressed: () => context.go('/journal')),
           const SizedBox(width: 16),
           Expanded(
             child: Container(
@@ -121,13 +121,20 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
           ),
           const SizedBox(width: 8),
           _FilterChip(
-            label: _dateRange == null ? "Date" : "Filtered Date",
+            label: _getDateRangeLabel(),
             isSelected: _dateRange != null,
             onSelected: () => _selectDateRange(),
           ),
         ],
       ),
     );
+  }
+
+  String _getDateRangeLabel() {
+    if (_dateRange == null) return "Date";
+    final start = DateFormat('d MMM').format(_dateRange!.start);
+    final end = DateFormat('d MMM').format(_dateRange!.end);
+    return "$start - $end";
   }
 
   List<JournalEntry> _filterEntries(List<JournalEntry> entries) {
@@ -150,7 +157,8 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off_rounded, size: 64, color: AppColors.grey200),
+          const Icon(Icons.search_off_rounded,
+              size: 64, color: AppColors.grey200),
           const SizedBox(height: 16),
           Text("No results found",
               style: AppText.h5.copyWith(color: AppColors.grey400)),
@@ -177,12 +185,12 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
               children: [
                 _MoodPickerItem(
                     label: "All",
-                    emoji: "🌈",
+                    icon: Icons.bubble_chart_rounded,
                     isSelected: _selectedMood == 'all',
                     onTap: () => Navigator.pop(context, 'all')),
                 ...Mood.all.map((m) => _MoodPickerItem(
                       label: m.label,
-                      emoji: m.emoji,
+                      icon: m.icon,
                       isSelected: _selectedMood == m.id,
                       onTap: () => Navigator.pop(context, m.id),
                     )),
@@ -198,12 +206,38 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
   Future<void> _selectDateRange() async {
     final picked = await showDateRangePicker(
       context: context,
+      initialDateRange: _dateRange,
       firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      confirmText: "SELECT",
+      saveText: "SAVE",
+      helpText: "SELECT RANGE",
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
-            colorScheme:
-                const ColorScheme.light(primary: AppColors.primary500)),
+          colorScheme: const ColorScheme.light(
+            primary: AppColors.primary500,
+            onPrimary: Colors.white,
+            surface: Colors.white,
+            onSurface: AppColors.grey900,
+            secondary: AppColors.primary500,
+          ),
+          dialogBackgroundColor: Colors.white,
+          datePickerTheme: DatePickerThemeData(
+            headerBackgroundColor: AppColors.primary500,
+            headerForegroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
+            dayStyle: AppText.body,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.primary500,
+              textStyle: AppText.label.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
         child: child!,
       ),
     );
@@ -247,13 +281,13 @@ class _FilterChip extends StatelessWidget {
 
 class _MoodPickerItem extends StatelessWidget {
   final String label;
-  final String emoji;
+  final IconData icon;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _MoodPickerItem(
       {required this.label,
-      required this.emoji,
+      required this.icon,
       required this.isSelected,
       required this.onTap});
 
@@ -274,7 +308,10 @@ class _MoodPickerItem extends StatelessWidget {
                   : null,
             ),
             child: Center(
-                child: Text(emoji, style: const TextStyle(fontSize: 28))),
+                child: Icon(icon,
+                    size: 28,
+                    color:
+                        isSelected ? AppColors.primary500 : AppColors.grey400)),
           ),
           const SizedBox(height: 8),
           Text(label,
@@ -311,9 +348,8 @@ class _SearchResultCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                   color: mood.color.withOpacity(0.3), shape: BoxShape.circle),
-              child: Center(
-                  child:
-                      Text(mood.emoji, style: const TextStyle(fontSize: 24))),
+              child:
+                  Center(child: Icon(mood.icon, color: mood.accent, size: 24)),
             ),
             const SizedBox(width: 16),
             Expanded(

@@ -122,7 +122,7 @@ class JournalInsightsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
-                    Text(m.emoji, style: const TextStyle(fontSize: 20)),
+                    Icon(m.icon, size: 20, color: m.accent),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Stack(

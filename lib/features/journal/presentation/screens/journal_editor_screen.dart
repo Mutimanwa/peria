@@ -64,8 +64,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   }
 
   Future<void> _autoSave() async {
-    if (_titleController.text.isEmpty && _contentController.text.isEmpty)
+    if (_titleController.text.isEmpty && _contentController.text.isEmpty) {
       return;
+    }
 
     setState(() => _isSaving = true);
     await _performSave();
@@ -296,8 +297,11 @@ class _FloatingToolbar extends StatelessWidget {
         children: [
           // Mood Trigger
           _ToolbarAction(
-            child: Text(Mood.fromId(moodId).emoji,
-                style: const TextStyle(fontSize: 22)),
+            child: Icon(
+              Mood.fromId(moodId).icon,
+              size: 24,
+              color: AppColors.grey700,
+            ),
             onTap: () => _showMoodPicker(context),
           ),
           const _VerticalDivider(),
@@ -380,8 +384,13 @@ class _FloatingToolbar extends StatelessWidget {
                                 : null,
                           ),
                           child: Center(
-                              child: Text(m.emoji,
-                                  style: const TextStyle(fontSize: 28))),
+                            child: Icon(
+                              m.icon,
+                              size: 28,
+                              color:
+                                  isSelected ? Colors.white : AppColors.grey500,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(m.label,

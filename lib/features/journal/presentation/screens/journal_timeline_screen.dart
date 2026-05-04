@@ -133,7 +133,7 @@ class _TimelineCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(mood.emoji, style: const TextStyle(fontSize: 18)),
+                        Icon(mood.icon, color: mood.accent, size: 20),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(

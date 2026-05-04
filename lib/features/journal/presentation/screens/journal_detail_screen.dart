@@ -160,7 +160,7 @@ class _JournalEntryPage extends ConsumerWidget {
           _HeroSection(entry: entry, mood: mood),
           _ContentSection(entry: entry),
           _MetaSection(entry: entry),
-          const SizedBox(height: 120), // Space for FAB
+          const SizedBox(height: 100), // Space for FAB
         ],
       ),
     );
@@ -215,9 +215,8 @@ class _HeroSection extends StatelessWidget {
                       spreadRadius: 5),
                 ],
               ),
-              child: Center(
-                  child:
-                      Text(mood.emoji, style: const TextStyle(fontSize: 40))),
+              child:
+                  Center(child: Icon(mood.icon, size: 40, color: mood.accent)),
             ),
             const SizedBox(height: 24),
             Text(
