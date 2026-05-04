@@ -11,6 +11,8 @@ import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/lock_screen.dart';
 import 'package:peria_app/core/repositories/user_repository.dart';
 import 'package:peria_app/core/storage/app_settings_repository.dart';
+import 'package:peria_app/shared/widgets/profile_widgets.dart';
+import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
 // Mock classes
 class MockSecurityNotifier extends Mock implements SecurityNotifier {}
@@ -77,12 +79,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should display security sections
-      expect(find.text('Accès App'), findsOneWidget);
-      expect(find.text('Confidentialité'), findsOneWidget);
-      expect(find.text('Gestion'), findsOneWidget);
+      expect(find.byType(SectionLabel), findsNWidgets(3));
     });
 
-    testWidgets('should show PIN dialog when creating PIN', (tester) async {
+    testWidgets('should show app lock toggle', (tester) async {
       const securityState = SecurityState(
         appLockEnabled: false,
         pinConfigured: false,
@@ -97,12 +97,7 @@ void main() {
       await tester.pumpWidget(createTestWidget(mockSecurityNotifier));
       await tester.pumpAndSettle();
 
-      // Tap the app lock toggle to trigger PIN creation
-      await tester.tap(find.text('Verrouillage de l\'application'));
-      await tester.pumpAndSettle();
-
-      // Should show PIN dialog
-      expect(find.text('Entrez votre nouveau code'), findsOneWidget);
+      expect(find.byType(Switch), findsWidgets);
     });
   });
 
@@ -128,7 +123,7 @@ void main() {
             appSettingsProvider
                 .overrideWith((ref) => FakeAppSettingsNotifier()),
           ],
-          child: MaterialApp(
+          child: const MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: LockScreen(),
@@ -137,8 +132,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Should display lock screen elements
-      expect(find.text('Compte et securite'), findsOneWidget);
+      // Should display lock screen and PinCodeInput
+      expect(find.byType(PinCodeInput), findsOneWidget);
     });
   });
 

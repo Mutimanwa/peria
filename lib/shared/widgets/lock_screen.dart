@@ -137,8 +137,9 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
   Widget _buildStatusMessage(AppLocalizations l10n) {
     final result = _authResult!;
-    if (result.status == AuthStatus.pinIncorrect)
+    if (result.status == AuthStatus.pinIncorrect) {
       return const SizedBox.shrink();
+    }
 
     String message;
     Color color;

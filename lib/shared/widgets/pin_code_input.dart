@@ -58,7 +58,7 @@ class _PinCodeInputState extends State<PinCodeInput>
       vsync: this,
     );
     _shakeAnimation = Tween<Offset>(
-      begin: const Offset(-0.05, 0),
+      begin: const Offset(-15, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _shakeController,
@@ -74,8 +74,12 @@ class _PinCodeInputState extends State<PinCodeInput>
 
   @override
   void dispose() {
-    for (final node in _focusNodes) node.dispose();
-    for (final controller in _controllers) controller.dispose();
+    for (final node in _focusNodes) {
+      node.dispose();
+    }
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
     _shakeController.dispose();
     super.dispose();
   }
@@ -132,7 +136,7 @@ class _PinCodeInputState extends State<PinCodeInput>
               animation: _shakeAnimation,
               builder: (context, child) {
                 return Transform.translate(
-                  offset: _shakeAnimation.value * context.size!.width,
+                  offset: _shakeAnimation.value,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(widget.length, (index) {
@@ -176,7 +180,6 @@ class _PinCodeInputState extends State<PinCodeInput>
   }
 
   Widget _buildPinCell(int index) {
-    final hasValue = _controllers[index].text.isNotEmpty;
     final isFocused = _focusNodes[index].hasFocus;
 
     return Container(

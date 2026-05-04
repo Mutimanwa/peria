@@ -1,43 +1,39 @@
-# Peria
+# Peria - Suivi de Cycle & Assistant Santé
 
-Peria is a Flutter mobile application focused on cycle tracking, self-care, AI assistance, symptom logging, and partner sharing.
+Peria est une application mobile moderne (Flutter) dédiée au bien-être féminin. Elle offre un suivi de cycle menstruel avancé, un journal intime sécurisé (biométrie/PIN), des conseils personnalisés assistés par l'intelligence artificielle, ainsi que la possibilité de partager des informations spécifiques avec un partenaire.
 
-## Main Documentation
+## 🚀 Fonctionnalités Principales
 
-Project documentation is available here:
+- **Suivi de Cycle Intelligent** : Calendrier interactif, prédictions intelligentes et suivi des symptômes quotidiens (phases menstruelle, lutéale, folliculaire, ovulation).
+- **Journal Sécurisé** : Un espace intime protégé par un code PIN et/ou FaceID/TouchID pour noter quotidiennement son humeur et ses ressentis.
+- **Sécurité et Confidentialité (Privacy First)** : Mode "Multitask protection", effacement des données, et sécurité granulaire.
+- **Assistant IA (ChatIA)** : Conseils personnalisés sur la santé, accès rapide à des articles éducatifs.
+- **Espace Partenaire** : Partage sélectif et sécurisé pour impliquer son partenaire dans son bien-être.
 
-- [PROJECT_DOCUMENTATION.md](/g:/flutter/flutter/NewApp/peria/PROJECT_DOCUMENTATION.md)
-- [IMPLEMENTATION_PLAN.md](/g:/flutter/flutter/NewApp/peria/IMPLEMENTATION_PLAN.md)
+## 🏗 Stack Technique
 
-## Existing Design Notes
+- **Framework** : Flutter (Dart)
+- **Architecture** : Feature-First (Clean Architecture)
+- **Gestion d'état** : `flutter_riverpod`
+- **Stockage Local** : `hive` (base de données NoSQL locale), `flutter_secure_storage` (PIN et clés), `shared_preferences`.
+- **Réseau** : `dio` pour les requêtes HTTP (Assistant IA / Backend).
+- **Navigation** : Routage via `go_router`.
+- **Design System** : Créé sur mesure (cf. `docs/design_system.md`) orienté expérience utilisateur fluide avec des bordures arrondies, animations discrètes et une typographie moderne (Inter).
 
-- [design_system.md](/g:/flutter/flutter/NewApp/peria/design_system.md)
+## 📁 Documentation
 
-## Tech Stack
+La documentation détaillée se trouve dans le dossier `docs/` :
 
-- Flutter
-- Dart
-- go_router
-- flutter_riverpod
-- dio
-- shared_preferences
+- [Architecture du Projet](docs/ARCHITECTURE.md) : Modèles, Services, Providers et la logique de l'application.
+- [Design System](docs/design_system.md) : Couleurs, typographies, règles de design et composants métier.
+- [Cahier des charges (Initial)](docs/cahier.md) : Le document de conception initial.
 
-## Current App Areas
+Pour toute nouvelle fonctionnalité ou amélioration prévue, consultez le fichier [TODO.md](TODO.md).
 
-- onboarding
-- authentication
-- cycle dashboard
-- calendar and symptoms
-- self-care
-- AI assistant
-- profile and settings
-- partner sharing
+## 🛠 Lancement Rapide
 
-## Assets
-
-- production assets: `assets/images/`
-- visual mockups: `moc/`
-
-## Notes
-
-The project is strongly driven by the mockups inside `moc/`, and a large part of the UI has been aligned to those designs to prepare the app for integration.
+```bash
+flutter clean
+flutter pub get
+flutter run
+```
