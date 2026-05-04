@@ -370,9 +370,7 @@ class PageScaffold extends StatelessWidget {
                       if (showTitle && title != null)
                         Text(
                           title!,
-                          style: AppText.h3.copyWith( // Utilise ton thème AppText
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: AppText.h4
                         ),
                       
                       // Actions (à droite si tu en as besoin, comme le bouton Edit)

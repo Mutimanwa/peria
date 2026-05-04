@@ -6,128 +6,189 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
-import 'package:peria_app/shared/widgets/profile_widgets.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 
-class PersonalInformationScreen extends ConsumerWidget {
+class PersonalInformationScreen extends ConsumerStatefulWidget {
   const PersonalInformationScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
+}
+
+class _PersonalInformationScreenState
+    extends ConsumerState<PersonalInformationScreen> {
+  bool _isEditMode = false;
+
+  void _toggleEditMode() {
+    setState(() => _isEditMode = !_isEditMode);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(userProfileProvider);
 
     return SimplePage(
       title: l10n.personalInformation,
+      fallbackRoute: '/profile',
       child: profileAsync.when(
         skipLoadingOnReload: true,
         loading: () => const _PersonalInfoSkeleton(),
         error: (err, _) => Center(child: Text(l10n.unableToLoadProfile)),
         data: (profile) => SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 50),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- SECTION: IDENTITÉ ---
-              _ProfileSectionCard(children: [
-                _EditableField(
-                  label: l10n.fullNameLabel,
-                  value: profile.displayName ?? '',
-                  onChanged: (val) => ref.read(userProfileProvider.notifier).patch(
-                    (p) => p.copyWith(displayName: val),
-                  ),
-                ),
-              ]),
-
-              const SizedBox(height: 24),
-              SectionLabel(l10n.cycleProfile),
-              const SizedBox(height: 12),
-
-              // --- SECTION: DONNÉES CYCLE ---
-              _ProfileSectionCard(children: [
-                _SelectableRow(
-                  label: l10n.dateOfBirth,
-                  value: profile.dateOfBirth != null 
-                      ? DateFormat('dd/MM/yyyy').format(profile.dateOfBirth!) 
-                      : '--/--/----',
-                  onTap: () async {
-                    final date = await _showDatePickerCalendar(
-                      context, 
-                      initialDate: profile.dateOfBirth,
-                      title: l10n.dateOfBirth,
-                    );
-                    if (date != null) {
-                      ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(dateOfBirth: date));
-                    }
-                  },
-                ),
-                const Divider(height: 32, thickness: 0.5, color: AppColors.grey300),
-                _SelectableRow(
-                  label: l10n.averageCycleLength,
-                  value: l10n.daysCount(profile.averageCycleLengthDays),
-                  onTap: () async {
-                    final val = await _pickCycleLengthPicker(
-                      context,
-                      title: l10n.averageCycleLength,
-                      currentValue: profile.averageCycleLengthDays,
-                      min: 21,
-                      max: 35,
-                    );
-                    if (val != null) {
-                      ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(averageCycleLengthDays: val));
-                    }
-                  },
-                ),
-                const Divider(height: 32, thickness: 0.5, color: AppColors.grey300),
-                _SelectableRow(
-                  label: l10n.periodLength,
-                  value: l10n.daysCount(profile.periodLengthDays),
-                  onTap: () async {
-                    final val = await _pickPeriodLengthPicker(
-                      context,
-                      title: l10n.periodLength,
-                      currentValue: profile.periodLengthDays,
-                      min: 2,
-                      max: 12,
-                    );
-                    if (val != null) {
-                      ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(periodLengthDays: val));
-                    }
-                  },
-                ),
-                const Divider(height: 32, thickness: 0.5, color: AppColors.grey300),
-                _SelectableRow(
-                  label: l10n.lastPeriodStartDate,
-                  value: profile.lastPeriodStart != null 
-                      ? DateFormat('dd/MM/yyyy').format(profile.lastPeriodStart!) 
-                      : '--/--/----',
-                  onTap: () async {
-                    final date = await _showDatePickerCalendar(
-                      context, 
-                      initialDate: profile.lastPeriodStart,
-                      title: l10n.lastPeriodStartDate,
-                    );
-                    if (date != null) {
-                      ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(lastPeriodStart: date));
-                    }
-                  },
-                ),
-                const Divider(height: 32, thickness: 0.5, color: AppColors.grey300),
-                _ToggleRow(
-                  label: l10n.regularCycleQuestion,
-                  value: profile.isCycleRegular,
-                  onChanged: (val) {
-                    ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(isCycleRegular: val));
-                  },
-                ),
-              ]),
-
-              const SizedBox(height: 32),
+              // --- AVATAR ---
               Center(
-                child: Text(
-                  l10n.changesSavedAutomatically,
-                  style: AppText.caption.copyWith(color: AppColors.grey400),
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        Container(
+                          width: 110,
+                          height: 110,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: AppColors.grey300, width: 1.5),
+                            image: const DecorationImage(
+                              image: AssetImage(AppAssets.avatar),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        if (_isEditMode)
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            margin: const EdgeInsets.only(bottom: 4, right: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.grey300),
+                            ),
+                            child: const Icon(Icons.edit_outlined,
+                                size: 20, color: AppColors.grey800),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    if (!_isEditMode)
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: const Text("Edit Profile"),
+                        onPressed: _toggleEditMode,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.grey900,
+                          side: const BorderSide(color: AppColors.grey900),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
+              const SizedBox(height: 32),
+
+              // --- FIELDS ---
+              if (!_isEditMode) ...[
+                // VIEW MODE
+                _ReadOnlyField(
+                  label: "Full Name",
+                  value: profile.displayName?.isNotEmpty == true
+                      ? profile.displayName!
+                      : "—",
+                ),
+                const SizedBox(height: 16),
+                _ReadOnlyField(
+                  label: "Email Address",
+                  value:
+                      profile.email?.isNotEmpty == true ? profile.email! : "—",
+                ),
+                const SizedBox(height: 16),
+                _ReadOnlyField(
+                  label: "Date of Birth",
+                  value: profile.dateOfBirth != null
+                      ? DateFormat('dd.MM.yyyy').format(profile.dateOfBirth!)
+                      : '—',
+                  trailing: const Icon(Icons.calendar_today_outlined,
+                      color: AppColors.grey400, size: 20),
+                ),
+                const SizedBox(height: 16),
+                _ReadOnlyField(
+                  label: "My Goal",
+                  value: (profile.goals?.isNotEmpty == true)
+                      ? "${profile.goals!.length} Selected"
+                      : "0 Selected",
+                  trailing: const Icon(Icons.keyboard_arrow_down,
+                      color: AppColors.grey400, size: 24),
+                ),
+              ] else ...[
+                // EDIT MODE
+                _EditableField(
+                  label: "Full Name",
+                  value: profile.displayName ?? '',
+                  onChanged: (val) =>
+                      ref.read(userProfileProvider.notifier).patch(
+                            (p) => p.copyWith(displayName: val),
+                          ),
+                ),
+                const SizedBox(height: 16),
+                _EditableField(
+                  label: "Email Address",
+                  value: profile.email ?? '',
+                  onChanged: (val) =>
+                      ref.read(userProfileProvider.notifier).patch(
+                            (p) => p.copyWith(email: val),
+                          ),
+                ),
+                const SizedBox(height: 16),
+                InkWell(
+                  onTap: () async {
+                    final date = await _showDatePickerCalendar(
+                      context,
+                      initialDate: profile.dateOfBirth,
+                      title: "Date of Birth",
+                    );
+                    if (date != null) {
+                      ref
+                          .read(userProfileProvider.notifier)
+                          .patch((p) => p.copyWith(dateOfBirth: date));
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(24),
+                  child: _ReadOnlyField(
+                    label: "Date of Birth",
+                    value: profile.dateOfBirth != null
+                        ? DateFormat('dd.MM.yyyy').format(profile.dateOfBirth!)
+                        : '—',
+                    trailing: const Icon(Icons.calendar_today_outlined,
+                        color: AppColors.grey400, size: 20),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _ReadOnlyField(
+                  label: "My Goal",
+                  value: (profile.goals?.isNotEmpty == true)
+                      ? "${profile.goals!.length} Selected"
+                      : "0 Selected",
+                  trailing: const Icon(Icons.keyboard_arrow_down,
+                      color: AppColors.grey400, size: 24),
+                ),
+                const SizedBox(height: 48),
+                SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: PrimaryButton(
+                   label: 'Save Changes',
+                   onPressed: _toggleEditMode,
+                   ),
+                ),
+              ],
               const SizedBox(height: 40),
             ],
           ),
@@ -143,7 +204,7 @@ class PersonalInformationScreen extends ConsumerWidget {
     required String title,
   }) async {
     DateTime? selectedDate = initialDate;
-    
+
     return showModalBottomSheet<DateTime>(
       context: context,
       isScrollControlled: true,
@@ -159,164 +220,6 @@ class PersonalInformationScreen extends ConsumerWidget {
           Navigator.pop(context, date);
         },
       ),
-    );
-  }
-
-  // --- PICKERS POUR LES NOMBRES (anciens composants) ---
-  
-  Future<int?> _pickCycleLengthPicker(
-    BuildContext context, {
-    required String title,
-    required int currentValue,
-    required int min,
-    required int max,
-  }) {
-    return showModalBottomSheet<int>(
-      context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
-        ),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey300,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(title, style: AppText.h4),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  for (int value = min; value <= max; value++)
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(value),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: value == currentValue
-                              ? AppColors.primary50
-                              : AppColors.grey100,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: value == currentValue
-                                ? AppColors.primary300
-                                : AppColors.grey200,
-                          ),
-                        ),
-                        child: Text(
-                          '$value',
-                          style: AppText.label.copyWith(
-                            color: value == currentValue
-                                ? AppColors.primary400
-                                : AppColors.grey800,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<int?> _pickPeriodLengthPicker(
-    BuildContext context, {
-    required String title,
-    required int currentValue,
-    required int min,
-    required int max,
-  }) {
-    return showModalBottomSheet<int>(
-      context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(28),
-          topRight: Radius.circular(28),
-        ),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey300,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(title, style: AppText.h4),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  for (int value = min; value <= max; value++)
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(value),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: value == currentValue
-                              ? AppColors.primary50
-                              : AppColors.grey100,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: value == currentValue
-                                ? AppColors.primary300
-                                : AppColors.grey200,
-                          ),
-                        ),
-                        child: Text(
-                          '$value',
-                          style: AppText.label.copyWith(
-                            color: value == currentValue
-                                ? AppColors.primary400
-                                : AppColors.grey800,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
@@ -343,10 +246,28 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
   DateTime? _selectedDate;
 
   static const List<String> _monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
-  static const List<String> _weekDays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+  static const List<String> _weekDays = [
+    'Mo',
+    'Tu',
+    'We',
+    'Th',
+    'Fr',
+    'Sa',
+    'Su'
+  ];
 
   @override
   void initState() {
@@ -388,13 +309,15 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
       children: [
         // En-tête des jours
         Row(
-          children: _weekDays.map((d) => Expanded(
-            child: Text(
-              d,
-              style: AppText.caption.copyWith(color: AppColors.grey400),
-              textAlign: TextAlign.center,
-            ),
-          )).toList(),
+          children: _weekDays
+              .map((d) => Expanded(
+                    child: Text(
+                      d,
+                      style: AppText.caption.copyWith(color: AppColors.grey400),
+                      textAlign: TextAlign.center,
+                    ),
+                  ))
+              .toList(),
         ),
         const SizedBox(height: 12),
         // Grille des jours
@@ -413,9 +336,11 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
             if (dayNum < 1 || dayNum > totalDays) {
               return const SizedBox.shrink();
             }
-            final date = DateTime(_currentMonth.year, _currentMonth.month, dayNum);
-            final isSelected = _selectedDate != null && _isSameDay(date, _selectedDate!);
-            
+            final date =
+                DateTime(_currentMonth.year, _currentMonth.month, dayNum);
+            final isSelected =
+                _selectedDate != null && _isSameDay(date, _selectedDate!);
+
             return GestureDetector(
               onTap: () => _selectDate(date),
               child: AnimatedContainer(
@@ -497,7 +422,8 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
               children: [
                 IconButton(
                   onPressed: _previousMonth,
-                  icon: const Icon(Icons.chevron_left, color: AppColors.grey600),
+                  icon:
+                      const Icon(Icons.chevron_left, color: AppColors.grey600),
                 ),
                 Text(
                   '${_monthNames[_currentMonth.month - 1]} ${_currentMonth.year}',
@@ -505,7 +431,8 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
                 ),
                 IconButton(
                   onPressed: _nextMonth,
-                  icon: const Icon(Icons.chevron_right, color: AppColors.grey600),
+                  icon:
+                      const Icon(Icons.chevron_right, color: AppColors.grey600),
                 ),
               ],
             ),
@@ -526,30 +453,6 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
 }
 
 // --- WIDGETS DE DESIGN (DESIGN SYSTEM PERIA) ---
-
-class _ProfileSectionCard extends StatelessWidget {
-  final List<Widget> children;
-  const _ProfileSectionCard({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.grey100,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(children: children),
-    );
-  }
-}
 
 class _EditableField extends StatelessWidget {
   final String label;
@@ -576,9 +479,9 @@ class _EditableField extends StatelessWidget {
           onSaved: (val) => onChanged(val ?? ''),
           decoration: InputDecoration(
             filled: true,
-            fillColor: AppColors.grey50,
+            fillColor: AppColors.grey100,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
               borderSide: BorderSide.none,
             ),
             contentPadding: const EdgeInsets.symmetric(
@@ -592,67 +495,43 @@ class _EditableField extends StatelessWidget {
   }
 }
 
-class _SelectableRow extends StatelessWidget {
+class _ReadOnlyField extends StatelessWidget {
   final String label;
   final String value;
-  final VoidCallback onTap;
+  final Widget? trailing;
 
-  const _SelectableRow({
+  const _ReadOnlyField({
     required this.label,
     required this.value,
-    required this.onTap,
+    this.trailing,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: AppText.body.copyWith(color: AppColors.grey600)),
-            Row(
-              children: [
-                Text(value, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
-                const SizedBox(width: 4),
-                const Icon(Icons.chevron_right, color: AppColors.grey400, size: 20),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ToggleRow extends StatelessWidget {
-  final String label;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  const _ToggleRow({
-    required this.label,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: AppText.body.copyWith(color: AppColors.grey600)),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: AppColors.primary500,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: AppText.label.copyWith(color: AppColors.grey800)),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
           ),
-        ],
-      ),
+          decoration: BoxDecoration(
+            color: AppColors.grey100,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(value, style: AppText.body),
+              if (trailing != null) trailing!,
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -668,14 +547,16 @@ class _PersonalInfoSkeleton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(22),
         child: Column(
-          children: List.generate(2, (index) => Container(
-            margin: const EdgeInsets.only(bottom: 24),
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          )),
+          children: List.generate(
+              2,
+              (index) => Container(
+                    margin: const EdgeInsets.only(bottom: 24),
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  )),
         ),
       ),
     );

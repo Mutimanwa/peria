@@ -8,9 +8,6 @@ class AppSettings {
   final bool twoFactorEnabled;
   final bool faceIdEnabled;
   final bool discreetModeEnabled;
-  final int periodLengthDays;
-  final int cycleLengthDays;
-  final int pmsLengthDays;
 
   const AppSettings({
     this.allowNotifications = false,
@@ -22,9 +19,6 @@ class AppSettings {
     this.twoFactorEnabled = false,
     this.faceIdEnabled = true,
     this.discreetModeEnabled = false,
-    this.periodLengthDays = 7,
-    this.cycleLengthDays = 28,
-    this.pmsLengthDays = 5,
   });
 
   AppSettings copyWith({
@@ -37,9 +31,6 @@ class AppSettings {
     bool? twoFactorEnabled,
     bool? faceIdEnabled,
     bool? discreetModeEnabled,
-    int? periodLengthDays,
-    int? cycleLengthDays,
-    int? pmsLengthDays,
   }) {
     return AppSettings(
       allowNotifications: allowNotifications ?? this.allowNotifications,
@@ -51,9 +42,6 @@ class AppSettings {
       twoFactorEnabled: twoFactorEnabled ?? this.twoFactorEnabled,
       faceIdEnabled: faceIdEnabled ?? this.faceIdEnabled,
       discreetModeEnabled: discreetModeEnabled ?? this.discreetModeEnabled,
-      periodLengthDays: periodLengthDays ?? this.periodLengthDays,
-      cycleLengthDays: cycleLengthDays ?? this.cycleLengthDays,
-      pmsLengthDays: pmsLengthDays ?? this.pmsLengthDays,
     );
   }
 
@@ -68,9 +56,6 @@ class AppSettings {
       twoFactorEnabled: json['twoFactorEnabled'] as bool? ?? false,
       faceIdEnabled: json['faceIdEnabled'] as bool? ?? true,
       discreetModeEnabled: json['discreetModeEnabled'] as bool? ?? false,
-      periodLengthDays: json['periodLengthDays'] as int? ?? 7,
-      cycleLengthDays: json['cycleLengthDays'] as int? ?? 28,
-      pmsLengthDays: json['pmsLengthDays'] as int? ?? 5,
     );
   }
 
@@ -85,9 +70,6 @@ class AppSettings {
       'twoFactorEnabled': twoFactorEnabled,
       'faceIdEnabled': faceIdEnabled,
       'discreetModeEnabled': discreetModeEnabled,
-      'periodLengthDays': periodLengthDays,
-      'cycleLengthDays': cycleLengthDays,
-      'pmsLengthDays': pmsLengthDays,
     };
   }
 }

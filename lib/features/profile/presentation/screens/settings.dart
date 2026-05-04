@@ -6,6 +6,7 @@ import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:peria_app/shared/widgets/profile_widgets.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
@@ -14,8 +15,10 @@ class SettingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final settingsState = ref.watch(appSettingsProvider);
+    final profileState = ref.watch(userProfileProvider);
     return SimplePage(
       title: l10n.settings,
+      fallbackRoute: '/profile',
       child: settingsState.when(
         data: (settings) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,16 +36,17 @@ class SettingScreen extends ConsumerWidget {
                 () => _showCycleLengthPicker(
                   context,
                   title: l10n.periodLength,
-                  currentValue: settings.periodLengthDays,
+                  currentValue: profileState.value?.periodLengthDays ?? 5,
                   min: 2,
                   max: 12,
                   onSelected: (value) =>
-                      ref.read(appSettingsProvider.notifier).patch(
+                      ref.read(userProfileProvider.notifier).patch(
                             (current) =>
                                 current.copyWith(periodLengthDays: value),
                           ),
                 ),
-                trailingText: l10n.daysCount(settings.periodLengthDays),
+                trailingText:
+                    l10n.daysCount(profileState.value?.periodLengthDays ?? 5),
               ),
               MenuItemData(
                 l10n.cycleLength,
@@ -50,27 +54,31 @@ class SettingScreen extends ConsumerWidget {
                 () => _showCycleLengthPicker(
                   context,
                   title: l10n.cycleLength,
-                  currentValue: settings.cycleLengthDays,
+                  currentValue:
+                      profileState.value?.averageCycleLengthDays ?? 28,
                   min: 20,
                   max: 40,
                   onSelected: (value) =>
-                      ref.read(appSettingsProvider.notifier).patch(
+                      ref.read(userProfileProvider.notifier).patch(
                             (current) =>
-                                current.copyWith(cycleLengthDays: value),
+                                current.copyWith(averageCycleLengthDays: value),
                           ),
                 ),
-                trailingText: l10n.daysCount(settings.cycleLengthDays),
+                trailingText: l10n.daysCount(
+                    profileState.value?.averageCycleLengthDays ?? 28),
               ),
             ]),
             const SizedBox(height: 22),
             SectionLabel(l10n.integrationsSync),
             MenuGroup(items: [
-              MenuItemData(l10n.connectedApps, Icons.all_inclusive_rounded, () {}),
+              MenuItemData(
+                  l10n.connectedApps, Icons.all_inclusive_rounded, () {}),
             ]),
             const SizedBox(height: 22),
             SectionLabel(l10n.about),
             MenuGroup(items: [
-              MenuItemData(l10n.privacyPolicy, Icons.verified_user_outlined, () {}),
+              MenuItemData(
+                  l10n.privacyPolicy, Icons.verified_user_outlined, () {}),
               MenuItemData(l10n.appVersion, Icons.info_outline_rounded, () {},
                   trailingText: '1.0.2'),
             ]),

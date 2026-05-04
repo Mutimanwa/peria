@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
@@ -135,16 +137,10 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
     final l10n = AppLocalizations.of(context);
     final securityState = ref.watch(securityProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        title: Text(l10n.accountSecurity, style: AppText.h3),
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        leading: const BackButton(color: AppColors.grey900),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+    return SimplePage(
+      fallbackRoute: '/profile',
+      title: l10n.accountSecurity,
+      child: SingleChildScrollView(
         child: securityState.when(
           data: (security) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +148,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
               const SizedBox(height: 20),
               Center(
                 child: Image.asset(
-                  'assets/images/icons/security.png',
+                  AppAssets.security,
                   width: 96,
                   height: 96,
                 ),

@@ -20,4 +20,6 @@ class AppAssets {
   static const String calendar = "assets/images/icons/calendar.png";
   static const String notificationBell = "assets/images/icons/notification-1.png";
 
+  static const String security = 'assets/images/icons/security.png';
+
 }

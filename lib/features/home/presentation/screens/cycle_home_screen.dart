@@ -5,8 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
-import 'package:peria_app/core/storage/app_settings.dart';
-import 'package:peria_app/core/storage/app_settings_provider.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
@@ -321,13 +319,12 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final status = ref.watch(cycleStatusProvider);
-    final settings =
-        ref.watch(appSettingsProvider).value ?? const AppSettings();
+    final profile = ref.watch(userProfileProvider).value;
     final dayOfCycle = status?.dayOfCycle ?? 1;
     final daysUntilNext = status?.daysUntilNextPeriod;
     final nextPhase = _phaseFromStatus(status);
-    final cycleLengthDays =
-        settings.cycleLengthDays > 0 ? settings.cycleLengthDays : 1;
+    final cycleLength = profile?.averageCycleLengthDays ?? 28;
+    final cycleLengthDays = cycleLength > 0 ? cycleLength : 1;
     final cycleProgress =
         (dayOfCycle / cycleLengthDays).clamp(0.0, 1.0).toDouble();
 

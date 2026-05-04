@@ -63,10 +63,10 @@ final cycleStatusProvider = Provider<CycleStatus?>((ref) {
   final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
   final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
   final profile = ref.watch(userProfileProvider).value;
-  
-  final userCycleLengthDays = profile?.averageCycleLengthDays ?? settings.cycleLengthDays;
-  final userPeriodLengthDays = profile?.periodLengthDays ?? settings.periodLengthDays;
-  final pmsDaysSetting = settings.pmsLengthDays;
+
+  final userCycleLengthDays = profile?.averageCycleLengthDays ?? 28;
+  final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
+  const pmsDaysSetting = 5;
 
   if (periodLogs.isNotEmpty) {
     return CycleEngine.computeFromLogs(
@@ -81,7 +81,8 @@ final cycleStatusProvider = Provider<CycleStatus?>((ref) {
   if (profile?.lastPeriodStart != null) {
     return CycleEngine.computeFromSingleLog(
       startDate: profile!.lastPeriodStart!,
-      endDate: profile.lastPeriodStart!.add(Duration(days: userPeriodLengthDays - 1)),
+      endDate: profile.lastPeriodStart!
+          .add(Duration(days: userPeriodLengthDays - 1)),
       userCycleLengthDays: userCycleLengthDays,
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
@@ -97,10 +98,10 @@ final cycleStatusForDateProvider =
   final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
   final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
   final profile = ref.watch(userProfileProvider).value;
-  
-  final userCycleLengthDays = profile?.averageCycleLengthDays ?? settings.cycleLengthDays;
-  final userPeriodLengthDays = profile?.periodLengthDays ?? settings.periodLengthDays;
-  final pmsDaysSetting = settings.pmsLengthDays;
+
+  final userCycleLengthDays = profile?.averageCycleLengthDays ?? 28;
+  final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
+  final pmsDaysSetting = 5;
 
   if (periodLogs.isNotEmpty) {
     return CycleEngine.computeFromLogs(
@@ -116,7 +117,8 @@ final cycleStatusForDateProvider =
   if (profile?.lastPeriodStart != null) {
     return CycleEngine.computeFromSingleLog(
       startDate: profile!.lastPeriodStart!,
-      endDate: profile.lastPeriodStart!.add(Duration(days: userPeriodLengthDays - 1)),
+      endDate: profile.lastPeriodStart!
+          .add(Duration(days: userPeriodLengthDays - 1)),
       userCycleLengthDays: userCycleLengthDays,
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
@@ -146,7 +148,7 @@ final cycleRegularityProvider = Provider<CycleRegularity?>((ref) {
 final ovulationPredictionProvider = Provider<Map<String, dynamic>?>((ref) {
   final status = ref.watch(cycleStatusProvider);
   if (status == null) return null;
-  
+
   return {
     'rangeStart': status.ovulationRangeStart,
     'rangeEnd': status.ovulationRangeEnd,
@@ -201,11 +203,12 @@ final cyclePhaseForDateProvider = Provider.family<CyclePhase?, DateTime>(
 // --- IS DATE IN FERTILE WINDOW PROVIDER ---
 final isDateInFertileWindowProvider = Provider.family<bool, DateTime>(
   (ref, date) {
-    final fertileWindow = ref.watch(cycleStatusForDateProvider(date))?.fertileWindow ?? [];
+    final fertileWindow =
+        ref.watch(cycleStatusForDateProvider(date))?.fertileWindow ?? [];
     final normalizedDate = DateTime(date.year, date.month, date.day);
-    return fertileWindow.any((d) => 
-        d.year == normalizedDate.year && 
-        d.month == normalizedDate.month && 
+    return fertileWindow.any((d) =>
+        d.year == normalizedDate.year &&
+        d.month == normalizedDate.month &&
         d.day == normalizedDate.day);
   },
 );
@@ -214,19 +217,22 @@ final isDateInFertileWindowProvider = Provider.family<bool, DateTime>(
 final cycleStatisticsProvider = Provider<CycleStatistics?>((ref) {
   final logs = ref.watch(periodLogsProvider).value ?? [];
   if (logs.length < 2) return null;
-  
+
   final cycleLengths = <int>[];
   for (int i = 0; i < logs.length - 1; i++) {
     final length = logs[i].startDate.difference(logs[i + 1].startDate).inDays;
     cycleLengths.add(length);
   }
-  
+
   if (cycleLengths.isEmpty) return null;
-  
+
   final average = cycleLengths.reduce((a, b) => a + b) / cycleLengths.length;
-  final variance = cycleLengths.map((l) => math.pow(l - average, 2)).reduce((a, b) => a + b) / cycleLengths.length;
+  final variance = cycleLengths
+          .map((l) => math.pow(l - average, 2))
+          .reduce((a, b) => a + b) /
+      cycleLengths.length;
   final stdDeviation = math.sqrt(variance);
-  
+
   return CycleStatistics(
     averageCycleLength: average.round(),
     minCycleLength: cycleLengths.reduce((a, b) => a < b ? a : b),
@@ -238,22 +244,22 @@ final cycleStatisticsProvider = Provider<CycleStatistics?>((ref) {
 });
 
 // --- CYCLE PREDICTION FOR FUTURE DATE PROVIDER ---
-final cyclePredictionForDateProvider = Provider.family<CyclePrediction?, DateTime>(
+final cyclePredictionForDateProvider =
+    Provider.family<CyclePrediction?, DateTime>(
   (ref, date) {
     final status = ref.watch(cycleStatusForDateProvider(date));
     if (status == null) return null;
-    
+
     return CyclePrediction(
       predictedPhase: status.phase,
       confidenceScore: status.confidenceScore,
       isEstimated: status.isEstimated,
-      predictedPeriodStart: status.dayOfCycle > status.cycleLengthDays - 7 
-          ? status.nextPeriodStart 
+      predictedPeriodStart: status.dayOfCycle > status.cycleLengthDays - 7
+          ? status.nextPeriodStart
           : null,
     );
   },
 );
-
 
 // Additional data classes
 class CycleStatistics {
@@ -263,7 +269,7 @@ class CycleStatistics {
   final double stdDeviation;
   final int totalCyclesLogged;
   final bool isRegular;
-  
+
   CycleStatistics({
     required this.averageCycleLength,
     required this.minCycleLength,
@@ -279,7 +285,7 @@ class CyclePrediction {
   final double confidenceScore;
   final bool isEstimated;
   final DateTime? predictedPeriodStart;
-  
+
   CyclePrediction({
     required this.predictedPhase,
     required this.confidenceScore,

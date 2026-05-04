@@ -16,6 +16,10 @@ class UserProfile {
   final DateTime? lastPeriodStart;
   @HiveField(5)
   final bool isCycleRegular;
+  @HiveField(6)
+  final String? email;
+  @HiveField(7)
+  final List<String>? goals;
 
   const UserProfile({
     this.displayName,
@@ -24,6 +28,8 @@ class UserProfile {
     this.periodLengthDays = 5,
     this.lastPeriodStart,
     this.isCycleRegular = true,
+    this.email,
+    this.goals,
   });
 
   UserProfile copyWith({
@@ -33,6 +39,8 @@ class UserProfile {
     int? periodLengthDays,
     DateTime? lastPeriodStart,
     bool? isCycleRegular,
+    String? email,
+    List<String>? goals,
   }) {
     return UserProfile(
       displayName: displayName ?? this.displayName,
@@ -42,6 +50,8 @@ class UserProfile {
       periodLengthDays: periodLengthDays ?? this.periodLengthDays,
       lastPeriodStart: lastPeriodStart ?? this.lastPeriodStart,
       isCycleRegular: isCycleRegular ?? this.isCycleRegular,
+      email: email ?? this.email,
+      goals: goals ?? this.goals,
     );
   }
 
@@ -71,10 +81,12 @@ class UserProfile {
       lastPeriodStart: (json['lastPeriodStart'] as String?) == null
           ? null
           : DateTime.parse(json['lastPeriodStart'] as String),
-      averageCycleLengthDays:
-          json['averageCycleLengthDays'] as int? ?? 28,
+      averageCycleLengthDays: json['averageCycleLengthDays'] as int? ?? 28,
       periodLengthDays: json['periodLengthDays'] as int? ?? 5,
       isCycleRegular: json['isCycleRegular'] as bool? ?? true,
+      email: json['email'] as String?,
+      goals:
+          (json['goals'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
 
@@ -86,6 +98,8 @@ class UserProfile {
       'averageCycleLengthDays': averageCycleLengthDays,
       'periodLengthDays': periodLengthDays,
       'isCycleRegular': isCycleRegular,
+      'email': email,
+      'goals': goals,
     };
   }
 }
