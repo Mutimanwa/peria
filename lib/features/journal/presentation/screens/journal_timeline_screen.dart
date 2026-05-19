@@ -86,7 +86,7 @@ class _TimelineSection extends StatelessWidget {
                 style: AppText.h5.copyWith(color: AppColors.grey900),
               ),
               const SizedBox(width: 8),
-              Expanded(child: Divider(color: AppColors.grey200)),
+              const Expanded(child: Divider(color: AppColors.grey200)),
             ],
           ),
         ),

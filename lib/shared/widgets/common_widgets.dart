@@ -497,7 +497,7 @@ class EmptyJournal extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
       decoration: BoxDecoration(
         color: AppColors.white.withOpacity(0.78),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.grey200),
       ),
       child: Column(

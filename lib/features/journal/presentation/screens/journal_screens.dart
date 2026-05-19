@@ -11,28 +11,28 @@ import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
-class JournalScreen extends ConsumerStatefulWidget {
-  const JournalScreen({super.key});
+class JournalScreens extends ConsumerStatefulWidget {
+  const JournalScreens({super.key});
 
   @override
-  ConsumerState<JournalScreen> createState() => _JournalScreenState();
+  ConsumerState<JournalScreens> createState() => _JournalScreenState();
 }
 
-class _JournalScreenState extends ConsumerState<JournalScreen> {
+class _JournalScreenState extends ConsumerState<JournalScreens> {
   late DateTime _selectedDate;
   final _searchController = TextEditingController();
   final _quickLogController = TextEditingController();
   bool _searchOpen = false;
   String _query = '';
-  String _quickMood = 'calm';
+  // String _quickMood = 'calm';
 
-  static const _moods = [
-    ('calm', 'Calm'),
-    ('happy', 'Happy'),
-    ('sad', 'Sad'),
-    ('anxious', 'Anxious'),
-    ('tired', 'Tired'),
-  ];
+  // static const _moods = [
+  //   ('calm', 'Calm'),
+  //   ('happy', 'Happy'),
+  //   ('sad', 'Sad'),
+  //   ('anxious', 'Anxious'),
+  //   ('tired', 'Tired'),
+  // ];
 
   @override
   void initState() {
@@ -80,27 +80,27 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
     return entries.any((entry) => _isSameDay(entry.createdAt, day));
   }
 
-  Future<void> _saveQuickEntry() async {
-    final note = _quickLogController.text.trim();
-    if (note.isEmpty) return;
-    final now = DateTime.now();
-    await ref.read(journalProvider.notifier).upsert(
-          JournalEntry(
-            id: now.microsecondsSinceEpoch.toString(),
-            createdAt: now,
-            updatedAt: now,
-            title: '',
-            content: note,
-            mood: _quickMood,
-          ),
-        );
-    if (!mounted) return;
-    setState(() {
-      _selectedDate = now;
-      _quickMood = 'calm';
-      _quickLogController.clear();
-    });
-  }
+  // Future<void> _saveQuickEntry() async {
+  //   final note = _quickLogController.text.trim();
+  //   if (note.isEmpty) return;
+  //   final now = DateTime.now();
+  //   await ref.read(journalProvider.notifier).upsert(
+  //         JournalEntry(
+  //           id: now.microsecondsSinceEpoch.toString(),
+  //           createdAt: now,
+  //           updatedAt: now,
+  //           title: '',
+  //           content: note,
+  //           mood: _quickMood,
+  //         ),
+  //       );
+  //   if (!mounted) return;
+  //   setState(() {
+  //     _selectedDate = now;
+  //     _quickMood = 'calm';
+  //     _quickLogController.clear();
+  //   });
+  // }
 
   String _summaryLabel(DateTime date, int count) {
     final day = DateFormat('EEEE, d MMMM').format(date);
@@ -132,19 +132,19 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       key: ValueKey('journal-${_selectedDate.toIso8601String()}-$_query-${filtered.length}'),
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
                       children: [
-                        if (_query.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: _QuickLogComposer(
-                              value: _quickLogController.text,
-                              selectedMood: _quickMood,
-                              moods: _moods,
-                              onMoodSelected: (mood) => setState(() => _quickMood = mood),
-                              onOpenSheet: () => context.go('/journal/new'),
-                              controller: _quickLogController,
-                              onSave: _saveQuickEntry,
-                            ),
-                          ),
+                        // if (_query.isEmpty)
+                        //   Padding(
+                        //     padding: const EdgeInsets.only(bottom: 16),
+                        //     child: _QuickLogComposer(
+                        //       value: _quickLogController.text,
+                        //       selectedMood: _quickMood,
+                        //       moods: _moods,
+                        //       onMoodSelected: (mood) => setState(() => _quickMood = mood),
+                        //       onOpenSheet: () => context.go('/journal/new'),
+                        //       controller: _quickLogController,
+                        //       onSave: _saveQuickEntry,
+                        //     ),
+                        //   ),
                         if (filtered.isEmpty)
                           EmptyJournal(hasQuery: _query.isNotEmpty, selectedDate: _selectedDate)
                         else
@@ -157,9 +157,10 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 80)
+                  const SizedBox(height: 80),
                 ],
               );
+              
             },
             loading: () => Column(
               children: [
@@ -186,6 +187,12 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             ),
           ),
         ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 90),
+        child: HeaderIconButton(
+          icon: Icons.add, onTap: () => {context.go('/journal/new')}
+        )
       ),
     );
   }
@@ -254,39 +261,33 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
               HeaderIconButton(
                 icon: _searchOpen ? Icons.close_rounded : Icons.search_rounded,
                 onTap: () {
-                  setState(() {
-                    _searchOpen = !_searchOpen;
-                    if (!_searchOpen) {
-                      _searchController.clear();
-                      _query = '';
-                    }
-                  });
+                  context.go('/journal/search');
                 },
               ),
             ],
           ),
           const SizedBox(height: 12),
-          if (_searchOpen)
-            Container(
-              height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.grey200),
-              ),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (value) => setState(() => _query = value.trim().toLowerCase()),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: l10n.searchJournalHint,
-                  hintStyle: AppText.body.copyWith(color: AppColors.grey400),
-                  icon: const Icon(Icons.search_rounded, color: AppColors.grey500, size: 20),
-                ),
-              ),
-            )
-          else
+          // if (_searchOpen)
+          //   Container(
+          //     height: 52,
+          //     padding: const EdgeInsets.symmetric(horizontal: 14),
+          //     decoration: BoxDecoration(
+          //       color: AppColors.white,
+          //       borderRadius: BorderRadius.circular(18),
+          //       border: Border.all(color: AppColors.grey200),
+          //     ),
+          //     child: TextField(
+          //       controller: _searchController,
+          //       onChanged: (value) => setState(() => _query = value.trim().toLowerCase()),
+          //       decoration: InputDecoration(
+          //         border: InputBorder.none,
+          //         hintText: l10n.searchJournalHint,
+          //         hintStyle: AppText.body.copyWith(color: AppColors.grey400),
+          //         icon: const Icon(Icons.search_rounded, color: AppColors.grey500, size: 20),
+          //       ),
+          //     ),
+          //   )
+          // else
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
@@ -307,6 +308,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       ),
                     ),
                   ),
+                  
                 ],
               ),
             ),
@@ -371,133 +373,132 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
 }
 
 
+// class _QuickLogComposer extends StatelessWidget {
+//   const _QuickLogComposer({
+//     required this.value,
+//     required this.selectedMood,
+//     required this.moods,
+//     required this.onMoodSelected,
+//     required this.onOpenSheet,
+//     required this.controller,
+//     required this.onSave,
+//   });
 
-class _QuickLogComposer extends StatelessWidget {
-  const _QuickLogComposer({
-    required this.value,
-    required this.selectedMood,
-    required this.moods,
-    required this.onMoodSelected,
-    required this.onOpenSheet,
-    required this.controller,
-    required this.onSave,
-  });
+//   final String value;
+//   final String selectedMood;
+//   final List<(String, String)> moods;
+//   final ValueChanged<String> onMoodSelected;
+//   final VoidCallback onOpenSheet;
+//   final TextEditingController controller;
+//   final Future<void> Function() onSave;
 
-  final String value;
-  final String selectedMood;
-  final List<(String, String)> moods;
-  final ValueChanged<String> onMoodSelected;
-  final VoidCallback onOpenSheet;
-  final TextEditingController controller;
-  final Future<void> Function() onSave;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final canSave = value.trim().length > 5;
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppColors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.grey200),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(child: Text(l10n.newEntry, style: AppText.h5)),
-              TextButton(
-                onPressed: onOpenSheet,
-                child: Text(
-                  'Expand',
-                  style: AppText.caption.copyWith(
-                    color: AppColors.primary500,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.writeFreelyHint,
-            style: AppText.caption.copyWith(color: AppColors.grey600),
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: moods.map((item) {
-              final selected = selectedMood == item.$1;
-              final tone = JournalMoodTone.fromMood(item.$1);
-              return GestureDetector(
-                onTap: () => onMoodSelected(item.$1),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: selected ? tone.softBackground : AppColors.grey100,
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: selected ? tone.accent : AppColors.grey200),
-                  ),
-                  child: Text(
-                    item.$2,
-                    style: AppText.caption.copyWith(
-                      color: selected ? tone.accent : AppColors.grey700,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 14),
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.grey100,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-            child: TextField(
-              controller: controller,
-              minLines: 3,
-              maxLines: 5,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: l10n.writeFreelyHint,
-              ),
-            ),
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Quick log',
-                  style: AppText.caption.copyWith(
-                    color: AppColors.grey600,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 132,
-                height: 45,
-                child: PrimaryButton(
-                  label: l10n.saveEntry,
-                  onPressed: canSave ? onSave : null,
-                  fullWidth: true,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     final l10n = AppLocalizations.of(context);
+//     final canSave = value.trim().length > 5;
+//     return Container(
+//       padding: const EdgeInsets.all(18),
+//       decoration: BoxDecoration(
+//         color: AppColors.white.withOpacity(0.8),
+//         borderRadius: BorderRadius.circular(10),
+//         border: Border.all(color: AppColors.grey200),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             children: [
+//               Expanded(child: Text(l10n.newEntry, style: AppText.h5)),
+//               TextButton(
+//                 onPressed: onOpenSheet,
+//                 child: Text(
+//                   'Expand',
+//                   style: AppText.caption.copyWith(
+//                     color: AppColors.primary500,
+//                     fontWeight: FontWeight.w700,
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//           const SizedBox(height: 4),
+//           Text(
+//             l10n.writeFreelyHint,
+//             style: AppText.caption.copyWith(color: AppColors.grey600),
+//           ),
+//           const SizedBox(height: 14),
+//           Wrap(
+//             spacing: 8,
+//             runSpacing: 8,
+//             children: moods.map((item) {
+//               final selected = selectedMood == item.$1;
+//               final tone = JournalMoodTone.fromMood(item.$1);
+//               return GestureDetector(
+//                 onTap: () => onMoodSelected(item.$1),
+//                 child: AnimatedContainer(
+//                   duration: const Duration(milliseconds: 180),
+//                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+//                   decoration: BoxDecoration(
+//                     color: selected ? tone.softBackground : AppColors.grey100,
+//                     borderRadius: BorderRadius.circular(999),
+//                     border: Border.all(color: selected ? tone.accent : AppColors.grey200),
+//                   ),
+//                   child: Text(
+//                     item.$2,
+//                     style: AppText.caption.copyWith(
+//                       color: selected ? tone.accent : AppColors.grey700,
+//                       fontWeight: FontWeight.w700,
+//                     ),
+//                   ),
+//                 ),
+//               );
+//             }).toList(),
+//           ),
+//           const SizedBox(height: 14),
+//           Container(
+//             decoration: BoxDecoration(
+//               color: AppColors.grey100,
+//               borderRadius: BorderRadius.circular(10),
+//             ),
+//             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+//             child: TextField(
+//               controller: controller,
+//               minLines: 3,
+//               maxLines: 5,
+//               decoration: InputDecoration(
+//                 border: InputBorder.none,
+//                 hintText: l10n.writeFreelyHint,
+//               ),
+//             ),
+//           ),
+//           const SizedBox(height: 14),
+//           Row(
+//             children: [
+//               Expanded(
+//                 child: Text(
+//                   'Quick log',
+//                   style: AppText.caption.copyWith(
+//                     color: AppColors.grey600,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//               ),
+//               SizedBox(
+//                 width: 132,
+//                 height: 45,
+//                 child: PrimaryButton(
+//                   label: l10n.saveEntry,
+//                   onPressed: canSave ? onSave : null,
+//                   fullWidth: true,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _WeekDayChip extends StatelessWidget {
   const _WeekDayChip({

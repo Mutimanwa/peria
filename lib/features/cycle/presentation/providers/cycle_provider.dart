@@ -1,8 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/repositories/user_repository.dart';
-import 'package:peria_app/core/storage/app_settings.dart';
-import 'package:peria_app/core/storage/app_settings_provider.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/data/repositories/period_repository.dart';
 import 'package:peria_app/features/cycle/domain/cycle_engine.dart';
@@ -60,7 +58,7 @@ class PeriodLogsNotifier extends StateNotifier<AsyncValue<List<PeriodLog>>> {
 
 // --- CYCLE STATUS PROVIDER (current date) ---
 final cycleStatusProvider = Provider<CycleStatus?>((ref) {
-  final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
+  // final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
   final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
   final profile = ref.watch(userProfileProvider).value;
 
@@ -95,13 +93,13 @@ final cycleStatusProvider = Provider<CycleStatus?>((ref) {
 // --- CYCLE STATUS FOR SPECIFIC DATE PROVIDER ---
 final cycleStatusForDateProvider =
     Provider.family<CycleStatus?, DateTime>((ref, date) {
-  final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
+  // final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
   final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
   final profile = ref.watch(userProfileProvider).value;
 
   final userCycleLengthDays = profile?.averageCycleLengthDays ?? 28;
   final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
-  final pmsDaysSetting = 5;
+  const pmsDaysSetting = 5;
 
   if (periodLogs.isNotEmpty) {
     return CycleEngine.computeFromLogs(
