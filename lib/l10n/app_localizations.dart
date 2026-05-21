@@ -1274,6 +1274,18 @@ abstract class AppLocalizations {
   /// **'Journal Lock'**
   String get journalLock;
 
+  /// No description provided for @unableToLoadJournal.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load journal'**
+  String get unableToLoadJournal;
+
+  /// No description provided for @privateByDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Private by default on this device.'**
+  String get privateByDefault;
+
   /// No description provided for @faceId.
   ///
   /// In en, this message translates to:

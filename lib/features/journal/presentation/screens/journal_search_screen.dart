@@ -90,7 +90,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
                 controller: _searchController,
                 onChanged: (_) => setState(() {}),
                 decoration: const InputDecoration(
-                  hintText: "Search notes...",
+                  hintText: "Rechercher des notes...",
                   border: InputBorder.none,
                   icon: Icon(Icons.search, color: AppColors.grey400),
                 ),

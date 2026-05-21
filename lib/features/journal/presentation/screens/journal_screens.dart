@@ -103,7 +103,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
   // }
 
   String _summaryLabel(DateTime date, int count) {
-    final day = DateFormat('EEEE, d MMMM').format(date);
+    final day = DateFormat('EEEE, d MMMM' , 'fr').format(date);
     final suffix = count <= 1 ? 'note' : 'notes';
     return '$day • $count $suffix';
   }
@@ -176,7 +176,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                 children: [
                   const Icon(Icons.error_outline, size: 48, color: AppColors.grey400),
                   const SizedBox(height: 16),
-                  Text('Unable to load journal',
+                  Text(l10n.unableToLoadJournal,
                       style: AppText.h3.copyWith(color: AppColors.grey700)),
                   const SizedBox(height: 8),
                   Text(err.toString(),
@@ -189,7 +189,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 90),
+        padding: const EdgeInsets.only(bottom: 90, right: 30),
         child: HeaderIconButton(
           icon: Icons.add, onTap: () => {context.go('/journal/new')}
         )
@@ -301,7 +301,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Private by default on this device.',
+                      l10n.privateByDefault,
                       style: AppText.caption.copyWith(
                         color: AppColors.grey700,
                         fontWeight: FontWeight.w600,
@@ -360,7 +360,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
             ),
           ),
           Text(
-            _isSameDay(_selectedDate, DateTime.now()) ? 'Today' : DateFormat('EEE').format(_selectedDate),
+            _isSameDay(_selectedDate, DateTime.now()) ? 'Aujourd\'hui' : DateFormat('EEE', 'fr').format(_selectedDate).toUpperCase(),
             style: AppText.caption.copyWith(
               color: AppColors.primary500,
               fontWeight: FontWeight.w700,
@@ -532,7 +532,7 @@ class _WeekDayChip extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              DateFormat('E').format(date),
+              DateFormat('E' , 'fr').format(date).toUpperCase(),
               style: AppText.caption.copyWith(
                 color: isToday ? AppColors.primary500 : AppColors.grey600,
                 fontWeight: FontWeight.w700,

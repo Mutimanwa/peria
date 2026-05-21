@@ -217,6 +217,8 @@
   "statusPendingApproval": "Statut : en attente de validation",
   "resendInvitation": "Renvoyer l'invitation",
   "cancelInvitation": "Annuler l'invitation",
+  "unableToLoadJournal" : "Impossible de charger le journal",
+  "privateByDefault": "Privé par défaut sur cet appareil.",
   "unableToLoadInvitation": "Impossible de charger l'invitation",
   "yourPartnerIsConnected": "Ton partenaire est connecte",
   "invitationPending": "Invitation en attente",

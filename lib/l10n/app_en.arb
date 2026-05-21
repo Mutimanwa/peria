@@ -238,6 +238,8 @@
   "enter4Digits": "Enter 4 digits",
   "appLock": "App Lock",
   "journalLock": "Journal Lock",
+  "unableToLoadJournal" : "Unable to load journal",
+  "privateByDefault": "Private by default on this device.",
   "faceId": "Face ID",
   "changePinButton": "Change PIN",
   "disablePinLock": "Disable PIN lock",

@@ -634,6 +634,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalLock => 'Verrouillage du journal';
 
   @override
+  String get unableToLoadJournal => 'Impossible de charger le journal';
+
+  @override
+  String get privateByDefault => 'Privé par défaut sur cet appareil.';
+
+  @override
   String get faceId => 'Face ID';
 
   @override

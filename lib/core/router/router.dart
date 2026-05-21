@@ -12,7 +12,6 @@ import 'package:peria_app/features/auth/presentation/screens/auth_screens.dart';
 import 'package:peria_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:peria_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:peria_app/features/home/presentation/screens/cycle_home_screen.dart';
-import 'package:peria_app/features/journal/presentation/screens/journal_home_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_timeline_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_search_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_insights_screen.dart';
