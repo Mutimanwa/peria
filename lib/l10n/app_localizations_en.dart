@@ -688,6 +688,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get myDairy => 'This is my diary...';
+
+  @override
+  String get aboutYourDay => 'Tell me about your day...';
+
+  @override
+  String get howDoYouFell => 'How are you feeling?';
+
+  @override
   String get educationGreeting => 'Hello Peria';
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:peria_app/features/journal/data/models/mood.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class JournalEditorScreen extends ConsumerStatefulWidget {
   const JournalEditorScreen({super.key, this.entryId});
@@ -84,10 +86,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppColors.grey700),
-          onPressed: () => context.go('/journal'),
-        ),
+        leading: BackIconButton(onPressed: () => context.go('/journal')),
         actions: [
           // Bouton "Save" compact et bleu
           Padding(
@@ -103,7 +102,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
               ),
               child: _isSaving 
                 ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Text("Save", style: TextStyle(fontWeight: FontWeight.bold)),
+                : Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -132,9 +131,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                   TextField(
                     controller: _titleController,
                     style: AppText.h3.copyWith(fontWeight: FontWeight.w800, fontSize: 24),
-                    decoration: const InputDecoration(
-                      hintText: "C'est mon journal...",
-                      hintStyle: TextStyle(color: AppColors.grey300),
+                    decoration: InputDecoration(
+                      hintText: l10n.myDairy,
+                      hintStyle: const TextStyle(color: AppColors.grey300),
                       border: InputBorder.none,
                     ),
                   ),
@@ -143,9 +142,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                     controller: _contentController,
                     maxLines: null,
                     style: AppText.body.copyWith(fontSize: 17, height: 1.5, color: AppColors.grey800),
-                    decoration: const InputDecoration(
-                      hintText: "Raconte ta journée...",
-                      hintStyle: TextStyle(color: AppColors.grey300),
+                    decoration: InputDecoration(
+                      hintText: l10n.aboutYourDay,
+                      hintStyle: const TextStyle(color: AppColors.grey300),
                       border: InputBorder.none,
                     ),
                   ),
@@ -224,7 +223,7 @@ class _ToolbarIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(icon, color: AppColors.grey500, size: 22),
-      onPressed: () {}, // À implémenter selon tes besoins
+      onPressed: () {}, // À implémenter 
     );
   }
 }

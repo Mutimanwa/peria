@@ -1388,6 +1388,24 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
+  /// No description provided for @myDairy.
+  ///
+  /// In en, this message translates to:
+  /// **'This is my diary...'**
+  String get myDairy;
+
+  /// No description provided for @aboutYourDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me about your day...'**
+  String get aboutYourDay;
+
+  /// No description provided for @howDoYouFell.
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling?'**
+  String get howDoYouFell;
+
   /// No description provided for @educationGreeting.
   ///
   /// In en, this message translates to:

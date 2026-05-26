@@ -291,7 +291,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Saisie rapide des symptomes du jour. Appuie sur tout ce qui correspond a ce que tu ressens aujourd\'hui.';
 
   @override
-  String get save => 'Enregistrer';
+  String get save => 'Sauvegarder';
 
   @override
   String get notes => 'Notes';
@@ -693,6 +693,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ok => 'OK';
+
+  @override
+  String get myDairy => 'C\'est mon journal...';
+
+  @override
+  String get aboutYourDay => 'Raconte ta journée...';
+
+  @override
+  String get howDoYouFell => 'Comment te sens-tu ?';
 
   @override
   String get educationGreeting => 'Bonjour Peria';
