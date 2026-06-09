@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,7 +17,8 @@ class JournalEditorScreen extends ConsumerStatefulWidget {
   final String? entryId;
 
   @override
-  ConsumerState<JournalEditorScreen> createState() => _JournalEditorScreenState();
+  ConsumerState<JournalEditorScreen> createState() =>
+      _JournalEditorScreenState();
 }
 
 class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
@@ -50,8 +50,10 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   }
 
   Future<void> _save() async {
-    if (_titleController.text.isEmpty && _contentController.text.isEmpty) return;
-    
+    if (_titleController.text.isEmpty && _contentController.text.isEmpty) {
+      return;
+    }
+
     setState(() => _isSaving = true);
     final now = DateTime.now();
     final entry = (_existing ??
@@ -78,36 +80,39 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final dateStr = DateFormat('d MMM yyyy', 'fr').format(_existing?.createdAt ?? DateTime.now());
-    final timeStr = DateFormat('HH:mm').format(_existing?.createdAt ?? DateTime.now());
+    final dateStr = DateFormat('d MMM yyyy', 'fr')
+        .format(_existing?.createdAt ?? DateTime.now());
+    final timeStr =
+        DateFormat('HH:mm').format(_existing?.createdAt ?? DateTime.now());
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB), // Fond très clair comme l'image
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: BackIconButton(onPressed: () => context.go('/journal')),
-        actions: [
-          // Bouton "Save" compact et bleu
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: ElevatedButton(
-              onPressed: _isSaving ? null : _save,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary500,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-              child: _isSaving 
-                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.bold)),
+    return PageScaffold(
+      showBack: true,
+      onBack: () => context.go('/journal'),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ElevatedButton(
+            onPressed: _isSaving ? null : _save,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary500,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
             ),
+            child: _isSaving
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white))
+                : Text(l10n.save,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
-        ],
-      ),
-      body: Column(
+        ),
+      ],
+      child: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
@@ -115,13 +120,18 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
-                  // Date et Heure (Le style de l'image)
+                  const SizedBox(height: 70),
+                  // Date et Heure
                   Row(
                     children: [
-                      Text(dateStr, style: AppText.body.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                      Text(dateStr,
+                          style: AppText.body.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.grey900)),
                       const SizedBox(width: 8),
-                      Text(timeStr, style: AppText.body.copyWith(color: AppColors.grey400)),
+                      Text(timeStr,
+                          style:
+                              AppText.body.copyWith(color: AppColors.grey400)),
                       const Spacer(),
                       const Icon(Icons.more_horiz, color: AppColors.grey400),
                     ],
@@ -130,7 +140,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                   // Titre
                   TextField(
                     controller: _titleController,
-                    style: AppText.h3.copyWith(fontWeight: FontWeight.w800, fontSize: 24),
+                    style: AppText.h3
+                        .copyWith(fontWeight: FontWeight.w800, fontSize: 24),
                     decoration: InputDecoration(
                       hintText: l10n.myDairy,
                       hintStyle: const TextStyle(color: AppColors.grey300),
@@ -141,7 +152,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                   TextField(
                     controller: _contentController,
                     maxLines: null,
-                    style: AppText.body.copyWith(fontSize: 17, height: 1.5, color: AppColors.grey800),
+                    style: AppText.body.copyWith(
+                        fontSize: 17, height: 1.5, color: AppColors.grey800),
                     decoration: InputDecoration(
                       hintText: l10n.aboutYourDay,
                       hintStyle: const TextStyle(color: AppColors.grey300),
@@ -162,7 +174,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   Widget _buildBottomToolbar() {
     final currentMood = Mood.fromId(_moodId);
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10, top: 10),
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 10, top: 10),
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(top: BorderSide(color: AppColors.grey200, width: 0.5)),
@@ -189,7 +202,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -197,15 +211,38 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
           children: [
             const Text("Comment te sens-tu ?", style: AppText.h4),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: Mood.values.map((m) => GestureDetector(
-                onTap: () {
-                  setState(() => _moodId = m.id);
-                  Navigator.pop(context);
-                },
-                child: Icon(m.icon, size: 40, color: _moodId == m.id ? m.accent : AppColors.grey300),
-              )).toList(),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 16,
+              runSpacing: 16,
+              children: Mood.all.map((m) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() => _moodId = m.id);
+                    Navigator.pop(context);
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        m.icon,
+                        size: 40,
+                        color: _moodId == m.id ? m.accent : AppColors.grey300,
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        m.label,
+                        style: TextStyle(
+                          color: _moodId == m.id ? m.accent : AppColors.grey300,
+                          fontWeight: _moodId == m.id
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
             const SizedBox(height: 20),
           ],
@@ -223,7 +260,7 @@ class _ToolbarIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(icon, color: AppColors.grey500, size: 22),
-      onPressed: () {}, // À implémenter 
+      onPressed: () {}, // À implémenter
     );
   }
 }

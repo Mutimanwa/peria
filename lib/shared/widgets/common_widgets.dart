@@ -320,7 +320,7 @@ class PageScaffold extends StatelessWidget {
   final bool showTitle;
   final VoidCallback? onBack;
   final String? title;
-  final List<Widget>? actions; // Optionnel : pour ajouter des boutons à droite
+  final List<Widget>? actions; 
 
   const PageScaffold({
     super.key,

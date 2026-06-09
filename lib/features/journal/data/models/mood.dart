@@ -64,5 +64,5 @@ class Mood {
     return all.firstWhere((m) => m.id == id, orElse: () => all[0]);
   }
 
-  static get values => null;
+  static List<Mood> get values => all;
 }
