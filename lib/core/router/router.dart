@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:peria_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:peria_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
 import 'package:peria_app/features/calendar/presentation/screens/symptoms_screen.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_detail_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/text.dart';
-import 'package:peria_app/features/journal/presentation/screens/journal_editor_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_screens.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:peria_app/features/auth/presentation/screens/auth_screens.dart';
@@ -286,6 +286,14 @@ final GoRouter appRouter = GoRouter(
         const JournalLockGuard(child: JournalTimelineScreen()),
       ),
     ),
+            GoRoute(
+          path: '/journal/search',
+          pageBuilder: (context, state) => _buildSlideTransitionPage(
+            context,
+            state,
+            const JournalLockGuard(child: JournalSearchScreen()),
+          ),
+        ),
 
     // Shell route for main app navigation with CustomBottomNav
     ShellRoute(
@@ -315,14 +323,7 @@ final GoRouter appRouter = GoRouter(
             const JournalLockGuard(child: JournalScreens()),
           ),
         ),
-        GoRoute(
-          path: '/journal/search',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
-            context,
-            state,
-            const JournalLockGuard(child: JournalSearchScreen()),
-          ),
-        ),
+
         GoRoute(
           path: '/journal/insights',
           pageBuilder: (context, state) => _buildSlideTransitionPage(

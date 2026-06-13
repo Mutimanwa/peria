@@ -22,12 +22,14 @@ class JournalDetailScreen extends ConsumerStatefulWidget {
 
 class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
   late PageController _pageController;
-  late int _currentIndex;
+  int _currentIndex = 0;
   List<JournalEntry> _allEntries = [];
+  bool _isControllerInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    // On initialise le controller par défaut, on ajustera la page dès que les données seront là
     _pageController = PageController();
   }
 
@@ -35,6 +37,92 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  // --- LOGIQUE MÉTIER RELOCALISÉE ICI POUR ACCÉDER À L'ÉTAT ---
+  void _editEntry(JournalEntry entry) {
+    context.go('/journal/edit/${entry.id}');
+  }
+
+  void _deleteEntry(JournalEntry entry) {
+    // 1. On ouvre directement le dialogue de confirmation en lui passant l'entrée
+    _confirmDelete(context, ref, entry);
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref, JournalEntry entry) {
+    HapticFeedback
+        .heavyImpact(); // Super effet pour marquer la gravité de l'action !
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        title: const Text("Delete this memory?"),
+        content: const Text("This action is permanent and cannot be undone."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+            onPressed: () async {
+              // 2. Appel de ton provider avec la bonne méthode 'delete'
+              await ref.read(journalProvider.notifier).delete(entry.id);
+
+              if (!context.mounted) return;
+
+              // 3. Fermer le dialogue d'abord en utilisant son propre contexte
+              Navigator.pop(dialogContext);
+
+              // 4. Rediriger l'utilisatrice vers la liste des journaux
+              context.go('/journal');
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showOptions(BuildContext context, JournalEntry currentEntry) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              ListTile(
+                leading: const Icon(Icons.edit),
+                title: const Text('Modifier'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _editEntry(currentEntry);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Supprimer'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _deleteEntry(currentEntry);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -47,42 +135,35 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
         if (entries.isEmpty) return _buildEmptyState(l10n);
 
         _allEntries = entries;
-        _currentIndex = _allEntries.indexWhere((e) => e.id == widget.entryId);
-        if (_currentIndex == -1) _currentIndex = 0;
 
-        // Reset page controller to matched index on first load
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_pageController.hasClients &&
-              _pageController.page?.round() != _currentIndex) {
-            _pageController.jumpToPage(_currentIndex);
-          }
-        });
+        // Trouver l'index correspondant à l'ID passé en paramètre
+        if (!_isControllerInitialized) {
+          final matchedIndex =
+              _allEntries.indexWhere((e) => e.id == widget.entryId);
+          _currentIndex = matchedIndex != -1 ? matchedIndex : 0;
 
-        return Scaffold(
-          backgroundColor: AppColors.white,
-          extendBodyBehindAppBar: true,
-          appBar: _JournalBlurredAppBar(
-            onBack: () => context.go('/journal'),
-            onEdit: () =>
-                context.go('/journal/edit/${_allEntries[_currentIndex].id}'),
-          ),
-          body: PageView.builder(
+          // Réinitialiser le controller avec la bonne page initiale une seule fois
+          _pageController = PageController(initialPage: _currentIndex);
+          _isControllerInitialized = true;
+        }
+
+        final currentEntry = _allEntries[_currentIndex];
+
+        return PageScaffold(
+          onBack: () => context.go('/journal'),
+          actions: [
+            IconButton(
+              onPressed: () => _showOptions(context, currentEntry),
+              icon: const Icon(Icons.more_vert),
+            )
+          ],
+          child: PageView.builder(
             controller: _pageController,
             itemCount: _allEntries.length,
             onPageChanged: (index) => setState(() => _currentIndex = index),
             itemBuilder: (context, index) {
-              final entry = _allEntries[index];
-              return _JournalEntryPage(entry: entry);
+              return _JournalEntryPage(entry: _allEntries[index]);
             },
-          ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () =>
-                context.go('/journal/edit/${_allEntries[_currentIndex].id}'),
-            backgroundColor: AppColors.grey900,
-            icon: const Icon(Icons.edit_rounded, color: Colors.white, size: 20),
-            label: const Text("Edit Entry",
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         );
       },
@@ -95,62 +176,23 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
   Widget _buildEmptyState(AppLocalizations l10n) {
     return PageScaffold(
       showBack: true,
-      onBack: () => context.pop(),
+      onBack: () => context.go('/journal'),
       showTitle: true,
       title: l10n.journalTitle,
       child: Center(
-          child: EmptyJournal(hasQuery: false, selectedDate: DateTime.now())),
-    );
-  }
-}
-
-class _JournalBlurredAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  final VoidCallback onBack;
-  final VoidCallback onEdit;
-
-  const _JournalBlurredAppBar({required this.onBack, required this.onEdit});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: AppBar(
-          backgroundColor: AppColors.white.withOpacity(0.7),
-          elevation: 0,
-          leading: BackIconButton(onPressed: onBack),
-          centerTitle: true,
-          title: Text(
-            "Journal",
-            style: AppText.h3.copyWith(fontSize: 18, color: AppColors.grey900),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_horiz_rounded,
-                  color: AppColors.grey700),
-              onPressed: () => _showMoreActions(context),
-            ),
-          ],
-        ),
+        child: EmptyJournal(hasQuery: false, selectedDate: DateTime.now()),
       ),
     );
   }
-
-  void _showMoreActions(BuildContext context) {
-    // Placeholder for more actions menu
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _JournalEntryPage extends ConsumerWidget {
+// Les sous-widgets restent inchangés et restent optimisés en performance (ConsumerWidget & StatelessWidget)
+class _JournalEntryPage extends StatelessWidget {
   final JournalEntry entry;
   const _JournalEntryPage({required this.entry});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final mood = Mood.fromId(entry.mood);
 
     return SingleChildScrollView(
@@ -159,8 +201,7 @@ class _JournalEntryPage extends ConsumerWidget {
         children: [
           _HeroSection(entry: entry, mood: mood),
           _ContentSection(entry: entry),
-          _MetaSection(entry: entry),
-          const SizedBox(height: 100), // Space for FAB
+          const SizedBox(height: 100),
         ],
       ),
     );
@@ -176,43 +217,37 @@ class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(
+          milliseconds: 600), // Légèrement plus rapide pour la réactivité UI
       tween: Tween(begin: 0.0, end: 1.0),
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
           child: Transform.translate(
-            offset: Offset(0, 20 * (1 - value)),
+            offset: Offset(0, 15 * (1 - value)),
             child: child,
           ),
         );
       },
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(28, 120, 28, 40),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              mood.color.withOpacity(0.4),
-              AppColors.white,
-            ],
-          ),
-        ),
+        padding: const EdgeInsets.fromLTRB(28, 40, 28,
+            20), // Ajusté le padding haut pour éviter les débordements du Scaffold
         child: Column(
           children: [
+            const SizedBox(height: 40),
             Container(
-              width: 80,
-              height: 80,
+              width: 70,
+              height: 70,
               decoration: BoxDecoration(
                 color: AppColors.white,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                      color: mood.accent.withOpacity(0.2),
-                      blurRadius: 20,
-                      spreadRadius: 5),
+                    color: mood.accent.withOpacity(0.2),
+                    blurRadius: 20,
+                    spreadRadius: 1,
+                  ),
                 ],
               ),
               child:
@@ -232,7 +267,9 @@ class _HeroSection extends StatelessWidget {
               entry.title.isNotEmpty ? entry.title : "A quiet moment",
               textAlign: TextAlign.center,
               style: AppText.h2.copyWith(
-                  color: AppColors.grey900, fontWeight: FontWeight.w800),
+                color: AppColors.grey900,
+                fontWeight: FontWeight.w800,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -256,7 +293,7 @@ class _ContentSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: TweenAnimationBuilder<double>(
-        duration: const Duration(milliseconds: 1000),
+        duration: const Duration(milliseconds: 800),
         tween: Tween(begin: 0.0, end: 1.0),
         builder: (context, value, child) =>
             Opacity(opacity: value, child: child),
@@ -275,118 +312,6 @@ class _ContentSection extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _MetaSection extends ConsumerWidget {
-  final JournalEntry entry;
-  const _MetaSection({required this.entry});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 40, 28, 20),
-      child: Column(
-        children: [
-          _buildActionTile(
-            icon: Icons.favorite_border_rounded,
-            title: "Mark as favorite",
-            color: Colors.pinkAccent,
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            icon: Icons.copy_rounded,
-            title: "Duplicate entry",
-            color: AppColors.primary500,
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            icon: Icons.ios_share_rounded,
-            title: "Export memory",
-            color: AppColors.grey700,
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            icon: Icons.share_rounded,
-            title: "Share moment",
-            color: AppColors.primary500,
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            icon: Icons.delete_outline_rounded,
-            title: "Delete entry",
-            color: Colors.redAccent,
-            onTap: () => _confirmDelete(context, ref),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionTile({
-    required IconData icon,
-    required String title,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: AppColors.grey50,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: AppColors.grey100),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(width: 16),
-            Text(title,
-                style: AppText.label.copyWith(
-                    color: AppColors.grey800, fontWeight: FontWeight.bold)),
-            const Spacer(),
-            Icon(Icons.chevron_right_rounded, color: AppColors.grey400),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _confirmDelete(BuildContext context, WidgetRef ref) {
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        title: const Text("Delete this memory?"),
-        content: const Text("This action is permanent and cannot be undone."),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel")),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-            ),
-            onPressed: () async {
-              await ref.read(journalProvider.notifier).delete(entry.id);
-              if (!context.mounted) return;
-              Navigator.pop(context);
-              context.go('/journal');
-            },
-            child: const Text("Delete", style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }

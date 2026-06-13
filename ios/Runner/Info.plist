@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>Peria a besoin d'accéder à tes photos pour les ajouter à ton journal intime.</string>
+<key>NSCameraUsageDescription</key>
+<string>Peria a besoin d'utiliser l'appareil photo pour te permettre de prendre une photo directement pour ton journal.</string>
 </dict>
 </plist>

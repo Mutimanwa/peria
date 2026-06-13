@@ -39,6 +39,8 @@ dependencies:
   equatable: ^2.0.8
   flutter_launcher_icons: ^0.14.4
   crypto: ^3.0.3
+  # Image picker pour le journal
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -70,14 +72,3 @@ flutter_launcher_icons:
    icon_background_color:"#FFFFFF"
 
 
-  # ── Custom Fonts ──────────────────────────────────────────────────────────
-  # Place your font files in assets/fonts/
-  # fonts:
-  #   - family: PerlApp
-  #     fonts:
-  #       - asset: assets/fonts/PerlApp-Regular.ttf
-  #         weight: 400
-  #       - asset: assets/fonts/PerlApp-Medium.ttf
-  #         weight: 500
-  #       - asset: assets/fonts/PerlApp-Bold.ttf
-  #         weight: 700
