@@ -5,7 +5,7 @@ import 'package:peria_app/features/calendar/presentation/screens/calendar_screen
 import 'package:peria_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
 import 'package:peria_app/features/calendar/presentation/screens/symptoms_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_detail_screen.dart';
-import 'package:peria_app/features/journal/presentation/screens/text.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_editor_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_screens.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:peria_app/features/auth/presentation/screens/auth_screens.dart';
