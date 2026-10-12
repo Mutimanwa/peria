@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:peria_app/core/storage/app_settings_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
@@ -14,13 +14,12 @@ class SettingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final settingsState = ref.watch(appSettingsProvider);
     final profileState = ref.watch(userProfileProvider);
     return SimplePage(
       title: l10n.settings,
       fallbackRoute: '/profile',
-      child: settingsState.when(
-        data: (settings) => Column(
+      child: SingleChildScrollView(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SectionLabel(l10n.appearance),
@@ -72,6 +71,11 @@ class SettingScreen extends ConsumerWidget {
             SectionLabel(l10n.integrationsSync),
             MenuGroup(items: [
               MenuItemData(
+                l10n.journalCloudSync,
+                Icons.cloud_outlined,
+                () => context.go('/profile/journal-sync'),
+              ),
+              MenuItemData(
                   l10n.connectedApps, Icons.all_inclusive_rounded, () {}),
             ]),
             const SizedBox(height: 22),
@@ -84,8 +88,6 @@ class SettingScreen extends ConsumerWidget {
             ]),
           ],
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => Center(child: Text(l10n.unableToLoadSettings)),
       ),
     );
   }

@@ -1,136 +1,66 @@
-// Configuration guide for Journal Offline-First optimization
+# Journal — stockage local d’abord et synchronisation cloud sur consentement
 
-// ═══════════════════════════════════════════════════════════════════
-// 1. OPTIMISTIC LOADING — JournalNotifier
-// ═══════════════════════════════════════════════════════════════════
+Le journal doit rester utilisable hors ligne et la synchronisation cloud est
+**désactivée par défaut**. Hive est la source de vérité locale ; les notes sont
+stockées dans la box Hive chiffrée `hive.journal_entries.v1`.
 
-// Location: lib/features/journal/presentation/providers/journal_provider.dart
-//
-// Changes:
-// • upsert() updates UI state immediately before Firestore sync
-// • delete() removes from UI immediately, syncs async in background
-// • .catchError() silently logs failures (TODO: add toast notifications)
-//
-// Effect: No loading spinner, user sees instant feedback
+## Consentement cloud
 
-// ═══════════════════════════════════════════════════════════════════
-// 2. HIVE CACHING — JournalFirestoreRepository
-// ═══════════════════════════════════════════════════════════════════
+- Le choix de synchroniser est conservé localement dans `SharedPreferences` et lié au compte actuellement connecté ; un changement de compte ne transmet pas le consentement à l’autre compte.
+- Ce choix est propre à l’appareil : un autre appareil doit lui aussi obtenir un opt-in. La suppression des copies cloud ne peut pas empêcher un autre appareil déjà autorisé de renvoyer ses notes.
+- Aucune lecture ni écriture de notes dans Firestore n’est effectuée avant que
+  l’utilisatrice n’ait accepté le dialogue de consentement.
+- Le dialogue décrit les champs envoyés, précise l’absence de chiffrement de
+  bout en bout par Peria et signale le cache hors ligne éventuel de Firestore,
+  distinct de Hive.
+- L’activation synchronise les notes locales et distantes ; les versions les
+  plus récentes sont conservées.
+- Désactiver la synchronisation bloque les prochains envois. Les copies déjà
+  présentes dans Firestore ne sont pas supprimées automatiquement ; une action
+  distincte permet de les supprimer, sans effacer les notes locales.
+- Les suppressions locales sont gardées dans une box de tombstones chiffrée,
+  afin qu’une synchronisation ultérieure ne restaure pas une note supprimée.
 
-// Location: lib/features/journal/data/repositories/journal_firestore_repository.dart
-//
-// Key methods:
-// • initHive() — Opens or retrieves Hive box 'journal_entries'
-// • _loadFromHive() — Reads all entries from cache (synchronous)
-// • _saveToHive() — Persists entries to Hive
-//
-// Flow:
-//   1. load() → read Hive cache instantly
-//   2. Firestore fetch in background
-//   3. On success → sync Hive + update state
-//   4. On error → return cache
-//
-// Result: App never shows blank screen, always has cached data
+## Parcours d’une lecture
 
-// ═══════════════════════════════════════════════════════════════════
-// 3. SKELETON LOADING — JournalSkeleton Widget
-// ═══════════════════════════════════════════════════════════════════
+1. Lire la box Hive chiffrée et afficher son contenu.
+2. Si le consentement cloud est actif, lancer ensuite une réconciliation
+   Firestore en arrière-plan.
+3. Si le réseau est indisponible, garder les données locales et afficher l’état
+   de synchronisation comme incomplet/à réessayer.
 
-// Location: lib/features/journal/presentation/widgets/journal_skeleton.dart
-//
-// Features:
-// • Shimmer animation (requires: flutter pub add shimmer)
-// • 3-4 fake cards with correct layout
-// • 12px border radius matching design
-// • Shows while initial load from Hive happens
-//
-// Usage in JournalScreen:
-//   loading: () => JournalSkeleton(count: 4),
+## Parcours d’une écriture ou suppression
 
-// ═══════════════════════════════════════════════════════════════════
-// 4. SKIPLOADINGONRELOAD — UI Non-Blocking Refresh
-// ═══════════════════════════════════════════════════════════════════
+1. Mettre à jour l’état de l’interface de façon optimiste.
+2. Persister d’abord dans Hive, sans attendre le réseau.
+3. Si et seulement si le consentement est actif, ajouter l’écriture ou la
+   suppression à la file cloud.
+4. Afficher la date de la dernière synchronisation réussie et une erreur
+   générique si la dernière tentative a échoué.
 
-// Location: lib/features/journal/presentation/screens/journal_screens.dart
-//
-// Code:
-//   final state = ref.watch(journalProvider.select(
-//     (s) => s.skipLoadingOnReload,
-//   ));
-//
-// Effect:
-// • Refresh from Firestore doesn't trigger loading state
-// • UI stays responsive with cached data
-// • New data appears when ready
+## Performance et état visible
 
-// ═══════════════════════════════════════════════════════════════════
-// 5. UX OPTIMIZATIONS
-// ═══════════════════════════════════════════════════════════════════
+- L’écran peut afficher un skeleton pendant l’ouverture initiale de Hive, mais ne doit
+  pas attendre Firestore pour afficher les notes locales.
+- Une actualisation ne doit pas vider la liste déjà affichée ; la réconciliation
+  cloud reste en arrière-plan après le chargement local.
+- La création, la modification et la suppression doivent rester rapides même
+  hors ligne. L’état de la dernière tentative se consulte dans les réglages du journal.
 
-// A. Save Flow (JournalEditorScreen._save):
-//    1. User taps "Save"
-//    2. Entry added to UI immediately via upsert()
-//    3. Screen navigates back to list
-//    4. User sees their new entry instantly
-//    5. Hive persists in background
-//    6. Firestore syncs when ready
-//
-// B. Delete Flow:
-//    1. User taps delete
-//    2. Entry removed from UI list immediately
-//    3. Hive & Firestore cleanup async
-//
-// C. Refresh Flow:
-//    1. Pull-to-refresh calls load()
-//    2. State shows cached data + shimmer for new items
-//    3. Firestore updates appear seamlessly
+## Tests manuels à réaliser
 
-// ═══════════════════════════════════════════════════════════════════
-// 6. ERROR HANDLING (TODO IMPROVEMENTS)
-// ═══════════════════════════════════════════════════════════════════
-
-// Current: Silent failures logged to console
-// 
-// Future improvements:
-// • Add toast notifications on sync failures
-// • Implement retry queue for failed saves
-// • Add "sync status" indicator in UI
-// • Show pending changes count during offline
-
-// ═══════════════════════════════════════════════════════════════════
-// 7. DEPENDENCIES ADDED
-// ═══════════════════════════════════════════════════════════════════
-
-// pubspec.yaml:
-//   shimmer: ^3.0.0        ← Added for loading animations
-//   (hive, hive_flutter)   ← Already present
-//   (flutter_riverpod)     ← Already present
-
-// ═══════════════════════════════════════════════════════════════════
-// 8. MIGRATION CHECKLIST
-// ═══════════════════════════════════════════════════════════════════
-
-// □ Run: flutter pub get
-// □ Clear app cache and restart for Hive migration
-// □ Test on slow network (DevTools Throttling)
-// □ Test offline mode (Airplane mode)
-// □ Check Android/iOS background sync behavior
-// □ Monitor Firebase read/write quota improvements
-// □ Add error reporting for failed syncs
-
-// ═══════════════════════════════════════════════════════════════════
-// 9. PERFORMANCE METRICS TO TRACK
-// ═══════════════════════════════════════════════════════════════════
-
-// Before:
-// • Initial load: 2-3s (waiting for Firestore)
-// • Blank screen time: ~2s
-// • Save feedback: 1-2s delay
-//
-// After:
-// • Initial load: <500ms (Hive cache)
-// • Blank screen time: 0s (shows skeleton)
-// • Save feedback: Instant (optimistic)
-// • Firestore: Background sync (transparent to user)
-
-// ═══════════════════════════════════════════════════════════════════
+- Première installation : vérifier que le réglage cloud est désactivé et qu’une
+  création de note ne déclenche aucun accès Firestore.
+- Accepter le dialogue : vérifier la première fusion, puis créer, modifier et
+  supprimer des notes.
+- Refuser le dialogue : vérifier que le réglage reste désactivé et que les
+  notes locales restent accessibles.
+- Couper le réseau : vérifier que lecture et écriture locales continuent, puis
+  réessayer une synchronisation lorsque le réseau revient.
+- Désactiver après avoir synchronisé : vérifier qu’aucun nouvel envoi ne part,
+  que la copie distante reste annoncée comme existante, puis tester la
+  suppression explicite de la copie cloud.
+- Supprimer une note et vider le journal hors ligne, puis réactiver la sync :
+  vérifier que les tombstones empêchent la résurrection des anciennes notes.
+- Mettre à jour depuis une ancienne version : vérifier la migration de l’ancien
+  cache Map non chiffré vers la box Hive chiffrée, sans perte de notes.

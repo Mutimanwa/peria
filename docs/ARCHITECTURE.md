@@ -33,9 +33,10 @@ Riverpod est utilisé de façon structurée :
 ## 4. Persistance des Données
 
 Afin d'assurer le fonctionnement hors ligne et la sécurité :
-1. **Hive (NoSQL)**: Stocke la majorité des données structurées et rapides d'accès (profil utilisateur, logs du cycle, notes de journal). La Box du journal peut être verrouillée.
+1. **Hive (NoSQL)**: Stocke les notes du journal dans une box chiffrée, ainsi que les suppressions en attente (tombstones) afin d’éviter la restauration accidentelle de notes supprimées.
 2. **Flutter Secure Storage**: Conserve le code PIN, les tokens d'authentification et les clés cryptographiques en s'appuyant sur Android KeyStore et le Keychain iOS.
-3. **Shared Preferences**: Pour les réglages mineurs, comme la bascule du thème ou le statut d'onboarding.
+3. **Shared Preferences**: Pour les réglages mineurs et le consentement local à la synchronisation du journal. Ce consentement est désactivé par défaut et n’est jamais téléchargé depuis le compte cloud.
+4. **Firebase Firestore**: Synchronise les notes uniquement après une action de consentement explicite. Son cache hors ligne éventuel est distinct de la box Hive chiffrée et est signalé dans le dialogue de consentement. La synchronisation peut être arrêtée séparément ; l’arrêt ne supprime pas les copies déjà envoyées.
 
 ## 5. Composants de Sécurité
 

@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:peria_app/core/storage/hive_boxes.dart';
+import 'package:peria_app/core/storage/journal_sync_preferences.dart';
 import 'package:peria_app/core/storage/secure_storage_service.dart';
 
 /// Production-grade security service for handling authentication, PIN management,
@@ -391,10 +392,20 @@ class SecurityService {
 
     await Future.wait(
         securityKeys.map((key) => _secureStorage.delete(key: key)));
+    const syncPreferences = JournalSyncPreferences();
+    await syncPreferences.reset();
 
-    // Clear all Hive boxes
+    if (await Hive.boxExists(HiveBoxes.legacyJournalEntries)) {
+      if (Hive.isBoxOpen(HiveBoxes.legacyJournalEntries)) {
+        await Hive.box<dynamic>(HiveBoxes.legacyJournalEntries).close();
+      }
+      await Hive.deleteBoxFromDisk(HiveBoxes.legacyJournalEntries);
+    }
+
+    // Clear all current Hive boxes after removing any legacy plaintext cache.
     await Future.wait([
       Hive.deleteBoxFromDisk(HiveBoxes.journalEntries),
+      Hive.deleteBoxFromDisk(HiveBoxes.journalTombstones),
       Hive.deleteBoxFromDisk(HiveBoxes.periodLogs),
       Hive.deleteBoxFromDisk(HiveBoxes.userProfile),
     ]);

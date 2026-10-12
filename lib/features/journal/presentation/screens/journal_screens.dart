@@ -1,4 +1,4 @@
-﻿
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -263,6 +263,14 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                 onTap: () {
                   context.go('/journal/search');
                 },
+              ),
+              const SizedBox(width: 8),
+              Tooltip(
+                message: l10n.journalCloudSync,
+                child: HeaderIconButton(
+                  icon: Icons.cloud_outlined,
+                  onTap: () => context.go('/profile/journal-sync'),
+                ),
               ),
             ],
           ),

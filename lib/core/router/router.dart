@@ -15,6 +15,7 @@ import 'package:peria_app/features/home/presentation/screens/cycle_home_screen.d
 import 'package:peria_app/features/journal/presentation/screens/journal_timeline_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_search_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_insights_screen.dart';
+import 'package:peria_app/features/journal/presentation/screens/journal_sync_settings_screen.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/onboarding_screens.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
@@ -241,6 +242,14 @@ final GoRouter appRouter = GoRouter(
       path: '/profile/settings',
       pageBuilder: (context, state) =>
           _buildSlideTransitionPage(context, state, const SettingScreen()),
+    ),
+    GoRoute(
+      path: '/profile/journal-sync',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const JournalSyncSettingsScreen(),
+      ),
     ),
     GoRoute(
       path: '/profile/help-support',

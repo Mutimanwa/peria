@@ -163,6 +163,79 @@ class AppLocalizationsFr extends AppLocalizations {
   String get otpContinue => 'Continuer';
 
   @override
+  String get journalCloudSync => 'Synchronisation cloud du journal';
+
+  @override
+  String get journalSyncDescription => 'Par défaut, ton journal reste chiffré sur cet appareil. Si tu l’actives, les notes existantes et futures sont stockées dans ton compte Peria via Firebase Firestore. La copie cloud n’est pas chiffrée de bout en bout par Peria.';
+
+  @override
+  String get journalSyncEnabledDescription => 'Les notes existantes et nouvelles de cet appareil sont synchronisées avec ton compte Peria dans le cloud.';
+
+  @override
+  String get journalSyncDisabledDescription => 'La synchronisation cloud est désactivée sur cet appareil. Ton journal reste ici.';
+
+  @override
+  String get journalSyncConsentTitle => 'Avant d’activer la synchronisation';
+
+  @override
+  String get journalSyncConsentBody => 'Si tu acceptes, Peria envoie tes notes existantes et futures — titres, textes, humeurs, dates, étiquettes, références de pièces jointes et autres détails enregistrés — vers ton compte Firebase Firestore. Elles sont stockées dans le cloud et ne sont pas chiffrées de bout en bout par Peria. Firestore peut aussi conserver un cache hors ligne sur cet appareil, distinct de la copie chiffrée dans Hive. Tu peux arrêter la synchronisation à tout moment ; cela ne supprime pas les copies déjà envoyées ni les envois déjà en attente.';
+
+  @override
+  String get enableAndSync => 'J’accepte et j’active';
+
+  @override
+  String get journalSyncDisableTitle => 'Désactiver la synchronisation ?';
+
+  @override
+  String get journalSyncDisableBody => 'La désactivation sur cet appareil arrête ses prochains envois automatiques. Les copies déjà stockées dans Firestore, y compris les envois déjà en attente, peuvent rester dans le cloud jusqu’à leur suppression ci-dessous. Ton journal local reste sur cet appareil.';
+
+  @override
+  String get turnOffSync => 'Désactiver';
+
+  @override
+  String get journalSyncLocalOnly => 'La synchronisation est désactivée sur cet appareil. Ton journal local reste ici ; une ancienne copie cloud peut subsister jusqu’à sa suppression.';
+
+  @override
+  String get journalSyncNotYet => 'Aucune synchronisation cloud réussie pour le moment.';
+
+  @override
+  String get journalSyncFailed => 'La dernière synchronisation a échoué. Réessaie lorsque tu seras en ligne.';
+
+  @override
+  String get syncNow => 'Synchroniser maintenant';
+
+  @override
+  String get journalSyncCompleted => 'Ton journal a été synchronisé.';
+
+  @override
+  String get journalSyncError => 'Impossible de synchroniser le journal. Tes notes locales restent disponibles.';
+
+  @override
+  String get journalSyncSettingsError => 'Impossible de modifier le réglage de synchronisation. Réessaie.';
+
+  @override
+  String get deleteCloudCopy => 'Supprimer la copie cloud';
+
+  @override
+  String get journalCloudDeleteTitle => 'Supprimer la copie cloud ?';
+
+  @override
+  String get journalCloudDeleteBody => 'Cette action désactive la synchronisation sur cet appareil et supprime les notes stockées dans Firestore pour ce compte. Une connexion Internet est nécessaire. Un autre appareil dont la synchronisation est activée pourra renvoyer des notes. Les notes locales sur cet appareil ne seront pas supprimées.';
+
+  @override
+  String get journalCloudDeleteSuccess => 'La copie cloud a été supprimée. Ton journal local reste sur cet appareil.';
+
+  @override
+  String get journalCloudDeleteError => 'Impossible de supprimer la copie cloud. La synchronisation est désactivée ; vérifie ta connexion puis réessaie.';
+
+  @override
+  String get journalCloudLegacyCopyNotice => 'Si tu as utilisé une ancienne version de Peria, des notes peuvent déjà se trouver dans le cloud. Désactiver la synchronisation ne les supprime pas ; utilise « Supprimer la copie cloud » pour les effacer.';
+
+  @override
+  String journalSyncLastSynced(String time) =>
+      'Dernière synchronisation réussie : $time';
+
+  @override
   String get journalTitle => 'Journal';
 
   @override

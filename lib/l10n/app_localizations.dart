@@ -380,6 +380,78 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get otpContinue;
 
+  /// No description provided for @journalCloudSync.
+  String get journalCloudSync;
+
+  /// No description provided for @journalSyncDescription.
+  String get journalSyncDescription;
+
+  /// No description provided for @journalSyncEnabledDescription.
+  String get journalSyncEnabledDescription;
+
+  /// No description provided for @journalSyncDisabledDescription.
+  String get journalSyncDisabledDescription;
+
+  /// No description provided for @journalSyncConsentTitle.
+  String get journalSyncConsentTitle;
+
+  /// No description provided for @journalSyncConsentBody.
+  String get journalSyncConsentBody;
+
+  /// No description provided for @enableAndSync.
+  String get enableAndSync;
+
+  /// No description provided for @journalSyncDisableTitle.
+  String get journalSyncDisableTitle;
+
+  /// No description provided for @journalSyncDisableBody.
+  String get journalSyncDisableBody;
+
+  /// No description provided for @turnOffSync.
+  String get turnOffSync;
+
+  /// No description provided for @journalSyncLocalOnly.
+  String get journalSyncLocalOnly;
+
+  /// No description provided for @journalSyncNotYet.
+  String get journalSyncNotYet;
+
+  /// No description provided for @journalSyncFailed.
+  String get journalSyncFailed;
+
+  /// No description provided for @syncNow.
+  String get syncNow;
+
+  /// No description provided for @journalSyncCompleted.
+  String get journalSyncCompleted;
+
+  /// No description provided for @journalSyncError.
+  String get journalSyncError;
+
+  /// No description provided for @journalSyncSettingsError.
+  String get journalSyncSettingsError;
+
+  /// No description provided for @deleteCloudCopy.
+  String get deleteCloudCopy;
+
+  /// No description provided for @journalCloudDeleteTitle.
+  String get journalCloudDeleteTitle;
+
+  /// No description provided for @journalCloudDeleteBody.
+  String get journalCloudDeleteBody;
+
+  /// No description provided for @journalCloudDeleteSuccess.
+  String get journalCloudDeleteSuccess;
+
+  /// No description provided for @journalCloudDeleteError.
+  String get journalCloudDeleteError;
+
+  /// No description provided for @journalCloudLegacyCopyNotice.
+  String get journalCloudLegacyCopyNotice;
+
+  /// No description provided for @journalSyncLastSynced.
+  String journalSyncLastSynced(String time);
+
   /// No description provided for @journalTitle.
   ///
   /// In en, this message translates to:

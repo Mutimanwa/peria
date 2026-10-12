@@ -162,6 +162,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otpContinue => 'Continue';
 
   @override
+  String get journalCloudSync => 'Journal cloud sync';
+
+  @override
+  String get journalSyncDescription => 'By default, your journal stays encrypted on this device. If you opt in, existing and future entries are stored in your Peria account in Firebase Firestore. The cloud copy is not end-to-end encrypted by Peria.';
+
+  @override
+  String get journalSyncEnabledDescription => 'New and existing journal entries from this device sync to your Peria cloud account.';
+
+  @override
+  String get journalSyncDisabledDescription => 'Cloud sync is off on this device. Your journal stays here.';
+
+  @override
+  String get journalSyncConsentTitle => 'Before enabling journal sync';
+
+  @override
+  String get journalSyncConsentBody => 'If you agree, Peria sends your existing and future journal entries—including titles, text, moods, dates, tags, attachment references and other saved details—to your account in Firebase Firestore. This is cloud storage and is not end-to-end encrypted by Peria. Firestore may also keep an offline cache on this device, separate from Hive’s encrypted copy. You can turn sync off at any time; disabling it does not delete copies already uploaded or writes already queued.';
+
+  @override
+  String get enableAndSync => 'I agree and enable sync';
+
+  @override
+  String get journalSyncDisableTitle => 'Turn off journal sync?';
+
+  @override
+  String get journalSyncDisableBody => 'Turning this off on this device stops its future automatic uploads. Copies already stored in Firestore, including writes already queued, may remain until you delete them below. Your local journal stays on this device.';
+
+  @override
+  String get turnOffSync => 'Turn off sync';
+
+  @override
+  String get journalSyncLocalOnly => 'Cloud sync is off on this device. Your local journal is available here; an older cloud copy may remain until deleted.';
+
+  @override
+  String get journalSyncNotYet => 'No successful cloud sync yet.';
+
+  @override
+  String get journalSyncFailed => 'The last cloud sync failed. Try again when you are online.';
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get journalSyncCompleted => 'Your journal was synchronized.';
+
+  @override
+  String get journalSyncError => 'Could not synchronize the journal. Your local entries are still available.';
+
+  @override
+  String get journalSyncSettingsError => 'Could not update the journal sync setting. Please try again.';
+
+  @override
+  String get deleteCloudCopy => 'Delete cloud copy';
+
+  @override
+  String get journalCloudDeleteTitle => 'Delete the cloud copy?';
+
+  @override
+  String get journalCloudDeleteBody => 'This turns off sync on this device and deletes journal entries stored in Firestore for this account. An internet connection is required. Another device with sync enabled may upload entries again. Your local entries on this device will not be deleted.';
+
+  @override
+  String get journalCloudDeleteSuccess => 'The cloud copy was deleted. Your local journal remains on this device.';
+
+  @override
+  String get journalCloudDeleteError => 'Could not delete the cloud copy. Sync is off; check your connection and try again.';
+
+  @override
+  String get journalCloudLegacyCopyNotice => 'If you used an earlier version of Peria, journal entries may already exist in the cloud. Turning sync off does not remove them; use “Delete cloud copy” to remove them.';
+
+  @override
+  String journalSyncLastSynced(String time) =>
+      'Last successful sync: $time';
+
+  @override
   String get journalTitle => 'Journal';
 
   @override
