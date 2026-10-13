@@ -186,6 +186,7 @@ class _JournalSyncSettingsScreenState
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
+            backgroundColor: AppColors.white,
             title: Text(l10n.journalSyncConsentTitle),
             content: SingleChildScrollView(
               child: Text(l10n.journalSyncConsentBody),
@@ -210,6 +211,7 @@ class _JournalSyncSettingsScreenState
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
+            backgroundColor: AppColors.white,
             title: Text(l10n.journalSyncDisableTitle),
             content: Text(l10n.journalSyncDisableBody),
             actions: [
@@ -232,6 +234,7 @@ class _JournalSyncSettingsScreenState
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
+            backgroundColor: AppColors.white,
             title: Text(l10n.journalCloudDeleteTitle),
             content: Text(l10n.journalCloudDeleteBody),
             actions: [
