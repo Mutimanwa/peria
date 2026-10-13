@@ -380,83 +380,155 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get otpContinue;
 
-  /// No description provided for @journalCloudSync.
-  String get journalCloudSync;
-
-  /// No description provided for @journalSyncDescription.
-  String get journalSyncDescription;
-
-  /// No description provided for @journalSyncEnabledDescription.
-  String get journalSyncEnabledDescription;
-
-  /// No description provided for @journalSyncDisabledDescription.
-  String get journalSyncDisabledDescription;
-
-  /// No description provided for @journalSyncConsentTitle.
-  String get journalSyncConsentTitle;
-
-  /// No description provided for @journalSyncConsentBody.
-  String get journalSyncConsentBody;
-
-  /// No description provided for @enableAndSync.
-  String get enableAndSync;
-
-  /// No description provided for @journalSyncDisableTitle.
-  String get journalSyncDisableTitle;
-
-  /// No description provided for @journalSyncDisableBody.
-  String get journalSyncDisableBody;
-
-  /// No description provided for @turnOffSync.
-  String get turnOffSync;
-
-  /// No description provided for @journalSyncLocalOnly.
-  String get journalSyncLocalOnly;
-
-  /// No description provided for @journalSyncNotYet.
-  String get journalSyncNotYet;
-
-  /// No description provided for @journalSyncFailed.
-  String get journalSyncFailed;
-
-  /// No description provided for @syncNow.
-  String get syncNow;
-
-  /// No description provided for @journalSyncCompleted.
-  String get journalSyncCompleted;
-
-  /// No description provided for @journalSyncError.
-  String get journalSyncError;
-
-  /// No description provided for @journalSyncSettingsError.
-  String get journalSyncSettingsError;
-
-  /// No description provided for @deleteCloudCopy.
-  String get deleteCloudCopy;
-
-  /// No description provided for @journalCloudDeleteTitle.
-  String get journalCloudDeleteTitle;
-
-  /// No description provided for @journalCloudDeleteBody.
-  String get journalCloudDeleteBody;
-
-  /// No description provided for @journalCloudDeleteSuccess.
-  String get journalCloudDeleteSuccess;
-
-  /// No description provided for @journalCloudDeleteError.
-  String get journalCloudDeleteError;
-
-  /// No description provided for @journalCloudLegacyCopyNotice.
-  String get journalCloudLegacyCopyNotice;
-
-  /// No description provided for @journalSyncLastSynced.
-  String journalSyncLastSynced(String time);
-
   /// No description provided for @journalTitle.
   ///
   /// In en, this message translates to:
   /// **'Journal'**
   String get journalTitle;
+
+  /// No description provided for @journalCloudSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal cloud sync'**
+  String get journalCloudSync;
+
+  /// No description provided for @journalSyncDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'By default, your journal stays encrypted on this device. If you opt in, existing and future entries are stored in your Peria account in Firebase Firestore. The cloud copy is not end-to-end encrypted by Peria.'**
+  String get journalSyncDescription;
+
+  /// No description provided for @journalSyncEnabledDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'New and existing journal entries from this device sync to your Peria cloud account.'**
+  String get journalSyncEnabledDescription;
+
+  /// No description provided for @journalSyncDisabledDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync is off on this device. Your journal stays here.'**
+  String get journalSyncDisabledDescription;
+
+  /// No description provided for @journalSyncConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before enabling journal sync'**
+  String get journalSyncConsentTitle;
+
+  /// No description provided for @journalSyncConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you agree, Peria sends your existing and future journal entries—including titles, text, moods, dates, tags, attachment references and other saved details—to your account in Firebase Firestore. This is cloud storage and is not end-to-end encrypted by Peria. Firestore may also keep an offline cache on this device, separate from Hive’s encrypted copy. You can turn sync off at any time; disabling it does not delete copies already uploaded or writes already queued.'**
+  String get journalSyncConsentBody;
+
+  /// No description provided for @enableAndSync.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree and enable sync'**
+  String get enableAndSync;
+
+  /// No description provided for @journalSyncDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off journal sync?'**
+  String get journalSyncDisableTitle;
+
+  /// No description provided for @journalSyncDisableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Turning this off on this device stops its future automatic uploads. Copies already stored in Firestore, including writes already queued, may remain until you delete them below. Your local journal stays on this device.'**
+  String get journalSyncDisableBody;
+
+  /// No description provided for @turnOffSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off sync'**
+  String get turnOffSync;
+
+  /// No description provided for @journalSyncLocalOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sync is off on this device. Your local journal is available here; an older cloud copy may remain until deleted.'**
+  String get journalSyncLocalOnly;
+
+  /// No description provided for @journalSyncNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No successful cloud sync yet.'**
+  String get journalSyncNotYet;
+
+  /// No description provided for @journalSyncLastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last successful sync: {time}'**
+  String journalSyncLastSynced(String time);
+
+  /// No description provided for @journalSyncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The last cloud sync failed. Try again when you are online.'**
+  String get journalSyncFailed;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncNow;
+
+  /// No description provided for @journalSyncCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your journal was synchronized.'**
+  String get journalSyncCompleted;
+
+  /// No description provided for @journalSyncError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not synchronize the journal. Your local entries are still available.'**
+  String get journalSyncError;
+
+  /// No description provided for @journalSyncSettingsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update the journal sync setting. Please try again.'**
+  String get journalSyncSettingsError;
+
+  /// No description provided for @deleteCloudCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete cloud copy'**
+  String get deleteCloudCopy;
+
+  /// No description provided for @journalCloudDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the cloud copy?'**
+  String get journalCloudDeleteTitle;
+
+  /// No description provided for @journalCloudDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This turns off sync on this device and deletes journal entries stored in Firestore for this account. An internet connection is required. Another device with sync enabled may upload entries again. Your local entries on this device will not be deleted.'**
+  String get journalCloudDeleteBody;
+
+  /// No description provided for @journalCloudDeleteSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'The cloud copy was deleted. Your local journal remains on this device.'**
+  String get journalCloudDeleteSuccess;
+
+  /// No description provided for @journalCloudDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the cloud copy. Sync is off; check your connection and try again.'**
+  String get journalCloudDeleteError;
+
+  /// No description provided for @journalCloudLegacyCopyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'If you used an earlier version of Peria, journal entries may already exist in the cloud. Turning sync off does not remove them; use “Delete cloud copy” to remove them.'**
+  String get journalCloudLegacyCopyNotice;
 
   /// No description provided for @journalSubtitle.
   ///

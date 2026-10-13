@@ -186,6 +186,7 @@ class _JournalSyncSettingsScreenState
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
+            backgroundColor: AppColors.white,
             title: Text(l10n.journalSyncConsentTitle),
             content: SingleChildScrollView(
               child: Text(l10n.journalSyncConsentBody),
@@ -208,8 +209,10 @@ class _JournalSyncSettingsScreenState
   Future<bool> _showDisableConfirmation() async {
     final l10n = AppLocalizations.of(context);
     return await showDialog<bool>(
+          
           context: context,
           builder: (dialogContext) => AlertDialog(
+            backgroundColor: AppColors.white,
             title: Text(l10n.journalSyncDisableTitle),
             content: Text(l10n.journalSyncDisableBody),
             actions: [
@@ -230,8 +233,10 @@ class _JournalSyncSettingsScreenState
   Future<bool> _showDeleteConfirmation() async {
     final l10n = AppLocalizations.of(context);
     return await showDialog<bool>(
+          
           context: context,
           builder: (dialogContext) => AlertDialog(
+            backgroundColor: AppColors.white,
             title: Text(l10n.journalCloudDeleteTitle),
             content: Text(l10n.journalCloudDeleteBody),
             actions: [
@@ -423,6 +428,7 @@ class _JournalSyncSettingsScreenState
                     label: Text(l10n.deleteCloudCopy),
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.error,
+                      
                     ),
                   ),
                 ),
