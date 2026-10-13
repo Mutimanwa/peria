@@ -181,12 +181,24 @@ class _JournalSyncSettingsScreenState
     }
   }
 
+  ButtonStyle _dialogActionStyle({bool destructive = false}) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: destructive ? AppColors.error : AppColors.grey900,
+      foregroundColor: AppColors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    );
+  }
+
   Future<bool> _showEnableConsent() async {
     final l10n = AppLocalizations.of(context);
     return await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
             backgroundColor: AppColors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
             title: Text(l10n.journalSyncConsentTitle),
             content: SingleChildScrollView(
               child: Text(l10n.journalSyncConsentBody),
@@ -196,9 +208,10 @@ class _JournalSyncSettingsScreenState
                 onPressed: () => Navigator.of(dialogContext).pop(false),
                 child: Text(l10n.cancel),
               ),
-              FilledButton(
+              ElevatedButton(
+                style: _dialogActionStyle(),
                 onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.enableAndSync),
+                child: Text(l10n.enableAndSync, style: AppText.btnPrimary),
               ),
             ],
           ),
@@ -212,6 +225,9 @@ class _JournalSyncSettingsScreenState
           context: context,
           builder: (dialogContext) => AlertDialog(
             backgroundColor: AppColors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
             title: Text(l10n.journalSyncDisableTitle),
             content: Text(l10n.journalSyncDisableBody),
             actions: [
@@ -219,9 +235,10 @@ class _JournalSyncSettingsScreenState
                 onPressed: () => Navigator.of(dialogContext).pop(false),
                 child: Text(l10n.cancel),
               ),
-              FilledButton.tonal(
+              ElevatedButton(
+                style: _dialogActionStyle(),
                 onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.turnOffSync),
+                child: Text(l10n.turnOffSync, style: AppText.btnPrimary),
               ),
             ],
           ),
@@ -235,6 +252,9 @@ class _JournalSyncSettingsScreenState
           context: context,
           builder: (dialogContext) => AlertDialog(
             backgroundColor: AppColors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
             title: Text(l10n.journalCloudDeleteTitle),
             content: Text(l10n.journalCloudDeleteBody),
             actions: [
@@ -242,13 +262,10 @@ class _JournalSyncSettingsScreenState
                 onPressed: () => Navigator.of(dialogContext).pop(false),
                 child: Text(l10n.cancel),
               ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: AppColors.white,
-                ),
+              ElevatedButton(
+                style: _dialogActionStyle(destructive: true),
                 onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.deleteCloudCopy),
+                child: Text(l10n.deleteCloudCopy, style: AppText.btnPrimary),
               ),
             ],
           ),
@@ -402,10 +419,9 @@ class _JournalSyncSettingsScreenState
                   const SizedBox(height: 18),
                   SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton.icon(
+                    child: OutlineButton(
+                      label: l10n.syncNow,
                       onPressed: _isBusy ? null : _syncNow,
-                      icon: const Icon(Icons.sync_rounded),
-                      label: Text(l10n.syncNow),
                     ),
                   ),
                 ],
