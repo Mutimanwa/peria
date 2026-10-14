@@ -38,9 +38,9 @@ class JournalInsightsScreen extends ConsumerWidget {
       return Column(
         children: [
           _buildHeader(context, l10n),
-          const Expanded(
-              child:
-                  Center(child: Text(l10n.journalInsightsNotEnoughData))),
+          Expanded(
+            child: Center(child: Text(l10n.journalInsightsNotEnoughData)),
+          ),
         ],
       );
     }

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -902,7 +903,7 @@ class _CycleWheelPainter extends CustomPainter {
           color: cfg.colorBottom,
         ),
       ),
-      textDirection: TextDirection.ltr,
+      textDirection: ui.TextDirection.ltr,
     );
     tp.layout();
     tp.paint(canvas, pos - Offset(tp.width / 2, tp.height / 2));
