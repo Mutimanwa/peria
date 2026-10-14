@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:peria_app/features/profile/presentation/screens/security.dart';
@@ -16,6 +18,10 @@ import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
 // Mock classes
 class MockSecurityNotifier extends Mock implements SecurityNotifier {}
+
+class _MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
+
+class _MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 class FakeAppSettingsNotifier extends AppSettingsNotifier {
   FakeAppSettingsNotifier() : super(_FakeAppSettingsRepository()) {
@@ -34,7 +40,11 @@ class _FakeAppSettingsRepository extends AppSettingsRepository {
 }
 
 class _FakeUserRepository extends UserRepository {
-  _FakeUserRepository() : super(firestore: null, auth: null);
+  _FakeUserRepository()
+      : super(
+          firestore: _MockFirebaseFirestore(),
+          auth: _MockFirebaseAuth(),
+        );
   @override
   Future<void> ensureUserDocument(
       {Map<String, dynamic> additionalData = const {}}) async {}
