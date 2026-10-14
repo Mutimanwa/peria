@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
@@ -128,33 +129,24 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
   int _selectedDay = 0;
   int _selectedYear = 0;
 
-  static const List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
   final List<int> _days = List.generate(31, (i) => i + 1);
   final List<int> _years = List.generate(80, (i) => DateTime.now().year - i);
 
-  String get _displayDate {
-    final m = _selectedMonth + 1;
-    final d = _days[_selectedDay];
-    final y = _years[_selectedYear];
-    return '${d.toString().padLeft(2, '0')}.${m.toString().padLeft(2, '0')}.$y';
-  }
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final months = List.generate(
+      12,
+      (index) => DateFormat.MMMM(locale).format(DateTime(2024, index + 1, 1)),
+    );
+    final selectedDate = DateTime(
+      _years[_selectedYear],
+      _selectedMonth + 1,
+      _days[_selectedDay],
+    );
+    final displayDate = DateFormat.yMd(locale).format(selectedDate);
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
@@ -192,7 +184,7 @@ final l10n = AppLocalizations.of(context);
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(_displayDate, style: AppText.label),
+                      child: Text(displayDate, style: AppText.label),
                     ),
                     const Icon(Icons.calendar_today_outlined,
                         size: 20, color: AppColors.grey500),
@@ -214,7 +206,7 @@ final l10n = AppLocalizations.of(context);
                   // Mois
                   Expanded(
                       child: _ScrollColumn(
-                    items: _months,
+                    items: months,
                     selected: _selectedMonth,
                     onChanged: (i) => setState(() => _selectedMonth = i),
                   )),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:peria_app/core/repositories/user_repository.dart';
 import 'package:peria_app/core/services/firebase_service.dart';
+import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_profile.dart';
@@ -37,6 +38,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<UserEntity> signInAnonymously() async {
+    PrivacyPolicyConsentService.requireCurrentPolicyAcceptance();
     _log('signInAnonymously start');
     await FirebaseService.initialize();
 
@@ -81,6 +83,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<bool> linkWithEmail(String email, String password) async {
     try {
+      PrivacyPolicyConsentService.requireCurrentPolicyAcceptance();
       final currentUser = _auth.currentUser;
       _log('linkWithEmail start uid=${currentUser?.uid} email=$email');
       if (currentUser == null) return false;

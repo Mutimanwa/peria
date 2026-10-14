@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/features/self_care/presentation/screens/self_care_data.dart';
+import 'package:peria_app/features/self_care/presentation/screens/self_care_localization.dart';
 
 class SelfCareHomeScreen extends StatefulWidget {
   const SelfCareHomeScreen({super.key});
@@ -18,7 +20,7 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
   static const List<String> _filters = [
     'All',
     'Cramps Relief',
-    'Hormonal Balance',
+    'Strength and flexibility',
     'Facial Care',
   ];
 
@@ -33,8 +35,19 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
         .toList();
   }
 
+  String _localizedFilterLabel(String filter, AppLocalizations l10n) {
+    return switch (filter) {
+      'All' => l10n.selfCareFilterAll,
+      'Cramps Relief' => l10n.selfCareFilterCramps,
+      'Strength and flexibility' => l10n.selfCareFilterStrength,
+      'Facial Care' => l10n.selfCareFilterFacial,
+      _ => filter,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Stack(
@@ -52,9 +65,9 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                     onNotificationTap: () => context.go('/notification'),
                   ),
                   const SizedBox(height: 18),
-                  const Center(
+                  Center(
                     child: Text(
-                      'What do you want\nto learn today?',
+                      l10n.selfCarePrompt,
                       style: AppText.h2,
                       textAlign: TextAlign.center,
                     ),
@@ -67,10 +80,11 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                       itemCount: _filters.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
-                        final label = _filters[index];
-                        final selected = label == _selectedFilter;
+                        final filter = _filters[index];
+                        final label = _localizedFilterLabel(filter, l10n);
+                        final selected = filter == _selectedFilter;
                         return GestureDetector(
-                          onTap: () => setState(() => _selectedFilter = label),
+                          onTap: () => setState(() => _selectedFilter = filter),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 180),
                             padding: const EdgeInsets.symmetric(
@@ -97,7 +111,7 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                   ),
                   const SizedBox(height: 24),
                   for (final section in _visibleSections) ...[
-                    Text(section.title, style: AppText.h5),
+                    Text(localizeSelfCareData(section.title, l10n), style: AppText.h5),
                     const SizedBox(height: 14),
                     SizedBox(
                       height: section.title == 'Articles'
@@ -192,6 +206,7 @@ class _SelfCareCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final width = card.large ? 196.0 : 160.0;
     final height = card.large ? 164.0 : 220.0;
 
@@ -240,11 +255,11 @@ class _SelfCareCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(card.title,
+                  Text(localizeSelfCareData(card.title, l10n),
                       style: AppText.h6.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   Text(
-                    card.subtitle,
+                    localizeSelfCareData(card.subtitle, l10n),
                     style: AppText.caption.copyWith(color: AppColors.grey600),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -259,7 +274,7 @@ class _SelfCareCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Text(
-                        card.badge!,
+                        localizeSelfCareData(card.badge!, l10n),
                         style: AppText.caption.copyWith(
                           color: AppColors.grey900,
                           fontWeight: FontWeight.w700,
@@ -284,6 +299,7 @@ class _MeditationHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -319,7 +335,7 @@ class _MeditationHeroCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('Deep Sleep\nMeditation',
+              Text(l10n.selfCareDeepSleepMeditation,
                   style: AppText.h4.copyWith(color: AppColors.white)),
               const SizedBox(height: 10),
               Row(
@@ -337,7 +353,7 @@ class _MeditationHeroCard extends StatelessWidget {
                         const Icon(Icons.play_arrow_rounded,
                             size: 16, color: AppColors.white),
                         const SizedBox(width: 4),
-                        Text('Play',
+                        Text(l10n.selfCarePlay,
                             style: AppText.caption
                                 .copyWith(color: AppColors.white)),
                       ],

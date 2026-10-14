@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../l10n/app_localizations.dart';
 
 enum NavItem { cycle, journal, education }
 
@@ -17,6 +18,7 @@ class CustomBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       height: 72,
       margin: const EdgeInsets.fromLTRB(40, 0, 40, 20),
@@ -43,21 +45,21 @@ class CustomBottomNav extends StatelessWidget {
               children: [
                 _NavItemWidget(
                   item: NavItem.cycle,
-                  label: 'Cycle',
+                  label: l10n.navCycle,
                   iconPainter: _CycleIconPainter(),
                   isActive: currentIndex == NavItem.cycle,
                   onTap: () => onTap(NavItem.cycle),
                 ),
                 _NavItemWidget(
                   item: NavItem.education,
-                  label: 'Éducation',
+                  label: l10n.navEducation,
                   icon: Icons.school,
                   isActive: currentIndex == NavItem.education,
                   onTap: () => onTap(NavItem.education),
                 ),
                 _NavItemWidget(
                   item: NavItem.journal,
-                  label: 'Journal',
+                  label: l10n.navJournal,
                   icon: Icons.menu_book_outlined,
                   isActive: currentIndex == NavItem.journal,
                   onTap: () => onTap(NavItem.journal),

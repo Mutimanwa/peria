@@ -1,563 +1,483 @@
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
 
-
-/// Base de données statique des articles éducatifs
-/// Couvre les 10-15 questions les plus fréquentes avec des réponses claires et utiles
+/// Static, reviewed-for-risk educational copy.
+///
+/// This content has not yet been clinically reviewed or formally sourced.
+/// See docs/EDUCATION_CONTENT_REVIEW.md before publishing medical claims.
 class EducationArticleDatabase {
   static final List<EducationArticle> articles = [
-    // ════════════════════════════════════════════════════════════════
-    // AXE 1: COMPRENDRE LE CYCLE (Phases, durée, irrégularité)
-    // ════════════════════════════════════════════════════════════════
-
+    // Cycle basics
     EducationArticle(
       id: 'cycle-001',
-      title: 'Les 4 phases du cycle menstruel',
-      shortDescription: 'Menstruation, phase folliculaire, ovulation, phase lutéale',
+      title: 'Les phases du cycle menstruel',
+      shortDescription:
+          'Menstruation, phase folliculaire, ovulation et phase lutéale',
       axis: EducationAxis.cycleBasics,
       explanation:
-          'Le cycle menstruel dure environ 28 jours (de 21 à 35 jours est normal). Il comporte 4 phases:\n\n'
-          '1. Menstruation (jours 1-5): Élimination de la muqueuse utérine. Saignements rouges vifs.\n\n'
-          '2. Phase folliculaire (jours 1-13): Montée d\'énergie, peau lumineuse, envie de socialiser.\n\n'
-          '3. Ovulation (jour 14): Libération d\'un ovule. Température corporelle légèrement ↑. Risque maximal de grossesse.\n\n'
-          '4. Phase lutéale (jours 15-28): Progestérone ↑. Peut entraîner fatigue, envies alimentaires, irritabilité.',
+          'Le cycle commence le premier jour des règles et se termine la veille '
+          'des règles suivantes. Sa durée varie selon les personnes; 28 jours '
+          'est un exemple, pas une norme à atteindre.\n\n'
+          'On décrit souvent les règles, la phase folliculaire, l’ovulation et '
+          'la phase lutéale. La phase folliculaire commence aussi le premier '
+          'jour des règles. Le moment de l’ovulation varie et ne peut pas être '
+          'confirmé par un calendrier seul. Les sensations et la durée peuvent '
+          'changer d’un cycle à l’autre.',
       observations:
-          'Observez vos saignements (couleur, débit), votre énergie, humeur et douleurs.\n'
-          'Un cycle régulier aide à prédire l\'ovulation et les prochaines règles.',
+          'Si tu le souhaites, note le premier jour des règles et les symptômes '
+          'qui comptent pour toi. Ces notes peuvent aider à repérer des tendances, '
+          'mais ne permettent pas de poser un diagnostic.',
       advice:
-          'Notez les dates de vos règles dans l\'app. Après 3 mois, vous connaîtrez votre cycle.\n'
-          'Adaptez vos activités à vos phases: plus d\'exercice en phase folliculaire, du repos en phase lutéale.',
+          'Utilise les estimations de l’application comme des repères, pas comme '
+          'une confirmation de l’ovulation ou une méthode de contraception. '
+          'Choisis tes activités selon ton confort; il n’est pas nécessaire de '
+          'suivre un programme différent à chaque phase.',
       whenToConsult:
-          'Si votre cycle est régulièrement < 21 jours ou > 35 jours, consultez un professionnel.',
+          'Demande conseil si un changement persiste ou t’inquiète, si les '
+          'saignements sont très abondants, si la douleur est importante, ou '
+          'si une grossesse est possible après un retard de règles.',
       tags: ['cycle', 'phases', 'menstruation', 'bases'],
-      readingTimeMinutes: 6,
+      readingTimeMinutes: 5,
     ),
-
     EducationArticle(
       id: 'cycle-002',
-      title: 'Pourquoi mon cycle est irrégulier?',
-      shortDescription: 'Causes courantes des variations de cycle',
+      title: 'Pourquoi mon cycle varie-t-il ?',
+      shortDescription: 'Des facteurs possibles et des repères prudents',
       axis: EducationAxis.cycleBasics,
       explanation:
-          'Les irrégularités sont normales, surtout si vous êtes jeune. Causes courantes:\n\n'
-          '• Stress: Décale ou supprime l\'ovulation (impact immédiat)\n'
-          '• Changements de poids: Perte ou gain rapide affecte les hormones\n'
-          '• Exercice intense: Peut retarder les règles\n'
-          '• Voyage/changement de fuseau horaire: Perturbe l\'horloge biologique\n'
-          '• Alimentation: Carences en fer, zinc ou calories\n'
-          '• Hormones naturelles: Après grossesse, allaitement ou arrêt de contraception\n'
-          '• Âge: Les cycles sont irréguliers à la puberté et à la préménopause',
+          'La durée et le moment des règles peuvent varier. L’âge, une grossesse, '
+          'l’allaitement, une contraception hormonale, une maladie, le stress, '
+          'des changements importants d’activité ou de poids, ainsi que d’autres '
+          'facteurs de santé peuvent jouer un rôle. Une application ne peut pas '
+          'déterminer la cause d’une variation.',
       observations:
-          'Notez les variations et cherchez des corrélations: avez-vous eu un événement stressant?\n'
-          'Une maladie? Un changement de vie? Ces indices aident le diagnostic.',
+          'Tu peux noter les dates et les changements importants si cela t’aide. '
+          'Une coïncidence dans le journal ne prouve pas qu’un facteur a causé '
+          'la variation.',
       advice:
-          'Réduisez le stress (yoga, méditation, sommeil). Maintenez un poids stable et une alimentation équilibrée. '
-          'Données dans l\'app = tendances claires sur plusieurs mois.',
+          'Évite de te blâmer ou de modifier seule un traitement. Si une variation '
+          'est nouvelle, se répète ou t’inquiète, apporte tes notes à un '
+          'professionnel de santé.',
       whenToConsult:
-          'Si l\'irrégularité persiste > 3 mois, si vous sautez 2+ règles, ou cycles < 21 ou > 35 jours.',
+          'Demande conseil en cas de changements répétés, de règles manquantes '
+          'ou de symptômes qui perturbent ta vie quotidienne. Si une grossesse '
+          'est possible, un test et un avis de santé peuvent aider.',
       tags: ['irrégularité', 'stress', 'hormones', 'cycles'],
-      readingTimeMinutes: 7,
+      readingTimeMinutes: 4,
     ),
-
     EducationArticle(
       id: 'cycle-003',
-      title: 'Durée du cycle: quand devrais-je m\'inquiéter?',
-      shortDescription: 'Plages normales et signaux d\'alerte',
+      title: 'Durée du cycle : quand demander conseil ?',
+      shortDescription: 'Des repères personnels, sans diagnostic automatique',
       axis: EducationAxis.cycleBasics,
       explanation:
-          'Normal: 21–35 jours (majorité: 28 jours)\n\n'
-          'Variation acceptée: Tant que l\'intervalle entre 2 règles est similaire (ex: 30 jours ± 2 jours).\n\n'
-          'Signaux d\'alerte:\n'
-          '• < 21 jours: Peut indiquer problème hormonal ou inflammation\n'
-          '• > 35 jours: Ovulation retardée ou absente\n'
-          '• Variation extrême: Passe de 23 à 40 jours = consulter\n'
-          '• Arrêt complet: > 3 mois sans règles = situation urgente',
+          'La durée d’un cycle peut différer d’une personne à l’autre et changer '
+          'au cours de la vie. L’âge, la contraception et la santé générale '
+          'peuvent modifier les saignements. Une seule durée ou variation ne '
+          'suffit pas à diagnostiquer un problème; les applications donnent '
+          'uniquement des estimations.',
       observations:
-          'Suivez 3+ cycles pour identifier VOS normes. Ne comparez pas aux autres.\n'
-          'Chaque corps est différent.',
+          'Pour décrire ton expérience, note le premier jour de chaque période '
+          'de règles et tout symptôme important. Compare tes propres cycles '
+          'plutôt que de te fixer sur une durée universelle.',
       advice:
-          'Si cycles courts (< 23 jours): Plus de repos, moins de stress intense.\n'
-          'Si cycles longs (> 35 jours): Assurez-vous d\'une alimentation riche en micronutriments.',
+          'Si tu consultes, ces dates peuvent aider à raconter ce qui a changé. '
+          'Ne commence pas de complément ou de traitement sur la base d’une '
+          'estimation de l’application.',
       whenToConsult:
-          'Dès que vous sortez régulièrement de 21–35 jours, consultez un gynécologue.',
+          'Demande conseil si les changements se répètent, si plusieurs règles '
+          'manquent, ou si les saignements ou la douleur t’inquiètent. Une douleur '
+          'soudaine et intense, un évanouissement ou des saignements abondants '
+          'nécessitent une aide urgente.',
       tags: ['durée', 'cycle-court', 'cycle-long', 'normal'],
-      readingTimeMinutes: 5,
+      readingTimeMinutes: 4,
     ),
 
-    // ════════════════════════════════════════════════════════════════
-    // AXE 2: OVULATION ET FERTILITÉ
-    // ════════════════════════════════════════════════════════════════
-
+    // Ovulation and fertility
     EducationArticle(
       id: 'fertility-001',
-      title: 'Signes d\'ovulation: comment les reconnaître?',
-      shortDescription: 'Température, glaire cervicale, douleur, tests',
+      title: 'Ovulation : quels signes peut-on observer ?',
+      shortDescription: 'Des indices possibles, qui ne confirment pas l’ovulation',
       axis: EducationAxis.ovulationFertility,
       explanation:
-          'L\'ovulation, c\'est la libération de l\'ovule. Signes biologiques:\n\n'
-          '1. Température basale ↑ de 0.4–0.8°C (mesure au réveil avant lever)\n'
-          '2. Glaire cervicale devient clair, fluide, élastique (comme blanc d\'œuf)\n'
-          '3. Douleur latérale basse (appelée "Mittelschmerz") pendant quelques heures\n'
-          '4. Sensibilité accrue des seins\n'
-          '5. Légère augmentation de libido\n\n'
-          'L\'ovulation dure ~12–24h. La fenêtre fertile = 5 jours avant + jour de l\'ovulation.',
+          'L’ovulation est la libération d’un ovule. Certaines personnes remarquent '
+          'des changements de glaire cervicale ou une gêne passagère. La '
+          'température basale peut augmenter après l’ovulation et aider à repérer '
+          'une tendance a posteriori. Les tests urinaires repèrent une variation '
+          'hormonale, mais aucun de ces signes ne confirme à lui seul une '
+          'ovulation ni ne prédit précisément le jour pour tout le monde.',
       observations:
-          'Observez votre glaire chaque jour. Photographiez la texture si utile.\n'
-          'Notez vos douleurs et humeur. Les signes combinent pour une image claire.',
+          'Observe seulement ce avec quoi tu es à l’aise. Il n’est pas nécessaire '
+          'de prendre des photos ou de consigner des détails intimes pour utiliser '
+          'l’application.',
       advice:
-          'Si vous cherchez à concevoir: rapports sexuels pendant la fenêtre fertile (jours 12–16 pour cycle de 28j).\n'
-          'Si vous voulez l\'éviter: abstinence pendant cette période.\n'
-          'Tests d\'ovulation disponibles en pharmacie (urine) pour plus de certitude.',
+          'Les signes et les prévisions du calendrier ne sont pas une méthode '
+          'pour éviter une grossesse. Si tu souhaites concevoir ou choisir une '
+          'contraception, demande un conseil adapté à ta situation.',
       whenToConsult:
-          'Si vous n\'observez aucun signe d\'ovulation pendant 3+ mois, consultez.',
+          'Parle à un professionnel de santé si tu as des questions sur '
+          'l’ovulation, la fertilité ou la contraception, ou si des symptômes '
+          't’inquiètent.',
       tags: ['ovulation', 'fertilité', 'glaire', 'température', 'fenêtre-fertile'],
-      readingTimeMinutes: 8,
-    ),
-
-    EducationArticle(
-      id: 'fertility-002',
-      title: 'Fenêtre fertile: quand suis-je fertile?',
-      shortDescription: 'Calcul rapide et fiable de vos jours fertiles',
-      axis: EducationAxis.ovulationFertility,
-      explanation:
-          'La fenêtre fertile = 5 jours AVANT ovulation + jour de l\'ovulation.\n\n'
-          'Raison: L\'ovule vit 12–24h après libération, mais spermatozoïdes vivent 5 jours.\n\n'
-          'Pour un cycle de 28 jours:\n'
-          '• Ovulation attendue: jour 14\n'
-          '• Fenêtre fertile: jours 9–14\n\n'
-          'Pour un cycle de 35 jours:\n'
-          '• Ovulation attendue: jour 21\n'
-          '• Fenêtre fertile: jours 16–21\n\n'
-          'Formule simple: Durée cycle - 14 = jour d\'ovulation (approximativement)',
-      observations:
-          'Votre app calcule automatiquement votre fenêtre selon vos données historiques.\n'
-          'La précision ↑ avec plus de données.',
-      advice:
-          'Planification: Rapports sexuels tous les 2–3 jours pendant la fenêtre (sans stress du timing).\n'
-          'Réduction du risque: Évitez cette période si contraception naturelle.\n'
-          'Rappel: Cette méthode n\'est 100% fiable (85% avec discipline)',
-      whenToConsult:
-          'Si vous essayez de concevoir sans succès après 1 an (ou 6 mois si > 35 ans).',
-      tags: ['fertilité', 'fenêtre-fertile', 'conception', 'grossesse'],
-      readingTimeMinutes: 6,
-    ),
-
-    EducationArticle(
-      id: 'fertility-003',
-      title: 'Mythes sur la fertilité (démystifiés)',
-      shortDescription: 'Vérités vs fausses croyances',
-      axis: EducationAxis.ovulationFertility,
-      explanation:
-          'MYTHE 1: "Je ne peux tomber enceinte que pendant l\'ovulation"\n'
-          'VÉRITÉ: Les spermatozoïdes survivent 5 jours, donc vous êtes fertile 5 jours AVANT ovulation.\n\n'
-          'MYTHE 2: "Un cycle de 28 jours = ovulation jour 14"\n'
-          'VÉRITÉ: Varie énormément. L\'ovulation est 14j avant les prochaines règles (pas j14 du cycle).\n\n'
-          'MYTHE 3: "Je dois avoir un orgasme pour concevoir"\n'
-          'VÉRITÉ: Non scientifiquement prouvé. La fécondation est indépendante du plaisir.\n\n'
-          'MYTHE 4: "La position change les chances de grossesse"\n'
-          'VÉRITÉ: Peu d\'impact documenté. La constance du timing compte plus.\n\n'
-          'MYTHE 5: "Je suis protégée juste après mes règles"\n'
-          'VÉRITÉ: Faux! Surtout avec cycles courts, ovulation peut arriver vite.',
-      observations:
-          'La science evolue. Ces mythes persistent car l\'éducation sexuelle est souvent insuffisante.',
-      advice:
-          'Fiez-vous aux données objectives: température, glaire, signes combinés.\n'
-          'L\'app vous aide à ignorer les croyances et suivre la réalité.',
-      whenToConsult:
-          'Si confusion persiste sur votre fertilité, parlez-en à un gynécologue ou sage-femme.',
-      tags: ['mythes', 'fertilité', 'conception', 'éducation'],
-      readingTimeMinutes: 6,
-    ),
-
-    // ════════════════════════════════════════════════════════════════
-    // AXE 3: RÈGLES ET SYMPTÔMES
-    // ════════════════════════════════════════════════════════════════
-
-    EducationArticle(
-      id: 'menstruation-001',
-      title: 'Douleurs menstruelles: normal ou pas?',
-      shortDescription: 'Dysménorrhée légère, modérée, sévère',
-      axis: EducationAxis.menstruationSymptoms,
-      explanation:
-          'Les crampes sont dues à la contraction de l\'utérus pour éliminer la muqueuse.\n\n'
-          'LÉGER (normal): Douleur sourde 1–2 jours, soulage avec chauffage.\n\n'
-          'MODÉRÉ: Douleur plus intense, affecte activités mais gérable avec antidouleurs.\n'
-          'Cause possible: Prostaglandines (molécules qui causent contractions).\n\n'
-          'SÉVÈRE: Douleur débilitante, nausées, vomissements, sans soulagement médicaments.\n'
-          'Causes possibles: Endométriose, polypes, fibromes, infection.\n\n'
-          'ANORMAL: Douleur soudainement extrême si habituellement légère = consulter IMMÉDIATEMENT.',
-      observations:
-          'Notez: intensité (1–10), durée, jour du cycle, ce qui soulage/aggrave, symptômes associés.',
-      advice:
-          'LÉGER–MODÉRÉ:\n'
-          '• Chauffage (coussin chauffant 20min)\n'
-          '• Ibuprofène 400mg (mieux pour crampes que paracétamol)\n'
-          '• Exercice léger (marche, yoga)\n'
-          '• Hydratation + aliments riches en magnésium (chocolat noir, amandes)\n\n'
-          'SÉVÈRE:\n'
-          '• Anti-inflammatoires plus forts\n'
-          '• Patches chauffants\n'
-          '• Repos horizontal',
-      whenToConsult:
-          'Si douleur devient soudainement extrême, ou si antidouleurs inefficaces pendant 3+ mois.',
-      tags: ['douleur', 'crampes', 'menstruation', 'dysménorrhée'],
-      readingTimeMinutes: 7,
-    ),
-
-    EducationArticle(
-      id: 'menstruation-002',
-      title: 'Flux menstruel: quantités normales',
-      shortDescription: 'Léger, normal, abondant - repères simples',
-      axis: EducationAxis.menstruationSymptoms,
-      explanation:
-          'Un cycle menstruel normal: 30–40mL de sang (4–5 cuillères à soupe).\n\n'
-          'LÉGER (5–10mL): Saignement clair, peu de tampons/serviettes, 2–3 jours.\n'
-          'Possible avec: Contraception hormonale, jeune âge, stress.\n\n'
-          'NORMAL (20–40mL): Flux modéré, change tout les 3–4h, 4–5 jours.\n'
-          'Couleur: Rouge vif à brun foncé (normal).\n\n'
-          'ABONDANT (> 40mL): Changement de protection toutes les 2h ou moins.\n'
-          'Caillots > pièce de monnaie = signe de flux important.\n'
-          'Causes: Fibromes, polypes, déséquilibre hormonal, défaut de coagulation.\n\n'
-          'TRÈS ABONDANT (> 80mL): Saignement qui affecte vie quotidienne + anémie = urgent.',
-      observations:
-          'Comptez: nombre de tampons/serviettes/jours. Notez présence/absence de caillots.',
-      advice:
-          'LÉGER: Normal, aucune action.\n\n'
-          'NORMAL: Bon équilibre, aucune action.\n\n'
-          'ABONDANT:\n'
-          '• Fer alimentaire ↑ (risque anémie)\n'
-          '• Utilisez tampons/coupes/disques (moins de fuites)\n'
-          '• Consulter pour investigation',
-      whenToConsult:
-          'Flux soudainement ↑, durée > 7 jours, fatigue/essoufflement (anémie), ou impact sur vie sociale.',
-      tags: ['flux', 'saignement', 'abondant', 'menstruation'],
-      readingTimeMinutes: 6,
-    ),
-
-    EducationArticle(
-      id: 'menstruation-003',
-      title: 'SPM et symptômes cycliques: c\'est psychologique?',
-      shortDescription: 'Syndrome prémenstruel: causes biologiques réelles',
-      axis: EducationAxis.menstruationSymptoms,
-      explanation:
-          'Non, ce n\'est PAS psychologique! Les variations hormonales causent des symptômes réels.\n\n'
-          'PHASE LUTÉALE (après ovulation):\n'
-          '• Progestérone ↑ → fatigue, appétit ↑, envies sucrées\n'
-          '• Sérotonine ↓ → irritabilité, tristesse, anxiété\n'
-          '• Sensibilité au sel ↑ → rétention d\'eau, ballonnements\n\n'
-          'SYMPTÔMES COURANTS (SPM léger à modéré):\n'
-          '• Fatigue, sommeil perturbé\n'
-          '• Sensibilité des seins\n'
-          '• Ballonnements, constipation\n'
-          '• Irritabilité, anxiété, dépression légère\n'
-          '• Maux de tête, migraines\n'
-          '• Envies alimentaires (sucre, sel)\n\n'
-          'SPM SÉVÈRE (TDPM = Trouble Dysphorique Prémenstruel):\n'
-          '• Dépression ou désespoir marqués\n'
-          '• Anxiété intense\n'
-          '• Agressivité anormale\n'
-          '• Désintérêt complet pour activités = nécessite traitement',
-      observations:
-          'Notez symptômes et jours. Un calendrier clair montre le lien avec le cycle.',
-      advice:
-          'LÉGER–MODÉRÉ:\n'
-          '• Calcium + Vitamine D ↑ (études scientifiques)\n'
-          '• Magésium ↑ (réduit fatigue et irritabilité)\n'
-          '• Exercice aérobie 30min (améliore humeur)\n'
-          '• Sommeil régulier (7–9h)\n'
-          '• Sucres raffinés ↓\n\n'
-          'SÉVÈRE:\n'
-          '• Antidépresseurs (efficacité prouvée)\n'
-          '• Thérapie cognitivo-comportementale',
-      whenToConsult:
-          'Si SPM affecte travail/relations ou si sévère, consultez psychiatre/gynécologue.',
-      tags: ['SPM', 'prémenstruel', 'humeur', 'fatigue', 'syndrome'],
-      readingTimeMinutes: 8,
-    ),
-
-    // ════════════════════════════════════════════════════════════════
-    // AXE 4: NORMAL VS PAS NORMAL
-    // ════════════════════════════════════════════════════════════════
-
-    EducationArticle(
-      id: 'abnormal-001',
-      title: 'Pertes de sang entre les règles: quand m\'inquiéter?',
-      shortDescription: 'Spotting, hémorragies, rupture de contraception',
-      axis: EducationAxis.normalVsAbnormal,
-      explanation:
-          'Léger spotting: Marques très légères, quelques gouttes, sans flux.\n\n'
-          'NORMAL (spotting léger):\n'
-          '• Ovulation (jour 14, quelques heures)\n'
-          '• Rupture de contraception hormonale (1–2j)\n'
-          '• Après rapport sexuel vigoureux (irritation cervicale)\n'
-          '• Quelques jours après ovulation\n\n'
-          'À SURVEILLER (spotting répété):\n'
-          '• Hémorragie utérine anormale\n'
-          '• Polypes ou fibromes\n'
-          '• Infection\n'
-          '• Problème de coagulation\n'
-          '• Contraception mal adaptée\n\n'
-          'URGENT:\n'
-          '• Saignement abondant entre règles\n'
-          '• Douleur associée\n'
-          '• Perte de conscience\n'
-          '• Fièvre + saignement',
-      observations:
-          'Notez: quantité, couleur, durée, cycle (avant/après ovulation), douleur associée.',
-      advice:
-          'Spotting isolé le jour d\'ovulation: Normal, observez.\n'
-          'Répétition: Notez pendant 2 cycles, puis consultez.',
-      whenToConsult:
-          'Spotting répété entre cycles, saignement abondant entre règles, ou symptômes alarme.',
-      tags: ['spotting', 'saignement', 'anormal', 'entre-règles'],
-      readingTimeMinutes: 6,
-    ),
-
-    EducationArticle(
-      id: 'abnormal-002',
-      title: 'Odeur forte, couleur bizarre: c\'est une infection?',
-      shortDescription: 'Repères pour distinguer normal d\'infection',
-      axis: EducationAxis.normalVsAbnormal,
-      explanation:
-          'NORMAL:\n'
-          '• Couleur: Rouge vif → brun foncé (oxydation du sang)\n'
-          '• Odeur: Légère, métallique (sang + bactéries vaginales normales)\n'
-          '• Texture: Caillots OK si < pièce de monnaie\n\n'
-          'SUSPECT D\'INFECTION (consultez):\n'
-          '• Odeur nauséabonde, très forte (poisson pourri = Vaginose bactérienne)\n'
-          '• Couleur étrange: Gris, vert\n'
-          '• Pertes épaisses, mousseuses\n'
-          '• Démangeaisons, brûlures mictionnelles\n'
-          '• Douleur pelvienne\n'
-          '+ ces symptômes = Infection probable\n\n'
-          'Causes courantes:\n'
-          '• Vaginose bactérienne\n'
-          '• Candidose (levure)\n'
-          '• IST (trichomonase, chlamydia)\n'
-          '• Syndrome de Choc Toxique (TSS, rare mais grave)',
-      observations:
-          'Odeur d\'une personne n\'existe que pour elle-même (anosmie). Pas de honte à consulter.',
-      advice:
-          'Normal: Pas d\'action.\n'
-          'Suspect: Rendez-vous médecin, préparez description exacte.\n'
-          'TSS (rare): Fièvre > 39°C + malaise général = URGENCE',
-      whenToConsult:
-          'Odeur ou couleur anormale, surtout si symptômes associés (démangeaisons, douleur).',
-      tags: ['odeur', 'infection', 'vaginose', 'normal'],
       readingTimeMinutes: 5,
     ),
-
     EducationArticle(
-      id: 'abnormal-003',
-      title: 'Pas de règles depuis 2-3 mois: aménorrhée',
-      shortDescription: 'Quand l\'absence de règles est inquiétante',
+      id: 'fertility-002',
+      title: 'Fenêtre fertile : que signifie cette estimation ?',
+      shortDescription: 'Pourquoi le calendrier ne peut pas prédire un jour exact',
+      axis: EducationAxis.ovulationFertility,
+      explanation:
+          'Une grossesse est possible autour de l’ovulation, mais son moment '
+          'varie et il est difficile à prévoir exactement à partir des seules '
+          'dates des règles. Les spermatozoïdes peuvent rester fécondants '
+          'plusieurs jours et l’ovule ne l’est que pendant une courte période. '
+          'La fenêtre affichée par l’application est une estimation, pas une '
+          'mesure de la fertilité réelle.',
+      observations:
+          'Les cycles passés ne garantissent pas le moment du prochain cycle. '
+          'Une prévision peut être décalée, même si les cycles semblaient '
+          'réguliers auparavant.',
+      advice:
+          'Ne te fie pas à l’application ou au calendrier pour éviter une '
+          'grossesse. Pour choisir une contraception ou obtenir de l’aide pour '
+          'concevoir, parle à un professionnel de santé ou à un service de santé '
+          'reproductive.',
+      whenToConsult:
+          'Demande conseil si tu veux choisir une méthode contraceptive, si tu '
+          'penses être enceinte ou si tu as des questions sur la fertilité.',
+      tags: ['fertilité', 'fenêtre-fertile', 'conception', 'grossesse'],
+      readingTimeMinutes: 4,
+    ),
+    EducationArticle(
+      id: 'fertility-003',
+      title: 'Fertilité : quelques idées reçues à vérifier',
+      shortDescription: 'Ce que les dates seules ne permettent pas de savoir',
+      axis: EducationAxis.ovulationFertility,
+      explanation:
+          'Idée reçue : un cycle de 28 jours signifie toujours une ovulation au '
+          'jour 14. En réalité, le moment varie.\n\n'
+          'Idée reçue : on ne peut pas tomber enceinte juste après les règles. '
+          'Les dates seules ne permettent pas d’exclure une grossesse.\n\n'
+          'Un orgasme ou une position sexuelle particulière n’est pas nécessaire '
+          'pour qu’une grossesse survienne. Les signes corporels et les '
+          'applications peuvent aider à suivre un cycle, mais ne confirment pas '
+          'l’ovulation et ne remplacent pas une contraception.',
+      observations:
+          'Les signes corporels varient et peuvent avoir plusieurs explications. '
+          'Évite de conclure à une grossesse, à une infertilité ou à une ovulation '
+          'sur la base d’un seul signe.',
+      advice:
+          'Pour une information adaptée à ton âge, ta santé et tes projets, '
+          'adresse-toi à un professionnel de santé ou à un service de santé '
+          'reproductive.',
+      whenToConsult:
+          'Demande conseil si tu as besoin d’une contraception, si une grossesse '
+          'est possible ou si tu souhaites parler de fertilité.',
+      tags: ['mythes', 'fertilité', 'conception', 'éducation'],
+      readingTimeMinutes: 4,
+    ),
+
+    // Periods and symptoms
+    EducationArticle(
+      id: 'menstruation-001',
+      title: 'Douleurs menstruelles : quand demander de l’aide ?',
+      shortDescription: 'La douleur varie; tu n’as pas à la minimiser',
+      axis: EducationAxis.menstruationSymptoms,
+      explanation:
+          'Des crampes peuvent survenir pendant les règles et leur intensité '
+          'varie. Une douleur forte, nouvelle ou qui gêne les activités mérite '
+          'd’être prise au sérieux. Une application ne peut pas en déterminer '
+          'la cause.',
+      observations:
+          'Si tu le souhaites, note quand la douleur arrive, combien de temps '
+          'elle dure, son effet sur tes activités et ce qui semble t’aider. '
+          'Ces informations peuvent faciliter une consultation.',
+      advice:
+          'Une source de chaleur, du repos ou des mouvements doux peuvent '
+          'soulager certaines personnes. Les médicaments ne conviennent pas à '
+          'tout le monde : demande conseil à un pharmacien ou à un professionnel '
+          'de santé et suis la notice. N’augmente pas une dose de toi-même.',
+      whenToConsult:
+          'Demande conseil si la douleur revient, s’aggrave ou t’empêche de vivre '
+          'normalement. Cherche une aide urgente en cas de douleur soudaine et '
+          'intense, d’évanouissement, de fièvre, ou de douleur avec saignement '
+          'lorsqu’une grossesse est possible.',
+      tags: ['douleur', 'crampes', 'menstruation', 'dysménorrhée'],
+      readingTimeMinutes: 4,
+    ),
+    EducationArticle(
+      id: 'menstruation-002',
+      title: 'Flux menstruel : quand demander conseil ?',
+      shortDescription: 'Observer les changements sans mesurer en millilitres',
+      axis: EducationAxis.menstruationSymptoms,
+      explanation:
+          'Le flux, sa durée et sa couleur peuvent varier. Il est difficile de '
+          'mesurer le volume à la maison, et les protections n’ont pas toutes la '
+          'même capacité. La couleur seule ne permet pas de diagnostiquer un '
+          'problème.',
+      observations:
+          'Tu peux noter les jours de saignement, les changements par rapport à '
+          'ton habitude, les fuites et l’effet sur tes activités. Il n’est pas '
+          'nécessaire de compter précisément chaque protection.',
+      advice:
+          'Choisis les protections qui te conviennent et change-les selon leur '
+          'notice et ton confort. Si tu te sens faible ou très fatiguée, ou si le '
+          'flux a changé, demande un avis de santé plutôt que de commencer du fer '
+          'ou un autre complément seule.',
+      whenToConsult:
+          'Demande conseil si les saignements sont beaucoup plus abondants ou '
+          'plus longs que d’habitude, s’ils traversent souvent tes protections '
+          'ou perturbent ta vie quotidienne. Cherche une aide urgente si des '
+          'saignements abondants s’accompagnent d’évanouissement, de difficulté '
+          'à respirer, de douleur intense ou d’une grande faiblesse.',
+      tags: ['flux', 'saignement', 'abondant', 'menstruation'],
+      readingTimeMinutes: 4,
+    ),
+    EducationArticle(
+      id: 'menstruation-003',
+      title: 'SPM : des symptômes réels et variables',
+      shortDescription: 'Comprendre les symptômes avant les règles sans se juger',
+      axis: EducationAxis.menstruationSymptoms,
+      explanation:
+          'Certaines personnes remarquent des symptômes physiques ou émotionnels '
+          'avant les règles; d’autres non. Ils peuvent varier d’un cycle à '
+          'l’autre. Des symptômes qui reviennent et affectent le quotidien '
+          'méritent d’être écoutés. Un professionnel peut évaluer un syndrome '
+          'prémenstruel sévère ou un trouble dysphorique prémenstruel; une '
+          'application ne peut pas poser ce diagnostic.',
+      observations:
+          'Si cela t’aide et ne te met pas mal à l’aise, note les symptômes et '
+          'les jours concernés pendant quelques cycles. Ces notes ne prouvent '
+          'pas à elles seules une cause hormonale.',
+      advice:
+          'Le repos, une routine de sommeil et une activité adaptée peuvent '
+          'aider certaines personnes. Il n’existe pas de complément ou de '
+          'traitement à prendre automatiquement sur la base d’un article; '
+          'demande un avis adapté avant d’en utiliser un.',
+      whenToConsult:
+          'Demande de l’aide si les symptômes affectent tes relations, tes '
+          'études, ton travail ou ton bien-être. Si tu te sens en danger ou as '
+          'des pensées de te faire du mal, contacte immédiatement une personne '
+          'de confiance et un service de santé ou d’urgence local.',
+      tags: ['SPM', 'prémenstruel', 'humeur', 'fatigue', 'syndrome'],
+      readingTimeMinutes: 4,
+    ),
+
+    // When to seek care
+    EducationArticle(
+      id: 'abnormal-001',
+      title: 'Saignements entre les règles : que faire ?',
+      shortDescription: 'Repérer les changements et les signes qui nécessitent un avis',
       axis: EducationAxis.normalVsAbnormal,
       explanation:
-          'Aménorrhée = absence de règles > 3 mois (ou 2 cycles manqués).\n\n'
-          'CAUSES NON-GRAVES (courantes):\n'
-          '• Stress intense, changement de vie\n'
-          '• Perte de poids rapide (< 10% du poids)\n'
-          '• Exercice excessif (athlètes)\n'
-          '• Changement de contraception\n'
-          '• Voyage, changement de fuseau horaire\n\n'
-          'CAUSES GRAVES (médicales):\n'
-          '• Grossesse\n'
-          '• Problème thyroïdien\n'
-          '• Déséquilibre hormonal (SOPK, hyperprolactinémie)\n'
-          '• Malnutrition sévère\n\n'
-          'SITUATION URGENTE:\n'
-          '• Aménorrhée + douleur abdominale intense = grossesse extra-utérine?\n'
-          '• + perte de poids drastique = trouble alimentaire?',
+          'De petites pertes de sang entre les règles peuvent avoir différentes '
+          'causes : contraception, variations du cycle, grossesse, infection ou '
+          'autre problème de santé. Le moment ou la couleur ne permet pas de '
+          'connaître la cause. Un saignement nouveau ou répété mérite attention.',
       observations:
-          'Notez: date du dernier cycle, événements récents (stress, perte poids, changement vie).',
+          'Si tu le souhaites, note quand le saignement survient, sa quantité '
+          'approximative et les symptômes associés. Ces détails peuvent aider '
+          'un professionnel de santé.',
       advice:
-          'Test de grossesse d\'abord (même si protection).\n'
-          'Si négatif: Notez facteurs de stress, poids, exercice.\n'
-          'Réduisez le stress, augmentez le repos et calories si utile.',
+          'Demande conseil si le saignement se répète, survient après un rapport '
+          'sexuel ou est inhabituel pour toi. Si une grossesse est possible, '
+          'envisage un test et demande un avis de santé.',
       whenToConsult:
-          'Immédiatement si douleur sévère. Sinon, si absence > 3 mois sans explication claire.',
+          'Cherche une aide urgente en cas de saignement abondant, de douleur '
+          'intense, d’évanouissement ou de fièvre. Si une grossesse est possible '
+          'et qu’il y a douleur ou saignement, demande rapidement une aide '
+          'médicale.',
+      tags: ['spotting', 'saignement', 'anormal', 'entre-règles'],
+      readingTimeMinutes: 4,
+    ),
+    EducationArticle(
+      id: 'abnormal-002',
+      title: 'Pertes vaginales et odeur : quand demander conseil ?',
+      shortDescription: 'Les pertes varient; la couleur seule ne pose pas de diagnostic',
+      axis: EducationAxis.normalVsAbnormal,
+      explanation:
+          'Les pertes vaginales et leur odeur peuvent varier au cours du cycle. '
+          'Une modification nouvelle ou persistante, surtout avec démangeaisons, '
+          'brûlures, douleur ou fièvre, peut nécessiter une évaluation. La '
+          'couleur ou l’odeur seules ne permettent pas d’identifier une infection; '
+          'différentes causes peuvent se ressembler.',
+      observations:
+          'Note les changements et les symptômes qui les accompagnent si tu es '
+          'à l’aise. Il n’y a pas de honte à demander des soins; certaines '
+          'infections nécessitent un test et un traitement adapté.',
+      advice:
+          'Évite de poser toi-même un diagnostic ou d’utiliser un traitement '
+          'restant d’une autre maladie. Un professionnel de santé peut proposer '
+          'un examen ou un test confidentiel selon les services disponibles.',
+      whenToConsult:
+          'Demande conseil pour des changements persistants, des démangeaisons, '
+          'des brûlures ou une douleur. Cherche une aide urgente en cas de forte '
+          'douleur pelvienne, de fièvre ou de malaise important.',
+      tags: ['odeur', 'infection', 'vaginose', 'normal'],
+      readingTimeMinutes: 4,
+    ),
+    EducationArticle(
+      id: 'abnormal-003',
+      title: 'Règles manquantes : quelles étapes ?',
+      shortDescription: 'Plusieurs causes sont possibles; l’application ne les diagnostique pas',
+      axis: EducationAxis.normalVsAbnormal,
+      explanation:
+          'L’absence ou le retard des règles peut avoir plusieurs causes, dont '
+          'une grossesse, une contraception hormonale, l’allaitement, des '
+          'changements importants de santé ou d’activité, le stress ou d’autres '
+          'conditions médicales. Seul un professionnel peut évaluer la cause '
+          'dans ton contexte.',
+      observations:
+          'Tu peux noter la date des dernières règles et tout changement '
+          'important. Ces informations ne permettent pas à l’application de '
+          'confirmer une grossesse ni d’expliquer le retard.',
+      advice:
+          'Si une grossesse est possible, un test peut être utile; demande un '
+          'avis de santé pour interpréter le résultat ou choisir la suite. Ne '
+          'modifie pas seule une contraception ou un traitement.',
+      whenToConsult:
+          'Demande conseil si plusieurs règles manquent ou si cela t’inquiète. '
+          'Cherche une aide urgente si une grossesse est possible et que tu as '
+          'une douleur abdominale intense, un évanouissement ou des saignements.',
       tags: ['aménorrhée', 'pas-de-règles', 'absence', 'hormones'],
-      readingTimeMinutes: 7,
+      readingTimeMinutes: 4,
     ),
 
-    // ════════════════════════════════════════════════════════════════
-    // AXE 5: SOLUTIONS ET BIEN-ÊTRE
-    // ════════════════════════════════════════════════════════════════
-
+    // Wellbeing
     EducationArticle(
       id: 'wellness-001',
-      title: 'Comment soulager les crampes: techniques prouvées',
-      shortDescription: 'Chauffage, exercice, suppléments, médecines alternatives',
+      title: 'Crampes : des pistes de soulagement',
+      shortDescription: 'Des options simples à adapter à ton confort',
       axis: EducationAxis.solutionsWellbeing,
       explanation:
-          'Crampes = contractions utérines. Solutions existent, plusieurs niveaux d\'efficacité.\n\n'
-          'PLUS EFFICACE (études scientifiques):\n'
-          '1. Chauffage: Coussin/patch 20–30 min = réduit douleur comme ibuprofène\n'
-          '2. Ibuprofène 400mg: Meilleur AINS pour crampes (pris dès premiers signes)\n'
-          '3. Exercice léger: Yoga, marche = relâche prostaglandines\n\n'
-          'MODÉRÉMENT EFFICACE:\n'
-          '4. Acupuncture: Données mitigées mais soulage pour certaines\n'
-          '5. Massage abdominal: 15–20 min soulage légèrement\n'
-          '6. Magnésium: 400mg/jour = réduit de 20–30% (prendre chaque jour, pas juste avant)\n\n'
-          'MOINS PROUVÉ SCIENTIFIQUEMENT:\n'
-          '7. Vitamines B, oméga-3: Réduisent inflammation (long terme)\n'
-          '8. Tisanes: Gingembre, cannelle légèrement utiles\n\n'
-          'NON EFFICACE:\n'
-          '• Repos complet (mouvements légers mieux)\n'
-          '• Paracétamol seul (moins bon pour crampes que ibuprofène)',
+          'Les crampes et leur intensité varient. Une source de chaleur, du '
+          'repos ou des mouvements doux peuvent aider certaines personnes, '
+          'mais aucun conseil général ne garantit un soulagement pour tout le '
+          'monde.',
       observations:
-          'Chacun réagit différemment. Ce qui soulage l\'une ne soulage pas l\'autre.',
+          'Si tu le souhaites, remarque ce qui t’aide ou aggrave la douleur. '
+          'Arrête une activité si tu te sens mal; une douleur persistante mérite '
+          'd’être prise au sérieux.',
       advice:
-          'PLAN D\'ACTION:\n'
-          '1. Ibuprofène 400mg + coussin chauffant = base\n'
-          '2. + léger exercice si motivée\n'
-          '3. + magnésium (long terme, si récurrent)\n'
-          '4. Testez acupuncture si chroniques\n\n'
-          'Ne pas attendre la douleur: prenez AINS dès premiers signes.',
+          'Tu peux essayer une source de chaleur protégée ou des mouvements '
+          'doux si cela te convient. Pour un médicament ou un complément, '
+          'demande conseil à un pharmacien ou à un professionnel de santé et '
+          'suis la notice; les contre-indications et les doses dépendent de la '
+          'personne.',
       whenToConsult:
-          'Si douleur persiste malgré antidouleurs + chauffage, cherchez autre cause (endométriose?).',
+          'Demande conseil si la douleur revient, s’aggrave ou perturbe tes '
+          'activités. Une douleur soudaine et intense, un évanouissement, une '
+          'fièvre ou un malaise important nécessitent une aide urgente.',
       tags: ['soulagement', 'crampes', 'douleur', 'bien-être'],
-      readingTimeMinutes: 7,
+      readingTimeMinutes: 4,
     ),
-
     EducationArticle(
       id: 'wellness-002',
-      title: 'Alimentation et cycle: comment adapter votre assiette',
-      shortDescription: 'Nutriments clés par phase du cycle',
+      title: 'Alimentation et cycle : repères sans régime imposé',
+      shortDescription: 'Pas besoin d’un menu différent pour chaque phase',
       axis: EducationAxis.solutionsWellbeing,
       explanation:
-          'Votre corps a des besoins différents selon la phase du cycle.\n\n'
-          'PHASE MENSTRUELLE + PHASE FOLLICULAIRE (jours 1–14):\n'
-          '• Fer ↑ (compensation perte sanguin): Viande rouge, légumes feuillus, lentilles\n'
-          '• Calories: Augmentez légèrement (métabolisme ↓ fin phase lutéale)\n'
-          '• Aliments: Légers, énergisants, colorés\n\n'
-          'PHASE OVULATOIRE (jours 12–16):\n'
-          '• Apports normaux: Votre métabolisme est au peak\n'
-          '• Protéines: Pour soutenir hausse énergétique\n'
-          '• Aliments: Frais, légers (votre système digère bien)\n\n'
-          'PHASE LUTÉALE (jours 15–28):\n'
-          '• Calories ↑ de 200–300kcal/jour (métabolisme basal ↑)\n'
-          '• Magnésium ↑ (déficit naturel): Cacao, graines, noix\n'
-          '• Sucres complexes: Riz complet, avoine (stabilisent sérotonine)\n'
-          '• Aliments: Plus copieux, chauds, réconfortants\n\n'
-          'À ÉVITER TOUJOURS:\n'
-          '• Caféine excessive (aggrave douleurs)\n'
-          '• Sucres raffinés (pics glucose → baisse → irritabilité)\n'
-          '• Sodium excessif (rétention d\'eau)',
+          'Les besoins et les habitudes alimentaires varient d’une personne à '
+          'l’autre. Il n’est pas nécessaire de suivre un régime spécial à '
+          'chaque phase du cycle. Une alimentation variée et suffisante contribue '
+          'à la santé générale, sans garantir la prévention ou le traitement '
+          'des symptômes.',
       observations:
-          'Notez: aliments, humeur, énergie, douleurs. Corrélations deviennent évidentes.',
+          'Tu peux remarquer si certains repas influencent ton confort, sans '
+          'te restreindre ni considérer une coïncidence comme une preuve.',
       advice:
-          'Adaptez progressivement. Semaine 1–2: aliments légers + fer. Semaines 3–4: plus copieux + magnésium.\n'
-          'App peut suggérer recettes par phase.',
+          'Choisis des aliments accessibles et variés selon tes goûts et tes '
+          'besoins. En cas de règles abondantes, de fatigue ou de question sur '
+          'le fer ou d’autres compléments, demande un avis professionnel avant '
+          'de prendre un supplément.',
       whenToConsult:
-          'Si changements alimentaires ne soulagent pas SPM après 2 cycles, consultez nutritionniste.',
+          'Demande conseil en cas de fatigue persistante, de changement de poids '
+          'important, de difficulté à manger ou de symptômes qui t’inquiètent.',
       tags: ['alimentation', 'nutrition', 'cycle', 'bien-être'],
-      readingTimeMinutes: 8,
+      readingTimeMinutes: 4,
     ),
-
     EducationArticle(
       id: 'wellness-003',
-      title: 'Exercice et cycle: quand bouger, quand reposer',
-      shortDescription: 'Activités optimales par phase',
+      title: 'Activité physique : écouter son corps',
+      shortDescription: 'Choisir une activité selon son confort, pas le calendrier',
       axis: EducationAxis.solutionsWellbeing,
       explanation:
-          'Le type d\'exercice devrait varier selon la phase pour optimiser récupération et performance.\n\n'
-          'PHASE MENSTRUELLE (jours 1–5): REPOS + LÉGER\n'
-          '• Estrogène/Progestérone ↓ → énergie ↓\n'
-          '• Recommandé: Yoga doux, marche, stretching, Pilates\n'
-          '• Évitez: Cardio intense, musculation lourde\n'
-          '• Bénéfice: Chauffage + mouvement = soulagement douleur\n\n'
-          'PHASE FOLLICULAIRE (jours 6–13): INTENSITÉ ↑\n'
-          '• Estrogène ↑ → énergie ↑, récupération rapide\n'
-          '• Recommandé: HIIT, course, crossfit, musculation progressive\n'
-          '• C\'est VOTRE moment de peak performance\n\n'
-          'PHASE OVULATOIRE (jours 12–16): INTENSITÉ MAX\n'
-          '• Testostérone + estrogène ↑ → force, endurance optimales\n'
-          '• Recommandé: Entraînements compétitifs, défis\n'
-          '• Meilleur moment pour nouveaux records\n\n'
-          'PHASE LUTÉALE (jours 15–28): INTENSITÉ MODÉRÉE\n'
-          '• Progestérone ↑ → métabolisme ↑ mais énergie capricieuse\n'
-          '• Semaine 1 (jours 15–21): Modéré, renforcement\n'
-          '• Semaine 2 (jours 22–28): Léger, surtout si fatigué\n'
-          '• Évitez: Entraînement excessif (risque surmenage)\n\n'
-          'RÈGLE D\'OR: Écoutez votre corps. Pas forcer si fatigue ou douleur.',
+          'Il n’existe pas un programme d’exercice adapté à toutes les personnes '
+          'pour chaque phase du cycle. L’énergie et le confort peuvent varier; '
+          'tu n’as pas besoin d’éviter une activité uniquement parce que '
+          'l’application indique une phase donnée. Des mouvements doux '
+          'soulageront certaines personnes, mais pas toutes.',
       observations:
-          'Notez: type exercice, intensité, comment vous vous sentez, récupération.',
+          'Remarque comment tu te sens pendant et après l’activité. La douleur, '
+          'la fatigue ou le besoin de repos sont des informations utiles, pas '
+          'un manque de volonté.',
       advice:
-          'Adaptez progressivement. Téléchargez un calendrier cycle + exercices recommandés.\n'
-          'La clé: Respect du cycle naturel = meilleures résultats LONG TERME.',
+          'Choisis une activité qui te plaît et adapte l’intensité à ton état '
+          'du jour. Fais une pause si tu te sens étourdie, faible ou si la '
+          'douleur augmente.',
       whenToConsult:
-          'Si fatigue extrême même en phase de repos, consultez pour dépistage anémie.',
+          'Demande un avis si l’exercice provoque régulièrement douleur, '
+          'étourdissements ou fatigue inhabituelle, ou si tes symptômes '
+          'perturbent tes activités.',
       tags: ['exercice', 'sport', 'activité', 'cycle', 'bien-être'],
-      readingTimeMinutes: 8,
+      readingTimeMinutes: 4,
     ),
-
     EducationArticle(
       id: 'wellness-004',
-      title: 'Sommeil cyclique: améliorez votre repos selon votre phase',
-      shortDescription: 'Horaires, qualité, hygiene du sommeil adaptés',
+      title: 'Sommeil et cycle : des habitudes simples',
+      shortDescription: 'Les changements de sommeil ne sont pas identiques pour toutes',
       axis: EducationAxis.solutionsWellbeing,
       explanation:
-          'La qualité du sommeil fluctue avec le cycle. Adapter vos habitudes = meilleur repos.\n\n'
-          'PHASE MENSTRUELLE + PHASE FOLLICULAIRE (jours 1–14):\n'
-          '• Sommeil profond normal\n'
-          '• Respect horaires réguliers\n'
-          '• 7–8h suffisent\n\n'
-          'PHASE LUTÉALE (jours 15–28):\n'
-          '• Sommeil ↓ en qualité naturellement\n'
-          '• Progestérone ↑ → microréveils, sommeil léger\n'
-          '• Besoin réel: 8–9h (ou plus!)\n'
-          '• Couchez-vous plus tôt, pas besoin de forcer\n\n'
-          'CONSEILS PHASE LUTÉALE:\n'
-          '• Lumière bleue ↓ (écrans −1h avant lit)\n'
-          '• Chambre plus froide (17–19°C optimal)\n'
-          '• Magésium le soir (400mg) = aide endormissement\n'
-          '• Évitez caféine après 14h\n'
-          '• Bain chaud 1h avant lit',
+          'Certaines personnes remarquent des changements de sommeil autour '
+          'des règles; d’autres non. Les besoins de sommeil ne se calculent pas '
+          'à partir d’une phase du cycle et une application ne peut pas les '
+          'déterminer.',
       observations:
-          'Notez: heure coucher/lever, qualité perçue, nombre d\'heures réelles.',
+          'Si le sommeil te préoccupe, note ce qui te semble utile, comme les '
+          'horaires ou les réveils, sans chercher une cause unique dans le cycle.',
       advice:
-          'Donnez-vous permission de dormir plus en phase lutéale. Ce n\'est pas paresse, c\'est biologie.',
+          'Une routine régulière et un environnement reposant peuvent aider. '
+          'Évite de commencer des compléments ou de modifier un traitement sans '
+          'avis professionnel.',
       whenToConsult:
-          'Insomnies sévères phase lutéale → Peut indiquer SPM sévère, demander aide.',
+          'Demande conseil si les difficultés de sommeil persistent, affectent '
+          'tes activités ou s’accompagnent d’une détresse importante.',
       tags: ['sommeil', 'repos', 'cycle', 'bien-être', 'qualité'],
-      readingTimeMinutes: 6,
+      readingTimeMinutes: 3,
     ),
   ];
 
-  /// Récupère tous les articles d\'une catégorie
+  /// Returns all articles for a category.
   static List<EducationArticle> getArticlesByAxis(EducationAxis axis) {
     return articles.where((article) => article.axis == axis).toList();
   }
 
-  /// Récupère un article par ID
+  /// Returns an article by its stable identifier.
   static EducationArticle? getArticleById(String id) {
-    try {
-      return articles.firstWhere((article) => article.id == id);
-    } catch (e) {
-      return null;
+    for (final article in articles) {
+      if (article.id == id) return article;
     }
+    return null;
   }
 
-  /// Recherche par tags
+  /// Returns articles whose tags include [tag], ignoring case.
   static List<EducationArticle> searchByTag(String tag) {
+    final normalizedTag = tag.toLowerCase();
     return articles
-        .where((article) => article.tags.contains(tag.toLowerCase()))
+        .where((article) => article.tags.any(
+              (articleTag) => articleTag.toLowerCase() == normalizedTag,
+            ))
         .toList();
   }
 
-  /// Retourne toutes les catégories groupées
+  /// Returns all categories in their display order.
   static List<EducationCategory> getAllCategories() {
-    return [
-      EducationAxis.cycleBasics,
-      EducationAxis.ovulationFertility,
-      EducationAxis.menstruationSymptoms,
-      EducationAxis.normalVsAbnormal,
-      EducationAxis.solutionsWellbeing,
-    ]
-        .map((axis) => EducationCategory(
-          axis: axis,
-          articles: getArticlesByAxis(axis),
-        ))
+    return EducationAxis.values
+        .map(
+          (axis) => EducationCategory(
+            axis: axis,
+            articles: getArticlesByAxis(axis),
+          ),
+        )
         .toList();
   }
 }

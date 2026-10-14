@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class AiChatScreen extends StatelessWidget {
   const AiChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Stack(
@@ -19,93 +23,93 @@ class AiChatScreen extends StatelessWidget {
                 children: [
                   _AiHeader(onBack: () => context.pop()),
                   const SizedBox(height: 20),
-const _Bubble(
-                      text: 'Hey, just checking in.', assistant: true),
+                  _Bubble(
+                      text: l10n.aiChatCheckingIn, assistant: true),
                   const SizedBox(height: 10),
-const _Bubble(
-                      text: 'How are you feeling around your PMS days lately?',
+                  _Bubble(
+                      text: l10n.aiChatPmsQuestion,
                       assistant: true),
                   const SizedBox(height: 10),
-                  const _Bubble(text: 'Cramps or body aches', assistant: false),
+                  _Bubble(text: l10n.aiChatCrampsOrAches, assistant: false),
                   const SizedBox(height: 10),
-                  const _Bubble(
+                  _Bubble(
                       text:
-                          'Got it. Everyone feels this phase a little differently.',
+                          l10n.aiChatPhaseVariation,
                       assistant: true),
                   const SizedBox(height: 10),
-                  const _Bubble(
+                  _Bubble(
                       text:
-                          'Do you usually have trouble focusing or getting things done these days?',
+                          l10n.aiChatFocusQuestion,
                       assistant: true),
                   const SizedBox(height: 10),
-                  const _Bubble(text: 'Yes, a lot', assistant: false),
+                  _Bubble(text: l10n.aiChatYesALot, assistant: false),
                   const SizedBox(height: 10),
-                  const _Bubble(
-                      text: 'Here are a few gentle ways to stay balanced',
+                  _Bubble(
+                      text: l10n.aiChatGentleSuggestions,
                       assistant: true),
                   const SizedBox(height: 14),
                   SizedBox(
                     height: 170,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: const [
+                      children: [
                         _SuggestionCard(
-                            title: 'Drink water',
+                            title: l10n.aiSuggestionDrinkWater,
                             imagePath: 'moc/Chat Page-66.png'),
                         SizedBox(width: 12),
                         _SuggestionCard(
-                            title: 'Move gently',
+                            title: l10n.aiSuggestionMoveGently,
                             imagePath: 'moc/Chat Page-67.png'),
                         SizedBox(width: 12),
                         _SuggestionCard(
-                            title: 'Take a pause',
+                            title: l10n.aiSuggestionTakePause,
                             imagePath: 'moc/Chat Page-69.png'),
                       ],
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const _Bubble(
-                      text: 'Wanna learn a bit more about this?',
+                  _Bubble(
+                      text: l10n.aiChatLearnMore,
                       assistant: true),
                   const SizedBox(height: 10),
-                  const _Bubble(text: "Yeah, I'm curious", assistant: false),
+                  _Bubble(text: l10n.aiChatImCurious, assistant: false),
                   const SizedBox(height: 10),
-                  const _Bubble(
-                      text: "Here's a full article. give it a read!",
+                  _Bubble(
+                      text: l10n.aiChatArticlePrompt,
                       assistant: true),
                   const SizedBox(height: 14),
                   _ArticleCard(onTap: () => context.go('/self-care/article')),
                   const SizedBox(height: 10),
-                  const _Bubble(text: 'I Read it', assistant: false),
+                  _Bubble(text: l10n.aiChatIReadIt, assistant: false),
                   const SizedBox(height: 10),
-                  const _Bubble(
+                  _Bubble(
                       text:
-                          "I've preselected your symptoms. Are these correct, or do you have others to add?",
+                          l10n.aiChatSymptomsPrompt,
                       assistant: true),
                   const SizedBox(height: 10),
-                  const _Bubble(text: 'Yes, that works!', assistant: false),
+                  _Bubble(text: l10n.aiChatSymptomsConfirmed, assistant: false),
                   const SizedBox(height: 12),
                   _SymptomsCard(onTap: () => context.go('/symptoms')),
                   const SizedBox(height: 20),
                   Center(
-                      child: Text('Wed, Apr 9',
+                      child: Text(DateFormat.MMMEd(locale).format(DateTime(2025, 4, 9)),
                           style: AppText.caption
                               .copyWith(color: AppColors.grey500))),
                   const SizedBox(height: 12),
-                  const _Bubble(
+                  _Bubble(
                       text:
-                          "We know it's not easy to get through days like this. you're not alone",
+                          l10n.aiChatAfterPmsSupport,
                       assistant: true),
                   const SizedBox(height: 12),
                   _CalendarCard(onTap: () => context.go('/ai/appointment')),
                   const SizedBox(height: 12),
-                  const _Bubble(
+                  _Bubble(
                       text:
-                          "Based on your calendar, your PMS days are from the 13th to the 17th, and you already have a doctor's appointment on the 18th.",
+                          l10n.aiChatCalendarPmsDoctor,
                       assistant: true),
                   const SizedBox(height: 10),
-                  const _Bubble(
-                      text: 'I suggest the 19th instead. how does that sound?',
+                  _Bubble(
+                      text: l10n.aiChatSuggestDate,
                       assistant: true),
                 ],
               ),
@@ -149,7 +153,7 @@ class _AiHeader extends StatelessWidget {
       const SizedBox(width: 10),
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Perry', style: AppText.h6.copyWith(fontWeight: FontWeight.w700)),
-        Text('Your Assistant',
+        Text(AppLocalizations.of(context).aiChatAssistantLabel,
             style: AppText.caption.copyWith(color: AppColors.grey500)),
       ]),
     ]);
@@ -213,6 +217,7 @@ class _ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -234,16 +239,16 @@ class _ArticleCard extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Never-Ending\nCramps', style: AppText.h5),
+                    Text(l10n.aiChatArticleTitle, style: AppText.h5),
                     const SizedBox(height: 8),
-                    Text("When period pain isn't typical.",
+                    Text(l10n.aiChatArticleSubtitle,
                         style: AppText.body.copyWith(color: AppColors.grey500)),
                   ]),
             ),
           ]),
           const SizedBox(height: 10),
           Text(
-            'Learn why cramps linger and when to seek help. Perry also shares tips to ease discomfort.',
+            l10n.aiChatArticleDescription,
             style: AppText.body.copyWith(color: AppColors.grey700),
           ),
           const SizedBox(height: 12),
@@ -251,10 +256,10 @@ class _ArticleCard extends StatelessWidget {
             const Icon(Icons.schedule_outlined,
                 size: 16, color: AppColors.grey500),
             const SizedBox(width: 4),
-            Text('4 min',
+            Text(l10n.selfCareMinutesRead(4),
                 style: AppText.caption.copyWith(color: AppColors.grey500)),
             const Spacer(),
-            Text('Read Now',
+            Text(l10n.aiChatReadNow,
                 style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
           ]),
         ]),
@@ -269,6 +274,7 @@ class _SymptomsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -283,19 +289,19 @@ class _SymptomsCard extends StatelessWidget {
           Row(children: [
             const Icon(Icons.favorite_border, color: AppColors.primary400),
             const SizedBox(width: 8),
-            Text('Your Symptoms Are All Set',
+            Text(l10n.aiChatSetSymptomsTitle,
                 style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
           ]),
           const Divider(height: 24),
-          const Wrap(spacing: 10, runSpacing: 10, children: [
-            _Chip(label: 'Cramps'),
-            _Chip(label: 'Headache'),
-            _Chip(label: 'Sad'),
+          Wrap(spacing: 10, runSpacing: 10, children: [
+            _Chip(label: l10n.aiChatSymptomCramps),
+            _Chip(label: l10n.aiChatSymptomHeadache),
+            _Chip(label: l10n.moodSad),
           ]),
           const SizedBox(height: 18),
           Align(
             alignment: Alignment.centerRight,
-            child: Text('Open symptoms',
+            child: Text(l10n.aiChatOpenSymptoms,
                 style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
           ),
         ]),
@@ -328,6 +334,8 @@ class _CalendarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -339,20 +347,32 @@ class _CalendarCard extends StatelessWidget {
           border: Border.all(color: AppColors.grey200),
         ),
         child: Column(children: [
-          const Row(
+          Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _MiniButton(icon: Icons.chevron_left_rounded),
-                Text('Sep', style: AppText.h6),
-                _MiniButton(icon: Icons.chevron_right_rounded),
+                const _MiniButton(icon: Icons.chevron_left_rounded),
+                Text(DateFormat.MMM(locale).format(DateTime(2025, 9)),
+                    style: AppText.h6),
+                const _MiniButton(icon: Icons.chevron_right_rounded),
               ]),
           const SizedBox(height: 14),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su']
-                .map((e) => SizedBox(
-                    width: 28, child: Text(e, textAlign: TextAlign.center)))
-                .toList(),
+            children: [
+              for (var day = 1; day <= 7; day++)
+                SizedBox(
+                  width: 28,
+                  child: Text(
+                    DateFormat.E(locale)
+                        .format(DateTime(2025, 9, day))
+                        .toLowerCase(),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    style: AppText.caption,
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 14),
           Wrap(
@@ -391,9 +411,9 @@ class _CalendarCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16)),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _legend('PMS day Conflict'),
+              _legend(l10n.aiChatPmsConflict),
               const SizedBox(height: 6),
-              _legend('Doctor visit Conflict'),
+              _legend(l10n.aiChatDoctorVisitConflict),
             ]),
           ),
         ]),
@@ -481,7 +501,7 @@ class _Composer extends StatelessWidget {
               color: const Color(0xFFF5F2F3),
               borderRadius: BorderRadius.circular(26)),
           child: Row(children: [
-            Text('Ask anything...',
+            Text(AppLocalizations.of(context).aiChatAskAnything,
                 style: AppText.body.copyWith(color: AppColors.grey400)),
             const Spacer(),
             const Icon(Icons.add_box_outlined, color: AppColors.grey500),

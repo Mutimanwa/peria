@@ -108,6 +108,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final asyncLog = ref.watch(symptomLogProvider(_selectedDate));
     
     if (asyncLog.isLoading) {
@@ -143,11 +144,11 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          DateFormat('MMMM').format(_selectedDate),
+                          DateFormat.MMMM(locale).format(_selectedDate),
                           style: AppText.h3,
                         ),
                         Text(
-                          DateFormat('y').format(_selectedDate),
+                          DateFormat.y(locale).format(_selectedDate),
                           style: AppText.caption.copyWith(
                             color: AppColors.grey600,
                             fontWeight: FontWeight.w700,
@@ -166,7 +167,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                       itemBuilder: (context, index) {
                         final date = _dates[index];
                         final isSelected = date == _selectedDate;
-                        final dayName = DateFormat('E').format(date);
+                        final dayName = DateFormat.E(locale).format(date);
                         final isFutureDate = date.isAfter(DateTime.now());
 
                         return GestureDetector(
@@ -251,7 +252,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
             left: 24,
             right: 24,
             child: PrimaryButton(
-              label: _hasExistingLog ? 'Mettre à jour' : 'Enregistrer',
+              label: _hasExistingLog ? l10n.update : l10n.save,
               onPressed: _save,
             ),
           ),

@@ -5,6 +5,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/features/profile/presentation/providers/security_provider.dart';
 import 'package:peria_app/core/services/security_service.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
@@ -74,14 +75,16 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
   Future<void> _authenticate() async {
     try {
       final didAuth = await _localAuth.authenticate(
-        localizedReason: 'Unlock your private journal',
+        localizedReason: AppLocalizations.of(context).journalUnlockReason,
         options: const AuthenticationOptions(biometricOnly: false),
       );
       if (didAuth && mounted) {
         widget.onVerified();
       }
     } catch (e) {
-      if (mounted) setState(() => _error = 'Biometric failed');
+      if (mounted) {
+        setState(() => _error = AppLocalizations.of(context).securityBiometricFailed);
+      }
     }
   }
 
@@ -92,12 +95,13 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
     if (isValid && mounted) {
       widget.onVerified();
     } else {
-      setState(() => _error = 'Invalid PIN');
+      setState(() => _error = AppLocalizations.of(context).securityIncorrectPin);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Stack(
       children: [
         widget.child,
@@ -125,10 +129,10 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                         size: 32, color: AppColors.primary500),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Journal is locked', style: AppText.h5),
+                  Text(l10n.journalLockedTitle, style: AppText.h5),
                   const SizedBox(height: 8),
                   Text(
-                    'Enter PIN or use biometrics to access your private notes.',
+                    l10n.journalLockedDescription,
                     textAlign: TextAlign.center,
                     style: AppText.body.copyWith(color: AppColors.grey600),
                   ),
@@ -147,7 +151,7 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                         children: [
                           const Icon(Icons.fingerprint, size: 20),
                           const SizedBox(width: 8),
-                          Text('Use biometrics',
+                          Text(l10n.journalUseBiometrics,
                               style:
                                   AppText.label.copyWith(color: Colors.white)),
                         ],
@@ -164,11 +168,6 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                     ),
                     const SizedBox(height: 16),
                     const SizedBox(height: 16),
-                  ],
-                  if (_error != null) ...[
-                    const SizedBox(height: 12),
-                    Text(_error!,
-                        style: const TextStyle(color: AppColors.error)),
                   ],
                 ],
               ),

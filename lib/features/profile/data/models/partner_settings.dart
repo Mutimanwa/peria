@@ -10,9 +10,9 @@ class PartnerSettings {
     this.status = 'none',
     this.partnerEmail,
     this.shareCyclePredictions = false,
-    this.shareLoggedSymptoms = true,
+    this.shareLoggedSymptoms = false,
     this.sharePeriodDates = false,
-    this.shareMoodEntries = true,
+    this.shareMoodEntries = false,
   });
 
   bool get isPending => status == 'pending';
@@ -42,9 +42,9 @@ class PartnerSettings {
       status: json['status'] as String? ?? 'none',
       partnerEmail: json['partnerEmail'] as String?,
       shareCyclePredictions: json['shareCyclePredictions'] as bool? ?? false,
-      shareLoggedSymptoms: json['shareLoggedSymptoms'] as bool? ?? true,
+      shareLoggedSymptoms: json['shareLoggedSymptoms'] as bool? ?? false,
       sharePeriodDates: json['sharePeriodDates'] as bool? ?? false,
-      shareMoodEntries: json['shareMoodEntries'] as bool? ?? true,
+      shareMoodEntries: json['shareMoodEntries'] as bool? ?? false,
     );
   }
 

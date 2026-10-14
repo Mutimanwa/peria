@@ -144,7 +144,7 @@ const List<Map<String, String>> kSleepTracks = [
 
 const List<SelfCareSection> kSelfCareSections = [
   SelfCareSection(
-    title: 'Menstrual cramps relief',
+    title: 'Gentle movement for cramps',
     cards: [
       SelfCareCardData(
         title: 'Balance',
@@ -166,7 +166,7 @@ const List<SelfCareSection> kSelfCareSections = [
     ],
   ),
   SelfCareSection(
-    title: 'Hormonal Balance',
+    title: 'Strength and flexibility',
     cards: [
       SelfCareCardData(
         title: 'Strength',
@@ -190,7 +190,7 @@ const List<SelfCareSection> kSelfCareSections = [
     title: 'Facial Care',
     cards: [
       SelfCareCardData(
-        title: 'Slim down your face',
+        title: 'Gentle facial massage',
         subtitle: 'Lift and sculpt softly',
         imagePath: 'moc/Facial Care.png',
         accent: Color(0xFFFFE9F2),
@@ -228,17 +228,10 @@ const List<SelfCareSection> kSelfCareSections = [
     title: 'Articles',
     cards: [
       SelfCareCardData(
-        title: 'Period pain Pills',
+        title: 'Period pain relief',
         subtitle: '4 min read',
         imagePath: 'moc/Article.png',
         accent: Color(0xFFFFE4EA),
-        route: '/self-care/article',
-      ),
-      SelfCareCardData(
-        title: 'Menstrual Cups',
-        subtitle: '6 min read',
-        imagePath: 'moc/Article Details-5.png',
-        accent: Color(0xFFF0E4FD),
         route: '/self-care/article',
       ),
     ],

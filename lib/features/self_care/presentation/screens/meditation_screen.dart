@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/self_care/presentation/screens/self_care_data.dart';
+import 'package:peria_app/features/self_care/presentation/screens/self_care_localization.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class MeditationScreen extends StatelessWidget {
@@ -9,6 +11,7 @@ class MeditationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -17,7 +20,7 @@ class MeditationScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(22, 62, 22, 30),
         child: Column(
           children: [
-            const Text('Sleep Meditation', style: AppText.h5),
+            Text(l10n.selfCareSleepMeditationTitle, style: AppText.h5),
             const SizedBox(height: 18),
             Container(
               height: 250,
@@ -50,9 +53,9 @@ class MeditationScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Relax', style: AppText.h3),
+                          Text(l10n.selfCareRelax, style: AppText.h3),
                           Text(
-                            'Peace and relaxation',
+                            l10n.selfCarePeaceRelaxation,
                             style:
                                 AppText.body.copyWith(color: AppColors.grey600),
                           ),
@@ -96,11 +99,11 @@ class MeditationScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(entry.value['title']!,
+                              Text(localizeSelfCareData(entry.value['title']!, l10n),
                                   style: AppText.label
                                       .copyWith(fontWeight: FontWeight.w700)),
                               Text(
-                                entry.value['subtitle']!,
+                                localizeSelfCareData(entry.value['subtitle']!, l10n),
                                 style: AppText.body
                                     .copyWith(color: AppColors.grey500),
                               ),

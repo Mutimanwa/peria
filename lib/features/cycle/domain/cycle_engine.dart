@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/cycle_regularity.dart';
+import 'package:peria_app/features/cycle/domain/cycle_statistics.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 
 class CycleEngine {
@@ -10,6 +11,15 @@ class CycleEngine {
 
   static DateTime _startOfDay(DateTime value) =>
       DateTime(value.year, value.month, value.day);
+
+  static DateTime _addCalendarDays(DateTime value, int days) =>
+      DateTime(value.year, value.month, value.day + days);
+
+  static int _calendarDayDifference(DateTime a, DateTime b) {
+    final utcA = DateTime.utc(a.year, a.month, a.day);
+    final utcB = DateTime.utc(b.year, b.month, b.day);
+    return utcA.difference(utcB).inDays;
+  }
 
   static DateTime _endOfDay(DateTime value) => DateTime(
         value.year,
@@ -28,54 +38,57 @@ class CycleEngine {
     required double irregularityFactor,
   }) {
     // Base confidence from log count (max 0.6 with 6+ logs)
-    double logConfidence = (logCount / 6.0).clamp(0.2, 0.6);
+    double logConfidence = (logCount / 6.0).clamp(0.2, 0.6).toDouble();
     
     // Variance penalty (up to -0.3)
     double variancePenalty = 0;
     if (cycleVariance > 5) {
-      variancePenalty = ((cycleVariance - 5) / 20).clamp(0.0, 0.3);
+      variancePenalty =
+          ((cycleVariance - 5) / 20).clamp(0.0, 0.3).toDouble();
     } else if (cycleVariance > 2) {
-      variancePenalty = ((cycleVariance - 2) / 30).clamp(0.0, 0.15);
+      variancePenalty =
+          ((cycleVariance - 2) / 30).clamp(0.0, 0.15).toDouble();
     }
     
     // Irregularity penalty
     double irregularityPenalty = isIrregular ? 0.2 : 0.0;
     
     double confidence = logConfidence - variancePenalty - irregularityPenalty;
-    return confidence.clamp(0.0, 1.0);
+    return confidence.clamp(0.0, 1.0).toDouble();
   }
 
-  static int _calculateCycleVariance(List<PeriodLog> logs, int avgCycleLength) {
-    if (logs.length < 2) return 0;
-    
-    final List<int> cycleLengths = [];
-    for (int i = 0; i < logs.length - 1; i++) {
-      final diff = logs[i].startDate.difference(logs[i + 1].startDate).inDays.abs();
-      cycleLengths.add(diff);
-    }
-    
-    if (cycleLengths.isEmpty) return 0;
-    
-    final mean = cycleLengths.reduce((a, b) => a + b) / cycleLengths.length;
-    final variance = cycleLengths.map((l) => math.pow(l - mean, 2)).reduce((a, b) => a + b) / cycleLengths.length;
-    return math.sqrt(variance).round();
-  }
+  /// Aggregate statistics over all logged cycle intervals.
+  static CycleStatistics? computeStatistics({
+    required List<PeriodLog> logs,
+  }) {
+    if (logs.length < 2) return null;
 
-  static int _computeAverageCycleLength(List<PeriodLog> logs, int userCycleLength) {
-    if (logs.length < 2) return userCycleLength;
-    
-    final logsToUse = logs.length >= 6 ? logs.take(6).toList() : logs;
+    final sortedLogs = [...logs]
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
     final cycleLengths = <int>[];
-    
-    for (int i = 0; i < logsToUse.length - 1; i++) {
-      final length = logsToUse[i].startDate.difference(logsToUse[i + 1].startDate).inDays;
-      cycleLengths.add(length);
+    for (var i = 0; i < sortedLogs.length - 1; i++) {
+      cycleLengths.add(_calendarDayDifference(
+        sortedLogs[i].startDate,
+        sortedLogs[i + 1].startDate,
+      ));
     }
-    
-    if (cycleLengths.isEmpty) return userCycleLength;
-    
-    final sum = cycleLengths.reduce((a, b) => a + b);
-    return (sum / cycleLengths.length).round();
+    if (cycleLengths.isEmpty) return null;
+
+    final average = cycleLengths.reduce((a, b) => a + b) / cycleLengths.length;
+    final variance = cycleLengths
+            .map((length) => math.pow(length - average, 2))
+            .reduce((a, b) => a + b) /
+        cycleLengths.length;
+    final standardDeviation = math.sqrt(variance);
+
+    return CycleStatistics(
+      averageCycleLength: average.round(),
+      minCycleLength: cycleLengths.reduce((a, b) => a < b ? a : b),
+      maxCycleLength: cycleLengths.reduce((a, b) => a > b ? a : b),
+      stdDeviation: standardDeviation,
+      totalCyclesLogged: sortedLogs.length,
+      isRegular: standardDeviation <= 5,
+    );
   }
 
   static CycleStatus? computeFromLogs({
@@ -85,15 +98,25 @@ class CycleEngine {
     required int pmsDaysSetting,
     DateTime? now,
   }) {
-    if (logs.isEmpty) return null;
-    
-    final sortedLogs = [...logs]..sort((a, b) => b.startDate.compareTo(a.startDate));
+    final requestedDate = _startOfDay(now ?? DateTime.now());
+    final logsOnOrBeforeDate = logs
+        .where((log) => !_startOfDay(log.startDate).isAfter(requestedDate))
+        .toList();
+    if (logsOnOrBeforeDate.isEmpty) return null;
+
+    final sortedLogs = [...logsOnOrBeforeDate]
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
     final latestLog = sortedLogs.first;
-    
-    final averageCycleLength = _computeAverageCycleLength(sortedLogs, userCycleLengthDays);
-    final cycleVariance = _calculateCycleVariance(sortedLogs, averageCycleLength);
-    final isIrregular = cycleVariance > 5;
-    final irregularityFactor = isIrregular ? (cycleVariance / 10.0).clamp(0.0, 0.3) : 0.0;
+    final predictionLogs = sortedLogs.take(6).toList();
+    final predictionStatistics =
+        computeStatistics(logs: predictionLogs);
+    final averageCycleLength =
+        predictionStatistics?.averageCycleLength ?? userCycleLengthDays;
+    final cycleVariance = predictionStatistics?.stdDeviation.round() ?? 0;
+    final isIrregular = predictionStatistics?.isRegular == false;
+    final irregularityFactor = isIrregular
+        ? (cycleVariance / 10.0).clamp(0.0, 0.3).toDouble()
+        : 0.0;
     final confidenceScore = _calculateConfidenceScore(
       logCount: sortedLogs.length,
       cycleVariance: cycleVariance,
@@ -112,35 +135,39 @@ class CycleEngine {
       irregularityFactor: irregularityFactor,
       confidenceScore: confidenceScore,
       isEstimated: isEstimated,
-      cycleRegularity: isIrregular ? CycleRegularity.irregular : CycleRegularity.regular,
+      cycleRegularity: isIrregular
+          ? CycleRegularity.irregular
+          : CycleRegularity.regular,
       now: now,
     );
   }
 
- // À ajouter dans CycleEngine
-static CycleStatus? computeFromSingleLog({
-  required DateTime startDate,
-  required DateTime endDate,
-  required int userCycleLengthDays,
-  required int userPeriodLengthDays,
-  required int pmsDaysSetting,
-  DateTime? now,
-}) {
-  return compute(
-    startDate: startDate,
-    endDate: endDate,
-    cycleLengthDays: userCycleLengthDays,
-    periodLengthDays: userPeriodLengthDays,
-    pmsDaysSetting: pmsDaysSetting,
-    cycleVariance: 0,
-    irregularityFactor: 0.0,
-    confidenceScore: 0.2, // Low confidence with single log
-    isEstimated: true,
-    cycleRegularity: CycleRegularity.regular,
-    now: now,
-  );
-}
-  
+  static CycleStatus? computeFromSingleLog({
+    required DateTime startDate,
+    required DateTime endDate,
+    required int userCycleLengthDays,
+    required int userPeriodLengthDays,
+    required int pmsDaysSetting,
+    DateTime? now,
+  }) {
+    final requestedDate = _startOfDay(now ?? DateTime.now());
+    if (requestedDate.isBefore(_startOfDay(startDate))) return null;
+
+    return compute(
+      startDate: startDate,
+      endDate: endDate,
+      cycleLengthDays: userCycleLengthDays,
+      periodLengthDays: userPeriodLengthDays,
+      pmsDaysSetting: pmsDaysSetting,
+      cycleVariance: 0,
+      irregularityFactor: 0.0,
+      confidenceScore: 0.2,
+      isEstimated: true,
+      cycleRegularity: CycleRegularity.regular,
+      now: now,
+    );
+  }
+
   static CycleStatus? compute({
     required DateTime startDate,
     required DateTime endDate,
@@ -164,10 +191,12 @@ static CycleStatus? computeFromSingleLog({
     final isInRealPeriod = _isInRealPeriod(current, startDate, endDate);
     
     // For overdue detection: only overdue if no active period
-    final expectedNextPeriodStart = normalizedStartDate.add(Duration(days: cycleLengthDays));
+    final expectedNextPeriodStart =
+        _addCalendarDays(normalizedStartDate, cycleLengthDays);
     const overdueToleranceDays = 2;
-    final isOverdue = !isInRealPeriod && 
-        normalizedCurrent.isAfter(expectedNextPeriodStart.add(const Duration(days: overdueToleranceDays)));
+    final isOverdue = !isInRealPeriod && normalizedCurrent.isAfter(
+      _addCalendarDays(expectedNextPeriodStart, overdueToleranceDays),
+    );
     
     // For prediction, use the most recent log as anchor
     DateTime currentCycleStart;
@@ -178,53 +207,62 @@ static CycleStatus? computeFromSingleLog({
       useRealPeriodForCycle = true;
     } else {
       // Calculate based on prediction from last log
-      final daysSinceLastPeriod = normalizedCurrent.difference(normalizedStartDate).inDays;
-      final cyclesElapsed = daysSinceLastPeriod >= 0 ? daysSinceLastPeriod ~/ cycleLengthDays : 0;
-      currentCycleStart = normalizedStartDate.add(Duration(days: cyclesElapsed * cycleLengthDays));
+      final daysSinceLastPeriod =
+          _calendarDayDifference(normalizedCurrent, normalizedStartDate);
+      final cyclesElapsed =
+          daysSinceLastPeriod >= 0 ? daysSinceLastPeriod ~/ cycleLengthDays : 0;
+      currentCycleStart =
+          _addCalendarDays(normalizedStartDate, cyclesElapsed * cycleLengthDays);
       useRealPeriodForCycle = false;
     }
     
-    final computedEndDate = useRealPeriodForCycle && current.isAfter(startDate) && current.isBefore(endDate)
+    final computedEndDate = useRealPeriodForCycle
         ? _endOfDay(endDate)
-        : currentCycleStart.add(Duration(days: periodLengthDays - 1, hours: 23, minutes: 59, seconds: 59, milliseconds: 999));
-    
-    final isInPeriod = useRealPeriodForCycle && 
-        (current.isAtSameMomentAs(currentCycleStart) || current.isAfter(currentCycleStart)) &&
-        (current.isAtSameMomentAs(computedEndDate) || current.isBefore(computedEndDate));
-    
-    final dayOfCycle = normalizedCurrent.difference(currentCycleStart).inDays + 1;
+        : _endOfDay(_addCalendarDays(currentCycleStart, periodLengthDays - 1));
+
+    final isInPeriod = useRealPeriodForCycle;
+
+    final dayOfCycle =
+        _calendarDayDifference(normalizedCurrent, currentCycleStart) + 1;
     
     // Ovulation range (±2 days)
-    final predictedOvulationDay = (cycleLengthDays - 14).clamp(1, cycleLengthDays);
-    final ovulationRangeStartDay = (predictedOvulationDay - 2).clamp(1, cycleLengthDays);
-    final ovulationRangeEndDay = (predictedOvulationDay + 2).clamp(1, cycleLengthDays);
+    final predictedOvulationDay =
+        (cycleLengthDays - 14).clamp(1, cycleLengthDays).toInt();
+    final ovulationRangeStartDay =
+        (predictedOvulationDay - 2).clamp(1, cycleLengthDays).toInt();
+    final ovulationRangeEndDay =
+        (predictedOvulationDay + 2).clamp(1, cycleLengthDays).toInt();
     
-    final ovulationDateStart = currentCycleStart.add(Duration(days: ovulationRangeStartDay - 1));
-    final ovulationDateEnd = currentCycleStart.add(Duration(days: ovulationRangeEndDay - 1));
-    final ovulationEstimateMid = currentCycleStart.add(Duration(days: predictedOvulationDay - 1));
-    
+    final ovulationDateStart =
+        _addCalendarDays(currentCycleStart, ovulationRangeStartDay - 1);
+    final ovulationDateEnd =
+        _addCalendarDays(currentCycleStart, ovulationRangeEndDay - 1);
+    final ovulationEstimateMid =
+        _addCalendarDays(currentCycleStart, predictedOvulationDay - 1);
+
     // Fertile window: 5 days before ovulation + day of ovulation
-    final fertileStart = ovulationDateStart.subtract(const Duration(days: 5));
-    final fertileEnd = ovulationDateEnd.add(const Duration(days: 1));
-    
+    final fertileStart = _addCalendarDays(ovulationDateStart, -5);
+    final fertileEnd = _addCalendarDays(ovulationDateEnd, 1);
+
     final fertileWindow = List.generate(
-      fertileEnd.difference(fertileStart).inDays + 1,
-      (index) => _startOfDay(fertileStart.add(Duration(days: index))),
+      _calendarDayDifference(fertileEnd, fertileStart) + 1,
+      (index) => _addCalendarDays(fertileStart, index),
     );
-    
+
     final periodDays = List.generate(
       periodLengthDays,
-      (index) => _startOfDay(currentCycleStart.add(Duration(days: index))),
+      (index) => _addCalendarDays(currentCycleStart, index),
     );
-    
-    final nextPeriodStart = currentCycleStart.add(Duration(days: cycleLengthDays));
+
+    final nextPeriodStart = _addCalendarDays(currentCycleStart, cycleLengthDays);
     final pmsDays = _computePmsDays(nextPeriodStart, pmsDaysSetting);
     
     // Phase detection with adjusted windows for irregular cycles
     CyclePhase phase;
     if (isInPeriod) {
       phase = CyclePhase.menstrual;
-    } else if (dayOfCycle >= ovulationRangeStartDay && dayOfCycle <= ovulationRangeEndDay) {
+    } else if (dayOfCycle >= ovulationRangeStartDay &&
+        dayOfCycle <= ovulationRangeEndDay) {
       phase = CyclePhase.ovulation;
     } else if (dayOfCycle > ovulationRangeEndDay) {
       phase = CyclePhase.luteal;
@@ -232,7 +270,8 @@ static CycleStatus? computeFromSingleLog({
       phase = CyclePhase.follicular;
     }
     
-    final daysUntilNextPeriod = nextPeriodStart.difference(current).inDays;
+    final daysUntilNextPeriod =
+        _calendarDayDifference(nextPeriodStart, normalizedCurrent);
     
     return CycleStatus(
       startDate: currentCycleStart,
@@ -262,17 +301,25 @@ static CycleStatus? computeFromSingleLog({
     );
   }
 
-  static List<DateTime> _computePmsDays(DateTime nextPeriodStart, int pmsDaysSetting) {
+  static List<DateTime> _computePmsDays(
+    DateTime nextPeriodStart,
+    int pmsDaysSetting,
+  ) {
     return List.generate(
       pmsDaysSetting,
-      (index) => _startOfDay(nextPeriodStart.subtract(Duration(days: pmsDaysSetting - index))),
+      (index) => _addCalendarDays(nextPeriodStart, -(pmsDaysSetting - index)),
     );
   }
 
-  static bool _isInRealPeriod(DateTime current, DateTime periodStart, DateTime periodEnd) {
+  static bool _isInRealPeriod(
+    DateTime current,
+    DateTime periodStart,
+    DateTime periodEnd,
+  ) {
     final normalizedCurrent = _startOfDay(current);
     final normalizedStart = _startOfDay(periodStart);
-    final normalizedEnd = _endOfDay(periodEnd);
-    return normalizedCurrent.isAfter(normalizedStart) && normalizedCurrent.isBefore(normalizedEnd);
+    final normalizedEnd = _startOfDay(periodEnd);
+    return !normalizedCurrent.isBefore(normalizedStart) &&
+        !normalizedCurrent.isAfter(normalizedEnd);
   }
 }

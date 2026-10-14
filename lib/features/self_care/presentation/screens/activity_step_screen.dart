@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/self_care/presentation/screens/self_care_data.dart';
+import 'package:peria_app/features/self_care/presentation/screens/self_care_localization.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class ActivityStepScreen extends StatelessWidget {
@@ -10,6 +12,7 @@ class ActivityStepScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final step = kCrampsSteps.first;
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -23,19 +26,19 @@ class ActivityStepScreen extends StatelessWidget {
               text: TextSpan(
                 style: AppText.h3.copyWith(color: AppColors.grey900),
                 children: [
-                  TextSpan(text: step.title),
+                  TextSpan(text: localizeSelfCareData(step.title, l10n)),
                   TextSpan(
                     text: '        1',
                     style: AppText.h3.copyWith(color: AppColors.primary400),
                   ),
                   TextSpan(
-                    text: '/5',
+                    text: '/6',
                     style: AppText.h3.copyWith(color: AppColors.grey900),
                   ),
                 ],
               ),
             ),
-            Text(step.subtitle,
+            Text(localizeSelfCareData(step.subtitle, l10n),
                 style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 18),
             Expanded(

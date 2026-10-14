@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/repositories/user_repository.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
@@ -6,7 +5,9 @@ import 'package:peria_app/features/cycle/data/repositories/period_repository.dar
 import 'package:peria_app/features/cycle/domain/cycle_engine.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/cycle_regularity.dart';
+import 'package:peria_app/features/cycle/domain/cycle_statistics.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
 final cycleUserRepositoryProvider = Provider<UserRepository>((ref) {
@@ -56,46 +57,14 @@ class PeriodLogsNotifier extends StateNotifier<AsyncValue<List<PeriodLog>>> {
   }
 }
 
-// --- CYCLE STATUS PROVIDER (current date) ---
-final cycleStatusProvider = Provider<CycleStatus?>((ref) {
-  // final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
-  final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
-  final profile = ref.watch(userProfileProvider).value;
-
-  final userCycleLengthDays = profile?.averageCycleLengthDays ?? 28;
-  final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
-  const pmsDaysSetting = 5;
-
-  if (periodLogs.isNotEmpty) {
-    return CycleEngine.computeFromLogs(
-      logs: periodLogs,
-      userCycleLengthDays: userCycleLengthDays,
-      userPeriodLengthDays: userPeriodLengthDays,
-      pmsDaysSetting: pmsDaysSetting,
-    );
-  }
-
-  // No logs fallback - use only user-defined values
-  if (profile?.lastPeriodStart != null) {
-    return CycleEngine.computeFromSingleLog(
-      startDate: profile!.lastPeriodStart!,
-      endDate: profile.lastPeriodStart!
-          .add(Duration(days: userPeriodLengthDays - 1)),
-      userCycleLengthDays: userCycleLengthDays,
-      userPeriodLengthDays: userPeriodLengthDays,
-      pmsDaysSetting: pmsDaysSetting,
-    );
-  }
-
-  return null;
-});
-
 // --- CYCLE STATUS FOR SPECIFIC DATE PROVIDER ---
+// This is the canonical calculation entry point for a cycle date. Current-day
+// status and all calendar consumers delegate to this provider.
 final cycleStatusForDateProvider =
     Provider.family<CycleStatus?, DateTime>((ref, date) {
-  // final settings = ref.watch(appSettingsProvider).value ?? const AppSettings();
   final periodLogs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
   final profile = ref.watch(userProfileProvider).value;
+  final targetDate = DateTime(date.year, date.month, date.day);
 
   final userCycleLengthDays = profile?.averageCycleLengthDays ?? 28;
   final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
@@ -107,25 +76,52 @@ final cycleStatusForDateProvider =
       userCycleLengthDays: userCycleLengthDays,
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
-      now: date,
+      now: targetDate,
     );
   }
 
-  // No logs fallback
-  if (profile?.lastPeriodStart != null) {
+  // Profile values are inputs/fallbacks only when no period logs exist.
+  final lastPeriodStart = profile?.lastPeriodStart;
+  if (lastPeriodStart != null) {
     return CycleEngine.computeFromSingleLog(
-      startDate: profile!.lastPeriodStart!,
-      endDate: profile.lastPeriodStart!
-          .add(Duration(days: userPeriodLengthDays - 1)),
+      startDate: lastPeriodStart,
+      endDate: DateTime(
+        lastPeriodStart.year,
+        lastPeriodStart.month,
+        lastPeriodStart.day + userPeriodLengthDays - 1,
+      ),
       userCycleLengthDays: userCycleLengthDays,
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
-      now: date,
+      now: targetDate,
     );
   }
 
   return null;
 });
+
+// --- CYCLE STATUS PROVIDER (today) ---
+final cycleStatusProvider = Provider<CycleStatus?>((ref) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  return ref.watch(cycleStatusForDateProvider(today));
+});
+
+/// Unified per-date view consumed by Calendar and Edit Calendar.
+/// Actual logged days take precedence over predicted period days.
+final cycleDayInfoProvider = Provider.family<CycleDayInfo, DateTime>(
+  (ref, date) {
+    final status = ref.watch(cycleStatusForDateProvider(date));
+    final logs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
+
+    return CycleDayInfo.forDate(
+      date: date,
+      status: status,
+      periodLogs: logs,
+      today: DateTime.now(),
+    );
+  },
+);
 
 // --- CYCLE DAY PROVIDER ---
 final cycleDayForDateProvider = Provider.family<int?, DateTime>((ref, date) {
@@ -213,32 +209,8 @@ final isDateInFertileWindowProvider = Provider.family<bool, DateTime>(
 
 // --- CYCLE STATISTICS PROVIDER ---
 final cycleStatisticsProvider = Provider<CycleStatistics?>((ref) {
-  final logs = ref.watch(periodLogsProvider).value ?? [];
-  if (logs.length < 2) return null;
-
-  final cycleLengths = <int>[];
-  for (int i = 0; i < logs.length - 1; i++) {
-    final length = logs[i].startDate.difference(logs[i + 1].startDate).inDays;
-    cycleLengths.add(length);
-  }
-
-  if (cycleLengths.isEmpty) return null;
-
-  final average = cycleLengths.reduce((a, b) => a + b) / cycleLengths.length;
-  final variance = cycleLengths
-          .map((l) => math.pow(l - average, 2))
-          .reduce((a, b) => a + b) /
-      cycleLengths.length;
-  final stdDeviation = math.sqrt(variance);
-
-  return CycleStatistics(
-    averageCycleLength: average.round(),
-    minCycleLength: cycleLengths.reduce((a, b) => a < b ? a : b),
-    maxCycleLength: cycleLengths.reduce((a, b) => a > b ? a : b),
-    stdDeviation: stdDeviation,
-    totalCyclesLogged: logs.length,
-    isRegular: stdDeviation <= 5,
-  );
+  final logs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
+  return CycleEngine.computeStatistics(logs: logs);
 });
 
 // --- CYCLE PREDICTION FOR FUTURE DATE PROVIDER ---
@@ -258,25 +230,6 @@ final cyclePredictionForDateProvider =
     );
   },
 );
-
-// Additional data classes
-class CycleStatistics {
-  final int averageCycleLength;
-  final int minCycleLength;
-  final int maxCycleLength;
-  final double stdDeviation;
-  final int totalCyclesLogged;
-  final bool isRegular;
-
-  CycleStatistics({
-    required this.averageCycleLength,
-    required this.minCycleLength,
-    required this.maxCycleLength,
-    required this.stdDeviation,
-    required this.totalCyclesLogged,
-    required this.isRegular,
-  });
-}
 
 class CyclePrediction {
   final CyclePhase predictedPhase;

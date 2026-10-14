@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class AppointmentConfirmationScreen extends StatelessWidget {
@@ -8,6 +10,13 @@ class AppointmentConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final appointmentStart = DateTime(2024, 10, 26, 10, 30);
+    final appointmentEnd = DateTime(2024, 10, 26, 11);
+    final appointmentDate = DateFormat.yMMMMEEEEd(locale).format(appointmentStart);
+    final appointmentTime =
+        '${DateFormat.jm(locale).format(appointmentStart)} – ${DateFormat.jm(locale).format(appointmentEnd)}';
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -55,10 +64,10 @@ class AppointmentConfirmationScreen extends StatelessWidget {
                   const Icon(Icons.check, color: AppColors.success, size: 40),
             ),
             const SizedBox(height: 20),
-            const Text('Appointment Confirmed!', style: AppText.h3),
+            Text(l10n.appointmentConfirmed, style: AppText.h3),
             const SizedBox(height: 8),
             Text(
-              'Your Appointment wit Dr.Cole is booked.',
+              l10n.appointmentBooked('Adrian Cole'),
               style: AppText.body.copyWith(color: AppColors.grey600),
             ),
             const SizedBox(height: 24),
@@ -90,16 +99,16 @@ class AppointmentConfirmationScreen extends StatelessWidget {
                                 color: AppColors.grey100,
                                 borderRadius: BorderRadius.circular(16),
                               ),
-                              child: Text('4.5 | 2340 Review',
+                              child: Text('4.5 | ${l10n.appointmentReviewCount(2340)}',
                                   style: AppText.caption
                                       .copyWith(fontWeight: FontWeight.w700)),
                             ),
                             const SizedBox(height: 10),
                             const Text('Dr. Adrian Cole', style: AppText.h5),
-                            Text('Gynecologist',
+                            Text(l10n.appointmentGynecologist,
                                 style: AppText.body
                                     .copyWith(color: AppColors.grey600)),
-                            Text('Focus on Gyn Oncology Screening',
+                            Text(l10n.appointmentGynOncologyFocus,
                                 style: AppText.caption
                                     .copyWith(color: AppColors.grey500)),
                           ],
@@ -108,17 +117,17 @@ class AppointmentConfirmationScreen extends StatelessWidget {
                     ],
                   ),
                   const Divider(height: 28),
-                  const _InfoRow(
+                  _InfoRow(
                       icon: Icons.calendar_today_outlined,
-                      text: 'Tuesday, October 26, 2024'),
+                      text: appointmentDate),
                   const SizedBox(height: 16),
-                  const _InfoRow(
+                  _InfoRow(
                       icon: Icons.access_time_outlined,
-                      text: '10:30 AM - 11:00 AM'),
+                      text: appointmentTime),
                   const SizedBox(height: 16),
-                  const _InfoRow(
+                  _InfoRow(
                       icon: Icons.videocam_outlined,
-                      text: 'Video Consultation'),
+                      text: l10n.appointmentVideoConsultation),
                 ],
               ),
             ),
@@ -126,7 +135,7 @@ class AppointmentConfirmationScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(22, 0, 22, 26),
               child: PrimaryButton(
-                label: 'Done, back to chat',
+                label: l10n.appointmentDoneBackToChat,
                 onPressed: () => context.go('/ai'),
               ),
             ),

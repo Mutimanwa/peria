@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/shared/widgets/health_information_notice.dart';
 
 class ArticleDetailScreen extends StatelessWidget {
   const ArticleDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -28,61 +31,51 @@ class ArticleDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             Text(
-              'October 4, 2021   •   4 min read',
+              l10n.selfCareArticleReadTime(4),
               style: AppText.caption.copyWith(color: AppColors.grey500),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Pain Relief Pills for Menstrual Cramps: How They Work and When to Use Them',
+            Text(
+              l10n.selfCareArticleTitle,
               style: AppText.h4,
             ),
             const SizedBox(height: 14),
             Text(
-              'Find quick, gentle relief during your period.',
+              l10n.selfCareArticleLead,
               style: AppText.body.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 18),
-            ...const [
-              _ArticleSection(
-                title: 'Why cramps happen:',
-                bullets: [
-                  'Caused by uterine contractions that help shed the lining.',
-                  'Triggered by high levels of prostaglandins that raise pain and tension.',
-                ],
-              ),
-              _ArticleSection(
-                title: 'Best pain relief options:',
-                bullets: [
-                  'NSAIDs like ibuprofen or naproxen reduce inflammation and ease muscle contractions.',
-                  'Acetaminophen can help with mild pain if NSAIDs are not suitable.',
-                ],
-              ),
-              _ArticleSection(
-                title: 'When to take them:',
-                bullets: [
-                  'At the first sign of cramps or just before your period starts.',
-                  'Always take with food or water to avoid stomach irritation.',
-                ],
-              ),
-              _ArticleSection(
-                title: 'Be careful with overuse:',
-                bullets: [
-                  'Too much medication may cause nausea, fatigue, or stomach pain.',
-                  'Follow the recommended dose and ask for medical advice if pain is severe.',
-                ],
-              ),
-              _ArticleSection(
-                title: 'Extra comfort tips:',
-                bullets: [
-                  'Use a warm compress on your lower belly.',
-                  'Try gentle stretching or light movement to relax your muscles.',
-                  'Stay hydrated and give yourself enough rest.',
-                ],
-              ),
-            ],
+            HealthInformationNotice(
+              title: l10n.educationHealthNoticeTitle,
+              message: l10n.educationHealthNoticeBody,
+            ),
+            const SizedBox(height: 18),
+            _ArticleSection(
+              title: l10n.selfCareArticleComfortHeading,
+              bullets: [
+                l10n.selfCareArticleWarmCompress,
+                l10n.selfCareArticleRest,
+                l10n.selfCareArticleVaries,
+              ],
+            ),
+            _ArticleSection(
+              title: l10n.selfCareArticleMedicineHeading,
+              bullets: [
+                l10n.selfCareArticleMedicineRisks,
+                l10n.selfCareArticlePharmacist,
+                l10n.selfCareArticleFollowLabel,
+              ],
+            ),
+            _ArticleSection(
+              title: l10n.selfCareArticleSeekHelpHeading,
+              bullets: [
+                l10n.selfCareArticleDailyLife,
+                l10n.selfCareArticleUrgent,
+              ],
+            ),
             const SizedBox(height: 14),
             Text(
-              'A little care goes a long way - your body deserves it.',
+              l10n.selfCareArticleEncouragement,
               style: AppText.body.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 26),
@@ -103,7 +96,7 @@ class ArticleDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             PrimaryButton(
-              label: 'Add Comment',
+              label: l10n.selfCareAddComment,
               onPressed: () => _showFeedbackDialog(context),
             ),
           ],
@@ -113,6 +106,7 @@ class ArticleDetailScreen extends StatelessWidget {
   }
 
   void _showFeedbackDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog<void>(
       context: context,
       builder: (context) {
@@ -134,11 +128,11 @@ class ArticleDetailScreen extends StatelessWidget {
                     const Icon(Icons.check, size: 36, color: AppColors.success),
               ),
               const SizedBox(height: 20),
-              const Text('Thanks for feedback!',
+              Text(l10n.selfCareFeedbackThanks,
                   style: AppText.h4, textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text(
-                "Feedback received. We'll do our best to bring you a better user experience",
+                l10n.selfCareFeedbackReceived,
                 textAlign: TextAlign.center,
                 style: AppText.body.copyWith(color: AppColors.grey600),
               ),
@@ -151,7 +145,7 @@ class ArticleDetailScreen extends StatelessWidget {
                     backgroundColor: AppColors.grey900,
                     shape: const StadiumBorder(),
                   ),
-                  child: Text('OK',
+                  child: Text(l10n.selfCareOk,
                       style: AppText.label.copyWith(color: AppColors.white)),
                 ),
               ),

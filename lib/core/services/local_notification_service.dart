@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Locale;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -17,8 +18,6 @@ class LocalNotificationService {
   static final LocalNotificationService instance =
       LocalNotificationService._();
   static const String _channelId = 'peria_local_reminders';
-  static const String _channelName = 'Peria reminders';
-  static const String _channelDescription = 'Private reminders from Peria.';
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
@@ -83,12 +82,14 @@ class LocalNotificationService {
   Future<void> synchronize({
     required AppSettings? settings,
     required CycleStatus? cycleStatus,
+    Locale? locale,
     DateTime? now,
   }) {
     final next = _scheduleQueue.then<void>((_) async {
       await _synchronize(
         settings: settings,
         cycleStatus: cycleStatus,
+        locale: locale,
         now: now,
       );
     });
@@ -113,6 +114,7 @@ class LocalNotificationService {
   Future<void> _synchronize({
     required AppSettings? settings,
     required CycleStatus? cycleStatus,
+    required Locale? locale,
     required DateTime? now,
   }) async {
     if (!_isSupportedPlatform || !_initialized) return;
@@ -127,18 +129,24 @@ class LocalNotificationService {
     );
     if (plan.isEmpty) return;
 
-    final text = lookupAppLocalizations(PlatformDispatcher.instance.locale);
-    const details = NotificationDetails(
+    final preferredLocale = locale ?? PlatformDispatcher.instance.locale;
+    final notificationLocale = AppLocalizations.supportedLocales.firstWhere(
+      (supportedLocale) =>
+          supportedLocale.languageCode == preferredLocale.languageCode,
+      orElse: () => const Locale('en'),
+    );
+    final text = lookupAppLocalizations(notificationLocale);
+    final details = NotificationDetails(
       android: AndroidNotificationDetails(
         _channelId,
-        _channelName,
-        channelDescription: _channelDescription,
+        text.notificationChannelName,
+        channelDescription: text.notificationChannelDescription,
         importance: Importance.defaultImportance,
         priority: Priority.defaultPriority,
         visibility: NotificationVisibility.private,
         category: AndroidNotificationCategory.reminder,
       ),
-      iOS: DarwinNotificationDetails(
+      iOS: const DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: false,
         presentSound: true,
