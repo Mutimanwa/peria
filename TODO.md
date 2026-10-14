@@ -3,8 +3,8 @@
 Ce document liste les tâches de développement, d'amélioration et de maintenance identifiées pour l'application Peria.
 
 ## Technique & Architecture
-- [ ] Mettre en place un système de notifications locales (rappels pour les médicaments, menstruations, etc.).
-- [ ] Ajouter une couverture de tests automatisés (tests de widgets et tests d'intégration complets, particulièrement pour isoler l'environnement de la base de données).
+- [x] Mettre en place les notifications locales du cycle (9 h) et le rappel quotidien symptômes/journal (20 h). Le rappel de pilule/médicament reste hors de la portée actuelle.
+- [ ] Étendre la couverture des tests de widgets et d'intégration, notamment autour des dépôts et de la base de données. L'exécution de la suite existante est activée dans la CI.
 - [ ] Finaliser l'intégration du backend (remplacement progressif de la logique locale de démonstration par les endpoints finaux via `dio`).
 - [ ] Séparer les secrets de l'application dans des variables d'environnement (`.env`) avec le package `flutter_dotenv`.
 

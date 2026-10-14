@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:peria_app/features/profile/presentation/screens/security.dart';
@@ -14,8 +16,53 @@ import 'package:peria_app/core/storage/app_settings_repository.dart';
 import 'package:peria_app/shared/widgets/profile_widgets.dart';
 import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
-// Mock classes
-class MockSecurityNotifier extends Mock implements SecurityNotifier {}
+// In-memory notifier for widget tests. Unlike a `Mock` of StateNotifier, it
+// provides real listener registration so Riverpod can subscribe and dispose it.
+class FakeSecurityNotifier extends StateNotifier<AsyncValue<SecurityState>>
+    implements SecurityNotifier {
+  FakeSecurityNotifier() : super(const AsyncValue.loading());
+
+  @override
+  Future<void> createPin(String pin) async {}
+
+  @override
+  Future<void> changePin(String oldPin, String newPin) async {}
+
+  @override
+  Future<void> deletePin() async {}
+
+  @override
+  Future<AuthResult> authenticate() async => AuthResult.pinRequired();
+
+  @override
+  Future<AuthResult> authenticateWithPin(String pin) async =>
+      AuthResult.pinRequired();
+
+  @override
+  Future<void> setAppLockEnabled(bool enabled) async {}
+
+  @override
+  Future<void> setJournalLockEnabled(bool enabled) async {}
+
+  @override
+  Future<void> setBiometricsEnabled(bool enabled) async {}
+
+  @override
+  Future<void> setMultitaskProtectionEnabled(bool enabled) async {}
+
+  @override
+  Future<void> endSession() async {}
+
+  @override
+  Future<void> refreshSessionStatus() async {}
+
+  @override
+  Future<void> clearAllLocalData() async {}
+}
+
+class _MockFirebaseFirestore extends Mock implements FirebaseFirestore {}
+
+class _MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 class FakeAppSettingsNotifier extends AppSettingsNotifier {
   FakeAppSettingsNotifier() : super(_FakeAppSettingsRepository()) {
@@ -34,17 +81,21 @@ class _FakeAppSettingsRepository extends AppSettingsRepository {
 }
 
 class _FakeUserRepository extends UserRepository {
-  _FakeUserRepository() : super(firestore: null, auth: null);
+  _FakeUserRepository()
+      : super(
+          firestore: _MockFirebaseFirestore(),
+          auth: _MockFirebaseAuth(),
+        );
   @override
   Future<void> ensureUserDocument(
       {Map<String, dynamic> additionalData = const {}}) async {}
 }
 
 void main() {
-  late MockSecurityNotifier mockSecurityNotifier;
+  late FakeSecurityNotifier fakeSecurityNotifier;
 
   setUp(() {
-    mockSecurityNotifier = MockSecurityNotifier();
+    fakeSecurityNotifier = FakeSecurityNotifier();
   });
 
   Widget createTestWidget(SecurityNotifier securityNotifier) {
@@ -72,10 +123,9 @@ void main() {
         isSessionValid: true,
       );
 
-      when(() => mockSecurityNotifier.state)
-          .thenReturn(const AsyncValue.data(securityState));
+      fakeSecurityNotifier.state = const AsyncValue.data(securityState);
 
-      await tester.pumpWidget(createTestWidget(mockSecurityNotifier));
+      await tester.pumpWidget(createTestWidget(fakeSecurityNotifier));
       await tester.pumpAndSettle();
 
       // Should display security sections
@@ -91,10 +141,9 @@ void main() {
         isSessionValid: false,
       );
 
-      when(() => mockSecurityNotifier.state)
-          .thenReturn(const AsyncValue.data(securityState));
+      fakeSecurityNotifier.state = const AsyncValue.data(securityState);
 
-      await tester.pumpWidget(createTestWidget(mockSecurityNotifier));
+      await tester.pumpWidget(createTestWidget(fakeSecurityNotifier));
       await tester.pumpAndSettle();
 
       expect(find.byType(Switch), findsWidgets);
@@ -111,15 +160,12 @@ void main() {
         isSessionValid: false,
       );
 
-      when(() => mockSecurityNotifier.state)
-          .thenReturn(const AsyncValue.data(securityState));
-      when(() => mockSecurityNotifier.authenticate())
-          .thenAnswer((_) async => AuthResult.pinRequired());
+      fakeSecurityNotifier.state = const AsyncValue.data(securityState);
 
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            securityProvider.overrideWith((ref) => mockSecurityNotifier),
+            securityProvider.overrideWith((ref) => fakeSecurityNotifier),
             appSettingsProvider
                 .overrideWith((ref) => FakeAppSettingsNotifier()),
           ],

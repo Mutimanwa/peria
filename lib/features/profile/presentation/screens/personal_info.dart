@@ -27,6 +27,7 @@ class _PersonalInformationScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final profileAsync = ref.watch(userProfileProvider);
 
     return SimplePage(
@@ -79,7 +80,7 @@ class _PersonalInformationScreenState
                     if (!_isEditMode)
                       OutlinedButton.icon(
                         icon: const Icon(Icons.edit_outlined, size: 18),
-                        label: const Text("Edit Profile"),
+                        label: Text(l10n.editProfile),
                         onPressed: _toggleEditMode,
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.grey900,
@@ -98,39 +99,39 @@ class _PersonalInformationScreenState
               if (!_isEditMode) ...[
                 // VIEW MODE
                 _ReadOnlyField(
-                  label: "Full Name",
+                  label: l10n.fullNameLabel,
                   value: profile.displayName?.isNotEmpty == true
                       ? profile.displayName!
                       : "—",
                 ),
                 const SizedBox(height: 16),
                 _ReadOnlyField(
-                  label: "Email Address",
+                  label: l10n.emailAddressLabel,
                   value:
                       profile.email?.isNotEmpty == true ? profile.email! : "—",
                 ),
                 const SizedBox(height: 16),
                 _ReadOnlyField(
-                  label: "Date of Birth",
+                  label: l10n.dateOfBirth,
                   value: profile.dateOfBirth != null
-                      ? DateFormat('dd.MM.yyyy').format(profile.dateOfBirth!)
+                      ? DateFormat.yMd(locale).format(profile.dateOfBirth!)
                       : '—',
                   trailing: const Icon(Icons.calendar_today_outlined,
                       color: AppColors.grey400, size: 20),
                 ),
                 const SizedBox(height: 16),
                 _ReadOnlyField(
-                  label: "My Goal",
+                  label: l10n.myGoal,
                   value: (profile.goals?.isNotEmpty == true)
-                      ? "${profile.goals!.length} Selected"
-                      : "0 Selected",
+                      ? l10n.goalsSelected
+                      : l10n.noGoalsSelected,
                   trailing: const Icon(Icons.keyboard_arrow_down,
                       color: AppColors.grey400, size: 24),
                 ),
               ] else ...[
                 // EDIT MODE
                 _EditableField(
-                  label: "Full Name",
+                  label: l10n.fullNameLabel,
                   value: profile.displayName ?? '',
                   onChanged: (val) =>
                       ref.read(userProfileProvider.notifier).patch(
@@ -139,7 +140,7 @@ class _PersonalInformationScreenState
                 ),
                 const SizedBox(height: 16),
                 _EditableField(
-                  label: "Email Address",
+                  label: l10n.emailAddressLabel,
                   value: profile.email ?? '',
                   onChanged: (val) =>
                       ref.read(userProfileProvider.notifier).patch(
@@ -152,7 +153,7 @@ class _PersonalInformationScreenState
                     final date = await _showDatePickerCalendar(
                       context,
                       initialDate: profile.dateOfBirth,
-                      title: "Date of Birth",
+                      title: l10n.dateOfBirth,
                     );
                     if (date != null) {
                       ref
@@ -162,9 +163,9 @@ class _PersonalInformationScreenState
                   },
                   borderRadius: BorderRadius.circular(24),
                   child: _ReadOnlyField(
-                    label: "Date of Birth",
+                    label: l10n.dateOfBirth,
                     value: profile.dateOfBirth != null
-                        ? DateFormat('dd.MM.yyyy').format(profile.dateOfBirth!)
+                        ? DateFormat.yMd(locale).format(profile.dateOfBirth!)
                         : '—',
                     trailing: const Icon(Icons.calendar_today_outlined,
                         color: AppColors.grey400, size: 20),
@@ -172,10 +173,10 @@ class _PersonalInformationScreenState
                 ),
                 const SizedBox(height: 16),
                 _ReadOnlyField(
-                  label: "My Goal",
+                  label: l10n.myGoal,
                   value: (profile.goals?.isNotEmpty == true)
-                      ? "${profile.goals!.length} Selected"
-                      : "0 Selected",
+                      ? l10n.goalsSelected
+                      : l10n.noGoalsSelected,
                   trailing: const Icon(Icons.keyboard_arrow_down,
                       color: AppColors.grey400, size: 24),
                 ),
@@ -184,7 +185,7 @@ class _PersonalInformationScreenState
                   width: double.infinity,
                   height: 54,
                   child: PrimaryButton(
-                   label: 'Save Changes',
+                   label: l10n.saveChanges,
                    onPressed: _toggleEditMode,
                    ),
                 ),
@@ -245,30 +246,6 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
   late DateTime _currentMonth;
   DateTime? _selectedDate;
 
-  static const List<String> _monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  static const List<String> _weekDays = [
-    'Mo',
-    'Tu',
-    'We',
-    'Th',
-    'Fr',
-    'Sa',
-    'Su'
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -299,9 +276,11 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
   }
 
   Widget _buildCalendar() {
+    final locale = Localizations.localeOf(context).toString();
     final firstDay = DateTime(_currentMonth.year, _currentMonth.month, 1);
     final lastDay = DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
-    int startOffset = firstDay.weekday - 1;
+    final firstDayIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
+    final startOffset = (firstDay.weekday - 1 - firstDayIndex + 7) % 7;
     final int totalDays = lastDay.day;
     final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
 
@@ -309,15 +288,18 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
       children: [
         // En-tête des jours
         Row(
-          children: _weekDays
-              .map((d) => Expanded(
-                    child: Text(
-                      d,
-                      style: AppText.caption.copyWith(color: AppColors.grey400),
-                      textAlign: TextAlign.center,
-                    ),
-                  ))
-              .toList(),
+          children: List.generate(7, (index) {
+            final weekdayNumber = (firstDayIndex + index + 6) % 7 + 1;
+            final weekday = DateTime(2024, 1, weekdayNumber);
+            final label = DateFormat.E(locale).format(weekday).replaceAll('.', '');
+            return Expanded(
+              child: Text(
+                label,
+                style: AppText.caption.copyWith(color: AppColors.grey400),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }),
         ),
         const SizedBox(height: 12),
         // Grille des jours
@@ -367,6 +349,8 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
       decoration: const BoxDecoration(
@@ -404,7 +388,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
                     }
                   },
                   child: Text(
-                    'OK',
+                    l10n.ok,
                     style: AppText.body.copyWith(
                       color: AppColors.primary500,
                       fontWeight: FontWeight.bold,
@@ -426,7 +410,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
                       const Icon(Icons.chevron_left, color: AppColors.grey600),
                 ),
                 Text(
-                  '${_monthNames[_currentMonth.month - 1]} ${_currentMonth.year}',
+                  DateFormat.yMMMM(locale).format(_currentMonth),
                   style: AppText.h4,
                 ),
                 IconButton(

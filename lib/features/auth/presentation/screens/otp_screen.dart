@@ -238,6 +238,7 @@ class _SuccessDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       backgroundColor: AppColors.white,
@@ -259,12 +260,12 @@ class _SuccessDialog extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            const Text('Password Reset Successful',
+            Text(l10n.authPasswordResetSuccess,
                 style: AppText.h3, textAlign: TextAlign.center),
             const SizedBox(height: 12),
 
-            const Text(
-              'Your password has been updated. You can now log in with your new password.',
+            Text(
+              l10n.authPasswordResetSuccessMessage,
               style: AppText.body,
               textAlign: TextAlign.center,
             ),
@@ -283,7 +284,7 @@ class _SuccessDialog extends StatelessWidget {
                   backgroundColor: AppColors.grey900,
                   shape: const StadiumBorder(),
                 ),
-                child: const Text('Continue', style: AppText.btnPrimary),
+                child: Text(l10n.continueCta, style: AppText.btnPrimary),
               ),
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 
 /// Central access point for user-scoped Firestore data.
 ///
@@ -39,12 +40,26 @@ class UserRepository {
   }
 
   CollectionReference<Map<String, dynamic>> userCollection(String module) {
-    return userDocument.collection(module);
+    return userCollectionFor(currentUid, module);
+  }
+
+  /// Creates a reference scoped to a previously captured UID, so an
+  /// authentication change cannot redirect an in-flight operation to another
+  /// account.
+  CollectionReference<Map<String, dynamic>> userCollectionFor(
+    String uid,
+    String module,
+  ) {
+    if (uid.isEmpty) {
+      throw ArgumentError.value(uid, 'uid', 'Must not be empty.');
+    }
+    return _firestore.collection('users').doc(uid).collection(module);
   }
 
   Future<void> ensureUserDocument({
     Map<String, dynamic> additionalData = const {},
   }) async {
+    PrivacyPolicyConsentService.requireCurrentPolicyAcceptance();
     final user = currentUser;
     if (user == null) {
       _log('ensureUserDocument failed because currentUser is null');

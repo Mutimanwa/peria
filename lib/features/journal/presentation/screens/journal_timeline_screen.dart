@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class JournalTimelineScreen extends ConsumerWidget {
@@ -13,13 +15,14 @@ class JournalTimelineScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final state = ref.watch(journalProvider);
 
     return PageScaffold(
       showBack: true,
       onBack: () => context.go('/journal'),
       showTitle: true,
-      title: "Timeline",
+      title: l10n.journalTimeline,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(22, 80, 22, 0),
         child: state.when(
@@ -47,7 +50,7 @@ class JournalTimelineScreen extends ConsumerWidget {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => Center(child: Text("Error: $err")),
+          error: (err, _) => Center(child: Text(l10n.unableToLoadJournal)),
         ),
       ),
     );
@@ -74,6 +77,8 @@ class _TimelineSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isToday = _isSameDay(date, DateTime.now());
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,7 +87,7 @@ class _TimelineSection extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                isToday ? "Today" : DateFormat('EEEE, d MMM').format(date),
+                isToday ? l10n.today : DateFormat('EEEE, d MMM', locale).format(date),
                 style: AppText.h5.copyWith(color: AppColors.grey900),
               ),
               const SizedBox(width: 8),
@@ -105,6 +110,8 @@ class _TimelineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final mood = Mood.fromId(entry.mood);
     return GestureDetector(
       onTap: () => context.go('/journal/detail/${entry.id}'),
@@ -139,7 +146,7 @@ class _TimelineCard extends StatelessWidget {
                           child: Text(
                             entry.title.isNotEmpty
                                 ? entry.title
-                                : "Untitled note",
+                                : l10n.untitledNote,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: AppText.label
@@ -147,7 +154,7 @@ class _TimelineCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          DateFormat('HH:mm').format(entry.updatedAt),
+                          DateFormat('HH:mm', locale).format(entry.updatedAt),
                           style: AppText.caption
                               .copyWith(color: AppColors.grey500),
                         ),

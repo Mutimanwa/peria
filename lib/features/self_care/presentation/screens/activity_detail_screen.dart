@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/self_care/presentation/screens/self_care_data.dart';
+import 'package:peria_app/features/self_care/presentation/screens/self_care_localization.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/shared/widgets/health_information_notice.dart';
 
 class ActivityDetailScreen extends StatelessWidget {
   const ActivityDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -20,7 +24,7 @@ class ActivityDetailScreen extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Menstrual cramps relief',
+                l10n.selfCareCategoryCramps,
                 style: AppText.label.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
@@ -35,28 +39,28 @@ class ActivityDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            const Row(
+            Row(
               children: [
                 _MetaChip(
-                  icon: Icons.local_fire_department_outlined,
-                  label: '345 Kcal',
-                ),
-                SizedBox(width: 8),
-                _MetaChip(
                   icon: Icons.schedule_rounded,
-                  label: '20 Min',
+                  label: l10n.selfCareMinutes(24),
                 ),
               ],
             ),
             const SizedBox(height: 14),
-            const Text('Align mind & body', style: AppText.h4),
+            Text(l10n.selfCareAlignMindBody, style: AppText.h4),
             const SizedBox(height: 6),
             Text(
-              'Simple pillow-supported poses to relax your body and reduce pain.',
+              l10n.selfCareActivityDescription,
               style: AppText.body.copyWith(color: AppColors.grey600),
             ),
+            const SizedBox(height: 18),
+            HealthInformationNotice(
+              title: l10n.educationMovementNoticeTitle,
+              message: l10n.educationMovementNoticeBody,
+            ),
             const SizedBox(height: 22),
-            const Text("You'll Need", style: AppText.h6),
+            Text(l10n.selfCareYouWillNeed, style: AppText.h6),
             const SizedBox(height: 14),
             SizedBox(
               height: 116,
@@ -66,23 +70,23 @@ class ActivityDetailScreen extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   return _NeedCard(
-                    label: kCrampsNeeds[index],
+                    label: localizeSelfCareData(kCrampsNeeds[index], l10n),
                     imagePath: 'moc/cramps details-${index + 1}.png',
                   );
                 },
               ),
             ),
             const SizedBox(height: 22),
-            const Text('Round 1', style: AppText.h6),
+            Text(l10n.selfCareRound(1), style: AppText.h6),
             const SizedBox(height: 12),
-            ...kCrampsSteps.take(3).map(_StepTile.new),
+            ...kCrampsSteps.take(3).map((step) => _StepTile(step)),
             const SizedBox(height: 16),
-            const Text('Round 2', style: AppText.h6),
+            Text(l10n.selfCareRound(2), style: AppText.h6),
             const SizedBox(height: 12),
-            ...kCrampsSteps.skip(3).map(_StepTile.new),
+            ...kCrampsSteps.skip(3).map((step) => _StepTile(step)),
             const SizedBox(height: 28),
             PrimaryButton(
-              label: "Let's Start",
+              label: l10n.selfCareStart,
               onPressed: () => context.go('/self-care/activity-step'),
             ),
           ],
@@ -153,6 +157,7 @@ class _StepTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -171,9 +176,9 @@ class _StepTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(step.title,
+                Text(localizeSelfCareData(step.title, l10n),
                     style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
-                Text(step.subtitle,
+                Text(localizeSelfCareData(step.subtitle, l10n),
                     style: AppText.caption.copyWith(color: AppColors.grey500)),
               ],
             ),

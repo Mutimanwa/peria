@@ -39,19 +39,6 @@ class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
   // Ensemble des indices sélectionnés
   final Set<int> _selected = {};
 
-  static final List<_GoalItem> _goals = [
-    const _GoalItem(icon: Icons.loop_rounded, label: 'Track my period'),
-    const _GoalItem(
-        icon: Icons.accessibility_new, label: 'Understand my body better'),
-    const _GoalItem(icon: Icons.water_drop_outlined, label: 'Track my period'),
-    const _GoalItem(
-        icon: Icons.favorite_border_rounded, label: 'Get health insights'),
-    const _GoalItem(
-        icon: Icons.medical_services, label: 'Share data with my doctor'),
-    const _GoalItem(
-        icon: Icons.auto_awesome_outlined, label: 'AI-Powered Guidance'),
-  ];
-
   void _toggleGoal(int index) {
     setState(() {
       if (_selected.contains(index)) {
@@ -65,6 +52,29 @@ class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
   @override
   Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context);
+    final goals = <_GoalItem>[
+      _GoalItem(icon: Icons.loop_rounded, label: l10n.goalTrackPeriod),
+      _GoalItem(
+        icon: Icons.accessibility_new,
+        label: l10n.goalUnderstandBody,
+      ),
+      _GoalItem(
+        icon: Icons.water_drop_outlined,
+        label: l10n.goalTrackOvulation,
+      ),
+      _GoalItem(
+        icon: Icons.favorite_border_rounded,
+        label: l10n.goalHealthInsights,
+      ),
+      _GoalItem(
+        icon: Icons.medical_services,
+        label: l10n.goalShareDoctor,
+      ),
+      _GoalItem(
+        icon: Icons.auto_awesome_outlined,
+        label: l10n.goalAiGuidance,
+      ),
+    ];
     final bool canContinue = _selected.isNotEmpty;
 
     return OnboardingScaffold(
@@ -105,11 +115,11 @@ final l10n = AppLocalizations.of(context);
                   mainAxisSpacing: 12,
                   childAspectRatio: 1.0,
                 ),
-                itemCount: _goals.length,
+                itemCount: goals.length,
                 itemBuilder: (context, i) {
                   final isSelected = _selected.contains(i);
                   return _GoalCard(
-                    item: _goals[i],
+                    item: goals[i],
                     isSelected: isSelected,
                     onTap: () => _toggleGoal(i),
                   );

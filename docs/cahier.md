@@ -147,7 +147,7 @@ Recherche	Par mot-clé ou date
 Export	Possibilité d’exporter ses notes en texte brut (optionnel)
 Suppression	Supprimer une note ou tout le carnet
 Règle de confidentialité :
-Les notes ne sont jamais envoyées à un serveur. Stockage local uniquement. Pas de synchronisation cloud par défaut.
+Par défaut, les notes sont stockées localement dans Hive chiffré et ne sont pas envoyées à un serveur. Une synchronisation cloud peut être activée uniquement après un consentement explicite, révocable, enregistré sur l’appareil et lié au compte actuellement connecté. Avant l’activation, l’application précise quelles données partent vers Firebase Firestore et indique que Peria ne fournit pas de chiffrement de bout en bout. Désactiver la synchronisation arrête les nouveaux envois, mais ne supprime pas les copies déjà envoyées : l’utilisatrice peut demander leur suppression séparément. Le partage avec un partenaire reste indépendant et désactivé par défaut.
 
 3.5 Module Éducation / Self-care (SelfCareHomeScreen actuel)
 Rôle : apprendre son corps, gérer son bien-être, déconstruire les tabous.

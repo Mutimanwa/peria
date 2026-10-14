@@ -5,7 +5,7 @@ Peria est une application mobile moderne (Flutter) dédiée au bien-être fémin
 ## 🚀 Fonctionnalités Principales
 
 - **Suivi de Cycle Intelligent** : Calendrier interactif, prédictions intelligentes et suivi des symptômes quotidiens (phases menstruelle, lutéale, folliculaire, ovulation).
-- **Journal Sécurisé** : Un espace intime protégé par un code PIN et/ou FaceID/TouchID pour noter quotidiennement son humeur et ses ressentis.
+- **Journal Sécurisé** : Notes conservées dans Hive chiffré sur l’appareil ; la synchronisation Firestore est désactivée par défaut et ne s’active qu’après un consentement explicite. La copie cloud n’est pas chiffrée de bout en bout par Peria ; Firestore peut aussi maintenir un cache hors ligne distinct de Hive.
 - **Sécurité et Confidentialité (Privacy First)** : Mode "Multitask protection", effacement des données, et sécurité granulaire.
 - **Assistant IA (ChatIA)** : Conseils personnalisés sur la santé, accès rapide à des articles éducatifs.
 - **Espace Partenaire** : Partage sélectif et sécurisé pour impliquer son partenaire dans son bien-être.

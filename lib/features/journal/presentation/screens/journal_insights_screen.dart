@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class JournalInsightsScreen extends ConsumerWidget {
@@ -12,6 +14,7 @@ class JournalInsightsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final entriesAsync = ref.watch(journalProvider);
 
     return Scaffold(
@@ -20,9 +23,9 @@ class JournalInsightsScreen extends ConsumerWidget {
         decoration: const BoxDecoration(gradient: AppColors.bgGradient),
         child: SafeArea(
           child: entriesAsync.when(
-            data: (entries) => _buildInsightsContent(context, entries),
+            data: (entries) => _buildInsightsContent(context, entries, l10n),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text("Error: $e")),
+            error: (e, _) => Center(child: Text(l10n.unableToLoadJournal)),
           ),
         ),
       ),
@@ -30,14 +33,14 @@ class JournalInsightsScreen extends ConsumerWidget {
   }
 
   Widget _buildInsightsContent(
-      BuildContext context, List<JournalEntry> entries) {
+      BuildContext context, List<JournalEntry> entries, AppLocalizations l10n) {
     if (entries.isEmpty) {
       return Column(
         children: [
-          _buildHeader(context),
-          const Expanded(
-              child:
-                  Center(child: Text("Not enough data for insights yet 🌿"))),
+          _buildHeader(context, l10n),
+          Expanded(
+            child: Center(child: Text(l10n.journalInsightsNotEnoughData)),
+          ),
         ],
       );
     }
@@ -45,31 +48,31 @@ class JournalInsightsScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        _buildHeader(context),
+        _buildHeader(context, l10n),
         const SizedBox(height: 24),
-        _buildStreakCard(entries),
+        _buildStreakCard(entries, l10n),
         const SizedBox(height: 24),
-        _buildMoodDistribution(entries),
+        _buildMoodDistribution(context, entries, l10n),
         const SizedBox(height: 24),
-        _buildWeeklyTrends(entries),
+        _buildWeeklyTrends(context, entries, l10n),
         const SizedBox(height: 24),
-        _buildCommonTags(entries),
+        _buildCommonTags(entries, l10n),
         const SizedBox(height: 100),
       ],
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Row(
       children: [
         const BackIconButton(onPressed: null), // Will be handled by GoRouter
         const SizedBox(width: 16),
-        const Text("Your Journey", style: AppText.h2),
+        Text(l10n.journalTitle, style: AppText.h2),
       ],
     );
   }
 
-  Widget _buildStreakCard(List<JournalEntry> entries) {
+  Widget _buildStreakCard(List<JournalEntry> entries, AppLocalizations l10n) {
     // Basic streak calculation
     return Container(
       padding: const EdgeInsets.all(24),
@@ -85,9 +88,9 @@ class JournalInsightsScreen extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Current Streak",
+              Text(l10n.journalCurrentStreak,
                   style: AppText.caption.copyWith(color: AppColors.primary500)),
-              Text("${_calculateStreak(entries)} Days",
+              Text(l10n.journalStreakCount(_calculateStreak(entries)),
                   style: AppText.h2.copyWith(color: AppColors.primary900)),
             ],
           ),
@@ -96,7 +99,7 @@ class JournalInsightsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildMoodDistribution(List<JournalEntry> entries) {
+  Widget _buildMoodDistribution(BuildContext context, List<JournalEntry> entries, AppLocalizations l10n) {
     final moodCounts = <String, int>{};
     for (var e in entries) {
       moodCounts[e.mood] = (moodCounts[e.mood] ?? 0) + 1;
@@ -105,7 +108,7 @@ class JournalInsightsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Mood Distribution", style: AppText.h4),
+        Text(l10n.journalMoodDistribution, style: AppText.h4),
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(20),
@@ -123,7 +126,15 @@ class JournalInsightsScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     Icon(m.icon, size: 20, color: m.accent),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: 68,
+                      child: Text(
+                        m.localizedLabel(l10n),
+                        style: AppText.caption.copyWith(color: AppColors.grey700),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Stack(
                         children: [
@@ -155,11 +166,11 @@ class JournalInsightsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildWeeklyTrends(List<JournalEntry> entries) {
+  Widget _buildWeeklyTrends(BuildContext context, List<JournalEntry> entries, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Weekly Activity", style: AppText.h4),
+        Text(l10n.journalWeeklyActivity, style: AppText.h4),
         const SizedBox(height: 16),
         Container(
           height: 150,
@@ -192,7 +203,7 @@ class JournalInsightsScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(DateFormat('E').format(day)[0], style: AppText.caption),
+                  Text(DateFormat('E', Localizations.localeOf(context).toString()).format(day)[0], style: AppText.caption),
                 ],
               );
             }),
@@ -202,7 +213,7 @@ class JournalInsightsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCommonTags(List<JournalEntry> entries) {
+  Widget _buildCommonTags(List<JournalEntry> entries, AppLocalizations l10n) {
     final tagCounts = <String, int>{};
     for (var e in entries) {
       for (var t in e.tags) {
@@ -215,7 +226,7 @@ class JournalInsightsScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Top Tags", style: AppText.h4),
+        Text(l10n.journalTopTags, style: AppText.h4),
         const SizedBox(height: 16),
         Wrap(
           spacing: 8,

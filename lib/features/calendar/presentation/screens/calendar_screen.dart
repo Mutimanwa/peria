@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
-import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
@@ -19,30 +21,6 @@ class CalendarScreen extends ConsumerStatefulWidget {
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selectedDate = DateTime.now();
-
-  static const List<String> _monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  static const List<String> _weekDays = [
-    'mo',
-    'tu',
-    'we',
-    'th',
-    'fr',
-    'sa',
-    'su'
-  ];
 
   void _prevMonth() => setState(() {
         _displayMonth = DateTime(_displayMonth.year, _displayMonth.month - 1);
@@ -64,6 +42,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
+        final l10n = AppLocalizations.of(context);
         final today = DateTime.now();
         final todayStart = DateTime(today.year, today.month, today.day);
 
@@ -118,17 +97,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 ),
                 const SizedBox(height: 18),
-                const Text('Log period', style: AppText.h4),
+                Text(l10n.periodLogSheetTitle, style: AppText.h4),
                 const SizedBox(height: 6),
                 Text(
-                  'Quick daily capture. Use Edit Calendar when you need a precise correction.',
+                  l10n.periodLogSheetSubtitle,
                   style: AppText.body.copyWith(color: AppColors.grey600),
                 ),
                 const SizedBox(height: 18),
                 _QuickActionTile(
                   icon: Icons.play_arrow_rounded,
-                  title: 'Period started today',
-                  subtitle: 'Save today as the first day of your period.',
+                  title: l10n.periodStartedToday,
+                  subtitle: l10n.periodStartedTodaySubtitle,
                   color: AppColors.primary400,
                   onTap: () =>
                       savePeriodLog(start: todayStart, end: todayStart),
@@ -136,8 +115,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 const SizedBox(height: 12),
                 _QuickActionTile(
                   icon: Icons.water_drop_outlined,
-                  title: 'Add today as a period day',
-                  subtitle: 'Extend your latest period log with one more day.',
+                  title: l10n.addTodayPeriodDay,
+                  subtitle: l10n.addTodayPeriodDaySubtitle,
                   color: AppColors.primary500,
                   onTap: () {
                     final logs = ref.read(periodLogsProvider).value ?? const [];
@@ -161,8 +140,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 const SizedBox(height: 12),
                 _QuickActionTile(
                   icon: Icons.stop_rounded,
-                  title: 'Period ended today',
-                  subtitle: 'Close your latest log with today as the end date.',
+                  title: l10n.periodEndedToday,
+                  subtitle: l10n.periodEndedTodaySubtitle,
                   color: AppColors.warning700,
                   onTap: () {
                     final logs = ref.read(periodLogsProvider).value ?? const [];
@@ -183,7 +162,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 ),
                 const SizedBox(height: 16),
                 OutlineButton(
-                  label: 'Open structured edit',
+                  label: l10n.openStructuredPeriodEdit,
                   onPressed: () {
                     Navigator.of(context).pop();
                     context.push('/edit-calendar');
@@ -199,26 +178,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   DateTime _normalizeDay(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  bool _isDayInStatus(DateTime day, List<DateTime> days) {
-    final normalized = _normalizeDay(day);
-    return days.any((d) => _normalizeDay(d) == normalized);
-  }
-
-  bool _isPeriodDay(DateTime day) {
-    final status = ref.watch(cycleStatusForDateProvider(day));
-    return status != null && _isDayInStatus(day, status.periodDays);
-  }
-
-  bool _isOvulationDay(DateTime day) {
-    final status = ref.watch(cycleStatusForDateProvider(day));
-    return status != null && _isDayInStatus(day, status.fertileWindow);
-  }
-
-  bool _isPmsDay(DateTime day) {
-    final status = ref.watch(cycleStatusForDateProvider(day));
-    return status != null && _isDayInStatus(day, status.pmsDays);
-  }
-
   bool _isToday(DateTime day) {
     final now = DateTime.now();
     return day.year == now.year && day.month == now.month && day.day == now.day;
@@ -229,69 +188,80 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return days.any((day) => _normalizeDay(day) == normalized);
   }
 
-  String _formatDate(DateTime date) {
-    return '${_monthNames[date.month - 1]} ${date.day}, ${date.year}';
-  }
+  String _formatDate(DateTime date, String locale) =>
+      DateFormat.yMMMMd(locale).format(date);
 
-  _CalendarDayState _dayState(DateTime day, CycleStatus? status) {
-    if (status == null) {
-      return const _CalendarDayState(
-        label: 'No cycle data',
-        description: 'No available cycle prediction for this date.',
+  _CalendarDayState _dayState(
+    DateTime day,
+    CycleDayInfo cycleDay,
+    AppLocalizations l10n,
+  ) {
+    if (cycleDay.status == null && !cycleDay.isLoggedPeriod) {
+      return _CalendarDayState(
+        label: l10n.calendarNoCycleData,
+        description: l10n.calendarNoCyclePredictionAvailable,
         color: AppColors.grey700,
         softColor: AppColors.grey100,
         icon: Icons.calendar_today_outlined,
       );
     }
-    final normalizedDay = _normalizeDay(day);
-    if (status.isOverdue && _normalizeDay(DateTime.now()) == normalizedDay) {
-      return const _CalendarDayState(
-        label: 'Overdue',
-        description: 'Your period is expected but not logged.',
+    if (cycleDay.isOverdue) {
+      return _CalendarDayState(
+        label: l10n.calendarOverdue,
+        description: l10n.calendarExpectedNotLogged,
         color: AppColors.error,
         softColor: Color(0xFFFFE6E6),
         icon: Icons.warning_amber_rounded,
       );
     }
-    if (_isDayInStatus(day, status.periodDays)) {
-      return const _CalendarDayState(
-        label: 'Period day',
-        description: 'This date is part of the menstrual window.',
+    if (cycleDay.isLoggedPeriod) {
+      return _CalendarDayState(
+        label: l10n.calendarLoggedPeriodDay,
+        description: l10n.calendarLoggedPeriodDescription,
+        color: AppColors.primary400,
+        softColor: AppColors.primary50,
+        icon: Icons.water_drop,
+      );
+    }
+    if (cycleDay.isPredictedPeriod) {
+      return _CalendarDayState(
+        label: l10n.calendarPredictedPeriodDay,
+        description: l10n.calendarPredictedPeriodDescription,
         color: AppColors.primary400,
         softColor: AppColors.primary50,
         icon: Icons.water_drop_outlined,
       );
     }
-    if (_isDayInStatus(day, status.fertileWindow)) {
-      return const _CalendarDayState(
-        label: 'Fertility window',
-        description: 'This date is inside the predicted fertile window.',
+    if (cycleDay.isFertileWindow) {
+      return _CalendarDayState(
+        label: l10n.calendarFertilityWindow,
+        description: l10n.calendarFertilityWindowDescription,
         color: AppColors.secondary500,
         softColor: AppColors.secondary50,
         icon: Icons.auto_awesome,
       );
     }
-    if (_isDayInStatus(day, status.pmsDays)) {
-      return const _CalendarDayState(
-        label: 'PMS day',
-        description: 'This date is in the predicted PMS phase.',
+    if (cycleDay.isPmsDay) {
+      return _CalendarDayState(
+        label: l10n.calendarPmsDay,
+        description: l10n.calendarPmsDayDescription,
         color: AppColors.warning700,
         softColor: AppColors.warning50,
         icon: Icons.bolt_rounded,
       );
     }
     if (_isToday(day)) {
-      return const _CalendarDayState(
-        label: 'Today',
-        description: 'Selected day.',
+      return _CalendarDayState(
+        label: l10n.todayLabel,
+        description: l10n.calendarSelectedDay,
         color: AppColors.grey900,
         softColor: AppColors.grey100,
         icon: Icons.today_rounded,
       );
     }
-    return const _CalendarDayState(
-      label: 'Regular day',
-      description: 'No tracked cycle event is attached to this date.',
+    return _CalendarDayState(
+      label: l10n.calendarRegularDay,
+      description: l10n.calendarNoTrackedCycleEvent,
       color: AppColors.grey700,
       softColor: AppColors.grey100,
       icon: Icons.calendar_today_outlined,
@@ -300,11 +270,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
     int startOffset = firstDay.weekday - 1;
-    final selectedStatus = ref.watch(cycleStatusForDateProvider(_selectedDate));
-    final selectedState = _dayState(_selectedDate, selectedStatus);
+    final selectedCycleDay = ref.watch(cycleDayInfoProvider(_selectedDate));
+    final selectedState = _dayState(_selectedDate, selectedCycleDay, l10n);
     final symptomDays = ref.watch(symptomDaysProvider);
     final journalDays = ref.watch(journalDaysProvider);
 
@@ -312,7 +284,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       showBack: true,
       onBack: () => safeRouterBack(context, fallbackRoute: '/cycle'),
       showTitle: true,
-      title: 'Cycle Calendar',
+      title: l10n.calendarTitle,
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -341,7 +313,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   icon: Icons.chevron_left_rounded),
                               Expanded(
                                 child: Text(
-                                  '${_monthNames[_displayMonth.month - 1]} ${_displayMonth.year}',
+                                  DateFormat.yMMMM(locale).format(_displayMonth),
                                   style: AppText.h4,
                                   textAlign: TextAlign.center,
                                 ),
@@ -353,16 +325,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // En-têtes jours
+                          // Weekday headings follow the app's selected locale.
                           Row(
-                            children: _weekDays
-                                .map((d) => Expanded(
-                                      child: Text(d,
-                                          style: AppText.caption.copyWith(
-                                              color: AppColors.grey400),
-                                          textAlign: TextAlign.center),
-                                    ))
-                                .toList(),
+                            children: List.generate(7, (index) {
+                              final weekday = DateTime(2024, 1, 1 + index);
+                              final label = DateFormat.E(locale)
+                                  .format(weekday)
+                                  .replaceAll('.', '');
+                              return Expanded(
+                                child: Text(
+                                  label,
+                                  style: AppText.caption.copyWith(
+                                    color: AppColors.grey400,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            }),
                           ),
                           const SizedBox(height: 12),
 
@@ -409,7 +388,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _formatDate(_selectedDate),
+                                        _formatDate(_selectedDate, locale),
                                         style: AppText.label.copyWith(
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.grey900,
@@ -450,7 +429,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Monthly overview',
+                                  l10n.calendarMonthlyOverview,
                                   style: AppText.label.copyWith(
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.grey900,
@@ -458,7 +437,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'This screen is for reading the cycle across time. Use quick log for daily capture and Edit Calendar for corrections.',
+                                  l10n.calendarMonthlyOverviewHelp,
                                   style: AppText.caption.copyWith(
                                     color: AppColors.grey600,
                                   ),
@@ -473,12 +452,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             spacing: 16,
                             runSpacing: 10,
                             children: [
-                              _buildLegendItem('pms day', AppColors.warning50),
-                              _buildLegendItem('period day', AppColors.primary50),
-                              _buildLegendItem('ovulation day', AppColors.secondary100),
-                              _buildLegendItem('symptoms', AppColors.success),
-                              _buildLegendItem('journal', AppColors.grey700),
-                              _buildLegendItem('today', AppColors.grey900),
+                              _buildLegendItem(l10n.calendarLegendPmsDay, AppColors.warning50),
+                              _buildLegendItem(l10n.calendarLegendLoggedPeriod, AppColors.primary100),
+                              _buildLegendItem(l10n.calendarLegendPredictedPeriod, AppColors.primary50),
+                              _buildLegendItem(l10n.calendarLegendFertilityWindow, AppColors.secondary100),
+                              _buildLegendItem(l10n.calendarLegendSymptoms, AppColors.success),
+                              _buildLegendItem(l10n.calendarLegendJournal, AppColors.grey700),
+                              _buildLegendItem(l10n.calendarLegendToday, AppColors.grey900),
                             ],
                           ),
                         ],
@@ -501,10 +481,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Quick capture', style: AppText.h4),
+                          Text(l10n.calendarQuickCapture, style: AppText.h4),
                           const SizedBox(height: 8),
                           Text(
-                            'Fast daily actions for period and symptoms, without opening the structured editor.',
+                            l10n.calendarQuickCaptureHelp,
                             style:
                                 AppText.body.copyWith(color: AppColors.grey600),
                           ),
@@ -513,14 +493,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             children: [
                               Expanded(
                                 child: PrimaryButton(
-                                  label: 'Log Period',
+                                  label: l10n.logPeriodButton,
                                   onPressed: _showQuickPeriodSheet,
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: OutlineButton(
-                                  label: 'Log Symptoms',
+                                  label: l10n.logSymptoms,
                                   onPressed: () => context.go('/symptoms'),
                                 ),
                               ),
@@ -528,13 +508,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Need to define or fix a date range? Use Edit Calendar.',
+                            l10n.calendarDateRangeHelp,
                             style: AppText.caption
                                 .copyWith(color: AppColors.grey600),
                           ),
                           const SizedBox(height: 12),
                           OutlineButton(
-                            label: 'Edit Calendar',
+                            label: l10n.calendarEditTitle,
                             onPressed: () => context.push('/edit-calendar'),
                           ),
                         ],
@@ -605,14 +585,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             day.month == _selectedDate.month &&
             day.day == _selectedDate.day;
 
+        final cycleDay = ref.watch(cycleDayInfoProvider(day));
+
         return GestureDetector(
           onTap: () => _selectDay(day),
           child: _DayCell(
             day: day,
             isSelected: isSelected,
-            isPeriod: _isPeriodDay(day),
-            isOvulation: _isOvulationDay(day),
-            isPms: _isPmsDay(day),
+            isLoggedPeriod: cycleDay.isLoggedPeriod,
+            isPredictedPeriod: cycleDay.isPredictedPeriod,
+            isFertileWindow: cycleDay.isFertileWindow,
+            isPms: cycleDay.isPmsDay,
             isToday: _isToday(day),
             hasSymptoms: _containsDay(symptomDays, day),
             hasJournal: _containsDay(journalDays, day),
@@ -626,8 +609,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 class _DayCell extends StatelessWidget {
   final DateTime day;
   final bool isSelected;
-  final bool isPeriod;
-  final bool isOvulation;
+  final bool isLoggedPeriod;
+  final bool isPredictedPeriod;
+  final bool isFertileWindow;
   final bool isPms;
   final bool isToday;
   final bool hasSymptoms;
@@ -636,8 +620,9 @@ class _DayCell extends StatelessWidget {
   const _DayCell({
     required this.day,
     required this.isSelected,
-    this.isPeriod = false,
-    this.isOvulation = false,
+    this.isLoggedPeriod = false,
+    this.isPredictedPeriod = false,
+    this.isFertileWindow = false,
     this.isPms = false,
     this.isToday = false,
     this.hasSymptoms = false,
@@ -652,12 +637,17 @@ class _DayCell extends StatelessWidget {
     IconData? badgeIcon;
     Color secondaryDotColor = Colors.transparent;
 
-    if (isPeriod) {
+    if (isLoggedPeriod) {
+      bgColor = AppColors.primary100;
+      textColor = AppColors.primary400;
+      borderColor = AppColors.primary200;
+      badgeIcon = Icons.water_drop;
+    } else if (isPredictedPeriod) {
       bgColor = AppColors.primary50;
       textColor = AppColors.primary400;
       borderColor = AppColors.primary100;
-      badgeIcon = Icons.water_drop;
-    } else if (isOvulation) {
+      badgeIcon = Icons.water_drop_outlined;
+    } else if (isFertileWindow) {
       bgColor = AppColors.secondary100;
       textColor = AppColors.secondary500;
       borderColor = AppColors.secondary200;

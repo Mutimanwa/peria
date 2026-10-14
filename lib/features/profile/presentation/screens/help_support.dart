@@ -15,38 +15,32 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
   // Using a Set to allow multiple expanded items, or an int to only allow one.
   final Set<int> _expandedItems = {};
 
-  final List<Map<String, String>> _faqs = [
-    {
-      "question": "How do I log my period and symptoms?",
-      "answer":
-          "You can log your period and symptoms directly from the Home screen by tapping the '+' button or interacting with the circular calendar."
-    },
-    {
-      "question": "Is my health data secure?",
-      "answer":
-          "Yes, we prioritize your privacy. All your health data is stored securely and is never shared with third parties without your explicit consent."
-    },
-    {
-      "question": "How does partner sharing work?",
-      "answer":
-          "You can invite a partner via the Settings menu. They will only see the data you explicitly choose to share with them."
-    },
-    {
-      "question": "How can I customize notifications?",
-      "answer":
-          "Go to Profile > Settings > Notifications to customize alerts for your cycle, medications, and more."
-    },
-    {
-      "question": "How do I delete my account?",
-      "answer":
-          "You can delete your account permanently by going to Profile > Settings > Security > Delete Account."
-    },
-    {
-      "question": "How can I contact support?",
-      "answer":
-          "You can contact support directly from this page using the buttons below!"
-    },
-  ];
+  List<Map<String, String>> _faqItems(AppLocalizations l10n) => [
+        {
+          'question': l10n.helpFaqLogQuestion,
+          'answer': l10n.helpFaqLogAnswer,
+        },
+        {
+          'question': l10n.helpFaqDataQuestion,
+          'answer': l10n.helpFaqDataAnswer,
+        },
+        {
+          'question': l10n.helpFaqPartnerQuestion,
+          'answer': l10n.helpFaqPartnerAnswer,
+        },
+        {
+          'question': l10n.helpFaqNotificationsQuestion,
+          'answer': l10n.helpFaqNotificationsAnswer,
+        },
+        {
+          'question': l10n.helpFaqDeleteQuestion,
+          'answer': l10n.helpFaqDeleteAnswer,
+        },
+        {
+          'question': l10n.helpFaqSupportQuestion,
+          'answer': l10n.helpFaqSupportAnswer,
+        },
+      ];
 
   void _toggleExpanded(int index) {
     setState(() {
@@ -60,10 +54,8 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Note: Some translations might not exist yet, using AppLocalizations or fallback strings
     final l10n = AppLocalizations.of(context);
-    final isDesktop = MediaQuery.of(context).size.width >=
-        768; // For responsive layout safety
+    final faqItems = _faqItems(l10n);
 
     return SimplePage(
       title: l10n.helpSupport,
@@ -84,7 +76,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                 ),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: "Search Anything...",
+                    hintText: l10n.helpSearchHint,
                     hintStyle: AppText.body.copyWith(color: AppColors.grey400),
                     border: InputBorder.none,
                     prefixIcon: null,
@@ -98,8 +90,8 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
               const SizedBox(height: 32),
 
               // FAQs
-              ...List.generate(_faqs.length, (index) {
-                final faq = _faqs[index];
+              ...List.generate(faqItems.length, (index) {
+                final faq = faqItems[index];
                 final isExpanded = _expandedItems.contains(index);
 
                 return Column(
@@ -152,7 +144,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      "Contact Us",
+                      l10n.helpContactUs,
                       style: AppText.label.copyWith(color: AppColors.grey400),
                     ),
                   ),

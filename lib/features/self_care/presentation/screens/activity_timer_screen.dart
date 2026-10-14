@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class ActivityTimerScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class ActivityTimerScreen extends StatefulWidget {
 class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -26,7 +28,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
               text: TextSpan(
                 style: AppText.h3.copyWith(color: AppColors.grey900),
                 children: [
-                  const TextSpan(text: 'Jumping jacks'),
+                  TextSpan(text: l10n.selfCareExerciseJumpingJacks),
                   TextSpan(
                     text: '        1',
                     style: AppText.h3.copyWith(color: AppColors.primary400),
@@ -38,7 +40,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                 ],
               ),
             ),
-            Text('Full-body cardio',
+            Text(l10n.selfCareFullBodyCardio,
                 style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 18),
             ClipRRect(
@@ -119,6 +121,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
   }
 
   void _showPauseDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog<void>(
       context: context,
       builder: (context) {
@@ -132,10 +135,10 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
               Image.asset('moc/Chat Page-68.png',
                   width: 86, height: 86, fit: BoxFit.cover),
               const SizedBox(height: 12),
-              const Text('Wait!', style: AppText.h4),
+              Text(l10n.selfCareWait, style: AppText.h4),
               const SizedBox(height: 6),
               Text(
-                'Only 2 minutes left - Keep it up!',
+                l10n.selfCareOnlyMinutesLeft(2),
                 textAlign: TextAlign.center,
                 style: AppText.body.copyWith(color: AppColors.grey600),
               ),
@@ -148,7 +151,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                         Navigator.of(context).pop();
                         this.context.go('/self-care/congratulations');
                       },
-                      child: Text('Quit',
+                      child: Text(l10n.selfCareQuit,
                           style:
                               AppText.label.copyWith(color: AppColors.grey700)),
                     ),
@@ -162,7 +165,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
                           backgroundColor: AppColors.grey900,
                           shape: const StadiumBorder(),
                         ),
-                        child: Text('Keep',
+                        child: Text(l10n.selfCareKeepGoing,
                             style:
                                 AppText.label.copyWith(color: AppColors.white)),
                       ),

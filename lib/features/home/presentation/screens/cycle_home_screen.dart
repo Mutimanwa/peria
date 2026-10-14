@@ -1,4 +1,6 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,16 +8,12 @@ import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
-import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
 import 'package:peria_app/l10n/app_localizations.dart';
-
-// ════════════════════════════════════════════════════════════════════
-//  ENUM — 4 phases du cycle (computed from startDate)
-// ════════════════════════════════════════════════════════════════════
-enum CyclePhase { menstrual, follicular, ovulation, luteal }
 
 // ════════════════════════════════════════════════════════════════════
 //  ÉCRAN PRINCIPAL — Cycle Home
@@ -29,10 +27,6 @@ class CycleHomeScreen extends ConsumerStatefulWidget {
 
 class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
     with TickerProviderStateMixin {
-  // ── Phase courante (pilotée par cycleStatusProvider) ─────────────
-  CyclePhase _phase = CyclePhase.follicular;
-  int _dayOfCycle = 1;
-  int? _daysUntilNextPeriod;
   // Navigation state is now managed by ShellNavigation
   // NavItem _activeTab = NavItem.cycle; // Removed - managed by shell
 
@@ -75,14 +69,17 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   }
 
   // ── Config couleurs + données par phase ─────────────────────────
-  _PhaseConfig get _config {
-    final l10n = AppLocalizations.of(context);
-    final dayLabel = '${l10n.day} $_dayOfCycle';
+  _PhaseConfig _config(
+    CyclePhase phase,
+    int dayOfCycle,
+    AppLocalizations l10n,
+  ) {
+    final dayLabel = '${l10n.day} $dayOfCycle';
 
-    switch (_phase) {
+    switch (phase) {
       case CyclePhase.menstrual:
         return _PhaseConfig(
-          label: 'Period',
+          label: l10n.cyclePhasePeriod,
           dayLabel: dayLabel,
           // Couche du bas (la plus foncée, occupe ~65% bas)
           colorBottom: AppColors.primary300,
@@ -93,7 +90,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           // Couleur texte dans la roue
           textColor: AppColors.primary800,
           // Badge numéro cycle
-          badgeDay: _dayOfCycle,
+          badgeDay: dayOfCycle,
           // Angle du badge sur l'anneau (0 = 3h, -π/2 = 12h)
           // Period → badge à ~2h30 (droite légèrement haut)
           badgeAngleDeg: -40.0,
@@ -107,13 +104,13 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
         );
       case CyclePhase.luteal:
         return _PhaseConfig(
-          label: 'Luteal',
+          label: l10n.cyclePhaseLuteal,
           dayLabel: dayLabel,
           colorBottom: AppColors.pmsBase,
           colorMid: AppColors.pmsBase.withOpacity(0.8),
           colorTop: AppColors.pmsLight,
           textColor: AppColors.neutral900,
-          badgeDay: _dayOfCycle,
+          badgeDay: dayOfCycle,
           badgeAngleDeg: -160.0, // gauche ~10h
           calHighlight: AppColors.warning50,
           calTextColor: AppColors.warning700,
@@ -122,13 +119,13 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
         );
       case CyclePhase.ovulation:
         return _PhaseConfig(
-          label: 'Ovulation',
+          label: l10n.cyclePhaseOvulation,
           dayLabel: dayLabel,
           colorBottom: AppColors.ovulBase,
           colorMid: AppColors.ovulBase.withOpacity(0.8),
           colorTop: AppColors.ovulLight,
           textColor: AppColors.secondary800,
-          badgeDay: _dayOfCycle,
+          badgeDay: dayOfCycle,
           badgeAngleDeg: 90.0, // bas ~6h
           calHighlight: AppColors.secondary100,
           calTextColor: AppColors.secondary600,
@@ -137,13 +134,13 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
         );
       case CyclePhase.follicular:
         return _PhaseConfig(
-          label: 'Follicular',
+          label: l10n.cyclePhaseFollicular,
           dayLabel: dayLabel,
           colorBottom: AppColors.secondary500,
           colorMid: AppColors.secondary400.withOpacity(0.85),
           colorTop: AppColors.secondary100,
           textColor: AppColors.secondary800,
-          badgeDay: _dayOfCycle,
+          badgeDay: dayOfCycle,
           badgeAngleDeg: -20.0,
           calHighlight: AppColors.secondary50,
           calTextColor: AppColors.secondary600,
@@ -153,198 +150,37 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
     }
   }
 
-  CyclePhase _phaseFromStatus(CycleStatus? status) {
-    if (status == null) return CyclePhase.follicular;
-    final phaseName = status.phase.toString().split('.').last;
-    return switch (phaseName) {
-      'menstrual' => CyclePhase.menstrual,
-      'ovulation' => CyclePhase.ovulation,
-      'luteal' => CyclePhase.luteal,
-      _ => CyclePhase.follicular,
-    };
-  }
-
-  void _applyPhase(CyclePhase next) {
-    if (next == _phase) return;
-    setState(() => _phase = next);
-    _phaseCtrl.forward(from: 0);
-  }
-
   Future<void> _showQuickPeriodSheet() async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        final today = DateTime.now();
-        final todayStart = DateTime(today.year, today.month, today.day);
-
-        Future<void> savePeriodLog({
-          required DateTime start,
-          required DateTime end,
-        }) async {
-          final navigator = Navigator.of(context);
-          final log = PeriodLog(
-            id: DateTime.now().microsecondsSinceEpoch.toString(),
-            startDate: start,
-            endDate: end,
-            isEstimated: false,
-          );
-          await ref.read(periodLogsProvider.notifier).add(log);
-
-          final currentProfile = ref.read(userProfileProvider).value;
-          final currentLast = currentProfile?.lastPeriodStart;
-          if (currentLast == null || start.isAfter(currentLast)) {
-            await ref.read(userProfileProvider.notifier).patch(
-                  (p) => p.copyWith(lastPeriodStart: start),
-                );
-          }
-
-          if (mounted) navigator.pop();
-        }
-
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 100,
-          ),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(28),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey300,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                const Text('Log period', style: AppText.h4),
-                const SizedBox(height: 6),
-                Text(
-                  'Quick daily capture. Use Edit Calendar when you need a precise correction.',
-                  style: AppText.body.copyWith(color: AppColors.grey600),
-                ),
-                const SizedBox(height: 18),
-                _QuickActionTile(
-                  icon: Icons.play_arrow_rounded,
-                  title: 'Period started today',
-                  subtitle: 'Save today as the first day of your period.',
-                  color: AppColors.primary400,
-                  onTap: () =>
-                      savePeriodLog(start: todayStart, end: todayStart),
-                ),
-                const SizedBox(height: 12),
-                _QuickActionTile(
-                  icon: Icons.water_drop_outlined,
-                  title: 'Add today as a period day',
-                  subtitle: 'Extend your latest period log with one more day.',
-                  color: AppColors.primary500,
-                  onTap: () {
-                    final logs = ref.read(periodLogsProvider).value ?? const [];
-                    if (logs.isEmpty) {
-                      savePeriodLog(start: todayStart, end: todayStart);
-                      return;
-                    }
-                    final latest = logs.first;
-                    final updated = PeriodLog(
-                      id: latest.id,
-                      startDate: latest.startDate,
-                      endDate: todayStart.isAfter(latest.endDate)
-                          ? todayStart
-                          : latest.endDate,
-                      isEstimated: latest.isEstimated,
-                    );
-                    ref.read(periodLogsProvider.notifier).add(updated);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: 12),
-                _QuickActionTile(
-                  icon: Icons.stop_rounded,
-                  title: 'Period ended today',
-                  subtitle: 'Close your latest log with today as the end date.',
-                  color: AppColors.warning700,
-                  onTap: () {
-                    final logs = ref.read(periodLogsProvider).value ?? const [];
-                    if (logs.isEmpty) {
-                      Navigator.of(context).pop();
-                      return;
-                    }
-                    final latest = logs.first;
-                    final updated = PeriodLog(
-                      id: latest.id,
-                      startDate: latest.startDate,
-                      endDate: todayStart,
-                      isEstimated: latest.isEstimated,
-                    );
-                    ref.read(periodLogsProvider.notifier).add(updated);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: 16),
-                _LogBtn(
-                  label: 'Open structured edit',
-                  filled: false,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    context.push('/edit-calendar');
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      builder: (_) => _QuickPeriodLogSheet(
+        onOpenStructuredEdit: () {
+          if (mounted) context.push('/edit-calendar');
+        },
+      ),
     );
   }
-
-  // void _switchPhase(CyclePhase p) {
-  //   setState(() => _phase = p);
-  //   _phaseCtrl.forward(from: 0);
-  // }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final status = ref.watch(cycleStatusProvider);
-    final profile = ref.watch(userProfileProvider).value;
-    final dayOfCycle = status?.dayOfCycle ?? 1;
-    final daysUntilNext = status?.daysUntilNextPeriod;
-    final nextPhase = _phaseFromStatus(status);
-    final cycleLength = profile?.averageCycleLengthDays ?? 28;
-    final cycleLengthDays = cycleLength > 0 ? cycleLength : 1;
-    final cycleProgress =
-        (dayOfCycle / cycleLengthDays).clamp(0.0, 1.0).toDouble();
-
-    if (_dayOfCycle != dayOfCycle || _daysUntilNextPeriod != daysUntilNext) {
-      // Avoid setState during build.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        setState(() {
-          _dayOfCycle = dayOfCycle;
-          _daysUntilNextPeriod = daysUntilNext;
-        });
-      });
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _applyPhase(nextPhase);
+    ref.listen(cycleStatusProvider, (previous, next) {
+      if (previous?.phase != next?.phase) {
+        _phaseCtrl.forward(from: 0);
+      }
     });
 
-    final cfg = _config;
+    final dayOfCycle = status?.dayOfCycle ?? 1;
+    final daysUntilNext = status?.daysUntilNextPeriod;
+    final phase = status?.phase ?? CyclePhase.follicular;
+    final cycleLength = status?.cycleLengthDays ?? 28;
+    final cycleLengthDays = cycleLength > 0 ? cycleLength : 28;
+    final cycleProgress =
+        (dayOfCycle / cycleLengthDays).clamp(0.0, 1.0).toDouble();
+    final cfg = _config(phase, dayOfCycle, l10n);
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -382,11 +218,11 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
                 // Texte subtitle
                 Text(
-                  _daysUntilNextPeriod == null
+                  daysUntilNext == null
                       ? l10n.nextPeriodUnknown
-                      : _daysUntilNextPeriod! <= 0
+                      : daysUntilNext <= 0
                           ? l10n.periodIsDue
-                          : l10n.nextPeriodInDays(_daysUntilNextPeriod!),
+                          : l10n.nextPeriodInDays(daysUntilNext),
                   style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
@@ -427,7 +263,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                     children: [
                       Expanded(
                         child: _LogBtn(
-                          label: 'Log Symptom',
+                          label: l10n.logSymptoms,
                           filled: false,
                           onTap: () => context.go('/symptoms'),
                         ),
@@ -435,7 +271,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                       const SizedBox(width: 12),
                       Expanded(
                         child: _LogBtn(
-                          label: 'Log Period',
+                          label: l10n.logPeriodButton,
                           filled: true,
                           onTap: _showQuickPeriodSheet,
                         ),
@@ -443,29 +279,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                     ],
                   ),
                 ),
-                // Old direct navigation kept for reference.
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 22),
-                //   child: Row(
-                //     children: [
-                //       Expanded(
-                //         child: _LogBtn(
-                //           label: 'Log Symptom',
-                //           filled: false,
-                //           onTap: () => context.go('/symptoms'),
-                //         ),
-                //       ),
-                //       const SizedBox(width: 12),
-                //       Expanded(
-                //         child: _LogBtn(
-                //           label: 'Log Period',
-                //           filled: true,
-                //           onTap: () => context.go('/edit-calendar'),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 const SizedBox(height: 18),
 
                 // ── Cartes articles ──────────────────────────────
@@ -487,6 +300,233 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+enum _QuickPeriodLogAction { startToday, addToday, endToday }
+
+class _QuickPeriodLogSheet extends ConsumerStatefulWidget {
+  const _QuickPeriodLogSheet({required this.onOpenStructuredEdit});
+
+  final VoidCallback onOpenStructuredEdit;
+
+  @override
+  ConsumerState<_QuickPeriodLogSheet> createState() =>
+      _QuickPeriodLogSheetState();
+}
+
+class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
+  bool _isSaving = false;
+  String? _feedback;
+
+  Future<void> _submit(
+    _QuickPeriodLogAction action,
+    List<PeriodLog> logs,
+  ) async {
+    if (_isSaving) return;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final periodLog = action == _QuickPeriodLogAction.endToday
+        ? PeriodLogQuickActions.endToday(logs: logs, today: today)
+        : PeriodLogQuickActions.recordToday(logs: logs, today: today);
+
+    if (periodLog == null) {
+      final message = action == _QuickPeriodLogAction.endToday &&
+              !logs.any((log) =>
+                  !log.isEstimated &&
+                  log.endDate.year == today.year &&
+                  log.endDate.month == today.month &&
+                  log.endDate.day == today.day)
+          ? AppLocalizations.of(context).periodLogNoRecentToEnd
+          : AppLocalizations.of(context).periodLogAlreadyLoggedToday;
+      setState(() => _feedback = message);
+      return;
+    }
+
+    final periodLogsNotifier = ref.read(periodLogsProvider.notifier);
+    setState(() {
+      _isSaving = true;
+      _feedback = null;
+    });
+
+    try {
+      await periodLogsNotifier.add(periodLog);
+      if (!mounted) return;
+
+      // Period logs are the cycle engine's source of truth. Keep the profile's
+      // legacy fallback anchor aligned when it is already available.
+      final savedLogs =
+          ref.read(periodLogsProvider).value ?? const <PeriodLog>[];
+      final periodContainingToday = savedLogs
+          .where((log) => log.contains(today) && !log.isEstimated)
+          .toList()
+        ..sort((a, b) => b.startDate.compareTo(a.startDate));
+      final profile = ref.read(userProfileProvider).value;
+      if (periodContainingToday.isNotEmpty && profile != null) {
+        final loggedStart = periodContainingToday.first.startDate;
+        final currentStart = profile.lastPeriodStart;
+        if (currentStart == null || loggedStart.isAfter(currentStart)) {
+          try {
+            await ref.read(userProfileProvider.notifier).patch(
+                  (current) => current.copyWith(lastPeriodStart: loggedStart),
+                );
+          } catch (_) {
+            // The saved period log remains canonical if this legacy fallback
+            // profile field cannot be refreshed.
+          }
+        }
+      }
+
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      // `add` updates the provider optimistically. Reload its canonical value
+      // after a failed write so a retry cannot mistake an unsaved entry for a
+      // successfully recorded period.
+      try {
+        await periodLogsNotifier.load();
+      } catch (_) {
+        // Keep the original save error visible if refreshing also fails.
+      }
+      if (mounted) {
+        final reloadedLogs =
+            ref.read(periodLogsProvider).value ?? const <PeriodLog>[];
+        final wasSaved = reloadedLogs.any(
+          (log) => log.contains(today) && !log.isEstimated,
+        );
+        if (wasSaved) {
+          Navigator.of(context).pop();
+        } else {
+          setState(() =>
+              _feedback = AppLocalizations.of(context).periodLogSaveError);
+        }
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final logsState = ref.watch(periodLogsProvider);
+    final canSave = logsState.hasValue &&
+        !logsState.isLoading &&
+        !logsState.hasError &&
+        !_isSaving;
+    final logs = logsState.value ?? const <PeriodLog>[];
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 0, 16, bottomInset + 16),
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey300,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(l10n.logPeriodSheetTitle, style: AppText.h4),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.logPeriodSheetSubtitle,
+                  style: AppText.body.copyWith(color: AppColors.grey600),
+                ),
+                if (logsState.isLoading || _isSaving) ...[
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        _isSaving
+                            ? l10n.periodLogSaving
+                            : l10n.periodLogLoading,
+                        style: AppText.caption.copyWith(
+                          color: AppColors.grey600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (logsState.hasError) ...[
+                  const SizedBox(height: 14),
+                  Text(
+                    l10n.periodLogLoadError,
+                    style: AppText.caption.copyWith(color: AppColors.error),
+                  ),
+                ],
+                if (_feedback != null) ...[
+                  const SizedBox(height: 14),
+                  Text(
+                    _feedback!,
+                    style: AppText.caption.copyWith(color: AppColors.error),
+                  ),
+                ],
+                const SizedBox(height: 18),
+                _QuickActionTile(
+                  icon: Icons.play_arrow_rounded,
+                  title: l10n.periodStartedToday,
+                  subtitle: l10n.periodStartedTodaySubtitle,
+                  color: AppColors.primary400,
+                  enabled: canSave,
+                  onTap: () =>
+                      _submit(_QuickPeriodLogAction.startToday, logs),
+                ),
+                const SizedBox(height: 12),
+                _QuickActionTile(
+                  icon: Icons.water_drop_outlined,
+                  title: l10n.addTodayPeriodDay,
+                  subtitle: l10n.addTodayPeriodDaySubtitle,
+                  color: AppColors.primary500,
+                  enabled: canSave,
+                  onTap: () => _submit(_QuickPeriodLogAction.addToday, logs),
+                ),
+                const SizedBox(height: 12),
+                _QuickActionTile(
+                  icon: Icons.stop_rounded,
+                  title: l10n.periodEndedToday,
+                  subtitle: l10n.periodEndedTodaySubtitle,
+                  color: AppColors.warning700,
+                  enabled: canSave,
+                  onTap: () => _submit(_QuickPeriodLogAction.endToday, logs),
+                ),
+                const SizedBox(height: 16),
+                _LogBtn(
+                  label: l10n.openStructuredPeriodEdit,
+                  filled: false,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    widget.onOpenStructuredEdit();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -863,7 +903,7 @@ class _CycleWheelPainter extends CustomPainter {
           color: cfg.colorBottom,
         ),
       ),
-      textDirection: TextDirection.ltr,
+      textDirection: ui.TextDirection.ltr,
     );
     tp.layout();
     tp.paint(canvas, pos - Offset(tp.width / 2, tp.height / 2));
@@ -901,7 +941,6 @@ class _WeekCalendar extends StatelessWidget {
     final today = _startOfDay(now);
     final weekStart = today.subtract(Duration(days: today.weekday - 1));
     final weekDays = List.generate(7, (i) => weekStart.add(Duration(days: i)));
-    const dayNames = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -939,7 +978,9 @@ class _WeekCalendar extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        dayNames[date.weekday - 1],
+                        DateFormat.E(Localizations.localeOf(context).toString())
+                            .format(date)
+                            .replaceAll('.', ''),
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 11,
@@ -1013,6 +1054,7 @@ class _QuickActionTile extends StatelessWidget {
     required this.subtitle,
     required this.color,
     required this.onTap,
+    this.enabled = true,
   });
 
   final IconData icon;
@@ -1020,11 +1062,13 @@ class _QuickActionTile extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
+    final actionColor = enabled ? color : AppColors.grey400;
     return GestureDetector(
-      onTap: onTap,
+      onTap: enabled ? onTap : null,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(14),
@@ -1039,10 +1083,10 @@ class _QuickActionTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                color: actionColor.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: color, size: 20),
+              child: Icon(icon, color: actionColor, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1053,20 +1097,22 @@ class _QuickActionTile extends StatelessWidget {
                     title,
                     style: AppText.label.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: AppColors.grey900,
+                      color: enabled ? AppColors.grey900 : AppColors.grey500,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: AppText.caption.copyWith(color: AppColors.grey600),
+                    style: AppText.caption.copyWith(
+                      color: enabled ? AppColors.grey600 : AppColors.grey400,
+                    ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right_rounded,
-              color: AppColors.grey500,
+              color: enabled ? AppColors.grey500 : AppColors.grey300,
             ),
           ],
         ),
