@@ -107,7 +107,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                   showVisibilityToggle: true,
                   error: _authResult?.status == AuthStatus.pinIncorrect
                       ? l10n
-                          .pinsDoNotMatch // Or specific "Incorrect PIN" key if available
+                          .securityIncorrectPin
                       : null,
                   onCompleted: _authenticateWithPin,
                 ),
@@ -125,7 +125,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               if (_authResult?.isLocked == false) ...[
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Skip (Development Only)'),
+                  child: Text(l10n.securitySkipDevelopmentOnly),
                 ),
               ],
             ],
@@ -146,21 +146,21 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
     switch (result.status) {
       case AuthStatus.success:
-        message = 'Authentification réussie';
+        message = l10n.securityAuthenticationSuccess;
         color = Colors.green;
         break;
       case AuthStatus.pinRequired:
-        message = 'PIN requis';
+        message = l10n.securityPinRequired;
         color = AppColors.grey500;
         break;
       case AuthStatus.locked:
         final minutes = result.lockTimeRemaining!.inMinutes;
         final seconds = result.lockTimeRemaining!.inSeconds % 60;
-        message = 'Verrouillé pendant ${minutes}m ${seconds}s';
+        message = l10n.securityLockedFor(minutes, seconds);
         color = AppColors.error;
         break;
       default:
-        message = result.message ?? 'Erreur d\'authentification';
+        message = l10n.securityAuthenticationError;
         color = AppColors.error;
     }
 
@@ -188,6 +188,7 @@ class AuthGuard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final securityState = ref.watch(securityProvider);
 
     return securityState.when(
@@ -210,11 +211,11 @@ class AuthGuard extends ConsumerWidget {
             children: [
               const Icon(Icons.error, size: 48, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Security Error: $error'),
+              Text(l10n.unableToLoadSecuritySettings),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => ref.invalidate(securityProvider),
-                child: const Text('Retry'),
+                child: Text(l10n.securityRetry),
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:peria_app/core/router/router.dart';
 import 'package:peria_app/core/services/onboarding_service.dart';
 import 'package:peria_app/core/theme/theme.dart';
@@ -34,31 +35,6 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime? _startDate;
   DateTime? _endDate;
-
-  // Mois affichés
-  static const List<String> _monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  static const List<String> _weekDays = [
-    'mo',
-    'tu',
-    'we',
-    'th',
-    'fr',
-    'sa',
-    'su'
-  ];
 
   void _prevMonth() => setState(() {
         _displayMonth = DateTime(_displayMonth.year, _displayMonth.month - 1);
@@ -104,6 +80,7 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
   @override
   Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     // Générer les jours du mois
     final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
     final lastDay = DateTime(_displayMonth.year, _displayMonth.month + 1, 0);
@@ -159,7 +136,7 @@ final l10n = AppLocalizations.of(context);
                             icon: Icons.chevron_left_rounded),
                         Expanded(
                           child: Text(
-                            _monthNames[_displayMonth.month - 1],
+                            DateFormat.yMMMM(locale).format(_displayMonth),
                             style: AppText.h3,
                             textAlign: TextAlign.center,
                           ),
@@ -173,14 +150,21 @@ final l10n = AppLocalizations.of(context);
 
                     // En-têtes jours
                     Row(
-                      children: _weekDays
-                          .map((d) => Expanded(
-                                child: Text(d,
-                                    style: AppText.caption
-                                        .copyWith(color: AppColors.grey400),
-                                    textAlign: TextAlign.center),
-                              ))
-                          .toList(),
+                      children: List.generate(7, (index) {
+                        final weekday = DateTime(2024, 1, 1 + index);
+                        final label = DateFormat.E(locale)
+                            .format(weekday)
+                            .replaceAll('.', '');
+                        return Expanded(
+                          child: Text(
+                            label,
+                            style: AppText.caption.copyWith(
+                              color: AppColors.grey400,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }),
                     ),
                     const SizedBox(height: 8),
 

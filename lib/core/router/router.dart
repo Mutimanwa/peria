@@ -20,6 +20,8 @@ import 'package:peria_app/features/onboarding/presentation/screens/onboarding_sc
 import 'package:peria_app/features/onboarding/presentation/screens/set_goals_screen.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/set_last_period_screen.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/welcome_screen.dart';
+import 'package:peria_app/features/privacy/presentation/screens/privacy_policy_screen.dart';
+import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 import 'package:peria_app/features/educatif/presentation/screens/education_home_screen.dart';
 import 'package:peria_app/features/educatif/presentation/screens/education_article_detail_screen.dart';
 import 'package:peria_app/core/router/shell_navigation.dart';
@@ -49,37 +51,55 @@ void updateOnboardingState(bool completed) {
   hasCompletedOnboarding = completed;
 }
 
-String? routerRedirect(BuildContext context, GoRouterState state) {
-  final user = FirebaseAuth.instance.currentUser;
-  debugPrint(
-    '[Router] redirect check location=${state.matchedLocation} uid=${user?.uid}',
-  );
-
-  // Routes accessibles sans être connecté
-  final bool isAuthRoute = state.matchedLocation == '/welcome' ||
-      state.matchedLocation.startsWith('/register') ||
-      state.matchedLocation == '/splash';
-
-  // 1. Si l'utilisateur n'est pas connecté (même pas en anonyme)
-  if (user == null) {
-    // Si on est déjà sur une route autorisée, on ne bouge pas
-    if (isAuthRoute) return null;
-    // Sinon, on redirige vers Welcome pour qu'il s'enregistre ou continue en anonyme
-    debugPrint('[Router] redirect -> /welcome (no authenticated user)');
+String? resolveRouterRedirect({
+  required String location,
+  required bool isAuthenticated,
+  required bool hasAcceptedPrivacyPolicy,
+  required bool hasCompletedOnboarding,
+}) {
+  // Until the current policy is accepted, only Welcome and the policy itself
+  // may be opened. This applies to already-authenticated users as well.
+  if (!hasAcceptedPrivacyPolicy) {
+    if (location == '/welcome' || location == '/privacy-policy') return null;
     return '/welcome';
   }
 
-  // 2. Si l'utilisateur est connecté (Anonyme ou Réel)
-  // On lui interdit de revenir sur le Splash ou le Welcome
-  if (state.matchedLocation == '/splash' ||
-      state.matchedLocation == '/welcome') {
-    // S'il a fini l'onboarding -> Home, sinon -> Onboarding
-    final destination = hasCompletedOnboarding ? '/cycle' : '/ask-name';
-    debugPrint('[Router] redirect -> $destination');
-    return destination;
+  final isAuthRoute = location == '/welcome' ||
+      location == '/privacy-policy' ||
+      location == '/splash' ||
+      location.startsWith('/register') ||
+      location == '/email' ||
+      location == '/create-account' ||
+      location == '/otp';
+
+  if (!isAuthenticated) {
+    if (isAuthRoute) return null;
+    return '/welcome';
+  }
+
+  if (location == '/splash' || location == '/welcome') {
+    return hasCompletedOnboarding ? '/cycle' : '/ask-name';
   }
 
   return null;
+}
+
+String? routerRedirect(BuildContext context, GoRouterState state) {
+  final user = FirebaseAuth.instance.currentUser;
+  final location = state.matchedLocation;
+  debugPrint('[Router] redirect check location=$location uid=${user?.uid}');
+
+  final destination = resolveRouterRedirect(
+    location: location,
+    isAuthenticated: user != null,
+    hasAcceptedPrivacyPolicy:
+        PrivacyPolicyConsentService.hasAcceptedCurrentVersion,
+    hasCompletedOnboarding: hasCompletedOnboarding,
+  );
+  if (destination != null) {
+    debugPrint('[Router] redirect -> $destination');
+  }
+  return destination;
 }
 
 // Utilitaire pour lier les changements d'auth Firebase au GoRouter
@@ -120,6 +140,14 @@ final GoRouter appRouter = GoRouter(
         context,
         state,
         const WelcomeScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/privacy-policy',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const PrivacyPolicyScreen(),
       ),
     ),
     GoRoute(

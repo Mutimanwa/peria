@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -50,6 +51,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
   }
 
   void _confirmDelete(BuildContext context, WidgetRef ref, JournalEntry entry) {
+    final l10n = AppLocalizations.of(context);
     HapticFeedback
         .heavyImpact(); // Super effet pour marquer la gravité de l'action !
 
@@ -57,12 +59,12 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        title: const Text("Delete this memory?"),
-        content: const Text("This action is permanent and cannot be undone."),
+        title: Text(l10n.journalDeleteMemoryTitle),
+        content: Text(l10n.journalDeleteMemoryBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text("Cancel"),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -83,7 +85,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
               // 4. Rediriger l'utilisatrice vers la liste des journaux
               context.go('/journal');
             },
-            child: const Text("Delete", style: TextStyle(color: Colors.white)),
+            child: Text(l10n.delete, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -91,6 +93,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
   }
 
   void _showOptions(BuildContext context, JournalEntry currentEntry) {
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -104,7 +107,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
               const SizedBox(height: 10),
               ListTile(
                 leading: const Icon(Icons.edit),
-                title: const Text('Modifier'),
+                title: Text(l10n.journalEditAction),
                 onTap: () {
                   Navigator.pop(context);
                   _editEntry(currentEntry);
@@ -112,7 +115,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Supprimer'),
+                title: Text(l10n.delete),
                 onTap: () {
                   Navigator.pop(context);
                   _deleteEntry(currentEntry);
@@ -169,7 +172,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
       },
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, __) => Scaffold(body: Center(child: Text("Error: $e"))),
+      error: (e, __) => Scaffold(body: Center(child: Text(l10n.unableToLoadJournal))),
     );
   }
 
@@ -216,6 +219,8 @@ class _HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     return TweenAnimationBuilder<double>(
       duration: const Duration(
           milliseconds: 600), // Légèrement plus rapide pour la réactivité UI
@@ -255,7 +260,7 @@ class _HeroSection extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              mood.label,
+              mood.localizedLabel(l10n),
               style: AppText.caption.copyWith(
                 color: mood.accent,
                 fontWeight: FontWeight.bold,
@@ -264,7 +269,7 @@ class _HeroSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              entry.title.isNotEmpty ? entry.title : "A quiet moment",
+              entry.title.isNotEmpty ? entry.title : l10n.journalQuietMoment,
               textAlign: TextAlign.center,
               style: AppText.h2.copyWith(
                 color: AppColors.grey900,
@@ -273,7 +278,7 @@ class _HeroSection extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              DateFormat('EEEE, d MMMM • HH:mm').format(entry.createdAt),
+              DateFormat('EEEE, d MMMM • HH:mm', locale).format(entry.createdAt),
               style:
                   AppText.body.copyWith(color: AppColors.grey500, fontSize: 14),
             ),

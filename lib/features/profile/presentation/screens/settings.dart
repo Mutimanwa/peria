@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/services/app_locale_provider.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/app_language_selector.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:peria_app/shared/widgets/profile_widgets.dart';
-import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
@@ -15,6 +17,10 @@ class SettingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final profileState = ref.watch(userProfileProvider);
+    final appLocale = ref.watch(appLocaleProvider);
+    final deviceLanguageCode = Localizations.localeOf(context).languageCode;
+    final selectedLanguageCode = appLocale?.languageCode ??
+        (deviceLanguageCode == 'fr' ? 'fr' : 'en');
     return SimplePage(
       title: l10n.settings,
       fallbackRoute: '/profile',
@@ -26,6 +32,16 @@ class SettingScreen extends ConsumerWidget {
             MenuGroup(items: [
               MenuItemData(l10n.theme, Icons.palette_outlined, () {}),
             ]),
+            const SizedBox(height: 22),
+            SectionLabel(l10n.language),
+            AppLanguageSelector(
+              currentLanguageCode: selectedLanguageCode,
+              englishLabel: l10n.languageEnglish,
+              frenchLabel: l10n.languageFrench,
+              onSelected: (languageCode) {
+                _saveLanguagePreference(context, ref, languageCode);
+              },
+            ),
             const SizedBox(height: 22),
             SectionLabel(l10n.cycleSettings),
             MenuGroup(items: [
@@ -82,12 +98,32 @@ class SettingScreen extends ConsumerWidget {
             SectionLabel(l10n.about),
             MenuGroup(items: [
               MenuItemData(
-                  l10n.privacyPolicy, Icons.verified_user_outlined, () {}),
+                l10n.privacyPolicy,
+                Icons.verified_user_outlined,
+                () => context.push('/privacy-policy'),
+              ),
               MenuItemData(l10n.appVersion, Icons.info_outline_rounded, () {},
                   trailingText: '1.0.2'),
             ]),
           ],
         ),
+      ),
+    );
+  }
+}
+
+Future<void> _saveLanguagePreference(
+  BuildContext context,
+  WidgetRef ref,
+  String languageCode,
+) async {
+  try {
+    await ref.read(appLocaleProvider.notifier).setLanguageCode(languageCode);
+  } catch (_) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context).languageSaveError),
       ),
     );
   }

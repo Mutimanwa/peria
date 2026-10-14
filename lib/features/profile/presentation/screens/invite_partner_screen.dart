@@ -16,8 +16,13 @@ class InvitePartnerScreen extends ConsumerStatefulWidget {
 }
 
 class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
-  final TextEditingController _email =
-      TextEditingController(text: 'Samrad@gmail.com');
+  final TextEditingController _email = TextEditingController();
+
+  @override
+  void dispose() {
+    _email.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +46,9 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           FieldLabel(l10n.partnerEmailAddress),
           TextField(
             controller: _email,
+            keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
+              hintText: l10n.emailAddressLabel,
               filled: true,
               fillColor: AppColors.grey100,
               border: OutlineInputBorder(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class CrampsReliefScreen extends StatelessWidget {
@@ -8,6 +9,7 @@ class CrampsReliefScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -18,10 +20,10 @@ class CrampsReliefScreen extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(24.0),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
                   child: Text(
-                    'Cramps Relief',
+                    l10n.selfCareGentleMovementTitle,
                     style: AppText.h3,
                   ),
                 ),
@@ -41,14 +43,14 @@ class CrampsReliefScreen extends StatelessWidget {
                             size: 80, color: AppColors.primary400),
                       ),
                       const SizedBox(height: 32),
-                      const Text(
-                        '7 simple exercises to relieve menstrual cramps.',
+                      Text(
+                        l10n.selfCareGentleMovementDescription,
                         style: AppText.body,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
                       PrimaryButton(
-                        label: 'Start Exercises',
+                        label: l10n.selfCareStartExercises,
                         onPressed: () =>
                             context.go('/self-care/activity-detail'),
                       ),

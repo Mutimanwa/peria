@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
@@ -28,6 +29,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
   }
 
   Future<void> _saveQuickEntry() async {
+    final l10n = AppLocalizations.of(context);
     final note = _quickLogController.text.trim();
     if (note.isEmpty) return;
     final now = DateTime.now();
@@ -47,7 +49,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
       _isQuickLogExpanded = false;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Quick thought saved 😌")),
+      SnackBar(content: Text(l10n.journalQuickThoughtSaved)),
     );
   }
 
@@ -71,7 +73,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 12),
                     children: [
-                      _buildDailyQuote(),
+                      _buildDailyQuote(l10n),
                       const SizedBox(height: 24),
                       _buildQuickLogComposer(l10n),
                       const SizedBox(height: 32),
@@ -80,7 +82,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                     ],
                   ),
                   loading: () => const JournalSkeleton(count: 3),
-                  error: (err, _) => Center(child: Text("Error: $err")),
+                  error: (err, _) => Center(child: Text(l10n.unableToLoadJournal)),
                 ),
               ),
             ],
@@ -93,7 +95,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
         onPressed: () => context.go('/journal/new'),
         backgroundColor: AppColors.grey900,
         icon: const Icon(Icons.edit_document, color: Colors.white),
-        label: const Text("New Entry",
+        label: Text(l10n.newEntry,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       )
@@ -127,7 +129,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
             ],
           ),
           Text(
-            DateFormat('EEEE, d MMMM').format(DateTime.now()),
+            DateFormat('EEEE, d MMMM', Localizations.localeOf(context).toString()).format(DateTime.now()),
             style: AppText.body.copyWith(color: AppColors.grey500),
           ),
         ],
@@ -135,7 +137,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
     );
   }
 
-  Widget _buildDailyQuote() {
+  Widget _buildDailyQuote(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -148,7 +150,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
           const Icon(Icons.format_quote, color: AppColors.primary500, size: 32),
           const SizedBox(height: 8),
           Text(
-            "“Every moment is a fresh beginning.”",
+            l10n.journalDailyQuote,
             style: AppText.h4.copyWith(
                 fontStyle: FontStyle.italic, color: AppColors.grey800),
           ),
@@ -163,7 +165,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
   Widget _buildQuickLogComposer(AppLocalizations l10n) {
     return Column(
       children: [
-        _buildJournalStats(),
+        _buildJournalStats(l10n),
         const SizedBox(height: 24),
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
@@ -185,13 +187,13 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
             children: [
               Row(
                 children: [
-                  const Text("Quick thought", style: AppText.h5),
+                  Text(l10n.journalQuickThought, style: AppText.h5),
                   const Spacer(),
                   if (!_isQuickLogExpanded)
                     TextButton(
                       onPressed: () =>
                           setState(() => _isQuickLogExpanded = true),
-                      child: const Text("Write"),
+                      child: Text(l10n.journalWrite),
                     ),
                 ],
               ),
@@ -222,7 +224,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                           color:  AppColors.grey500,
                         ),
                        const SizedBox( width: 2,),
-                        Text(m.label)
+                        Text(m.localizedLabel(l10n))
                           ],
                         )
                       ),
@@ -237,7 +239,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) => _saveQuickEntry(),
                   decoration: InputDecoration(
-                    hintText: "What's on your mind?",
+                    hintText: l10n.journalQuickThoughtHint,
                     border: InputBorder.none,
                     hintStyle: AppText.body.copyWith(color: AppColors.grey400),
                   ),
@@ -249,7 +251,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                     TextButton(
                       onPressed: () =>
                           setState(() => _isQuickLogExpanded = false),
-                      child: const Text("Cancel"),
+                      child: Text(l10n.cancel),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
@@ -259,14 +261,14 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
                       ),
-                      child: const Text("Save",
+                      child: Text(l10n.save,
                           style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
               ] else
                 Text(
-                  "Tap to capture a quick moment...",
+                  l10n.journalCaptureMoment,
                   style: AppText.body.copyWith(color: AppColors.grey400),
                 ),
             ],
@@ -276,13 +278,13 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
     );
   }
 
-  Widget _buildJournalStats() {
+  Widget _buildJournalStats(AppLocalizations l10n) {
     return Row(
       children: [
         Expanded(
           child: _StatCard(
-            label: "Streak",
-            value: "5 Days",
+            label: l10n.journalStreak,
+            value: l10n.journalStreakCount(5),
             icon: Icons.fireplace_rounded,
             color: Colors.orangeAccent,
             onTap: () => context.go('/journal/timeline'),
@@ -291,8 +293,8 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
         const SizedBox(width: 16),
         Expanded(
           child: _StatCard(
-            label: "Insights",
-            value: "Weekly",
+            label: l10n.journalInsights,
+            value: l10n.journalWeekly,
             icon: Icons.query_stats_rounded,
             color: AppColors.primary500,
             onTap: () => context.go('/journal/insights'),
@@ -309,7 +311,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Text("No entries yet",
+          child: Text(l10n.journalNoEntriesYet,
               style: AppText.body.copyWith(color: AppColors.grey400)),
         ),
       );
@@ -319,21 +321,24 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader(
-            "Recent entries", () => context.go('/journal/timeline')),
+            l10n.journalRecentEntries,
+            () => context.go('/journal/timeline'),
+            l10n,
+        ),
         const SizedBox(height: 12),
         ...recent.map((entry) => _SimpleJournalCard(entry: entry)),
       ],
     );
   }
 
-  Widget _buildSectionHeader(String title, VoidCallback onSeeAll) {
+  Widget _buildSectionHeader(String title, VoidCallback onSeeAll, AppLocalizations l10n) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(title, style: AppText.h4),
         TextButton(
           onPressed: onSeeAll,
-          child: const Text("See all"),
+          child: Text(l10n.journalSeeAll),
         ),
       ],
     );
@@ -386,6 +391,8 @@ class _SimpleJournalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final mood = Mood.fromId(entry.mood);
     return GestureDetector(
       onTap: () => context.go('/journal/detail/${entry.id}'),
@@ -413,13 +420,13 @@ class _SimpleJournalCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    entry.title.isNotEmpty ? entry.title : "Untitled note",
+                    entry.title.isNotEmpty ? entry.title : l10n.untitledNote,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppText.label.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    DateFormat('d MMMM • HH:mm').format(entry.updatedAt),
+                    DateFormat('d MMMM • HH:mm', locale).format(entry.updatedAt),
                     style: AppText.caption.copyWith(color: AppColors.grey500),
                   ),
                 ],

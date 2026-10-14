@@ -653,7 +653,7 @@ class _ArticleCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${article.readingTimeMinutes}min',
+                        l10n.educationReadingTime(article.readingTimeMinutes),
                         style: AppText.label.copyWith(
                           color: AppColors.grey600,
                           fontSize: 11,

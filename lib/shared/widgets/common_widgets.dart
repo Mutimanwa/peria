@@ -431,12 +431,10 @@ class SimplePage extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════
 class JournalMoodTone  {
   const JournalMoodTone({
-    required this.label,
     required this.accent,
     required this.softBackground,
   });
 
-  final String label;
   final Color accent;
   final Color softBackground;
 
@@ -444,31 +442,26 @@ class JournalMoodTone  {
     switch (mood) {
       case 'happy':
         return const JournalMoodTone(
-          label: 'Happy',
           accent: Color(0xFFB46900),
           softBackground: Color(0xFFFFF1D6),
         );
       case 'sad':
         return const JournalMoodTone(
-          label: 'Sad',
           accent: AppColors.info700,
           softBackground: AppColors.info50,
         );
       case 'anxious':
         return const JournalMoodTone(
-          label: 'Anxious',
           accent: AppColors.secondary600,
           softBackground: AppColors.secondary100,
         );
       case 'tired':
         return const JournalMoodTone(
-          label: 'Tired',
           accent: Color(0xFF8A6A43),
           softBackground: Color(0xFFF2E9DF),
         );
       default:
         return const JournalMoodTone(
-          label: 'Calm',
           accent: AppColors.primary500,
           softBackground: AppColors.primary50,
         );
@@ -516,7 +509,7 @@ class EmptyJournal extends StatelessWidget {
           Text(
             hasQuery
                 ? l10n.noMatchingNotes
-                : (_isToday(selectedDate) ? l10n.journalEmpty : 'No entry for this day'),
+                : (_isToday(selectedDate) ? l10n.journalEmpty : l10n.journalNoEntryForDay),
             textAlign: TextAlign.center,
             style: AppText.h5,
           ),
@@ -526,7 +519,7 @@ class EmptyJournal extends StatelessWidget {
                 ? l10n.tryAnotherKeyword
                 : (_isToday(selectedDate)
                     ? l10n.startFirstNote
-                    : 'Use quick log to capture this moment.'),
+                    : l10n.journalQuickLogPrompt),
             textAlign: TextAlign.center,
             style: AppText.body.copyWith(color: AppColors.grey600),
           ),

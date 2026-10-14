@@ -258,7 +258,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
             ],
           ),
           loading: () => const AccountSecuritySkeleton(),
-          error: (e, __) => Center(child: Text('Erreur: $e')),
+          error: (e, __) => Center(child: Text(l10n.unableToLoadSecuritySettings)),
         ),
       ),
     );

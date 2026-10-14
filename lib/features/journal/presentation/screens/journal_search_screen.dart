@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class JournalSearchScreen extends ConsumerStatefulWidget {
@@ -30,6 +32,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final entriesAsync = ref.watch(journalProvider);
 
     return Scaffold(
@@ -39,14 +42,14 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              _buildHeader(),
-              _buildFilterBar(),
+              _buildHeader(l10n),
+              _buildFilterBar(l10n),
               Expanded(
                 child: entriesAsync.when(
                   data: (entries) {
                     final filtered = _filterEntries(entries);
                     if (filtered.isEmpty) {
-                      return _buildEmptyState();
+                      return _buildEmptyState(l10n);
                     }
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(
@@ -58,7 +61,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
                   },
                   loading: () =>
                       const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Center(child: Text("Error: $e")),
+                  error: (e, _) => Center(child: Text(l10n.unableToLoadJournal)),
                 ),
               ),
             ],
@@ -68,7 +71,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Row(
@@ -89,8 +92,8 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
               child: TextField(
                 controller: _searchController,
                 onChanged: (_) => setState(() {}),
-                decoration: const InputDecoration(
-                  hintText: "Rechercher des notes...",
+                decoration: InputDecoration(
+                  hintText: l10n.searchJournalHint,
                   border: InputBorder.none,
                   icon: Icon(Icons.search, color: AppColors.grey400),
                 ),
@@ -102,26 +105,26 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
     );
   }
 
-  Widget _buildFilterBar() {
+  Widget _buildFilterBar(AppLocalizations l10n) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: Row(
         children: [
           _FilterChip(
-            label: "All Moods",
+            label: l10n.journalSearchAllMoods,
             isSelected: _selectedMood == 'all',
             onSelected: () => _showMoodPicker(),
           ),
           const SizedBox(width: 8),
           _FilterChip(
-            label: "Favorites",
+            label: l10n.journalFavorites,
             isSelected: _onlyFavorites,
             onSelected: () => setState(() => _onlyFavorites = !_onlyFavorites),
           ),
           const SizedBox(width: 8),
           _FilterChip(
-            label: _getDateRangeLabel(),
+            label: _getDateRangeLabel(l10n),
             isSelected: _dateRange != null,
             onSelected: () => _selectDateRange(),
           ),
@@ -130,11 +133,12 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
     );
   }
 
-  String _getDateRangeLabel() {
-    if (_dateRange == null) return "Date";
-    final start = DateFormat('d MMM').format(_dateRange!.start);
-    final end = DateFormat('d MMM').format(_dateRange!.end);
-    return "$start - $end";
+  String _getDateRangeLabel(AppLocalizations l10n) {
+    if (_dateRange == null) return l10n.journalDateFilter;
+    final locale = Localizations.localeOf(context).toString();
+    final start = DateFormat.MMMd(locale).format(_dateRange!.start);
+    final end = DateFormat.MMMd(locale).format(_dateRange!.end);
+    return '$start - $end';
   }
 
   List<JournalEntry> _filterEntries(List<JournalEntry> entries) {
@@ -152,7 +156,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
     }).toList();
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(AppLocalizations l10n) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +164,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
           const Icon(Icons.search_off_rounded,
               size: 64, color: AppColors.grey200),
           const SizedBox(height: 16),
-          Text("No results found",
+          Text(l10n.journalSearchNoResults,
               style: AppText.h5.copyWith(color: AppColors.grey400)),
         ],
       ),
@@ -168,6 +172,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
   }
 
   Future<void> _showMoodPicker() async {
+    final l10n = AppLocalizations.of(context);
     final result = await showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -177,19 +182,19 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Filter by Mood", style: AppText.h4),
+            Text(l10n.journalFilterByMood, style: AppText.h4),
             const SizedBox(height: 24),
             Wrap(
               spacing: 12,
               runSpacing: 12,
               children: [
                 _MoodPickerItem(
-                    label: "All",
+                    label: l10n.journalAllFilter,
                     icon: Icons.bubble_chart_rounded,
                     isSelected: _selectedMood == 'all',
                     onTap: () => Navigator.pop(context, 'all')),
                 ...Mood.all.map((m) => _MoodPickerItem(
-                      label: m.label,
+                      label: m.localizedLabel(l10n),
                       icon: m.icon,
                       isSelected: _selectedMood == m.id,
                       onTap: () => Navigator.pop(context, m.id),
@@ -204,14 +209,15 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
   }
 
   Future<void> _selectDateRange() async {
+    final l10n = AppLocalizations.of(context);
     final picked = await showDateRangePicker(
       context: context,
       initialDateRange: _dateRange,
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      confirmText: "SELECT",
-      saveText: "SAVE",
-      helpText: "SELECT RANGE",
+      confirmText: l10n.ok,
+      saveText: l10n.save,
+      helpText: l10n.selectDateRange,
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: const ColorScheme.light(
@@ -330,6 +336,8 @@ class _SearchResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final mood = Mood.fromId(entry.mood);
     return GestureDetector(
       onTap: () => context.go('/journal/detail/${entry.id}'),
@@ -357,11 +365,11 @@ class _SearchResultCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    entry.title.isNotEmpty ? entry.title : "Untitled",
+                    entry.title.isNotEmpty ? entry.title : l10n.untitledNote,
                     style: AppText.label.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    DateFormat('d MMM • HH:mm').format(entry.createdAt),
+                    DateFormat('d MMM • HH:mm', locale).format(entry.createdAt),
                     style: AppText.caption.copyWith(color: AppColors.grey400),
                   ),
                 ],

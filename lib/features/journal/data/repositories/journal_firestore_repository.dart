@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:peria_app/core/repositories/user_repository.dart';
+import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 import 'package:peria_app/core/storage/hive_boxes.dart';
 import 'package:peria_app/core/storage/journal_sync_preferences.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
@@ -82,6 +83,7 @@ class JournalFirestoreRepository {
 
   /// Saves local consent for the currently signed-in account.
   Future<void> enableCloudSync() async {
+    PrivacyPolicyConsentService.requireCurrentPolicyAcceptance();
     final userId = _userRepository.currentUid;
     await _syncPreferences.enable(userId: userId);
   }
@@ -113,6 +115,7 @@ class JournalFirestoreRepository {
   }
 
   Future<List<JournalEntry>> _performCloudSync(String userId) async {
+    PrivacyPolicyConsentService.requireCurrentPolicyAcceptance();
     await initHive();
     if (!await _hasCloudConsent(userId)) {
       throw StateError('Journal cloud sync has not been enabled for this account.');

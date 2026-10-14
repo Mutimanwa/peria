@@ -655,6 +655,41 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+  String get navCycle;
+  String get navEducation;
+  String get navJournal;
+
+  /// No description provided for @notificationGenericTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Peria'**
+  String get notificationGenericTitle;
+
+  /// No description provided for @notificationGenericBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A gentle reminder is waiting.'**
+  String get notificationGenericBody;
+  String get notificationChannelName;
+  String get notificationChannelDescription;
+
+  /// No description provided for @notificationPrivacyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications use neutral wording to keep cycle details private on your lock screen.'**
+  String get notificationPrivacyDescription;
+
+  /// No description provided for @notificationScheduleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, cycle reminders are planned for 9:00 and the daily symptoms and journal check-in for 20:00.'**
+  String get notificationScheduleDescription;
+
+  /// No description provided for @notificationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications could not be enabled. Check notification permission in your device settings, then try again.'**
+  String get notificationPermissionDenied;
 
   /// No description provided for @notificationGenericTitle.
   ///
@@ -1123,6 +1158,10 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
+  String get language;
+  String get languageEnglish;
+  String get languageFrench;
+  String get languageSaveError;
 
   /// No description provided for @theme.
   ///
@@ -1783,6 +1822,10 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Relief and wellbeing'**
   String get educationAxisSolutionsWellbeing;
+  String get educationHealthNoticeTitle;
+  String get educationHealthNoticeBody;
+  String get educationMovementNoticeTitle;
+  String get educationMovementNoticeBody;
 
   /// No description provided for @todayLabel.
   ///
@@ -1831,6 +1874,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yoga tips'**
   String get articleYogaTips;
+
+  String get logPeriodButton;
+  String get logPeriodSheetTitle;
+  String get logPeriodSheetSubtitle;
+  String get periodStartedToday;
+  String get periodStartedTodaySubtitle;
+  String get addTodayPeriodDay;
+  String get addTodayPeriodDaySubtitle;
+  String get periodEndedToday;
+  String get periodEndedTodaySubtitle;
+  String get openStructuredPeriodEdit;
+  String get periodLogLoading;
+  String get periodLogSaving;
+  String get periodLogLoadError;
+  String get periodLogAlreadyLoggedToday;
+  String get periodLogNoRecentToEnd;
+  String get periodLogSaveError;
+  String get update;
+  String get calendarTitle;
+  String get calendarNoCycleData;
+  String get calendarNoCyclePredictionAvailable;
+  String get calendarOverdue;
+  String get calendarExpectedNotLogged;
+  String get calendarLoggedPeriodDay;
+  String get calendarLoggedPeriodDescription;
+  String get calendarPredictedPeriodDay;
+  String get calendarPredictedPeriodDescription;
+  String get calendarFertilityWindow;
+  String get calendarFertilityWindowDescription;
+  String get calendarPmsDay;
+  String get calendarPmsDayDescription;
+  String get calendarSelectedDay;
+  String get calendarRegularDay;
+  String get calendarNoTrackedCycleEvent;
+  String get calendarMonthlyOverview;
+  String get calendarMonthlyOverviewHelp;
+  String get calendarQuickCapture;
+  String get calendarQuickCaptureHelp;
+  String get calendarDateRangeHelp;
+  String get calendarEditTitle;
+  String get calendarStructuredEditTitle;
+  String get calendarStartDateSelected;
+  String get calendarPeriodRangeReady;
+  String get calendarSelectRangeInstruction;
+  String get calendarChooseLastDay;
+  String get calendarCorrectionHelp;
+  String get calendarSavedPeriod;
+  String get calendarPredictedPeriodLegend;
+  String get calendarSaveStartDate;
+  String get calendarSavePeriodRange;
+  String get calendarLegendPmsDay;
+  String get calendarLegendLoggedPeriod;
+  String get calendarLegendPredictedPeriod;
+  String get calendarLegendFertilityWindow;
+  String get calendarLegendSymptoms;
+  String get calendarLegendJournal;
+  String get calendarLegendToday;
+
+  String get goalTrackPeriod;
+  String get goalUnderstandBody;
+  String get goalTrackOvulation;
+  String get goalHealthInsights;
+  String get goalShareDoctor;
+  String get goalAiGuidance;
+
+  String get editProfile;
+  String get myGoal;
+  String get noGoalsSelected;
+  String get goalsSelected;
+  String get helpSearchHint;
+  String get helpContactUs;
+  String get helpFaqLogQuestion;
+  String get helpFaqLogAnswer;
+  String get helpFaqDataQuestion;
+  String get helpFaqDataAnswer;
+  String get helpFaqPartnerQuestion;
+  String get helpFaqPartnerAnswer;
+  String get helpFaqNotificationsQuestion;
+  String get helpFaqNotificationsAnswer;
+  String get helpFaqDeleteQuestion;
+  String get helpFaqDeleteAnswer;
+  String get helpFaqSupportQuestion;
+  String get helpFaqSupportAnswer;
+
 }
 
 class _AppLocalizationsDelegate
@@ -1864,4 +1991,220 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       'an issue with the localizations generation tool. Please file an issue '
       'on GitHub with a reproducible sample app and the gen-l10n configuration '
       'that was used.');
+  String get securityIncorrectPin;
+  String get securityAuthenticationSuccess;
+  String get securityPinRequired;
+  String get securityAuthenticationError;
+  String get securitySkipDevelopmentOnly;
+  String get securityRetry;
+  String securityLockedFor(int minutes, int seconds);
+  String get journalNoEntryForDay;
+  String get journalQuickLogPrompt;
+  String get moodCalm;
+  String get moodHappy;
+  String get moodExcited;
+  String get moodAnxious;
+  String get moodSad;
+  String get moodTired;
+
+  String get journalDeleteMemoryTitle;
+  String get journalDeleteMemoryBody;
+  String get journalTimeline;
+  String get journalSearchAllMoods;
+  String get journalFavorites;
+  String get journalDateFilter;
+  String get journalSearchNoResults;
+  String get journalFilterByMood;
+  String get journalAllFilter;
+  String get journalCurrentStreak;
+  String get journalMoodDistribution;
+  String get journalWeeklyActivity;
+  String get journalTopTags;
+  String get journalInsightsNotEnoughData;
+  String get journalQuickThought;
+  String get journalWrite;
+  String get journalQuickThoughtHint;
+  String get journalCaptureMoment;
+  String get journalQuickThoughtSaved;
+  String get journalStreak;
+  String get journalInsights;
+  String get journalWeekly;
+  String get journalRecentEntries;
+  String get journalSeeAll;
+  String get journalNoEntriesYet;
+  String get journalPhotoGallery;
+  String get journalTakePhoto;
+  String get journalImageAdded;
+  String get journalAudioComingSoon;
+  String get journalMoodQuestion;
+  String journalNoteCount(int count);
+  String journalStreakCount(int count);
+
+  String get selectDateRange;
+
+  String get journalEditAction;
+  String get journalQuietMoment;
+  String get journalLockedTitle;
+  String get journalLockedDescription;
+  String get journalUseBiometrics;
+  String get journalUnlockReason;
+  String get securityBiometricFailed;
+
+  String get journalSaveError;
+  String get journalDailyQuote;
+
+  String educationReadingTime(int minutes);
+
+  String get selfCarePrompt;
+  String get selfCareFilterAll;
+  String get selfCareFilterCramps;
+  String get selfCareFilterStrength;
+  String get selfCareFilterFacial;
+  String get selfCareCategoryCramps;
+  String get selfCareCategoryStrength;
+  String get selfCareCategoryFacial;
+  String get selfCareCategoryStretching;
+  String get selfCareCategoryArticles;
+  String get selfCareBadgeGetStarted;
+  String get selfCareCardBalance;
+  String get selfCareCardFocus;
+  String get selfCareCardStrength;
+  String get selfCareCardFlexibility;
+  String get selfCareCardGentleFacialMassage;
+  String get selfCareCardGlowSkin;
+  String get selfCareCardNeckPainRelief;
+  String get selfCareCardLowerBackStretch;
+  String get selfCareCardPeriodPainRelief;
+  String get selfCareSubtitleGentleYoga;
+  String get selfCareSubtitleBreathingRelease;
+  String get selfCareSubtitleMobilityComfort;
+  String get selfCareSubtitleLiftSculpt;
+  String get selfCareSubtitleCleanseHydrate;
+  String get selfCareSubtitleReleaseUpperBody;
+  String get selfCareSubtitleSlowRestorative;
+  String get selfCareDeepSleepMeditation;
+  String get selfCarePlay;
+  String get selfCareNeedYogaPillow;
+  String get selfCareNeedWaterBottle;
+  String get selfCareNeedYogaMat;
+  String get selfCareStepChinToChest;
+  String get selfCareStepReclineReset;
+  String get selfCareStepSupportedPigeon;
+  String get selfCareStepButterflyFold;
+  String get selfCareStepLotusLift;
+  String get selfCareStepLegsUpWall;
+  String get selfCareStepNeckLift;
+  String get selfCareStepGuaShaMassage;
+  String get selfCareStepFacialCleansing;
+  String get selfCareStepGlowPress;
+  String get selfCareStepHydrationLock;
+  String get selfCareSubtitleChinUpward;
+  String get selfCareSubtitleSweepOutward;
+  String get selfCareSubtitleGentlyCleanse;
+  String get selfCareSubtitleLightCircular;
+  String get selfCareSubtitleSealMoisture;
+  String get selfCareSleepTrackCalmFlow;
+  String get selfCareSleepTrackBreathOfLife;
+  String get selfCareSleepTrackSoulDrift;
+  String get selfCareSleepTrackSoundsSerenity;
+  String get selfCareSleepTrackInnerPeace;
+  String get selfCareSleepTrackMindfulJourney;
+  String get selfCareSleepTrackWhisperingNature;
+  String get selfCareSleepTrackNaturesRhythm;
+  String get selfCareSleepTrackGoldenDawn;
+  String get selfCareSleepTrackHarmonyWithin;
+  String get selfCareSleepTrackBreatheInSilence;
+  String get selfCareSleepTrackDeepRestSession;
+  String get selfCareAlignMindBody;
+  String get selfCareActivityDescription;
+  String get selfCareYouWillNeed;
+  String get selfCareStart;
+  String get selfCareExerciseJumpingJacks;
+  String get selfCareFullBodyCardio;
+  String get selfCareWait;
+  String get selfCareQuit;
+  String get selfCareKeepGoing;
+  String get selfCareStartExercises;
+  String get selfCareGentleMovementTitle;
+  String get selfCareGentleMovementDescription;
+  String get selfCareCongratulations;
+  String get selfCareCongratulationsMessage;
+  String get selfCareBackHome;
+  String get selfCareArticleTitle;
+  String get selfCareArticleLead;
+  String get selfCareArticleComfortHeading;
+  String get selfCareArticleWarmCompress;
+  String get selfCareArticleRest;
+  String get selfCareArticleVaries;
+  String get selfCareArticleMedicineHeading;
+  String get selfCareArticleMedicineRisks;
+  String get selfCareArticlePharmacist;
+  String get selfCareArticleFollowLabel;
+  String get selfCareArticleSeekHelpHeading;
+  String get selfCareArticleDailyLife;
+  String get selfCareArticleUrgent;
+  String get selfCareArticleEncouragement;
+  String get selfCareAddComment;
+  String get selfCareFeedbackThanks;
+  String get selfCareFeedbackReceived;
+  String get selfCareOk;
+  String get selfCareSleepMeditationTitle;
+  String get selfCareRelax;
+  String get selfCarePeaceRelaxation;
+  String get selfCareTimes;
+  String get selfCarePrevious;
+  String get selfCareNext;
+  String selfCareMinutes(int minutes);
+  String selfCareRound(int round);
+  String selfCareOnlyMinutesLeft(int minutes);
+  String selfCareLowImpactExercises(int count);
+  String selfCareMinutesRead(int minutes);
+  String selfCareArticleReadTime(int minutes);
+
+  String get cyclePhasePeriod;
+  String get cyclePhaseLuteal;
+  String get cyclePhaseOvulation;
+  String get cyclePhaseFollicular;
+  String get authPasswordResetSuccess;
+  String get authPasswordResetSuccessMessage;
+  String get aiChatCheckingIn;
+  String get aiChatPmsQuestion;
+  String get aiChatCrampsOrAches;
+  String get aiChatPhaseVariation;
+  String get aiChatFocusQuestion;
+  String get aiChatYesALot;
+  String get aiChatGentleSuggestions;
+  String get aiSuggestionDrinkWater;
+  String get aiSuggestionMoveGently;
+  String get aiSuggestionTakePause;
+  String get aiChatLearnMore;
+  String get aiChatImCurious;
+  String get aiChatArticlePrompt;
+  String get aiChatIReadIt;
+  String get aiChatSymptomsPrompt;
+  String get aiChatSymptomsConfirmed;
+  String get aiChatSetSymptomsTitle;
+  String get aiChatOpenSymptoms;
+  String get aiChatArticleTitle;
+  String get aiChatArticleSubtitle;
+  String get aiChatArticleDescription;
+  String get aiChatReadNow;
+  String get aiChatAfterPmsSupport;
+  String get aiChatCalendarPmsDoctor;
+  String get aiChatSuggestDate;
+  String get aiChatAssistantLabel;
+  String get aiChatPmsConflict;
+  String get aiChatDoctorVisitConflict;
+  String get aiChatAskAnything;
+  String get appointmentConfirmed;
+  String appointmentBooked(String doctor);
+  String appointmentReviewCount(int count);
+  String get appointmentGynecologist;
+  String get appointmentGynOncologyFocus;
+  String get appointmentVideoConsultation;
+  String get appointmentDoneBackToChat;
+  String get aiChatSymptomCramps;
+  String get aiChatSymptomHeadache;
+  String get periodLogSheetTitle;
+  String get periodLogSheetSubtitle;
 }

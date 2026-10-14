@@ -42,3 +42,27 @@ Afin d'assurer le fonctionnement hors ligne et la sécurité :
 
 La sécurité repose sur `SecurityService` (bas niveau) et `SecurityNotifier` (état partagé via Riverpod).
 La stratégie "Multitask protection" masque l'écran dans l'App Switcher. Une protection de force brute désactive l'authentification PIN pour plusieurs minutes en cas de tentatives abusives.
+
+## 6. Données du cycle : source de vérité
+
+Les informations de cycle suivent un seul flux :
+
+1. **Entrées** : `periodLogsProvider` fournit les règles réellement enregistrées. `userProfileProvider` fournit les paramètres saisis (durée moyenne du cycle, durée des règles et dernière date connue) ; ces paramètres servent de repli quand aucun journal de règles n’existe, pas de second calcul de prédiction.
+2. **Calcul métier** : `CycleEngine` est le moteur pur des phases, dates et fenêtres prédites. Pour une date historique, il n’ancre le calcul que sur les journaux commencés à cette date ou avant ; les journaux futurs ne déplacent pas l’ancre.
+3. **État dérivé canonique** : `cycleStatusForDateProvider(date)` est le point d’accès pour une date ; `cycleStatusProvider` est son alias pour aujourd’hui. Les providers de phase, d’ovulation, de fenêtre fertile, de règles, de confiance et de retard dérivent de ces statuts.
+4. **Vue journalière pour le calendrier** : `cycleDayInfoProvider(date)` réunit le statut calculé et le journal réel. Un jour enregistré a priorité sur un jour prédit et les deux restent distinguables dans l’interface.
+
+### Écrans et services consommateurs
+
+| Écran / service | Données à lire | Règle d’architecture |
+| --- | --- | --- |
+| `CycleHomeScreen` | `cycleStatusProvider` | Phase, jour, compte à rebours et progression viennent du même statut, y compris `cycleLengthDays` ; ne pas recalculer la longueur à partir du profil dans l’écran. |
+| `CalendarScreen` | `cycleDayInfoProvider(date)` | Marqueurs et détail du jour utilisent la même classification ; les règles enregistrées sont libellées comme telles, séparément des prédictions. |
+| `EditCalendarScreen` | `cycleDayInfoProvider(date)` pour l’affichage ; `periodLogsProvider` pour enregistrer une correction | Les jours réels et prédits ont une présentation distincte. La saisie modifie le journal, elle ne recalcule pas les prédictions dans l’écran. |
+| Éducation (`education_provider.dart`) | `cycleStatusProvider`, `symptomLogsProvider`, `journalProvider` | `EducationContextService` transforme localement la phase, les tags de symptômes et l’humeur du journal en tags; les suggestions filtrent le catalogue statique sur l’appareil. Le module Éducation n’envoie pas le texte du journal à un service de recommandation. |
+| Notifications locales (`local_notification_provider.dart`) | `cycleStatusProvider` | Les rappels sont dérivés du statut courant ; ils ne possèdent pas de formule de cycle parallèle. |
+| Statistiques et providers dérivés | `cycleStatisticsProvider`, `cyclePredictionForDateProvider` et providers spécialisés | Les statistiques agrégées passent par `CycleEngine.computeStatistics`; un consommateur réutilise ces providers au lieu de recalculer des moyennes, phases ou dates dans un écran. |
+
+Pour éviter les calculs parallèles dans l’interface, la progression utilise `status.cycleLengthDays`. `cycleStatisticsProvider` expose, lui, les agrégats historiques calculés sur tous les intervalles ; la prédiction de statut utilise les six journaux les plus récents au maximum. Ces deux fenêtres ont des objectifs différents et doivent être présentées comme telles.
+
+Les écrans de profil et de paramètres qui modifient les préférences de cycle sont des **sources d’entrées**, pas des sources de prédictions. Tout nouvel écran affichant des informations de cycle doit consommer les providers ci-dessus ; il ne doit pas appeler directement `CycleEngine` ni calculer ses propres dates, phases ou longueurs.

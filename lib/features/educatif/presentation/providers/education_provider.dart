@@ -1,7 +1,10 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:peria_app/core/services/app_locale_provider.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/data/localization/education_article_translations.dart';
 import 'package:peria_app/features/educatif/data/repositories/education_content_repository.dart';
 import 'package:peria_app/features/educatif/domain/education_context_service.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
@@ -11,27 +14,58 @@ final educationContentRepositoryProvider =
   return const EducationContentRepository();
 });
 
+final educationLanguageCodeProvider = Provider<String>((ref) {
+  final selectedLocale = ref.watch(appLocaleProvider);
+  final deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
+  final languageCode = (selectedLocale ?? deviceLocale).languageCode;
+  return languageCode == 'fr' ? 'fr' : 'en';
+});
+
 final allEducationArticlesProvider = Provider<List<EducationArticle>>((ref) {
-  return ref.watch(educationContentRepositoryProvider).getAllArticles();
+  final languageCode = ref.watch(educationLanguageCodeProvider);
+  return ref
+      .watch(educationContentRepositoryProvider)
+      .getAllArticles()
+      .map((article) => article.localizedFor(languageCode))
+      .toList(growable: false);
 });
 
 final educationCategoriesProvider = Provider<List<EducationCategory>>((ref) {
-  return ref.watch(educationContentRepositoryProvider).getAllCategories();
+  final articles = ref.watch(allEducationArticlesProvider);
+  return EducationAxis.values
+      .map(
+        (axis) => EducationCategory(
+          axis: axis,
+          articles: articles.where((article) => article.axis == axis).toList(),
+        ),
+      )
+      .toList(growable: false);
 });
 
 final educationArticlesByAxisProvider =
     Provider.family<List<EducationArticle>, EducationAxis>((ref, axis) {
-  return ref.watch(educationContentRepositoryProvider).getArticlesByAxis(axis);
+  return ref
+      .watch(allEducationArticlesProvider)
+      .where((article) => article.axis == axis)
+      .toList(growable: false);
 });
 
 final educationArticleProvider =
     Provider.family<EducationArticle?, String>((ref, id) {
-  return ref.watch(educationContentRepositoryProvider).getArticleById(id);
+  for (final article in ref.watch(allEducationArticlesProvider)) {
+    if (article.id == id) return article;
+  }
+  return null;
 });
 
 final educationArticlesByTagProvider =
     Provider.family<List<EducationArticle>, String>((ref, tag) {
-  return ref.watch(educationContentRepositoryProvider).searchByTag(tag);
+  final languageCode = ref.watch(educationLanguageCodeProvider);
+  return ref
+      .watch(educationContentRepositoryProvider)
+      .searchByTag(tag)
+      .map((article) => article.localizedFor(languageCode))
+      .toList(growable: false);
 });
 
 class EducationSearchNotifier extends StateNotifier<String> {
@@ -84,9 +118,8 @@ final selectedEducationAxisProvider =
 final filteredArticlesByAxisProvider = Provider<List<EducationArticle>>((ref) {
   final selectedAxis = ref.watch(selectedEducationAxisProvider);
   final query = ref.watch(educationSearchProvider);
-  final articlesByAxis = ref
-      .watch(educationContentRepositoryProvider)
-      .getArticlesByAxis(selectedAxis);
+  final articlesByAxis =
+      ref.watch(educationArticlesByAxisProvider(selectedAxis));
 
   if (query.isEmpty) {
     return articlesByAxis;
@@ -135,7 +168,7 @@ final readingTimeByAxisProvider =
 
 final contextualArticleSuggestionsProvider =
     Provider.family<List<EducationArticle>, String>((ref, contextTag) {
-  return ref.watch(educationContentRepositoryProvider).searchByTag(contextTag);
+  return ref.watch(educationArticlesByTagProvider(contextTag));
 });
 
 final educationContextTagsProvider = Provider<List<String>>((ref) {
@@ -155,10 +188,12 @@ final personalizedEducationSuggestionsProvider =
   final seen = <String>{};
   final suggestions = <EducationArticle>[];
   final repository = ref.watch(educationContentRepositoryProvider);
+  final languageCode = ref.watch(educationLanguageCodeProvider);
 
   for (final tag in tags) {
     final matches = repository.searchByTag(tag);
-    for (final article in matches) {
+    for (final sourceArticle in matches) {
+      final article = sourceArticle.localizedFor(languageCode);
       if (seen.add(article.id)) {
         suggestions.add(article);
       }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 
 /// Central access point for user-scoped Firestore data.
 ///
@@ -58,6 +59,7 @@ class UserRepository {
   Future<void> ensureUserDocument({
     Map<String, dynamic> additionalData = const {},
   }) async {
+    PrivacyPolicyConsentService.requireCurrentPolicyAcceptance();
     final user = currentUser;
     if (user == null) {
       _log('ensureUserDocument failed because currentUser is null');

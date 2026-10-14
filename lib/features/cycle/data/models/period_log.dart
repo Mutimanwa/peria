@@ -50,8 +50,10 @@ class PeriodLog {
     final otherStart = _normalizeDay(other.startDate);
     final otherEnd = _normalizeDay(other.endDate);
 
-    final extendedStart = otherStart.subtract(const Duration(days: 1));
-    final extendedEnd = otherEnd.add(const Duration(days: 1));
+    final extendedStart =
+        DateTime(otherStart.year, otherStart.month, otherStart.day - 1);
+    final extendedEnd =
+        DateTime(otherEnd.year, otherEnd.month, otherEnd.day + 1);
     return !normalizedStart.isAfter(extendedEnd) && !normalizedEnd.isBefore(extendedStart);
   }
 

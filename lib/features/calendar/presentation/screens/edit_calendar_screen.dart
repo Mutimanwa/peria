@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/core/theme/app_typography.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class EditCalendarScreen extends ConsumerStatefulWidget {
@@ -18,30 +20,6 @@ class EditCalendarScreen extends ConsumerStatefulWidget {
 class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
-
-  static const List<String> _monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  static const List<String> _weekDays = [
-    'mo',
-    'tu',
-    'we',
-    'th',
-    'fr',
-    'sa',
-    'su'
-  ];
 
   void _selectDay(DateTime day) {
     setState(() {
@@ -74,57 +52,38 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
-  DateTime _normalizeDay(DateTime d) => DateTime(d.year, d.month, d.day);
-
-  bool _isDayInStatus(DateTime day, List<DateTime> days) {
-    final normalized = _normalizeDay(day);
-    return days.any((d) => _normalizeDay(d) == normalized);
-  }
-
-  bool _isOldLogDay(DateTime day) {
-    final logs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
-    return logs.any((log) => log.contains(day));
-  }
-
-  bool _isPredictedPeriodDay(DateTime day) {
-    final status = ref.watch(cycleStatusForDateProvider(day));
-    return status != null && _isDayInStatus(day, status.periodDays);
-  }
-
   bool get _canSave => _startDate != null;
 
-  String _formatDate(DateTime date) {
-    return '${_monthNames[date.month - 1]} ${date.day}';
+  String _formatDate(DateTime date, String locale) =>
+      DateFormat.MMMd(locale).format(date);
+
+  String _selectionTitle(AppLocalizations l10n) {
+    if (_startDate == null) return l10n.calendarStructuredEditTitle;
+    if (_endDate == null) return l10n.calendarStartDateSelected;
+    return l10n.calendarPeriodRangeReady;
   }
 
-  String get _selectionTitle {
+  String _selectionSubtitle(AppLocalizations l10n, String locale) {
     final start = _startDate;
-    if (start == null) return 'Structured period edit';
-    final end = _endDate;
-    if (end == null) return 'Start date selected';
-    return 'Period range ready';
-  }
-
-  String get _selectionSubtitle {
-    final start = _startDate;
-    if (start == null) {
-      return 'Use this screen to define or correct an exact period range.';
-    }
+    if (start == null) return l10n.calendarSelectRangeInstruction;
     final end = _endDate;
     if (end == null) {
-      return '${_formatDate(start)} selected. Now choose the last day for this structured edit.';
+      return '${_formatDate(start, locale)} • ${l10n.calendarChooseLastDay}';
     }
     final duration = end.difference(start).inDays + 1;
-    return '${_formatDate(start)} - ${_formatDate(end)} • $duration days';
+    return '${_formatDate(start, locale)} – ${_formatDate(end, locale)} • '
+        '${l10n.daysCount(duration)}';
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     return PageScaffold(
       showBack: true,
       onBack: () => safeRouterBack(context, fallbackRoute: '/calendar'),
       showTitle: true,
-      title: 'Edit Calendar',
+      title: l10n.calendarEditTitle,
       child: Padding(
         padding: const EdgeInsets.only(top: 80, bottom: 20),
         child: Container(
@@ -175,7 +134,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _selectionTitle,
+                              _selectionTitle(l10n),
                               style: AppText.label.copyWith(
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.grey900,
@@ -183,7 +142,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              _selectionSubtitle,
+                              _selectionSubtitle(l10n, locale),
                               style: AppText.body.copyWith(
                                 color: AppColors.grey600,
                               ),
@@ -205,9 +164,31 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppColors.grey200),
                   ),
-                  child: Text(
-                    'This screen is for precise corrections. For quick daily updates, use Log Period from the calendar overview.',
-                    style: AppText.caption.copyWith(color: AppColors.grey600),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.calendarCorrectionHelp,
+                        style: AppText.caption.copyWith(color: AppColors.grey600),
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 14,
+                        runSpacing: 8,
+                        children: [
+                          _buildLegendItem(
+                            l10n.calendarSavedPeriod,
+                            AppColors.grey100,
+                            AppColors.grey200,
+                          ),
+                          _buildLegendItem(
+                            l10n.calendarPredictedPeriodLegend,
+                            AppColors.primary.withOpacity(0.16),
+                            Colors.transparent,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -227,7 +208,9 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: PrimaryButton(
-                  label: _endDate == null ? 'Save start date' : 'Save period range',
+                  label: _endDate == null
+                      ? l10n.calendarSaveStartDate
+                      : l10n.calendarSavePeriodRange,
                   onPressed: _canSave
                       ? () {
                           final start = _startDate!;
@@ -265,7 +248,30 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
     );
   }
 
+  Widget _buildLegendItem(String label, Color color, Color borderColor) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: borderColor),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: AppTypography.captionSmall.copyWith(color: AppColors.grey700),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMonthSection(DateTime monthDate) {
+    final locale = Localizations.localeOf(context).toString();
     final firstDay = DateTime(monthDate.year, monthDate.month, 1);
     final lastDay = DateTime(monthDate.year, monthDate.month + 1, 0);
     int startOffset = firstDay.weekday - 1;
@@ -275,18 +281,21 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('${_monthNames[monthDate.month - 1]} ${monthDate.year}',
-              style: AppText.h4),
+          Text(DateFormat.yMMMM(locale).format(monthDate), style: AppText.h4),
           const SizedBox(height: 16),
           Row(
-            children: _weekDays
-                .map((d) => Expanded(
-                      child: Text(d,
-                          style: AppTypography.captionSmall
-                              .copyWith(color: AppColors.grey400),
-                          textAlign: TextAlign.center),
-                    ))
-                .toList(),
+            children: List.generate(7, (index) {
+              final weekday = DateTime(2024, 1, 1 + index);
+              final label = DateFormat.E(locale).format(weekday).replaceAll('.', '');
+              return Expanded(
+                child: Text(
+                  label,
+                  style: AppTypography.captionSmall
+                      .copyWith(color: AppColors.grey400),
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }),
           ),
           const SizedBox(height: 8),
           _buildCalendarGrid(firstDay, lastDay, startOffset, monthDate),
@@ -328,16 +337,18 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
 
         final selected = _isSelected(day);
         final edge = _isRangeEdge(day);
+        final cycleDay = ref.watch(cycleDayInfoProvider(day));
+        final isPredictedPeriod =
+            !selected && cycleDay.isPredictedPeriod;
 
-        final isGhost = !selected && (_isPredictedPeriodDay(day) || _isOldLogDay(day));
         return GestureDetector(
           onTap: () => _selectDay(day),
           child: _DayCell(
             day: day,
             selected: selected,
             isEdge: edge,
-            ghost: isGhost,
-            oldLog: _isOldLogDay(day),
+            predictedPeriod: isPredictedPeriod,
+            savedPeriod: cycleDay.isLoggedPeriod,
           ),
         );
       },
@@ -349,15 +360,15 @@ class _DayCell extends StatelessWidget {
   final DateTime day;
   final bool selected;
   final bool isEdge;
-  final bool ghost;
-  final bool oldLog;
+  final bool predictedPeriod;
+  final bool savedPeriod;
 
   const _DayCell({
     required this.day,
     required this.selected,
     required this.isEdge,
-    this.ghost = false,
-    this.oldLog = false,
+    this.predictedPeriod = false,
+    this.savedPeriod = false,
   });
 
   @override
@@ -374,11 +385,11 @@ class _DayCell extends StatelessWidget {
       bg = AppColors.primary100;
       textColor = AppColors.primary;
       borderColor = AppColors.primary100;
-    } else if (ghost) {
+    } else if (predictedPeriod) {
       bg = AppColors.primary.withOpacity(0.16);
       textColor = AppColors.primary;
       borderColor = Colors.transparent;
-    } else if (oldLog) {
+    } else if (savedPeriod) {
       bg = AppColors.grey100;
       textColor = AppColors.grey700;
       borderColor = AppColors.grey200;

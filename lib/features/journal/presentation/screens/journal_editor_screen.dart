@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
@@ -59,6 +60,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   }
 
   Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
     final cleanTitle = _titleController.text.trim();
     final cleanContent = _contentController.text.trim();
 
@@ -96,7 +98,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
       // Sécurité en cas d'échec de la base de données locale
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erreur lors de l'enregistrement : $e")),
+          SnackBar(content: Text(l10n.journalSaveError)),
         );
       }
     } finally {
@@ -112,12 +114,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
     
     // Fallback automatique si la locale 'fr' n'est pas encore chargée globalement
     final entryDate = _existing?.createdAt ?? DateTime.now();
-    String dateStr;
-    try {
-      dateStr = DateFormat('d MMM yyyy', 'fr').format(entryDate);
-    } catch (_) {
-      dateStr = DateFormat('d MMM yyyy').format(entryDate);
-    }
+    final locale = Localizations.localeOf(context).toString();
+    final dateStr = DateFormat('d MMM yyyy', locale).format(entryDate);
     final timeStr = DateFormat('HH:mm').format(entryDate);
 
     return PageScaffold(
@@ -296,6 +294,7 @@ Widget _buildBottomToolbar() {
 
   // Action Image : Ouvre la galerie du téléphone
 Future<void> _insertImage() async {
+    final l10n = AppLocalizations.of(context);
     final ImagePicker picker = ImagePicker();
     
     // On propose le choix de la source à l'utilisatrice
@@ -318,7 +317,7 @@ Future<void> _insertImage() async {
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.photo_library_outlined, color: AppColors.primary500),
-              title: const Text("Choisir depuis la galerie"),
+              title: Text(l10n.journalPhotoGallery),
               onTap: () async {
                 Navigator.pop(bottomSheetContext);
                 final XFile? image = await picker.pickImage(
@@ -332,7 +331,7 @@ Future<void> _insertImage() async {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt_outlined, color: AppColors.primary500),
-              title: const Text("Prendre une photo"),
+              title: Text(l10n.journalTakePhoto),
               onTap: () async {
                 Navigator.pop(bottomSheetContext);
                 final XFile? image = await picker.pickImage(
@@ -352,6 +351,7 @@ Future<void> _insertImage() async {
   }
 
   void _handleSelectedImage(String path) {
+    final l10n = AppLocalizations.of(context);
     // Pour l'instant, on insère le tag du chemin local dans le texte de l'éditeur.
     // Plus tard, dans ton modèle JournalEntry, tu pourras ajouter un champ List<String> imagePaths
     // et faire un affichage sous forme de grille d'images dans l'UI.
@@ -359,9 +359,9 @@ Future<void> _insertImage() async {
     
     HapticFeedback.lightImpact();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Image ajoutée avec succès au journal !"),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(l10n.journalImageAdded),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -391,11 +391,12 @@ Future<void> _insertImage() async {
   void _startVoiceTyping() {
     HapticFeedback.mediumImpact();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Enregistrement audio bientôt disponible..."), duration: Duration(seconds: 1)),
+      SnackBar(content: Text(AppLocalizations.of(context).journalAudioComingSoon), duration: const Duration(seconds: 1)),
     );
   }
 
   void _showMoodPicker() {
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -416,7 +417,7 @@ Future<void> _insertImage() async {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text("Comment te sens-tu ?", style: AppText.h4),
+              Text(l10n.journalMoodQuestion, style: AppText.h4),
               const SizedBox(height: 24),
               Wrap(
                 alignment: WrapAlignment.center,
@@ -447,7 +448,7 @@ Future<void> _insertImage() async {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          m.label,
+                          m.localizedLabel(l10n),
                           style: TextStyle(
                             color: isSelected ? m.accent : AppColors.grey500,
                             fontSize: 12,

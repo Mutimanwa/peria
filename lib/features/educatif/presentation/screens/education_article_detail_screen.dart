@@ -6,6 +6,7 @@ import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
 import 'package:peria_app/features/educatif/presentation/providers/education_provider.dart';
+import 'package:peria_app/shared/widgets/health_information_notice.dart';
 
 class EducationArticleDetailScreen extends ConsumerWidget {
   final String articleId;
@@ -175,7 +176,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    '${article.readingTimeMinutes}min',
+                                    l10n.educationReadingTime(article.readingTimeMinutes),
                                     style: AppText.label.copyWith(
                                       color: AppColors.grey600,
                                       fontSize: 10,
@@ -212,7 +213,12 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 18),
+                  HealthInformationNotice(
+                    title: l10n.educationHealthNoticeTitle,
+                    message: l10n.educationHealthNoticeBody,
+                  ),
+                  const SizedBox(height: 18),
                   _ArticleContentCard(
                     icon: Icons.lightbulb_outline,
                     title: l10n.educationExplanation,

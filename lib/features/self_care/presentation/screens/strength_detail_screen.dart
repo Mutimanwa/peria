@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class StrengthDetailScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PageScaffold(
       showBack: true,
       onBack: () => context.pop(),
@@ -28,7 +30,7 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
               text: TextSpan(
                 style: AppText.h3.copyWith(color: AppColors.grey900),
                 children: [
-                  const TextSpan(text: 'jumping jacks'),
+                  TextSpan(text: l10n.selfCareExerciseJumpingJacks),
                   TextSpan(
                     text: '        1',
                     style: AppText.h3.copyWith(color: AppColors.primary400),
@@ -40,7 +42,7 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
                 ],
               ),
             ),
-            Text('Full-body cardio',
+            Text(l10n.selfCareFullBodyCardio,
                 style: AppText.body.copyWith(color: AppColors.grey500)),
             const SizedBox(height: 20),
             ClipRRect(

@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
+import 'package:peria_app/features/journal/data/models/mood.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -55,8 +57,10 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
   }
 
   List<DateTime> _getWeekDays() {
-    final monday = _selectedDate.subtract(Duration(days: _selectedDate.weekday - 1));
-    return List.generate(7, (i) => monday.add(Duration(days: i)));
+    final firstDayIndex = MaterialLocalizations.of(context).firstDayOfWeekIndex;
+    final offset = (_selectedDate.weekday - 1 - firstDayIndex + 7) % 7;
+    final firstDay = _selectedDate.subtract(Duration(days: offset));
+    return List.generate(7, (i) => firstDay.add(Duration(days: i)));
   }
 
   bool _isSameDay(DateTime a, DateTime b) =>
@@ -102,10 +106,10 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
   //   });
   // }
 
-  String _summaryLabel(DateTime date, int count) {
-    final day = DateFormat('EEEE, d MMMM' , 'fr').format(date);
-    final suffix = count <= 1 ? 'note' : 'notes';
-    return '$day • $count $suffix';
+  String _summaryLabel(DateTime date, int count, AppLocalizations l10n) {
+    final locale = Localizations.localeOf(context).toString();
+    final day = DateFormat('EEEE, d MMMM', locale).format(date);
+    return '$day • ${l10n.journalNoteCount(count)}';
   }
 
   @override
@@ -126,7 +130,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                 children: [
                   _buildHeader(l10n),
                   _buildWeekCalendar(weekDays, entries),
-                  _buildSummaryBar(filtered.length),
+                  _buildSummaryBar(filtered.length, l10n),
                   Expanded(
                     child: ListView(
                       key: ValueKey('journal-${_selectedDate.toIso8601String()}-$_query-${filtered.length}'),
@@ -179,7 +183,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                   Text(l10n.unableToLoadJournal,
                       style: AppText.h3.copyWith(color: AppColors.grey700)),
                   const SizedBox(height: 8),
-                  Text(err.toString(),
+                  Text(l10n.unableToLoadJournal,
                       style: AppText.body.copyWith(color: AppColors.grey500),
                       textAlign: TextAlign.center),
                 ],
@@ -347,7 +351,9 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
     );
   }
 
-  Widget _buildSummaryBar(int count) {
+  Widget _buildSummaryBar(int count, AppLocalizations l10n) {
+    final locale = Localizations.localeOf(context).toString();
+    final isToday = _isSameDay(_selectedDate, DateTime.now());
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -360,7 +366,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
         children: [
           Expanded(
             child: Text(
-              _summaryLabel(_selectedDate, count),
+              _summaryLabel(_selectedDate, count, l10n),
               style: AppText.body.copyWith(
                 color: AppColors.grey800,
                 fontWeight: FontWeight.w600,
@@ -368,7 +374,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
             ),
           ),
           Text(
-            _isSameDay(_selectedDate, DateTime.now()) ? 'Aujourd\'hui' : DateFormat('EEE', 'fr').format(_selectedDate).toUpperCase(),
+            isToday ? l10n.today : DateFormat('EEE', locale).format(_selectedDate).toUpperCase(),
             style: AppText.caption.copyWith(
               color: AppColors.primary500,
               fontWeight: FontWeight.w700,
@@ -540,7 +546,7 @@ class _WeekDayChip extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              DateFormat('E' , 'fr').format(date).toUpperCase(),
+              DateFormat('E', Localizations.localeOf(context).toString()).format(date).toUpperCase(),
               style: AppText.caption.copyWith(
                 color: isToday ? AppColors.primary500 : AppColors.grey600,
                 fontWeight: FontWeight.w700,
@@ -581,6 +587,7 @@ class _JournalCard extends StatelessWidget {
       builder: (context, ref, _) {
         final l10n = AppLocalizations.of(context);
         final tone = JournalMoodTone.fromMood(entry.mood);
+        final mood = Mood.fromId(entry.mood);
         final title = entry.title.isEmpty ? l10n.untitledNote : entry.title;
         final preview = entry.content.isEmpty ? l10n.noDetailsYet : entry.content;
         final cycleDay = ref.watch(cycleDayForDateProvider(entry.createdAt));
@@ -653,7 +660,7 @@ class _JournalCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(
-                              tone.label,
+                              mood.localizedLabel(l10n),
                               style: AppText.caption.copyWith(
                                 color: tone.accent,
                                 fontWeight: FontWeight.w700,

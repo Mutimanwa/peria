@@ -24,7 +24,7 @@ class ProfileScreen extends ConsumerWidget {
         child: userProfileAnsync.when(
           loading: () => const Center(child: ProfileSkeleton()),
           error: (error, stackTrace) => Center(
-            child: Text("Erreur $error"),
+            child: Text(l10n.unableToLoadProfile),
           ),
           data: (profile) => SingleChildScrollView(
             child: Column(
