@@ -656,6 +656,36 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notifications;
 
+  /// No description provided for @notificationGenericTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Peria'**
+  String get notificationGenericTitle;
+
+  /// No description provided for @notificationGenericBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A gentle reminder is waiting.'**
+  String get notificationGenericBody;
+
+  /// No description provided for @notificationPrivacyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications use neutral wording to keep cycle details private on your lock screen.'**
+  String get notificationPrivacyDescription;
+
+  /// No description provided for @notificationScheduleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, cycle reminders are planned for 9:00 and the daily symptoms and journal check-in for 20:00.'**
+  String get notificationScheduleDescription;
+
+  /// No description provided for @notificationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications could not be enabled. Check notification permission in your device settings, then try again.'**
+  String get notificationPermissionDenied;
+
   /// No description provided for @supportLegal.
   ///
   /// In en, this message translates to:
@@ -757,6 +787,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Symptoms'**
   String get logSymptoms;
+
+  /// No description provided for @symptomJournalReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptoms & journal check-in'**
+  String get symptomJournalReminder;
 
   /// No description provided for @quickDailySymptomCapture.
   ///

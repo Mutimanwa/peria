@@ -320,6 +320,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get notificationGenericTitle => 'Peria';
+
+  @override
+  String get notificationGenericBody => 'Un rappel discret t’attend.';
+
+  @override
+  String get notificationPrivacyDescription =>
+      'Le texte des notifications reste neutre pour protéger les détails de ton cycle sur l’écran verrouillé.';
+
+  @override
+  String get notificationScheduleDescription =>
+      'Une fois activés, les rappels du cycle sont prévus à 9 h et le rappel quotidien pour noter ses symptômes ou écrire dans le journal à 20 h.';
+
+  @override
+  String get notificationPermissionDenied =>
+      'Impossible d’activer les notifications. Vérifie qu’elles sont autorisées dans les réglages de ton appareil, puis réessaie.';
+
+  @override
   String get supportLegal => 'Support et mentions legales';
 
   @override
@@ -373,6 +391,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get logSymptoms => 'Ajouter des symptomes';
+
+  @override
+  String get symptomJournalReminder =>
+      'Noter ses symptômes ou écrire dans le journal';
 
   @override
   String get quickDailySymptomCapture =>

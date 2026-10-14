@@ -317,6 +317,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get notificationGenericTitle => 'Peria';
+
+  @override
+  String get notificationGenericBody => 'A gentle reminder is waiting.';
+
+  @override
+  String get notificationPrivacyDescription =>
+      'Notifications use neutral wording to keep cycle details private on your lock screen.';
+
+  @override
+  String get notificationScheduleDescription =>
+      'When enabled, cycle reminders are planned for 9:00 and the daily symptoms and journal check-in for 20:00.';
+
+  @override
+  String get notificationPermissionDenied =>
+      'Notifications could not be enabled. Check notification permission in your device settings, then try again.';
+
+  @override
   String get supportLegal => 'Support & Legal';
 
   @override
@@ -370,6 +388,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logSymptoms => 'Log Symptoms';
+
+  @override
+  String get symptomJournalReminder => 'Symptoms & journal check-in';
 
   @override
   String get quickDailySymptomCapture =>

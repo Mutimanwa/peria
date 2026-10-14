@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/router/router.dart';
+import 'package:peria_app/core/services/local_notification_provider.dart';
+import 'package:peria_app/core/services/local_notification_service.dart';
 import 'package:peria_app/core/services/multitask_protection_service.dart';
 import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/storage/hive_setup.dart';
@@ -20,15 +22,17 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await LocalNotificationService.instance.initialize();
 
   runApp(const ProviderScope(child: PeriaApp()));
 }
 
-class PeriaApp extends StatelessWidget {
+class PeriaApp extends ConsumerWidget {
   const PeriaApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(localNotificationScheduleProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,
