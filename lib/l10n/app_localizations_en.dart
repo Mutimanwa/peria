@@ -1035,6 +1035,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get periodLogSaveError =>
       'Could not save the period log. Check your connection and try again.';
+
   @override
   String get update => 'Update';
 
@@ -1045,37 +1046,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendarNoCycleData => 'No cycle data';
 
   @override
-  String get calendarNoCyclePredictionAvailable => 'No cycle prediction is available for this date.';
+  String get calendarNoCyclePredictionAvailable =>
+      'No cycle prediction is available for this date.';
 
   @override
   String get calendarOverdue => 'Overdue';
 
   @override
-  String get calendarExpectedNotLogged => 'Your period is expected but has not been logged.';
+  String get calendarExpectedNotLogged =>
+      'Your period is expected but has not been logged.';
 
   @override
   String get calendarLoggedPeriodDay => 'Logged period day';
 
   @override
-  String get calendarLoggedPeriodDescription => 'This date is recorded in your period log.';
+  String get calendarLoggedPeriodDescription =>
+      'This date is recorded in your period log.';
 
   @override
   String get calendarPredictedPeriodDay => 'Predicted period day';
 
   @override
-  String get calendarPredictedPeriodDescription => 'This date is an estimate based on your cycle data.';
+  String get calendarPredictedPeriodDescription =>
+      'This date is an estimate based on your cycle data.';
 
   @override
   String get calendarFertilityWindow => 'Fertility window';
 
   @override
-  String get calendarFertilityWindowDescription => 'This date is inside the predicted fertile window.';
+  String get calendarFertilityWindowDescription =>
+      'This date is inside the predicted fertile window.';
 
   @override
   String get calendarPmsDay => 'PMS day';
 
   @override
-  String get calendarPmsDayDescription => 'This date is in the predicted PMS phase.';
+  String get calendarPmsDayDescription =>
+      'This date is in the predicted PMS phase.';
 
   @override
   String get calendarSelectedDay => 'Selected day.';
@@ -1084,22 +1091,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendarRegularDay => 'Regular day';
 
   @override
-  String get calendarNoTrackedCycleEvent => 'No tracked cycle event is attached to this date.';
+  String get calendarNoTrackedCycleEvent =>
+      'No tracked cycle event is attached to this date.';
 
   @override
   String get calendarMonthlyOverview => 'Monthly overview';
 
   @override
-  String get calendarMonthlyOverviewHelp => 'Review your cycle over time. Use quick log for daily updates and Edit Calendar for corrections.';
+  String get calendarMonthlyOverviewHelp =>
+      'Review your cycle over time. Use quick log for daily updates and Edit Calendar for corrections.';
 
   @override
   String get calendarQuickCapture => 'Quick capture';
 
   @override
-  String get calendarQuickCaptureHelp => 'Fast daily actions for periods and symptoms, without opening the structured editor.';
+  String get calendarQuickCaptureHelp =>
+      'Fast daily actions for periods and symptoms, without opening the structured editor.';
 
   @override
-  String get calendarDateRangeHelp => 'Need to define or correct a date range? Use Edit Calendar.';
+  String get calendarDateRangeHelp =>
+      'Need to define or correct a date range? Use Edit Calendar.';
 
   @override
   String get calendarEditTitle => 'Edit Calendar';
@@ -1114,13 +1125,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendarPeriodRangeReady => 'Period range ready';
 
   @override
-  String get calendarSelectRangeInstruction => 'Use this screen to define or correct an exact period range.';
+  String get calendarSelectRangeInstruction =>
+      'Use this screen to define or correct an exact period range.';
 
   @override
   String get calendarChooseLastDay => 'Choose the last day of this period.';
 
   @override
-  String get calendarCorrectionHelp => 'This screen is for precise corrections. For quick daily updates, use Log Period from the calendar overview.';
+  String get calendarCorrectionHelp =>
+      'This screen is for precise corrections. For quick daily updates, use Log Period from the calendar overview.';
 
   @override
   String get calendarSavedPeriod => 'Saved period';
@@ -1195,38 +1208,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpFaqLogQuestion => 'How do I log my period and symptoms?';
 
   @override
-  String get helpFaqLogAnswer => 'Open Cycle Calendar and use Log Period or Log Symptoms. You can use Edit Calendar to correct a date range.';
+  String get helpFaqLogAnswer =>
+      'Open Cycle Calendar and use Log Period or Log Symptoms. You can use Edit Calendar to correct a date range.';
 
   @override
   String get helpFaqDataQuestion => 'Is my health data secure?';
 
   @override
-  String get helpFaqDataAnswer => 'Journal entries stay on this device in encrypted storage by default; optional cloud sync requires separate consent. Profile, cycle, symptom, partner and settings data use Firebase. See the Privacy Policy for details and current deletion limits.';
+  String get helpFaqDataAnswer =>
+      'Journal entries stay on this device in encrypted storage by default; optional cloud sync requires separate consent. Profile, cycle, symptom, partner and settings data use Firebase. See the Privacy Policy for details and current deletion limits.';
 
   @override
   String get helpFaqPartnerQuestion => 'How does partner sharing work?';
 
   @override
-  String get helpFaqPartnerAnswer => 'This version stores the partner email address and sharing preferences in your Firebase account. It does not yet send an invitation or transfer cycle or symptom records to a partner.';
+  String get helpFaqPartnerAnswer =>
+      'This version stores the partner email address and sharing preferences in your Firebase account. It does not yet send an invitation or transfer cycle or symptom records to a partner.';
 
   @override
-  String get helpFaqNotificationsQuestion => 'How can I customize notifications?';
+  String get helpFaqNotificationsQuestion =>
+      'How can I customize notifications?';
 
   @override
-  String get helpFaqNotificationsAnswer => 'Open Profile, then Settings and Notifications to choose which local reminders are enabled.';
+  String get helpFaqNotificationsAnswer =>
+      'Open Profile, then Settings and Notifications to choose which local reminders are enabled.';
 
   @override
   String get helpFaqDeleteQuestion => 'How do I delete my account or data?';
 
   @override
-  String get helpFaqDeleteAnswer => 'You can clear local data under Profile > Account Security and delete an optional journal cloud copy under Settings > Journal Sync. This version does not yet provide in-app deletion of the Firebase account and all other cloud records. The publisher must provide a verified privacy contact before public release.';
+  String get helpFaqDeleteAnswer =>
+      'You can clear local data under Profile > Account Security and delete an optional journal cloud copy under Settings > Journal Sync. This version does not yet provide in-app deletion of the Firebase account and all other cloud records. The publisher must provide a verified privacy contact before public release.';
 
   @override
   String get helpFaqSupportQuestion => 'How can I contact support?';
 
   @override
-  String get helpFaqSupportAnswer => 'Use the contact options at the bottom of this page.';
-
+  String get helpFaqSupportAnswer =>
+      'Use the contact options at the bottom of this page.';
 
   @override
   String get securityIncorrectPin => 'Incorrect PIN.';
@@ -1247,8 +1266,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get securityRetry => 'Retry';
 
   @override
-  String securityLockedFor(int minutes, int seconds) =>
-      'Locked for $minutesm $secondss';
+  String securityLockedFor(int minutes, int seconds) {
+    return 'Locked for ${minutes}m ${seconds}s';
+  }
 
   @override
   String get journalNoEntryForDay => 'No entry for this day';
@@ -1274,12 +1294,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get moodTired => 'Tired';
 
-
   @override
   String get journalDeleteMemoryTitle => 'Delete this memory?';
 
   @override
-  String get journalDeleteMemoryBody => 'This action is permanent and cannot be undone.';
+  String get journalDeleteMemoryBody =>
+      'This action is permanent and cannot be undone.';
 
   @override
   String get journalTimeline => 'Timeline';
@@ -1315,7 +1335,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalTopTags => 'Top tags';
 
   @override
-  String get journalInsightsNotEnoughData => 'Not enough data for insights yet 🌿';
+  String get journalInsightsNotEnoughData =>
+      'Not enough data for insights yet 🌿';
 
   @override
   String get journalQuickThought => 'Quick thought';
@@ -1360,16 +1381,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalImageAdded => 'Image added to your journal.';
 
   @override
-  String get journalAudioComingSoon => 'Audio recording will be available soon.';
+  String get journalAudioComingSoon =>
+      'Audio recording will be available soon.';
 
   @override
   String get journalMoodQuestion => 'How are you feeling?';
 
   @override
-  String journalNoteCount(int count) => '$count ${count == 1 ? 'note' : 'notes'}';
+  String journalNoteCount(int count) {
+    return '$count notes';
+  }
 
   @override
-  String journalStreakCount(int count) => '$count ${count == 1 ? 'day' : 'days'}';
+  String journalStreakCount(int count) {
+    return '$count days';
+  }
 
   @override
   String get selectDateRange => 'Select a date range';
@@ -1384,7 +1410,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalLockedTitle => 'Journal is locked';
 
   @override
-  String get journalLockedDescription => 'Enter your PIN or use biometrics to access your private notes.';
+  String get journalLockedDescription =>
+      'Enter your PIN or use biometrics to access your private notes.';
 
   @override
   String get journalUseBiometrics => 'Use biometrics';
@@ -1393,16 +1420,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalUnlockReason => 'Unlock your private journal';
 
   @override
-  String get securityBiometricFailed => 'Biometric authentication failed. Try again or enter your PIN.';
+  String get securityBiometricFailed =>
+      'Biometric authentication failed. Try again or enter your PIN.';
 
   @override
-  String get journalSaveError => 'Could not save your journal entry. Please try again.';
+  String get journalSaveError =>
+      'Could not save your journal entry. Please try again.';
 
   @override
   String get journalDailyQuote => '“Every moment is a fresh beginning.”';
 
   @override
-  String educationReadingTime(int minutes) => 'about $minutes min read';
+  String educationReadingTime(int minutes) {
+    return 'about $minutes min read';
+  }
 
   @override
   String get selfCarePrompt => 'What do you want to learn today?';
@@ -1484,6 +1515,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selfCareSubtitleSlowRestorative => 'Slow restorative motion';
+
+  @override
+  String selfCareLowImpactExercises(int count) {
+    return '$count low-impact exercises';
+  }
+
+  @override
+  String selfCareMinutesRead(int minutes) {
+    return '$minutes min read';
+  }
 
   @override
   String get selfCareDeepSleepMeditation => 'Deep sleep meditation';
@@ -1588,7 +1629,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selfCareAlignMindBody => 'Align mind and body';
 
   @override
-  String get selfCareActivityDescription => 'Optional, gentle pillow-supported movements. Comfort and response vary from person to person.';
+  String get selfCareActivityDescription =>
+      'Optional, gentle pillow-supported movements. Comfort and response vary from person to person.';
 
   @override
   String get selfCareYouWillNeed => 'You\'ll need';
@@ -1618,58 +1660,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selfCareGentleMovementTitle => 'Gentle movement';
 
   @override
-  String get selfCareGentleMovementDescription => 'Optional gentle movements may help some people feel more comfortable. Stop if pain increases or you feel dizzy or unwell.';
+  String get selfCareGentleMovementDescription =>
+      'Optional gentle movements may help some people feel more comfortable. Stop if pain increases or you feel dizzy or unwell.';
 
   @override
   String get selfCareCongratulations => 'Congratulations!';
 
   @override
-  String get selfCareCongratulationsMessage => 'You completed your self-care session and took time for your body today.';
+  String get selfCareCongratulationsMessage =>
+      'You completed your self-care session and took time for your body today.';
 
   @override
   String get selfCareBackHome => 'Back to home';
 
   @override
-  String get selfCareArticleTitle => 'Period pain: gentle options and when to seek help';
+  String selfCareArticleReadTime(int minutes) {
+    return '$minutes min read';
+  }
 
   @override
-  String get selfCareArticleLead => 'Cramping is common, but severe, changing, or disruptive pain deserves attention.';
+  String get selfCareArticleTitle =>
+      'Period pain: gentle options and when to seek help';
+
+  @override
+  String get selfCareArticleLead =>
+      'Cramping is common, but severe, changing, or disruptive pain deserves attention.';
 
   @override
   String get selfCareArticleComfortHeading => 'Gentle comfort options:';
 
   @override
-  String get selfCareArticleWarmCompress => 'A warm compress or gentle movement may help some people.';
+  String get selfCareArticleWarmCompress =>
+      'A warm compress or gentle movement may help some people.';
 
   @override
-  String get selfCareArticleRest => 'Rest if you need it; stop an activity if pain or dizziness increases.';
+  String get selfCareArticleRest =>
+      'Rest if you need it; stop an activity if pain or dizziness increases.';
 
   @override
-  String get selfCareArticleVaries => 'What helps varies from person to person.';
+  String get selfCareArticleVaries =>
+      'What helps varies from person to person.';
 
   @override
   String get selfCareArticleMedicineHeading => 'About medicines:';
 
   @override
-  String get selfCareArticleMedicineRisks => 'Pain medicines are not suitable for everyone and can have risks or interactions.';
+  String get selfCareArticleMedicineRisks =>
+      'Pain medicines are not suitable for everyone and can have risks or interactions.';
 
   @override
-  String get selfCareArticlePharmacist => 'Ask a pharmacist or qualified health professional what is appropriate for you.';
+  String get selfCareArticlePharmacist =>
+      'Ask a pharmacist or qualified health professional what is appropriate for you.';
 
   @override
-  String get selfCareArticleFollowLabel => 'Follow the product label. This article does not recommend a medicine or dose.';
+  String get selfCareArticleFollowLabel =>
+      'Follow the product label. This article does not recommend a medicine or dose.';
 
   @override
   String get selfCareArticleSeekHelpHeading => 'When to get help:';
 
   @override
-  String get selfCareArticleDailyLife => 'Arrange a health visit if pain repeatedly disrupts school, work, sleep, or daily activities.';
+  String get selfCareArticleDailyLife =>
+      'Arrange a health visit if pain repeatedly disrupts school, work, sleep, or daily activities.';
 
   @override
-  String get selfCareArticleUrgent => 'Seek urgent care for sudden severe pain, fainting, fever, or pain with bleeding when pregnancy is possible.';
+  String get selfCareArticleUrgent =>
+      'Seek urgent care for sudden severe pain, fainting, fever, or pain with bleeding when pregnancy is possible.';
 
   @override
-  String get selfCareArticleEncouragement => 'You deserve care. Pain that disrupts daily life should be taken seriously.';
+  String get selfCareArticleEncouragement =>
+      'You deserve care. Pain that disrupts daily life should be taken seriously.';
 
   @override
   String get selfCareAddComment => 'Add comment';
@@ -1678,7 +1738,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selfCareFeedbackThanks => 'Thanks for your feedback!';
 
   @override
-  String get selfCareFeedbackReceived => 'Feedback received. We\'ll do our best to bring you a better user experience.';
+  String get selfCareFeedbackReceived =>
+      'Feedback received. We\'ll do our best to bring you a better user experience.';
 
   @override
   String get selfCareOk => 'OK';
@@ -1702,113 +1763,172 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selfCareNext => 'Next';
 
   @override
-  String selfCareMinutes(int minutes) => '$minutes min';
+  String selfCareMinutes(int minutes) {
+    return '$minutes min';
+  }
 
   @override
-  String selfCareRound(int round) => 'Round $round';
+  String selfCareRound(int round) {
+    return 'Round $round';
+  }
 
   @override
-  String selfCareOnlyMinutesLeft(int minutes) => 'Only $minutes minutes left — keep it up!';
+  String selfCareOnlyMinutesLeft(int minutes) {
+    return 'Only $minutes minutes left — keep it up!';
+  }
 
   @override
-  String selfCareLowImpactExercises(int count) => '$count low-impact exercises';
+  String get cyclePhasePeriod => 'Period';
 
   @override
-  String selfCareMinutesRead(int minutes) => '$minutes min read';
+  String get cyclePhaseLuteal => 'Luteal phase';
 
   @override
-  String selfCareArticleReadTime(int minutes) => '$minutes min read';
+  String get cyclePhaseOvulation => 'Ovulation';
 
   @override
-  String get cyclePhasePeriod => "Period";
+  String get cyclePhaseFollicular => 'Follicular phase';
+
   @override
-  String get cyclePhaseLuteal => "Luteal phase";
+  String get authPasswordResetSuccess => 'Password reset successful';
+
   @override
-  String get cyclePhaseOvulation => "Ovulation";
+  String get authPasswordResetSuccessMessage =>
+      'Your password has been updated. You can now log in with your new password.';
+
   @override
-  String get cyclePhaseFollicular => "Follicular phase";
+  String get aiChatCheckingIn => 'Hey, just checking in.';
+
   @override
-  String get authPasswordResetSuccess => "Password reset successful";
+  String get aiChatPmsQuestion =>
+      'How are you feeling around your PMS days lately?';
+
   @override
-  String get authPasswordResetSuccessMessage => "Your password has been updated. You can now log in with your new password.";
+  String get aiChatCrampsOrAches => 'Cramps or body aches';
+
   @override
-  String get aiChatCheckingIn => "Hey, just checking in.";
+  String get aiChatPhaseVariation =>
+      'Got it. Everyone feels this phase a little differently.';
+
   @override
-  String get aiChatPmsQuestion => "How are you feeling around your PMS days lately?";
+  String get aiChatFocusQuestion =>
+      'Do you usually have trouble focusing or getting things done these days?';
+
   @override
-  String get aiChatCrampsOrAches => "Cramps or body aches";
+  String get aiChatYesALot => 'Yes, a lot';
+
   @override
-  String get aiChatPhaseVariation => "Got it. Everyone feels this phase a little differently.";
+  String get aiChatGentleSuggestions =>
+      'Here are a few gentle ways to stay balanced';
+
   @override
-  String get aiChatFocusQuestion => "Do you usually have trouble focusing or getting things done these days?";
+  String get aiSuggestionDrinkWater => 'Drink water';
+
   @override
-  String get aiChatYesALot => "Yes, a lot";
+  String get aiSuggestionMoveGently => 'Move gently';
+
   @override
-  String get aiChatGentleSuggestions => "Here are a few gentle ways to stay balanced";
+  String get aiSuggestionTakePause => 'Take a pause';
+
   @override
-  String get aiSuggestionDrinkWater => "Drink water";
+  String get aiChatLearnMore =>
+      'Would you like to learn a little more about this?';
+
   @override
-  String get aiSuggestionMoveGently => "Move gently";
+  String get aiChatImCurious => 'Yes, I\'m curious';
+
   @override
-  String get aiSuggestionTakePause => "Take a pause";
+  String get aiChatArticlePrompt => 'Here\'s an article you can read.';
+
   @override
-  String get aiChatLearnMore => "Would you like to learn a little more about this?";
+  String get aiChatIReadIt => 'I read it';
+
   @override
-  String get aiChatImCurious => "Yes, I'm curious";
+  String get aiChatSymptomsPrompt =>
+      'I\'ve preselected your symptoms. Are these correct, or would you like to add others?';
+
   @override
-  String get aiChatArticlePrompt => "Here's an article you can read.";
+  String get aiChatSymptomsConfirmed => 'Yes, that works!';
+
   @override
-  String get aiChatIReadIt => "I read it";
+  String get aiChatSetSymptomsTitle => 'Your symptoms are all set';
+
   @override
-  String get aiChatSymptomsPrompt => "I've preselected your symptoms. Are these correct, or would you like to add others?";
+  String get aiChatOpenSymptoms => 'Open symptoms';
+
   @override
-  String get aiChatSymptomsConfirmed => "Yes, that works!";
+  String get aiChatArticleTitle => 'Never-ending cramps';
+
   @override
-  String get aiChatSetSymptomsTitle => "Your symptoms are all set";
+  String get aiChatArticleSubtitle => 'When period pain isn\'t typical.';
+
   @override
-  String get aiChatOpenSymptoms => "Open symptoms";
+  String get aiChatArticleDescription =>
+      'Learn why cramps can linger and when to seek help. Find gentle options that may ease discomfort.';
+
   @override
-  String get aiChatArticleTitle => "Never-ending cramps";
+  String get aiChatReadNow => 'Read now';
+
   @override
-  String get aiChatArticleSubtitle => "When period pain isn't typical.";
+  String get aiChatAfterPmsSupport =>
+      'We know it\'s not easy to get through days like this. You\'re not alone.';
+
   @override
-  String get aiChatArticleDescription => "Learn why cramps can linger and when to seek help. Find gentle options that may ease discomfort.";
+  String get aiChatCalendarPmsDoctor =>
+      'Your calendar shows PMS days from the 13th to the 17th, and a doctor\'s appointment on the 18th.';
+
   @override
-  String get aiChatReadNow => "Read now";
+  String get aiChatSuggestDate =>
+      'I suggest the 19th instead. How does that sound?';
+
   @override
-  String get aiChatAfterPmsSupport => "We know it's not easy to get through days like this. You're not alone.";
+  String get aiChatAssistantLabel => 'Your assistant';
+
   @override
-  String get aiChatCalendarPmsDoctor => "Your calendar shows PMS days from the 13th to the 17th, and a doctor's appointment on the 18th.";
+  String get aiChatPmsConflict => 'PMS day conflict';
+
   @override
-  String get aiChatSuggestDate => "I suggest the 19th instead. How does that sound?";
+  String get aiChatDoctorVisitConflict => 'Doctor visit conflict';
+
   @override
-  String get aiChatAssistantLabel => "Your assistant";
+  String get aiChatAskAnything => 'Ask anything...';
+
   @override
-  String get aiChatPmsConflict => "PMS day conflict";
+  String get appointmentConfirmed => 'Appointment confirmed!';
+
   @override
-  String get aiChatDoctorVisitConflict => "Doctor visit conflict";
+  String appointmentBooked(String doctor) {
+    return 'Your appointment with Dr. $doctor is booked.';
+  }
+
   @override
-  String get aiChatAskAnything => "Ask anything...";
+  String appointmentReviewCount(int count) {
+    return '$count reviews';
+  }
+
   @override
-  String get appointmentConfirmed => "Appointment confirmed!";
+  String get appointmentGynecologist => 'Gynecologist';
+
   @override
-  String appointmentBooked(String doctor) => 'Your appointment with Dr. $doctor is booked.';
+  String get appointmentGynOncologyFocus =>
+      'Focus on gynecologic oncology screening';
+
   @override
-  String appointmentReviewCount(int count) => '$count reviews';
+  String get appointmentVideoConsultation => 'Video consultation';
+
   @override
-  String get appointmentGynecologist => "Gynecologist";
+  String get appointmentDoneBackToChat => 'Done, back to chat';
+
   @override
-  String get appointmentGynOncologyFocus => "Focus on gynecologic oncology screening";
+  String get aiChatSymptomCramps => 'Cramps';
+
   @override
-  String get appointmentVideoConsultation => "Video consultation";
+  String get aiChatSymptomHeadache => 'Headache';
+
   @override
-  String get appointmentDoneBackToChat => "Done, back to chat";
+  String get periodLogSheetTitle => 'Log your period';
+
   @override
-  String get aiChatSymptomCramps => "Cramps";
-  @override
-  String get aiChatSymptomHeadache => "Headache";
-  @override
-  String get periodLogSheetTitle => "Log your period";
-  @override
-  String get periodLogSheetSubtitle => "Choose the period update that best describes today.";
+  String get periodLogSheetSubtitle =>
+      'Choose the period update that best describes today.';
 }

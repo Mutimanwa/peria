@@ -655,8 +655,23 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+
+  /// No description provided for @navCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle'**
   String get navCycle;
+
+  /// No description provided for @navEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
   String get navEducation;
+
+  /// No description provided for @navJournal.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal'**
   String get navJournal;
 
   /// No description provided for @notificationGenericTitle.
@@ -670,38 +685,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A gentle reminder is waiting.'**
   String get notificationGenericBody;
-  String get notificationChannelName;
-  String get notificationChannelDescription;
 
-  /// No description provided for @notificationPrivacyDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications use neutral wording to keep cycle details private on your lock screen.'**
-  String get notificationPrivacyDescription;
-
-  /// No description provided for @notificationScheduleDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'When enabled, cycle reminders are planned for 9:00 and the daily symptoms and journal check-in for 20:00.'**
-  String get notificationScheduleDescription;
-
-  /// No description provided for @notificationPermissionDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications could not be enabled. Check notification permission in your device settings, then try again.'**
-  String get notificationPermissionDenied;
-
-  /// No description provided for @notificationGenericTitle.
+  /// No description provided for @notificationChannelName.
   ///
   /// In en, this message translates to:
   /// **'Peria'**
-  String get notificationGenericTitle;
+  String get notificationChannelName;
 
-  /// No description provided for @notificationGenericBody.
+  /// No description provided for @notificationChannelDescription.
   ///
   /// In en, this message translates to:
-  /// **'A gentle reminder is waiting.'**
-  String get notificationGenericBody;
+  /// **'Private reminders from Peria.'**
+  String get notificationChannelDescription;
 
   /// No description provided for @notificationPrivacyDescription.
   ///
@@ -1158,9 +1153,29 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
   String get language;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
   String get languageEnglish;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In en, this message translates to:
+  /// **'Français'**
   String get languageFrench;
+
+  /// No description provided for @languageSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save your language preference. Please try again.'**
   String get languageSaveError;
 
   /// No description provided for @theme.
@@ -1568,37 +1583,37 @@ abstract class AppLocalizations {
   /// No description provided for @multitaskProtection.
   ///
   /// In en, this message translates to:
-  /// **'Masquage en multitâche'**
+  /// **'Hide sensitive content while multitasking'**
   String get multitaskProtection;
 
   /// No description provided for @clearLocalData.
   ///
   /// In en, this message translates to:
-  /// **'Supprimer les données locales'**
+  /// **'Clear local data'**
   String get clearLocalData;
 
   /// No description provided for @confirmClearData.
   ///
   /// In en, this message translates to:
-  /// **'Effacer toutes les données ?'**
+  /// **'Clear all data?'**
   String get confirmClearData;
 
   /// No description provided for @clearDataWarning.
   ///
   /// In en, this message translates to:
-  /// **'Cette action est irréversible et supprimera tout votre historique.'**
+  /// **'This action cannot be undone and will delete your entire history.'**
   String get clearDataWarning;
 
   /// No description provided for @securityRequired.
   ///
   /// In en, this message translates to:
-  /// **'Sécurité requise'**
+  /// **'Security required'**
   String get securityRequired;
 
   /// No description provided for @globalSecurityRequiredForJournal.
   ///
   /// In en, this message translates to:
-  /// **'L\'accès sécurisé (PIN/FaceID) doit d\'abord être activé pour protéger le journal.'**
+  /// **'Secure access (PIN/Face ID) must be enabled before the journal can be protected.'**
   String get globalSecurityRequiredForJournal;
 
   /// No description provided for @ok.
@@ -1822,9 +1837,29 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Relief and wellbeing'**
   String get educationAxisSolutionsWellbeing;
+
+  /// No description provided for @educationHealthNoticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Health information, not a diagnosis'**
   String get educationHealthNoticeTitle;
+
+  /// No description provided for @educationHealthNoticeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'These articles are for general education and do not replace advice from a qualified health professional. Seek urgent care for sudden severe symptoms, fainting, or heavy bleeding.'**
   String get educationHealthNoticeBody;
+
+  /// No description provided for @educationMovementNoticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement is optional'**
   String get educationMovementNoticeTitle;
+
+  /// No description provided for @educationMovementNoticeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This routine is for general wellbeing, not treatment. Stop if pain increases or you feel dizzy or unwell. Seek health advice for severe or unusual symptoms.'**
   String get educationMovementNoticeBody;
 
   /// No description provided for @todayLabel.
@@ -1875,89 +1910,1739 @@ abstract class AppLocalizations {
   /// **'Yoga tips'**
   String get articleYogaTips;
 
+  /// No description provided for @logPeriodButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Period'**
   String get logPeriodButton;
+
+  /// No description provided for @logPeriodSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log period'**
   String get logPeriodSheetTitle;
+
+  /// No description provided for @logPeriodSheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick daily capture. Use Edit Calendar for precise date corrections.'**
   String get logPeriodSheetSubtitle;
+
+  /// No description provided for @periodStartedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Period started today'**
   String get periodStartedToday;
+
+  /// No description provided for @periodStartedTodaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record today as the first day of your period.'**
   String get periodStartedTodaySubtitle;
+
+  /// No description provided for @addTodayPeriodDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Add today as a period day'**
   String get addTodayPeriodDay;
+
+  /// No description provided for @addTodayPeriodDaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record today and extend the latest period only when the days are consecutive.'**
   String get addTodayPeriodDaySubtitle;
+
+  /// No description provided for @periodEndedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Period ended today'**
   String get periodEndedToday;
+
+  /// No description provided for @periodEndedTodaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close a period logged today or yesterday.'**
   String get periodEndedTodaySubtitle;
+
+  /// No description provided for @openStructuredPeriodEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Open calendar edit'**
   String get openStructuredPeriodEdit;
+
+  /// No description provided for @periodLogLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading period logs…'**
   String get periodLogLoading;
+
+  /// No description provided for @periodLogSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving period log…'**
   String get periodLogSaving;
+
+  /// No description provided for @periodLogLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load period logs. Try again or use Edit Calendar.'**
   String get periodLogLoadError;
+
+  /// No description provided for @periodLogAlreadyLoggedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is already recorded as a period day.'**
   String get periodLogAlreadyLoggedToday;
+
+  /// No description provided for @periodLogNoRecentToEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'No period is logged today or yesterday to close. Use Edit Calendar to correct the dates.'**
   String get periodLogNoRecentToEnd;
+
+  /// No description provided for @periodLogSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the period log. Check your connection and try again.'**
   String get periodLogSaveError;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
   String get update;
+
+  /// No description provided for @calendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle Calendar'**
   String get calendarTitle;
+
+  /// No description provided for @calendarNoCycleData.
+  ///
+  /// In en, this message translates to:
+  /// **'No cycle data'**
   String get calendarNoCycleData;
+
+  /// No description provided for @calendarNoCyclePredictionAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No cycle prediction is available for this date.'**
   String get calendarNoCyclePredictionAvailable;
+
+  /// No description provided for @calendarOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
   String get calendarOverdue;
+
+  /// No description provided for @calendarExpectedNotLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Your period is expected but has not been logged.'**
   String get calendarExpectedNotLogged;
+
+  /// No description provided for @calendarLoggedPeriodDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged period day'**
   String get calendarLoggedPeriodDay;
+
+  /// No description provided for @calendarLoggedPeriodDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This date is recorded in your period log.'**
   String get calendarLoggedPeriodDescription;
+
+  /// No description provided for @calendarPredictedPeriodDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted period day'**
   String get calendarPredictedPeriodDay;
+
+  /// No description provided for @calendarPredictedPeriodDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This date is an estimate based on your cycle data.'**
   String get calendarPredictedPeriodDescription;
+
+  /// No description provided for @calendarFertilityWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Fertility window'**
   String get calendarFertilityWindow;
+
+  /// No description provided for @calendarFertilityWindowDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This date is inside the predicted fertile window.'**
   String get calendarFertilityWindowDescription;
+
+  /// No description provided for @calendarPmsDay.
+  ///
+  /// In en, this message translates to:
+  /// **'PMS day'**
   String get calendarPmsDay;
+
+  /// No description provided for @calendarPmsDayDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This date is in the predicted PMS phase.'**
   String get calendarPmsDayDescription;
+
+  /// No description provided for @calendarSelectedDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected day.'**
   String get calendarSelectedDay;
+
+  /// No description provided for @calendarRegularDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular day'**
   String get calendarRegularDay;
+
+  /// No description provided for @calendarNoTrackedCycleEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'No tracked cycle event is attached to this date.'**
   String get calendarNoTrackedCycleEvent;
+
+  /// No description provided for @calendarMonthlyOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly overview'**
   String get calendarMonthlyOverview;
+
+  /// No description provided for @calendarMonthlyOverviewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your cycle over time. Use quick log for daily updates and Edit Calendar for corrections.'**
   String get calendarMonthlyOverviewHelp;
+
+  /// No description provided for @calendarQuickCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick capture'**
   String get calendarQuickCapture;
+
+  /// No description provided for @calendarQuickCaptureHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast daily actions for periods and symptoms, without opening the structured editor.'**
   String get calendarQuickCaptureHelp;
+
+  /// No description provided for @calendarDateRangeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Need to define or correct a date range? Use Edit Calendar.'**
   String get calendarDateRangeHelp;
+
+  /// No description provided for @calendarEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Calendar'**
   String get calendarEditTitle;
+
+  /// No description provided for @calendarStructuredEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Structured period edit'**
   String get calendarStructuredEditTitle;
+
+  /// No description provided for @calendarStartDateSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date selected'**
   String get calendarStartDateSelected;
+
+  /// No description provided for @calendarPeriodRangeReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Period range ready'**
   String get calendarPeriodRangeReady;
+
+  /// No description provided for @calendarSelectRangeInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this screen to define or correct an exact period range.'**
   String get calendarSelectRangeInstruction;
+
+  /// No description provided for @calendarChooseLastDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the last day of this period.'**
   String get calendarChooseLastDay;
+
+  /// No description provided for @calendarCorrectionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen is for precise corrections. For quick daily updates, use Log Period from the calendar overview.'**
   String get calendarCorrectionHelp;
+
+  /// No description provided for @calendarSavedPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved period'**
   String get calendarSavedPeriod;
+
+  /// No description provided for @calendarPredictedPeriodLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted period'**
   String get calendarPredictedPeriodLegend;
+
+  /// No description provided for @calendarSaveStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Save start date'**
   String get calendarSaveStartDate;
+
+  /// No description provided for @calendarSavePeriodRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Save period range'**
   String get calendarSavePeriodRange;
+
+  /// No description provided for @calendarLegendPmsDay.
+  ///
+  /// In en, this message translates to:
+  /// **'PMS day'**
   String get calendarLegendPmsDay;
+
+  /// No description provided for @calendarLegendLoggedPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged period'**
   String get calendarLegendLoggedPeriod;
+
+  /// No description provided for @calendarLegendPredictedPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Predicted period'**
   String get calendarLegendPredictedPeriod;
+
+  /// No description provided for @calendarLegendFertilityWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Fertile window'**
   String get calendarLegendFertilityWindow;
+
+  /// No description provided for @calendarLegendSymptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'Symptoms'**
   String get calendarLegendSymptoms;
+
+  /// No description provided for @calendarLegendJournal.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal'**
   String get calendarLegendJournal;
+
+  /// No description provided for @calendarLegendToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
   String get calendarLegendToday;
 
+  /// No description provided for @goalTrackPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Track my period'**
   String get goalTrackPeriod;
+
+  /// No description provided for @goalUnderstandBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Understand my body better'**
   String get goalUnderstandBody;
+
+  /// No description provided for @goalTrackOvulation.
+  ///
+  /// In en, this message translates to:
+  /// **'Track ovulation'**
   String get goalTrackOvulation;
+
+  /// No description provided for @goalHealthInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Get health insights'**
   String get goalHealthInsights;
+
+  /// No description provided for @goalShareDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Share data with my doctor'**
   String get goalShareDoctor;
+
+  /// No description provided for @goalAiGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-powered guidance'**
   String get goalAiGuidance;
 
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
   String get editProfile;
+
+  /// No description provided for @myGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'My goal'**
   String get myGoal;
+
+  /// No description provided for @noGoalsSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No goals selected'**
   String get noGoalsSelected;
+
+  /// No description provided for @goalsSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals selected'**
   String get goalsSelected;
+
+  /// No description provided for @helpSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search anything…'**
   String get helpSearchHint;
+
+  /// No description provided for @helpContactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us'**
   String get helpContactUs;
+
+  /// No description provided for @helpFaqLogQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I log my period and symptoms?'**
   String get helpFaqLogQuestion;
+
+  /// No description provided for @helpFaqLogAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Cycle Calendar and use Log Period or Log Symptoms. You can use Edit Calendar to correct a date range.'**
   String get helpFaqLogAnswer;
+
+  /// No description provided for @helpFaqDataQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Is my health data secure?'**
   String get helpFaqDataQuestion;
+
+  /// No description provided for @helpFaqDataAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal entries stay on this device in encrypted storage by default; optional cloud sync requires separate consent. Profile, cycle, symptom, partner and settings data use Firebase. See the Privacy Policy for details and current deletion limits.'**
   String get helpFaqDataAnswer;
+
+  /// No description provided for @helpFaqPartnerQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How does partner sharing work?'**
   String get helpFaqPartnerQuestion;
+
+  /// No description provided for @helpFaqPartnerAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'This version stores the partner email address and sharing preferences in your Firebase account. It does not yet send an invitation or transfer cycle or symptom records to a partner.'**
   String get helpFaqPartnerAnswer;
+
+  /// No description provided for @helpFaqNotificationsQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I customize notifications?'**
   String get helpFaqNotificationsQuestion;
+
+  /// No description provided for @helpFaqNotificationsAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Profile, then Settings and Notifications to choose which local reminders are enabled.'**
   String get helpFaqNotificationsAnswer;
+
+  /// No description provided for @helpFaqDeleteQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I delete my account or data?'**
   String get helpFaqDeleteQuestion;
+
+  /// No description provided for @helpFaqDeleteAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can clear local data under Profile > Account Security and delete an optional journal cloud copy under Settings > Journal Sync. This version does not yet provide in-app deletion of the Firebase account and all other cloud records. The publisher must provide a verified privacy contact before public release.'**
   String get helpFaqDeleteAnswer;
+
+  /// No description provided for @helpFaqSupportQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How can I contact support?'**
   String get helpFaqSupportQuestion;
+
+  /// No description provided for @helpFaqSupportAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the contact options at the bottom of this page.'**
   String get helpFaqSupportAnswer;
 
+  /// No description provided for @securityIncorrectPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect PIN.'**
+  String get securityIncorrectPin;
+
+  /// No description provided for @securityAuthenticationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication successful'**
+  String get securityAuthenticationSuccess;
+
+  /// No description provided for @securityPinRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN required'**
+  String get securityPinRequired;
+
+  /// No description provided for @securityAuthenticationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed. Try again.'**
+  String get securityAuthenticationError;
+
+  /// No description provided for @securitySkipDevelopmentOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip (development only)'**
+  String get securitySkipDevelopmentOnly;
+
+  /// No description provided for @securityRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get securityRetry;
+
+  /// No description provided for @securityLockedFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked for {minutes}m {seconds}s'**
+  String securityLockedFor(int minutes, int seconds);
+
+  /// No description provided for @journalNoEntryForDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No entry for this day'**
+  String get journalNoEntryForDay;
+
+  /// No description provided for @journalQuickLogPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Quick Log to capture this moment.'**
+  String get journalQuickLogPrompt;
+
+  /// No description provided for @moodCalm.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm'**
+  String get moodCalm;
+
+  /// No description provided for @moodHappy.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy'**
+  String get moodHappy;
+
+  /// No description provided for @moodExcited.
+  ///
+  /// In en, this message translates to:
+  /// **'Excited'**
+  String get moodExcited;
+
+  /// No description provided for @moodAnxious.
+  ///
+  /// In en, this message translates to:
+  /// **'Anxious'**
+  String get moodAnxious;
+
+  /// No description provided for @moodSad.
+  ///
+  /// In en, this message translates to:
+  /// **'Sad'**
+  String get moodSad;
+
+  /// No description provided for @moodTired.
+  ///
+  /// In en, this message translates to:
+  /// **'Tired'**
+  String get moodTired;
+
+  /// No description provided for @journalDeleteMemoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this memory?'**
+  String get journalDeleteMemoryTitle;
+
+  /// No description provided for @journalDeleteMemoryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is permanent and cannot be undone.'**
+  String get journalDeleteMemoryBody;
+
+  /// No description provided for @journalTimeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline'**
+  String get journalTimeline;
+
+  /// No description provided for @journalSearchAllMoods.
+  ///
+  /// In en, this message translates to:
+  /// **'All moods'**
+  String get journalSearchAllMoods;
+
+  /// No description provided for @journalFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get journalFavorites;
+
+  /// No description provided for @journalDateFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get journalDateFilter;
+
+  /// No description provided for @journalSearchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get journalSearchNoResults;
+
+  /// No description provided for @journalFilterByMood.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by mood'**
+  String get journalFilterByMood;
+
+  /// No description provided for @journalAllFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get journalAllFilter;
+
+  /// No description provided for @journalCurrentStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current streak'**
+  String get journalCurrentStreak;
+
+  /// No description provided for @journalMoodDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Mood distribution'**
+  String get journalMoodDistribution;
+
+  /// No description provided for @journalWeeklyActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly activity'**
+  String get journalWeeklyActivity;
+
+  /// No description provided for @journalTopTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Top tags'**
+  String get journalTopTags;
+
+  /// No description provided for @journalInsightsNotEnoughData.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data for insights yet 🌿'**
+  String get journalInsightsNotEnoughData;
+
+  /// No description provided for @journalQuickThought.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick thought'**
+  String get journalQuickThought;
+
+  /// No description provided for @journalWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Write'**
+  String get journalWrite;
+
+  /// No description provided for @journalQuickThoughtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s on your mind?'**
+  String get journalQuickThoughtHint;
+
+  /// No description provided for @journalCaptureMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to capture a quick moment...'**
+  String get journalCaptureMoment;
+
+  /// No description provided for @journalQuickThoughtSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick thought saved 😌'**
+  String get journalQuickThoughtSaved;
+
+  /// No description provided for @journalStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get journalStreak;
+
+  /// No description provided for @journalInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get journalInsights;
+
+  /// No description provided for @journalWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get journalWeekly;
+
+  /// No description provided for @journalRecentEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent entries'**
+  String get journalRecentEntries;
+
+  /// No description provided for @journalSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get journalSeeAll;
+
+  /// No description provided for @journalNoEntriesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries yet'**
+  String get journalNoEntriesYet;
+
+  /// No description provided for @journalPhotoGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get journalPhotoGallery;
+
+  /// No description provided for @journalTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get journalTakePhoto;
+
+  /// No description provided for @journalImageAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Image added to your journal.'**
+  String get journalImageAdded;
+
+  /// No description provided for @journalAudioComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio recording will be available soon.'**
+  String get journalAudioComingSoon;
+
+  /// No description provided for @journalMoodQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling?'**
+  String get journalMoodQuestion;
+
+  /// No description provided for @journalNoteCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} notes'**
+  String journalNoteCount(int count);
+
+  /// No description provided for @journalStreakCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String journalStreakCount(int count);
+
+  /// No description provided for @selectDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a date range'**
+  String get selectDateRange;
+
+  /// No description provided for @journalEditAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get journalEditAction;
+
+  /// No description provided for @journalQuietMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'A quiet moment'**
+  String get journalQuietMoment;
+
+  /// No description provided for @journalLockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Journal is locked'**
+  String get journalLockedTitle;
+
+  /// No description provided for @journalLockedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your PIN or use biometrics to access your private notes.'**
+  String get journalLockedDescription;
+
+  /// No description provided for @journalUseBiometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Use biometrics'**
+  String get journalUseBiometrics;
+
+  /// No description provided for @journalUnlockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock your private journal'**
+  String get journalUnlockReason;
+
+  /// No description provided for @securityBiometricFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric authentication failed. Try again or enter your PIN.'**
+  String get securityBiometricFailed;
+
+  /// No description provided for @journalSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save your journal entry. Please try again.'**
+  String get journalSaveError;
+
+  /// No description provided for @journalDailyQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'“Every moment is a fresh beginning.”'**
+  String get journalDailyQuote;
+
+  /// No description provided for @educationReadingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'about {minutes} min read'**
+  String educationReadingTime(int minutes);
+
+  /// No description provided for @selfCarePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to learn today?'**
+  String get selfCarePrompt;
+
+  /// No description provided for @selfCareFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get selfCareFilterAll;
+
+  /// No description provided for @selfCareFilterCramps.
+  ///
+  /// In en, this message translates to:
+  /// **'Cramps relief'**
+  String get selfCareFilterCramps;
+
+  /// No description provided for @selfCareFilterStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength and flexibility'**
+  String get selfCareFilterStrength;
+
+  /// No description provided for @selfCareFilterFacial.
+  ///
+  /// In en, this message translates to:
+  /// **'Facial care'**
+  String get selfCareFilterFacial;
+
+  /// No description provided for @selfCareCategoryCramps.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle movement for cramps'**
+  String get selfCareCategoryCramps;
+
+  /// No description provided for @selfCareCategoryStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength and flexibility'**
+  String get selfCareCategoryStrength;
+
+  /// No description provided for @selfCareCategoryFacial.
+  ///
+  /// In en, this message translates to:
+  /// **'Facial care'**
+  String get selfCareCategoryFacial;
+
+  /// No description provided for @selfCareCategoryStretching.
+  ///
+  /// In en, this message translates to:
+  /// **'Relaxing stretches'**
+  String get selfCareCategoryStretching;
+
+  /// No description provided for @selfCareCategoryArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles'**
+  String get selfCareCategoryArticles;
+
+  /// No description provided for @selfCareBadgeGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get selfCareBadgeGetStarted;
+
+  /// No description provided for @selfCareCardBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get selfCareCardBalance;
+
+  /// No description provided for @selfCareCardFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus'**
+  String get selfCareCardFocus;
+
+  /// No description provided for @selfCareCardStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get selfCareCardStrength;
+
+  /// No description provided for @selfCareCardFlexibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexibility'**
+  String get selfCareCardFlexibility;
+
+  /// No description provided for @selfCareCardGentleFacialMassage.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle facial massage'**
+  String get selfCareCardGentleFacialMassage;
+
+  /// No description provided for @selfCareCardGlowSkin.
+  ///
+  /// In en, this message translates to:
+  /// **'Glow up your skin'**
+  String get selfCareCardGlowSkin;
+
+  /// No description provided for @selfCareCardNeckPainRelief.
+  ///
+  /// In en, this message translates to:
+  /// **'Neck pain relief'**
+  String get selfCareCardNeckPainRelief;
+
+  /// No description provided for @selfCareCardLowerBackStretch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower back stretch'**
+  String get selfCareCardLowerBackStretch;
+
+  /// No description provided for @selfCareCardPeriodPainRelief.
+  ///
+  /// In en, this message translates to:
+  /// **'Period pain relief'**
+  String get selfCareCardPeriodPainRelief;
+
+  /// No description provided for @selfCareSubtitleGentleYoga.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle yoga to ease tension'**
+  String get selfCareSubtitleGentleYoga;
+
+  /// No description provided for @selfCareSubtitleBreathingRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Breathing and slow release'**
+  String get selfCareSubtitleBreathingRelease;
+
+  /// No description provided for @selfCareSubtitleMobilityComfort.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility for everyday comfort'**
+  String get selfCareSubtitleMobilityComfort;
+
+  /// No description provided for @selfCareSubtitleLiftSculpt.
+  ///
+  /// In en, this message translates to:
+  /// **'Lift and sculpt softly'**
+  String get selfCareSubtitleLiftSculpt;
+
+  /// No description provided for @selfCareSubtitleCleanseHydrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleanse and hydrate'**
+  String get selfCareSubtitleCleanseHydrate;
+
+  /// No description provided for @selfCareSubtitleReleaseUpperBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Release upper-body tension'**
+  String get selfCareSubtitleReleaseUpperBody;
+
+  /// No description provided for @selfCareSubtitleSlowRestorative.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow restorative motion'**
+  String get selfCareSubtitleSlowRestorative;
+
+  /// No description provided for @selfCareLowImpactExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} low-impact exercises'**
+  String selfCareLowImpactExercises(int count);
+
+  /// No description provided for @selfCareMinutesRead.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min read'**
+  String selfCareMinutesRead(int minutes);
+
+  /// No description provided for @selfCareDeepSleepMeditation.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep sleep meditation'**
+  String get selfCareDeepSleepMeditation;
+
+  /// No description provided for @selfCarePlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get selfCarePlay;
+
+  /// No description provided for @selfCareNeedYogaPillow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoga pillow'**
+  String get selfCareNeedYogaPillow;
+
+  /// No description provided for @selfCareNeedWaterBottle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water bottle'**
+  String get selfCareNeedWaterBottle;
+
+  /// No description provided for @selfCareNeedYogaMat.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoga mat'**
+  String get selfCareNeedYogaMat;
+
+  /// No description provided for @selfCareStepChinToChest.
+  ///
+  /// In en, this message translates to:
+  /// **'Chin to chest'**
+  String get selfCareStepChinToChest;
+
+  /// No description provided for @selfCareStepReclineReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Recline reset'**
+  String get selfCareStepReclineReset;
+
+  /// No description provided for @selfCareStepSupportedPigeon.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported pigeon'**
+  String get selfCareStepSupportedPigeon;
+
+  /// No description provided for @selfCareStepButterflyFold.
+  ///
+  /// In en, this message translates to:
+  /// **'Butterfly fold'**
+  String get selfCareStepButterflyFold;
+
+  /// No description provided for @selfCareStepLotusLift.
+  ///
+  /// In en, this message translates to:
+  /// **'Lotus lift'**
+  String get selfCareStepLotusLift;
+
+  /// No description provided for @selfCareStepLegsUpWall.
+  ///
+  /// In en, this message translates to:
+  /// **'Legs up the wall'**
+  String get selfCareStepLegsUpWall;
+
+  /// No description provided for @selfCareStepNeckLift.
+  ///
+  /// In en, this message translates to:
+  /// **'Neck lift'**
+  String get selfCareStepNeckLift;
+
+  /// No description provided for @selfCareStepGuaShaMassage.
+  ///
+  /// In en, this message translates to:
+  /// **'Gua sha massage'**
+  String get selfCareStepGuaShaMassage;
+
+  /// No description provided for @selfCareStepFacialCleansing.
+  ///
+  /// In en, this message translates to:
+  /// **'Facial cleansing'**
+  String get selfCareStepFacialCleansing;
+
+  /// No description provided for @selfCareStepGlowPress.
+  ///
+  /// In en, this message translates to:
+  /// **'Glow press'**
+  String get selfCareStepGlowPress;
+
+  /// No description provided for @selfCareStepHydrationLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydration lock'**
+  String get selfCareStepHydrationLock;
+
+  /// No description provided for @selfCareSubtitleChinUpward.
+  ///
+  /// In en, this message translates to:
+  /// **'Chin upward'**
+  String get selfCareSubtitleChinUpward;
+
+  /// No description provided for @selfCareSubtitleSweepOutward.
+  ///
+  /// In en, this message translates to:
+  /// **'Sweep outward gently'**
+  String get selfCareSubtitleSweepOutward;
+
+  /// No description provided for @selfCareSubtitleGentlyCleanse.
+  ///
+  /// In en, this message translates to:
+  /// **'Gently cleanse face'**
+  String get selfCareSubtitleGentlyCleanse;
+
+  /// No description provided for @selfCareSubtitleLightCircular.
+  ///
+  /// In en, this message translates to:
+  /// **'Light circular motion'**
+  String get selfCareSubtitleLightCircular;
+
+  /// No description provided for @selfCareSubtitleSealMoisture.
+  ///
+  /// In en, this message translates to:
+  /// **'Seal in moisture'**
+  String get selfCareSubtitleSealMoisture;
+
+  /// No description provided for @selfCareSleepTrackCalmFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm Flow'**
+  String get selfCareSleepTrackCalmFlow;
+
+  /// No description provided for @selfCareSleepTrackBreathOfLife.
+  ///
+  /// In en, this message translates to:
+  /// **'Breath of Life'**
+  String get selfCareSleepTrackBreathOfLife;
+
+  /// No description provided for @selfCareSleepTrackSoulDrift.
+  ///
+  /// In en, this message translates to:
+  /// **'Soul Drift'**
+  String get selfCareSleepTrackSoulDrift;
+
+  /// No description provided for @selfCareSleepTrackSoundsSerenity.
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds of Serenity'**
+  String get selfCareSleepTrackSoundsSerenity;
+
+  /// No description provided for @selfCareSleepTrackInnerPeace.
+  ///
+  /// In en, this message translates to:
+  /// **'Inner Peace'**
+  String get selfCareSleepTrackInnerPeace;
+
+  /// No description provided for @selfCareSleepTrackMindfulJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Mindful Journey'**
+  String get selfCareSleepTrackMindfulJourney;
+
+  /// No description provided for @selfCareSleepTrackWhisperingNature.
+  ///
+  /// In en, this message translates to:
+  /// **'Whispering Nature'**
+  String get selfCareSleepTrackWhisperingNature;
+
+  /// No description provided for @selfCareSleepTrackNaturesRhythm.
+  ///
+  /// In en, this message translates to:
+  /// **'Nature\'s Rhythm'**
+  String get selfCareSleepTrackNaturesRhythm;
+
+  /// No description provided for @selfCareSleepTrackGoldenDawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Golden Dawn'**
+  String get selfCareSleepTrackGoldenDawn;
+
+  /// No description provided for @selfCareSleepTrackHarmonyWithin.
+  ///
+  /// In en, this message translates to:
+  /// **'Harmony Within'**
+  String get selfCareSleepTrackHarmonyWithin;
+
+  /// No description provided for @selfCareSleepTrackBreatheInSilence.
+  ///
+  /// In en, this message translates to:
+  /// **'Breathe in Silence'**
+  String get selfCareSleepTrackBreatheInSilence;
+
+  /// No description provided for @selfCareSleepTrackDeepRestSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Rest Session'**
+  String get selfCareSleepTrackDeepRestSession;
+
+  /// No description provided for @selfCareAlignMindBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Align mind and body'**
+  String get selfCareAlignMindBody;
+
+  /// No description provided for @selfCareActivityDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional, gentle pillow-supported movements. Comfort and response vary from person to person.'**
+  String get selfCareActivityDescription;
+
+  /// No description provided for @selfCareYouWillNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll need'**
+  String get selfCareYouWillNeed;
+
+  /// No description provided for @selfCareStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s start'**
+  String get selfCareStart;
+
+  /// No description provided for @selfCareExerciseJumpingJacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Jumping jacks'**
+  String get selfCareExerciseJumpingJacks;
+
+  /// No description provided for @selfCareFullBodyCardio.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-body cardio'**
+  String get selfCareFullBodyCardio;
+
+  /// No description provided for @selfCareWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait!'**
+  String get selfCareWait;
+
+  /// No description provided for @selfCareQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get selfCareQuit;
+
+  /// No description provided for @selfCareKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going'**
+  String get selfCareKeepGoing;
+
+  /// No description provided for @selfCareStartExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Start exercises'**
+  String get selfCareStartExercises;
+
+  /// No description provided for @selfCareGentleMovementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle movement'**
+  String get selfCareGentleMovementTitle;
+
+  /// No description provided for @selfCareGentleMovementDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional gentle movements may help some people feel more comfortable. Stop if pain increases or you feel dizzy or unwell.'**
+  String get selfCareGentleMovementDescription;
+
+  /// No description provided for @selfCareCongratulations.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations!'**
+  String get selfCareCongratulations;
+
+  /// No description provided for @selfCareCongratulationsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You completed your self-care session and took time for your body today.'**
+  String get selfCareCongratulationsMessage;
+
+  /// No description provided for @selfCareBackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to home'**
+  String get selfCareBackHome;
+
+  /// No description provided for @selfCareArticleReadTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min read'**
+  String selfCareArticleReadTime(int minutes);
+
+  /// No description provided for @selfCareArticleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Period pain: gentle options and when to seek help'**
+  String get selfCareArticleTitle;
+
+  /// No description provided for @selfCareArticleLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Cramping is common, but severe, changing, or disruptive pain deserves attention.'**
+  String get selfCareArticleLead;
+
+  /// No description provided for @selfCareArticleComfortHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle comfort options:'**
+  String get selfCareArticleComfortHeading;
+
+  /// No description provided for @selfCareArticleWarmCompress.
+  ///
+  /// In en, this message translates to:
+  /// **'A warm compress or gentle movement may help some people.'**
+  String get selfCareArticleWarmCompress;
+
+  /// No description provided for @selfCareArticleRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest if you need it; stop an activity if pain or dizziness increases.'**
+  String get selfCareArticleRest;
+
+  /// No description provided for @selfCareArticleVaries.
+  ///
+  /// In en, this message translates to:
+  /// **'What helps varies from person to person.'**
+  String get selfCareArticleVaries;
+
+  /// No description provided for @selfCareArticleMedicineHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'About medicines:'**
+  String get selfCareArticleMedicineHeading;
+
+  /// No description provided for @selfCareArticleMedicineRisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain medicines are not suitable for everyone and can have risks or interactions.'**
+  String get selfCareArticleMedicineRisks;
+
+  /// No description provided for @selfCareArticlePharmacist.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a pharmacist or qualified health professional what is appropriate for you.'**
+  String get selfCareArticlePharmacist;
+
+  /// No description provided for @selfCareArticleFollowLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the product label. This article does not recommend a medicine or dose.'**
+  String get selfCareArticleFollowLabel;
+
+  /// No description provided for @selfCareArticleSeekHelpHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'When to get help:'**
+  String get selfCareArticleSeekHelpHeading;
+
+  /// No description provided for @selfCareArticleDailyLife.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrange a health visit if pain repeatedly disrupts school, work, sleep, or daily activities.'**
+  String get selfCareArticleDailyLife;
+
+  /// No description provided for @selfCareArticleUrgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Seek urgent care for sudden severe pain, fainting, fever, or pain with bleeding when pregnancy is possible.'**
+  String get selfCareArticleUrgent;
+
+  /// No description provided for @selfCareArticleEncouragement.
+  ///
+  /// In en, this message translates to:
+  /// **'You deserve care. Pain that disrupts daily life should be taken seriously.'**
+  String get selfCareArticleEncouragement;
+
+  /// No description provided for @selfCareAddComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add comment'**
+  String get selfCareAddComment;
+
+  /// No description provided for @selfCareFeedbackThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for your feedback!'**
+  String get selfCareFeedbackThanks;
+
+  /// No description provided for @selfCareFeedbackReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback received. We\'ll do our best to bring you a better user experience.'**
+  String get selfCareFeedbackReceived;
+
+  /// No description provided for @selfCareOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get selfCareOk;
+
+  /// No description provided for @selfCareSleepMeditationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep meditation'**
+  String get selfCareSleepMeditationTitle;
+
+  /// No description provided for @selfCareRelax.
+  ///
+  /// In en, this message translates to:
+  /// **'Relax'**
+  String get selfCareRelax;
+
+  /// No description provided for @selfCarePeaceRelaxation.
+  ///
+  /// In en, this message translates to:
+  /// **'Peace and relaxation'**
+  String get selfCarePeaceRelaxation;
+
+  /// No description provided for @selfCareTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'times'**
+  String get selfCareTimes;
+
+  /// No description provided for @selfCarePrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get selfCarePrevious;
+
+  /// No description provided for @selfCareNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get selfCareNext;
+
+  /// No description provided for @selfCareMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String selfCareMinutes(int minutes);
+
+  /// No description provided for @selfCareRound.
+  ///
+  /// In en, this message translates to:
+  /// **'Round {round}'**
+  String selfCareRound(int round);
+
+  /// No description provided for @selfCareOnlyMinutesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {minutes} minutes left — keep it up!'**
+  String selfCareOnlyMinutesLeft(int minutes);
+
+  /// No description provided for @cyclePhasePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get cyclePhasePeriod;
+
+  /// No description provided for @cyclePhaseLuteal.
+  ///
+  /// In en, this message translates to:
+  /// **'Luteal phase'**
+  String get cyclePhaseLuteal;
+
+  /// No description provided for @cyclePhaseOvulation.
+  ///
+  /// In en, this message translates to:
+  /// **'Ovulation'**
+  String get cyclePhaseOvulation;
+
+  /// No description provided for @cyclePhaseFollicular.
+  ///
+  /// In en, this message translates to:
+  /// **'Follicular phase'**
+  String get cyclePhaseFollicular;
+
+  /// No description provided for @authPasswordResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset successful'**
+  String get authPasswordResetSuccess;
+
+  /// No description provided for @authPasswordResetSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been updated. You can now log in with your new password.'**
+  String get authPasswordResetSuccessMessage;
+
+  /// No description provided for @aiChatCheckingIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Hey, just checking in.'**
+  String get aiChatCheckingIn;
+
+  /// No description provided for @aiChatPmsQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How are you feeling around your PMS days lately?'**
+  String get aiChatPmsQuestion;
+
+  /// No description provided for @aiChatCrampsOrAches.
+  ///
+  /// In en, this message translates to:
+  /// **'Cramps or body aches'**
+  String get aiChatCrampsOrAches;
+
+  /// No description provided for @aiChatPhaseVariation.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it. Everyone feels this phase a little differently.'**
+  String get aiChatPhaseVariation;
+
+  /// No description provided for @aiChatFocusQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you usually have trouble focusing or getting things done these days?'**
+  String get aiChatFocusQuestion;
+
+  /// No description provided for @aiChatYesALot.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, a lot'**
+  String get aiChatYesALot;
+
+  /// No description provided for @aiChatGentleSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Here are a few gentle ways to stay balanced'**
+  String get aiChatGentleSuggestions;
+
+  /// No description provided for @aiSuggestionDrinkWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink water'**
+  String get aiSuggestionDrinkWater;
+
+  /// No description provided for @aiSuggestionMoveGently.
+  ///
+  /// In en, this message translates to:
+  /// **'Move gently'**
+  String get aiSuggestionMoveGently;
+
+  /// No description provided for @aiSuggestionTakePause.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a pause'**
+  String get aiSuggestionTakePause;
+
+  /// No description provided for @aiChatLearnMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Would you like to learn a little more about this?'**
+  String get aiChatLearnMore;
+
+  /// No description provided for @aiChatImCurious.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, I\'m curious'**
+  String get aiChatImCurious;
+
+  /// No description provided for @aiChatArticlePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Here\'s an article you can read.'**
+  String get aiChatArticlePrompt;
+
+  /// No description provided for @aiChatIReadIt.
+  ///
+  /// In en, this message translates to:
+  /// **'I read it'**
+  String get aiChatIReadIt;
+
+  /// No description provided for @aiChatSymptomsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve preselected your symptoms. Are these correct, or would you like to add others?'**
+  String get aiChatSymptomsPrompt;
+
+  /// No description provided for @aiChatSymptomsConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, that works!'**
+  String get aiChatSymptomsConfirmed;
+
+  /// No description provided for @aiChatSetSymptomsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your symptoms are all set'**
+  String get aiChatSetSymptomsTitle;
+
+  /// No description provided for @aiChatOpenSymptoms.
+  ///
+  /// In en, this message translates to:
+  /// **'Open symptoms'**
+  String get aiChatOpenSymptoms;
+
+  /// No description provided for @aiChatArticleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Never-ending cramps'**
+  String get aiChatArticleTitle;
+
+  /// No description provided for @aiChatArticleSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When period pain isn\'t typical.'**
+  String get aiChatArticleSubtitle;
+
+  /// No description provided for @aiChatArticleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn why cramps can linger and when to seek help. Find gentle options that may ease discomfort.'**
+  String get aiChatArticleDescription;
+
+  /// No description provided for @aiChatReadNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Read now'**
+  String get aiChatReadNow;
+
+  /// No description provided for @aiChatAfterPmsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'We know it\'s not easy to get through days like this. You\'re not alone.'**
+  String get aiChatAfterPmsSupport;
+
+  /// No description provided for @aiChatCalendarPmsDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Your calendar shows PMS days from the 13th to the 17th, and a doctor\'s appointment on the 18th.'**
+  String get aiChatCalendarPmsDoctor;
+
+  /// No description provided for @aiChatSuggestDate.
+  ///
+  /// In en, this message translates to:
+  /// **'I suggest the 19th instead. How does that sound?'**
+  String get aiChatSuggestDate;
+
+  /// No description provided for @aiChatAssistantLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your assistant'**
+  String get aiChatAssistantLabel;
+
+  /// No description provided for @aiChatPmsConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'PMS day conflict'**
+  String get aiChatPmsConflict;
+
+  /// No description provided for @aiChatDoctorVisitConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor visit conflict'**
+  String get aiChatDoctorVisitConflict;
+
+  /// No description provided for @aiChatAskAnything.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask anything...'**
+  String get aiChatAskAnything;
+
+  /// No description provided for @appointmentConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment confirmed!'**
+  String get appointmentConfirmed;
+
+  /// No description provided for @appointmentBooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Your appointment with Dr. {doctor} is booked.'**
+  String appointmentBooked(String doctor);
+
+  /// No description provided for @appointmentReviewCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} reviews'**
+  String appointmentReviewCount(int count);
+
+  /// No description provided for @appointmentGynecologist.
+  ///
+  /// In en, this message translates to:
+  /// **'Gynecologist'**
+  String get appointmentGynecologist;
+
+  /// No description provided for @appointmentGynOncologyFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus on gynecologic oncology screening'**
+  String get appointmentGynOncologyFocus;
+
+  /// No description provided for @appointmentVideoConsultation.
+  ///
+  /// In en, this message translates to:
+  /// **'Video consultation'**
+  String get appointmentVideoConsultation;
+
+  /// No description provided for @appointmentDoneBackToChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Done, back to chat'**
+  String get appointmentDoneBackToChat;
+
+  /// No description provided for @aiChatSymptomCramps.
+  ///
+  /// In en, this message translates to:
+  /// **'Cramps'**
+  String get aiChatSymptomCramps;
+
+  /// No description provided for @aiChatSymptomHeadache.
+  ///
+  /// In en, this message translates to:
+  /// **'Headache'**
+  String get aiChatSymptomHeadache;
+
+  /// No description provided for @periodLogSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log your period'**
+  String get periodLogSheetTitle;
+
+  /// No description provided for @periodLogSheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the period update that best describes today.'**
+  String get periodLogSheetSubtitle;
 }
 
 class _AppLocalizationsDelegate
@@ -1991,220 +3676,4 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       'an issue with the localizations generation tool. Please file an issue '
       'on GitHub with a reproducible sample app and the gen-l10n configuration '
       'that was used.');
-  String get securityIncorrectPin;
-  String get securityAuthenticationSuccess;
-  String get securityPinRequired;
-  String get securityAuthenticationError;
-  String get securitySkipDevelopmentOnly;
-  String get securityRetry;
-  String securityLockedFor(int minutes, int seconds);
-  String get journalNoEntryForDay;
-  String get journalQuickLogPrompt;
-  String get moodCalm;
-  String get moodHappy;
-  String get moodExcited;
-  String get moodAnxious;
-  String get moodSad;
-  String get moodTired;
-
-  String get journalDeleteMemoryTitle;
-  String get journalDeleteMemoryBody;
-  String get journalTimeline;
-  String get journalSearchAllMoods;
-  String get journalFavorites;
-  String get journalDateFilter;
-  String get journalSearchNoResults;
-  String get journalFilterByMood;
-  String get journalAllFilter;
-  String get journalCurrentStreak;
-  String get journalMoodDistribution;
-  String get journalWeeklyActivity;
-  String get journalTopTags;
-  String get journalInsightsNotEnoughData;
-  String get journalQuickThought;
-  String get journalWrite;
-  String get journalQuickThoughtHint;
-  String get journalCaptureMoment;
-  String get journalQuickThoughtSaved;
-  String get journalStreak;
-  String get journalInsights;
-  String get journalWeekly;
-  String get journalRecentEntries;
-  String get journalSeeAll;
-  String get journalNoEntriesYet;
-  String get journalPhotoGallery;
-  String get journalTakePhoto;
-  String get journalImageAdded;
-  String get journalAudioComingSoon;
-  String get journalMoodQuestion;
-  String journalNoteCount(int count);
-  String journalStreakCount(int count);
-
-  String get selectDateRange;
-
-  String get journalEditAction;
-  String get journalQuietMoment;
-  String get journalLockedTitle;
-  String get journalLockedDescription;
-  String get journalUseBiometrics;
-  String get journalUnlockReason;
-  String get securityBiometricFailed;
-
-  String get journalSaveError;
-  String get journalDailyQuote;
-
-  String educationReadingTime(int minutes);
-
-  String get selfCarePrompt;
-  String get selfCareFilterAll;
-  String get selfCareFilterCramps;
-  String get selfCareFilterStrength;
-  String get selfCareFilterFacial;
-  String get selfCareCategoryCramps;
-  String get selfCareCategoryStrength;
-  String get selfCareCategoryFacial;
-  String get selfCareCategoryStretching;
-  String get selfCareCategoryArticles;
-  String get selfCareBadgeGetStarted;
-  String get selfCareCardBalance;
-  String get selfCareCardFocus;
-  String get selfCareCardStrength;
-  String get selfCareCardFlexibility;
-  String get selfCareCardGentleFacialMassage;
-  String get selfCareCardGlowSkin;
-  String get selfCareCardNeckPainRelief;
-  String get selfCareCardLowerBackStretch;
-  String get selfCareCardPeriodPainRelief;
-  String get selfCareSubtitleGentleYoga;
-  String get selfCareSubtitleBreathingRelease;
-  String get selfCareSubtitleMobilityComfort;
-  String get selfCareSubtitleLiftSculpt;
-  String get selfCareSubtitleCleanseHydrate;
-  String get selfCareSubtitleReleaseUpperBody;
-  String get selfCareSubtitleSlowRestorative;
-  String get selfCareDeepSleepMeditation;
-  String get selfCarePlay;
-  String get selfCareNeedYogaPillow;
-  String get selfCareNeedWaterBottle;
-  String get selfCareNeedYogaMat;
-  String get selfCareStepChinToChest;
-  String get selfCareStepReclineReset;
-  String get selfCareStepSupportedPigeon;
-  String get selfCareStepButterflyFold;
-  String get selfCareStepLotusLift;
-  String get selfCareStepLegsUpWall;
-  String get selfCareStepNeckLift;
-  String get selfCareStepGuaShaMassage;
-  String get selfCareStepFacialCleansing;
-  String get selfCareStepGlowPress;
-  String get selfCareStepHydrationLock;
-  String get selfCareSubtitleChinUpward;
-  String get selfCareSubtitleSweepOutward;
-  String get selfCareSubtitleGentlyCleanse;
-  String get selfCareSubtitleLightCircular;
-  String get selfCareSubtitleSealMoisture;
-  String get selfCareSleepTrackCalmFlow;
-  String get selfCareSleepTrackBreathOfLife;
-  String get selfCareSleepTrackSoulDrift;
-  String get selfCareSleepTrackSoundsSerenity;
-  String get selfCareSleepTrackInnerPeace;
-  String get selfCareSleepTrackMindfulJourney;
-  String get selfCareSleepTrackWhisperingNature;
-  String get selfCareSleepTrackNaturesRhythm;
-  String get selfCareSleepTrackGoldenDawn;
-  String get selfCareSleepTrackHarmonyWithin;
-  String get selfCareSleepTrackBreatheInSilence;
-  String get selfCareSleepTrackDeepRestSession;
-  String get selfCareAlignMindBody;
-  String get selfCareActivityDescription;
-  String get selfCareYouWillNeed;
-  String get selfCareStart;
-  String get selfCareExerciseJumpingJacks;
-  String get selfCareFullBodyCardio;
-  String get selfCareWait;
-  String get selfCareQuit;
-  String get selfCareKeepGoing;
-  String get selfCareStartExercises;
-  String get selfCareGentleMovementTitle;
-  String get selfCareGentleMovementDescription;
-  String get selfCareCongratulations;
-  String get selfCareCongratulationsMessage;
-  String get selfCareBackHome;
-  String get selfCareArticleTitle;
-  String get selfCareArticleLead;
-  String get selfCareArticleComfortHeading;
-  String get selfCareArticleWarmCompress;
-  String get selfCareArticleRest;
-  String get selfCareArticleVaries;
-  String get selfCareArticleMedicineHeading;
-  String get selfCareArticleMedicineRisks;
-  String get selfCareArticlePharmacist;
-  String get selfCareArticleFollowLabel;
-  String get selfCareArticleSeekHelpHeading;
-  String get selfCareArticleDailyLife;
-  String get selfCareArticleUrgent;
-  String get selfCareArticleEncouragement;
-  String get selfCareAddComment;
-  String get selfCareFeedbackThanks;
-  String get selfCareFeedbackReceived;
-  String get selfCareOk;
-  String get selfCareSleepMeditationTitle;
-  String get selfCareRelax;
-  String get selfCarePeaceRelaxation;
-  String get selfCareTimes;
-  String get selfCarePrevious;
-  String get selfCareNext;
-  String selfCareMinutes(int minutes);
-  String selfCareRound(int round);
-  String selfCareOnlyMinutesLeft(int minutes);
-  String selfCareLowImpactExercises(int count);
-  String selfCareMinutesRead(int minutes);
-  String selfCareArticleReadTime(int minutes);
-
-  String get cyclePhasePeriod;
-  String get cyclePhaseLuteal;
-  String get cyclePhaseOvulation;
-  String get cyclePhaseFollicular;
-  String get authPasswordResetSuccess;
-  String get authPasswordResetSuccessMessage;
-  String get aiChatCheckingIn;
-  String get aiChatPmsQuestion;
-  String get aiChatCrampsOrAches;
-  String get aiChatPhaseVariation;
-  String get aiChatFocusQuestion;
-  String get aiChatYesALot;
-  String get aiChatGentleSuggestions;
-  String get aiSuggestionDrinkWater;
-  String get aiSuggestionMoveGently;
-  String get aiSuggestionTakePause;
-  String get aiChatLearnMore;
-  String get aiChatImCurious;
-  String get aiChatArticlePrompt;
-  String get aiChatIReadIt;
-  String get aiChatSymptomsPrompt;
-  String get aiChatSymptomsConfirmed;
-  String get aiChatSetSymptomsTitle;
-  String get aiChatOpenSymptoms;
-  String get aiChatArticleTitle;
-  String get aiChatArticleSubtitle;
-  String get aiChatArticleDescription;
-  String get aiChatReadNow;
-  String get aiChatAfterPmsSupport;
-  String get aiChatCalendarPmsDoctor;
-  String get aiChatSuggestDate;
-  String get aiChatAssistantLabel;
-  String get aiChatPmsConflict;
-  String get aiChatDoctorVisitConflict;
-  String get aiChatAskAnything;
-  String get appointmentConfirmed;
-  String appointmentBooked(String doctor);
-  String appointmentReviewCount(int count);
-  String get appointmentGynecologist;
-  String get appointmentGynOncologyFocus;
-  String get appointmentVideoConsultation;
-  String get appointmentDoneBackToChat;
-  String get aiChatSymptomCramps;
-  String get aiChatSymptomHeadache;
-  String get periodLogSheetTitle;
-  String get periodLogSheetSubtitle;
 }

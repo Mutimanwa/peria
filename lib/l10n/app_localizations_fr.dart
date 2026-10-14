@@ -1022,8 +1022,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Terminer un journal commencé aujourd’hui ou hier.';
 
   @override
-  String get openStructuredPeriodEdit =>
-      'Ouvrir la modification du calendrier';
+  String get openStructuredPeriodEdit => 'Ouvrir la modification du calendrier';
 
   @override
   String get periodLogLoading => 'Chargement des journaux de règles…';
@@ -1046,6 +1045,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get periodLogSaveError =>
       'Impossible d’enregistrer le journal. Vérifie ta connexion puis réessaie.';
+
   @override
   String get update => 'Mettre à jour';
 
@@ -1056,37 +1056,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get calendarNoCycleData => 'Aucune donnée de cycle';
 
   @override
-  String get calendarNoCyclePredictionAvailable => 'Aucune prévision de cycle n’est disponible pour cette date.';
+  String get calendarNoCyclePredictionAvailable =>
+      'Aucune prévision de cycle n’est disponible pour cette date.';
 
   @override
   String get calendarOverdue => 'En retard';
 
   @override
-  String get calendarExpectedNotLogged => 'Tes règles sont attendues mais n’ont pas été enregistrées.';
+  String get calendarExpectedNotLogged =>
+      'Tes règles sont attendues mais n’ont pas été enregistrées.';
 
   @override
   String get calendarLoggedPeriodDay => 'Jour de règles enregistré';
 
   @override
-  String get calendarLoggedPeriodDescription => 'Cette date figure dans ton journal des règles.';
+  String get calendarLoggedPeriodDescription =>
+      'Cette date figure dans ton journal des règles.';
 
   @override
   String get calendarPredictedPeriodDay => 'Jour de règles prévu';
 
   @override
-  String get calendarPredictedPeriodDescription => 'Cette date est une estimation fondée sur les données de ton cycle.';
+  String get calendarPredictedPeriodDescription =>
+      'Cette date est une estimation fondée sur les données de ton cycle.';
 
   @override
   String get calendarFertilityWindow => 'Fenêtre fertile';
 
   @override
-  String get calendarFertilityWindowDescription => 'Cette date se situe dans la fenêtre fertile estimée.';
+  String get calendarFertilityWindowDescription =>
+      'Cette date se situe dans la fenêtre fertile estimée.';
 
   @override
   String get calendarPmsDay => 'Jour de SPM';
 
   @override
-  String get calendarPmsDayDescription => 'Cette date se trouve dans la phase prémenstruelle estimée.';
+  String get calendarPmsDayDescription =>
+      'Cette date se trouve dans la phase prémenstruelle estimée.';
 
   @override
   String get calendarSelectedDay => 'Jour sélectionné.';
@@ -1095,22 +1101,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get calendarRegularDay => 'Jour ordinaire';
 
   @override
-  String get calendarNoTrackedCycleEvent => 'Aucun événement de cycle suivi n’est associé à cette date.';
+  String get calendarNoTrackedCycleEvent =>
+      'Aucun événement de cycle suivi n’est associé à cette date.';
 
   @override
   String get calendarMonthlyOverview => 'Aperçu mensuel';
 
   @override
-  String get calendarMonthlyOverviewHelp => 'Consulte l’évolution de ton cycle. Utilise la saisie rapide au quotidien et Modifier le calendrier pour corriger les dates.';
+  String get calendarMonthlyOverviewHelp =>
+      'Consulte l’évolution de ton cycle. Utilise la saisie rapide au quotidien et Modifier le calendrier pour corriger les dates.';
 
   @override
   String get calendarQuickCapture => 'Saisie rapide';
 
   @override
-  String get calendarQuickCaptureHelp => 'Des actions rapides pour noter tes règles et tes symptômes sans ouvrir l’éditeur détaillé.';
+  String get calendarQuickCaptureHelp =>
+      'Des actions rapides pour noter tes règles et tes symptômes sans ouvrir l’éditeur détaillé.';
 
   @override
-  String get calendarDateRangeHelp => 'Tu veux définir ou corriger une période ? Utilise Modifier le calendrier.';
+  String get calendarDateRangeHelp =>
+      'Tu veux définir ou corriger une période ? Utilise Modifier le calendrier.';
 
   @override
   String get calendarEditTitle => 'Modifier le calendrier';
@@ -1125,13 +1135,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get calendarPeriodRangeReady => 'Période sélectionnée';
 
   @override
-  String get calendarSelectRangeInstruction => 'Utilise cet écran pour définir ou corriger précisément une période de règles.';
+  String get calendarSelectRangeInstruction =>
+      'Utilise cet écran pour définir ou corriger précisément une période de règles.';
 
   @override
   String get calendarChooseLastDay => 'Choisis le dernier jour de ces règles.';
 
   @override
-  String get calendarCorrectionHelp => 'Cet écran sert à corriger précisément les dates. Pour une saisie rapide, utilise Noter les règles depuis le calendrier.';
+  String get calendarCorrectionHelp =>
+      'Cet écran sert à corriger précisément les dates. Pour une saisie rapide, utilise Noter les règles depuis le calendrier.';
 
   @override
   String get calendarSavedPeriod => 'Règles enregistrées';
@@ -1203,41 +1215,51 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpContactUs => 'Nous contacter';
 
   @override
-  String get helpFaqLogQuestion => 'Comment noter mes règles et mes symptômes ?';
+  String get helpFaqLogQuestion =>
+      'Comment noter mes règles et mes symptômes ?';
 
   @override
-  String get helpFaqLogAnswer => 'Ouvre le calendrier du cycle et choisis Noter les règles ou Noter les symptômes. Utilise Modifier le calendrier pour corriger une période.';
+  String get helpFaqLogAnswer =>
+      'Ouvre le calendrier du cycle et choisis Noter les règles ou Noter les symptômes. Utilise Modifier le calendrier pour corriger une période.';
 
   @override
-  String get helpFaqDataQuestion => 'Mes données de santé sont-elles protégées ?';
+  String get helpFaqDataQuestion =>
+      'Mes données de santé sont-elles protégées ?';
 
   @override
-  String get helpFaqDataAnswer => 'Par défaut, le journal reste sur cet appareil dans un stockage chiffré; sa synchronisation cloud est facultative et exige un consentement distinct. Les données du profil, du cycle, des symptômes, du partenaire et des réglages utilisent Firebase. Consulte la politique de confidentialité pour les détails et les limites actuelles de suppression.';
+  String get helpFaqDataAnswer =>
+      'Par défaut, le journal reste sur cet appareil dans un stockage chiffré; sa synchronisation cloud est facultative et exige un consentement distinct. Les données du profil, du cycle, des symptômes, du partenaire et des réglages utilisent Firebase. Consulte la politique de confidentialité pour les détails et les limites actuelles de suppression.';
 
   @override
-  String get helpFaqPartnerQuestion => 'Comment fonctionne le partage avec un partenaire ?';
+  String get helpFaqPartnerQuestion =>
+      'Comment fonctionne le partage avec un partenaire ?';
 
   @override
-  String get helpFaqPartnerAnswer => 'Cette version conserve l’adresse du partenaire et les préférences de partage dans ton compte Firebase. Elle n’envoie pas encore d’invitation et ne transmet pas les données de cycle ou de symptômes au partenaire.';
+  String get helpFaqPartnerAnswer =>
+      'Cette version conserve l’adresse du partenaire et les préférences de partage dans ton compte Firebase. Elle n’envoie pas encore d’invitation et ne transmet pas les données de cycle ou de symptômes au partenaire.';
 
   @override
-  String get helpFaqNotificationsQuestion => 'Comment personnaliser les notifications ?';
+  String get helpFaqNotificationsQuestion =>
+      'Comment personnaliser les notifications ?';
 
   @override
-  String get helpFaqNotificationsAnswer => 'Ouvre Profil, puis Paramètres et Notifications pour choisir les rappels locaux à activer.';
+  String get helpFaqNotificationsAnswer =>
+      'Ouvre Profil, puis Paramètres et Notifications pour choisir les rappels locaux à activer.';
 
   @override
-  String get helpFaqDeleteQuestion => 'Comment supprimer mon compte ou mes données ?';
+  String get helpFaqDeleteQuestion =>
+      'Comment supprimer mon compte ou mes données ?';
 
   @override
-  String get helpFaqDeleteAnswer => 'Tu peux effacer les données locales dans Profil > Sécurité du compte et supprimer une copie cloud facultative du journal dans Paramètres > Synchronisation du journal. Cette version ne permet pas encore de supprimer dans l’application le compte Firebase et toutes les autres données cloud. Avant toute diffusion publique, l’éditeur doit fournir un contact de confidentialité vérifié.';
+  String get helpFaqDeleteAnswer =>
+      'Tu peux effacer les données locales dans Profil > Sécurité du compte et supprimer une copie cloud facultative du journal dans Paramètres > Synchronisation du journal. Cette version ne permet pas encore de supprimer dans l’application le compte Firebase et toutes les autres données cloud. Avant toute diffusion publique, l’éditeur doit fournir un contact de confidentialité vérifié.';
 
   @override
   String get helpFaqSupportQuestion => 'Comment contacter le support ?';
 
   @override
-  String get helpFaqSupportAnswer => 'Utilise les options de contact au bas de cette page.';
-
+  String get helpFaqSupportAnswer =>
+      'Utilise les options de contact au bas de cette page.';
 
   @override
   String get securityIncorrectPin => 'Code PIN incorrect.';
@@ -1249,23 +1271,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get securityPinRequired => 'Code PIN requis';
 
   @override
-  String get securityAuthenticationError => 'Échec de l’authentification. Réessaie.';
+  String get securityAuthenticationError =>
+      'Échec de l’authentification. Réessaie.';
 
   @override
-  String get securitySkipDevelopmentOnly => 'Ignorer (développement uniquement)';
+  String get securitySkipDevelopmentOnly =>
+      'Ignorer (développement uniquement)';
 
   @override
   String get securityRetry => 'Réessayer';
 
   @override
-  String securityLockedFor(int minutes, int seconds) =>
-      'Verrouillé pendant $minutes min $seconds s';
+  String securityLockedFor(int minutes, int seconds) {
+    return 'Verrouillé pendant $minutes min $seconds s';
+  }
 
   @override
   String get journalNoEntryForDay => 'Aucune note pour ce jour';
 
   @override
-  String get journalQuickLogPrompt => 'Utilise la saisie rapide pour noter ce moment.';
+  String get journalQuickLogPrompt =>
+      'Utilise la saisie rapide pour noter ce moment.';
 
   @override
   String get moodCalm => 'Calme';
@@ -1285,12 +1311,12 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get moodTired => 'Fatiguée';
 
-
   @override
   String get journalDeleteMemoryTitle => 'Supprimer ce souvenir ?';
 
   @override
-  String get journalDeleteMemoryBody => 'Cette action est définitive et ne peut pas être annulée.';
+  String get journalDeleteMemoryBody =>
+      'Cette action est définitive et ne peut pas être annulée.';
 
   @override
   String get journalTimeline => 'Chronologie';
@@ -1326,7 +1352,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalTopTags => 'Tags principaux';
 
   @override
-  String get journalInsightsNotEnoughData => 'Pas encore assez de données pour afficher des tendances 🌿';
+  String get journalInsightsNotEnoughData =>
+      'Pas encore assez de données pour afficher des tendances 🌿';
 
   @override
   String get journalQuickThought => 'Note rapide';
@@ -1371,16 +1398,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalImageAdded => 'Image ajoutée au journal.';
 
   @override
-  String get journalAudioComingSoon => 'L’enregistrement audio sera bientôt disponible.';
+  String get journalAudioComingSoon =>
+      'L’enregistrement audio sera bientôt disponible.';
 
   @override
   String get journalMoodQuestion => 'Comment te sens-tu ?';
 
   @override
-  String journalNoteCount(int count) => '$count ${count == 1 ? 'note' : 'notes'}';
+  String journalNoteCount(int count) {
+    return '$count notes';
+  }
 
   @override
-  String journalStreakCount(int count) => '$count ${count == 1 ? 'jour' : 'jours'}';
+  String journalStreakCount(int count) {
+    return '$count jours';
+  }
 
   @override
   String get selectDateRange => 'Sélectionner une période';
@@ -1395,7 +1427,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalLockedTitle => 'Le journal est verrouillé';
 
   @override
-  String get journalLockedDescription => 'Saisis ton code PIN ou utilise la biométrie pour accéder à tes notes privées.';
+  String get journalLockedDescription =>
+      'Saisis ton code PIN ou utilise la biométrie pour accéder à tes notes privées.';
 
   @override
   String get journalUseBiometrics => 'Utiliser la biométrie';
@@ -1404,7 +1437,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalUnlockReason => 'Déverrouiller ton journal privé';
 
   @override
-  String get securityBiometricFailed => 'Échec de l’authentification biométrique. Réessaie ou saisis ton code PIN.';
+  String get securityBiometricFailed =>
+      'Échec de l’authentification biométrique. Réessaie ou saisis ton code PIN.';
 
   @override
   String get journalSaveError => 'Impossible d’enregistrer ta note. Réessaie.';
@@ -1413,7 +1447,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalDailyQuote => '« Chaque instant est un nouveau départ. »';
 
   @override
-  String educationReadingTime(int minutes) => 'environ $minutes min de lecture';
+  String educationReadingTime(int minutes) {
+    return 'environ $minutes min de lecture';
+  }
 
   @override
   String get selfCarePrompt => 'Que souhaites-tu découvrir aujourd’hui ?';
@@ -1476,13 +1512,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareCardPeriodPainRelief => 'Soulager les douleurs de règles';
 
   @override
-  String get selfCareSubtitleGentleYoga => 'Yoga doux pour relâcher les tensions';
+  String get selfCareSubtitleGentleYoga =>
+      'Yoga doux pour relâcher les tensions';
 
   @override
-  String get selfCareSubtitleBreathingRelease => 'Respiration et relâchement lent';
+  String get selfCareSubtitleBreathingRelease =>
+      'Respiration et relâchement lent';
 
   @override
-  String get selfCareSubtitleMobilityComfort => 'Mobilité et confort au quotidien';
+  String get selfCareSubtitleMobilityComfort =>
+      'Mobilité et confort au quotidien';
 
   @override
   String get selfCareSubtitleLiftSculpt => 'Lisser et tonifier en douceur';
@@ -1491,13 +1530,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareSubtitleCleanseHydrate => 'Nettoyer et hydrater';
 
   @override
-  String get selfCareSubtitleReleaseUpperBody => 'Relâcher les tensions du haut du corps';
+  String get selfCareSubtitleReleaseUpperBody =>
+      'Relâcher les tensions du haut du corps';
 
   @override
-  String get selfCareSubtitleSlowRestorative => 'Mouvements lents et réparateurs';
+  String get selfCareSubtitleSlowRestorative =>
+      'Mouvements lents et réparateurs';
 
   @override
-  String get selfCareDeepSleepMeditation => 'Méditation pour un sommeil profond';
+  String selfCareLowImpactExercises(int count) {
+    return '$count exercices à faible impact';
+  }
+
+  @override
+  String selfCareMinutesRead(int minutes) {
+    return '$minutes min de lecture';
+  }
+
+  @override
+  String get selfCareDeepSleepMeditation =>
+      'Méditation pour un sommeil profond';
 
   @override
   String get selfCarePlay => 'Lire';
@@ -1548,7 +1600,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareSubtitleChinUpward => 'Menton vers le haut';
 
   @override
-  String get selfCareSubtitleSweepOutward => 'Faire glisser doucement vers l’extérieur';
+  String get selfCareSubtitleSweepOutward =>
+      'Faire glisser doucement vers l’extérieur';
 
   @override
   String get selfCareSubtitleGentlyCleanse => 'Nettoyer le visage en douceur';
@@ -1599,7 +1652,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareAlignMindBody => 'Aligner le corps et l’esprit';
 
   @override
-  String get selfCareActivityDescription => 'Mouvements doux et facultatifs, avec un coussin si tu le souhaites. Le confort et les effets varient selon les personnes.';
+  String get selfCareActivityDescription =>
+      'Mouvements doux et facultatifs, avec un coussin si tu le souhaites. Le confort et les effets varient selon les personnes.';
 
   @override
   String get selfCareYouWillNeed => 'Tu auras besoin de';
@@ -1629,58 +1683,77 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareGentleMovementTitle => 'Mouvements doux';
 
   @override
-  String get selfCareGentleMovementDescription => 'Des mouvements doux et facultatifs peuvent apporter du confort à certaines personnes. Arrête si la douleur augmente, si tu as des vertiges ou si tu ne te sens pas bien.';
+  String get selfCareGentleMovementDescription =>
+      'Des mouvements doux et facultatifs peuvent apporter du confort à certaines personnes. Arrête si la douleur augmente, si tu as des vertiges ou si tu ne te sens pas bien.';
 
   @override
   String get selfCareCongratulations => 'Bravo !';
 
   @override
-  String get selfCareCongratulationsMessage => 'Tu as terminé ta séance de bien-être et pris soin de ton corps aujourd’hui.';
+  String get selfCareCongratulationsMessage =>
+      'Tu as terminé ta séance de bien-être et pris soin de ton corps aujourd’hui.';
 
   @override
   String get selfCareBackHome => 'Retour à l’accueil';
 
   @override
-  String get selfCareArticleTitle => 'Douleurs de règles : gestes doux et quand demander de l’aide';
+  String selfCareArticleReadTime(int minutes) {
+    return '$minutes min de lecture';
+  }
 
   @override
-  String get selfCareArticleLead => 'Les crampes sont fréquentes, mais une douleur intense, nouvelle ou gênante mérite attention.';
+  String get selfCareArticleTitle =>
+      'Douleurs de règles : gestes doux et quand demander de l’aide';
 
   @override
-  String get selfCareArticleComfortHeading => 'Gestes doux pour plus de confort :';
+  String get selfCareArticleLead =>
+      'Les crampes sont fréquentes, mais une douleur intense, nouvelle ou gênante mérite attention.';
 
   @override
-  String get selfCareArticleWarmCompress => 'Une compresse chaude ou des mouvements doux peuvent aider certaines personnes.';
+  String get selfCareArticleComfortHeading =>
+      'Gestes doux pour plus de confort :';
 
   @override
-  String get selfCareArticleRest => 'Repose-toi si tu en as besoin ; arrête une activité si la douleur ou les vertiges augmentent.';
+  String get selfCareArticleWarmCompress =>
+      'Une compresse chaude ou des mouvements doux peuvent aider certaines personnes.';
 
   @override
-  String get selfCareArticleVaries => 'Ce qui aide varie d’une personne à l’autre.';
+  String get selfCareArticleRest =>
+      'Repose-toi si tu en as besoin ; arrête une activité si la douleur ou les vertiges augmentent.';
+
+  @override
+  String get selfCareArticleVaries =>
+      'Ce qui aide varie d’une personne à l’autre.';
 
   @override
   String get selfCareArticleMedicineHeading => 'À propos des médicaments :';
 
   @override
-  String get selfCareArticleMedicineRisks => 'Les antidouleurs ne conviennent pas à tout le monde et peuvent présenter des risques ou des interactions.';
+  String get selfCareArticleMedicineRisks =>
+      'Les antidouleurs ne conviennent pas à tout le monde et peuvent présenter des risques ou des interactions.';
 
   @override
-  String get selfCareArticlePharmacist => 'Demande à un pharmacien ou à un professionnel de santé qualifié ce qui te convient.';
+  String get selfCareArticlePharmacist =>
+      'Demande à un pharmacien ou à un professionnel de santé qualifié ce qui te convient.';
 
   @override
-  String get selfCareArticleFollowLabel => 'Suis la notice du produit. Cet article ne recommande aucun médicament ni aucune dose.';
+  String get selfCareArticleFollowLabel =>
+      'Suis la notice du produit. Cet article ne recommande aucun médicament ni aucune dose.';
 
   @override
   String get selfCareArticleSeekHelpHeading => 'Quand demander de l’aide :';
 
   @override
-  String get selfCareArticleDailyLife => 'Prends rendez-vous si la douleur perturbe régulièrement tes études, ton travail, ton sommeil ou tes activités.';
+  String get selfCareArticleDailyLife =>
+      'Prends rendez-vous si la douleur perturbe régulièrement tes études, ton travail, ton sommeil ou tes activités.';
 
   @override
-  String get selfCareArticleUrgent => 'Demande une aide urgente en cas de douleur soudaine et intense, d’évanouissement, de fièvre, ou de douleur avec saignement si une grossesse est possible.';
+  String get selfCareArticleUrgent =>
+      'Demande une aide urgente en cas de douleur soudaine et intense, d’évanouissement, de fièvre, ou de douleur avec saignement si une grossesse est possible.';
 
   @override
-  String get selfCareArticleEncouragement => 'Tu mérites d’être aidée. Une douleur qui perturbe le quotidien doit être prise au sérieux.';
+  String get selfCareArticleEncouragement =>
+      'Tu mérites d’être aidée. Une douleur qui perturbe le quotidien doit être prise au sérieux.';
 
   @override
   String get selfCareAddComment => 'Ajouter un commentaire';
@@ -1689,7 +1762,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareFeedbackThanks => 'Merci pour ton retour !';
 
   @override
-  String get selfCareFeedbackReceived => 'Retour reçu. Nous ferons de notre mieux pour améliorer ton expérience.';
+  String get selfCareFeedbackReceived =>
+      'Retour reçu. Nous ferons de notre mieux pour améliorer ton expérience.';
 
   @override
   String get selfCareOk => 'OK';
@@ -1713,113 +1787,174 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selfCareNext => 'Suivant';
 
   @override
-  String selfCareMinutes(int minutes) => '$minutes min';
+  String selfCareMinutes(int minutes) {
+    return '$minutes min';
+  }
 
   @override
-  String selfCareRound(int round) => 'Série $round';
+  String selfCareRound(int round) {
+    return 'Série $round';
+  }
 
   @override
-  String selfCareOnlyMinutesLeft(int minutes) => 'Plus que $minutes minutes — continue comme ça !';
+  String selfCareOnlyMinutesLeft(int minutes) {
+    return 'Plus que $minutes minutes — continue comme ça !';
+  }
 
   @override
-  String selfCareLowImpactExercises(int count) => '$count exercices à faible impact';
+  String get cyclePhasePeriod => 'Menstruation';
 
   @override
-  String selfCareMinutesRead(int minutes) => '$minutes min de lecture';
+  String get cyclePhaseLuteal => 'Phase lutéale';
 
   @override
-  String selfCareArticleReadTime(int minutes) => '$minutes min de lecture';
+  String get cyclePhaseOvulation => 'Ovulation';
 
   @override
-  String get cyclePhasePeriod => "Menstruation";
+  String get cyclePhaseFollicular => 'Phase folliculaire';
+
   @override
-  String get cyclePhaseLuteal => "Phase lutéale";
+  String get authPasswordResetSuccess => 'Mot de passe réinitialisé';
+
   @override
-  String get cyclePhaseOvulation => "Ovulation";
+  String get authPasswordResetSuccessMessage =>
+      'Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.';
+
   @override
-  String get cyclePhaseFollicular => "Phase folliculaire";
+  String get aiChatCheckingIn =>
+      'Bonjour, je voulais prendre de tes nouvelles.';
+
   @override
-  String get authPasswordResetSuccess => "Mot de passe réinitialisé";
+  String get aiChatPmsQuestion =>
+      'Comment te sens-tu ces derniers temps pendant les jours précédant tes règles ?';
+
   @override
-  String get authPasswordResetSuccessMessage => "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.";
+  String get aiChatCrampsOrAches => 'Crampes ou douleurs corporelles';
+
   @override
-  String get aiChatCheckingIn => "Bonjour, je voulais prendre de tes nouvelles.";
+  String get aiChatPhaseVariation =>
+      'Je comprends. Cette phase est vécue différemment par chacune.';
+
   @override
-  String get aiChatPmsQuestion => "Comment te sens-tu ces derniers temps pendant les jours précédant tes règles ?";
+  String get aiChatFocusQuestion =>
+      'As-tu généralement du mal à te concentrer ou à accomplir tes tâches ces jours-ci ?';
+
   @override
-  String get aiChatCrampsOrAches => "Crampes ou douleurs corporelles";
+  String get aiChatYesALot => 'Oui, beaucoup';
+
   @override
-  String get aiChatPhaseVariation => "Je comprends. Cette phase est vécue différemment par chacune.";
+  String get aiChatGentleSuggestions =>
+      'Voici quelques idées douces pour retrouver ton équilibre.';
+
   @override
-  String get aiChatFocusQuestion => "As-tu généralement du mal à te concentrer ou à accomplir tes tâches ces jours-ci ?";
+  String get aiSuggestionDrinkWater => 'Boire de l’eau';
+
   @override
-  String get aiChatYesALot => "Oui, beaucoup";
+  String get aiSuggestionMoveGently => 'Bouger en douceur';
+
   @override
-  String get aiChatGentleSuggestions => "Voici quelques idées douces pour retrouver ton équilibre.";
+  String get aiSuggestionTakePause => 'Faire une pause';
+
   @override
-  String get aiSuggestionDrinkWater => "Boire de l’eau";
+  String get aiChatLearnMore => 'Veux-tu en apprendre un peu plus à ce sujet ?';
+
   @override
-  String get aiSuggestionMoveGently => "Bouger en douceur";
+  String get aiChatImCurious => 'Oui, je suis curieuse';
+
   @override
-  String get aiSuggestionTakePause => "Faire une pause";
+  String get aiChatArticlePrompt => 'Voici un article que tu peux lire.';
+
   @override
-  String get aiChatLearnMore => "Veux-tu en apprendre un peu plus à ce sujet ?";
+  String get aiChatIReadIt => 'Je l’ai lu';
+
   @override
-  String get aiChatImCurious => "Oui, je suis curieuse";
+  String get aiChatSymptomsPrompt =>
+      'J’ai présélectionné tes symptômes. Est-ce correct ou souhaites-tu en ajouter ?';
+
   @override
-  String get aiChatArticlePrompt => "Voici un article que tu peux lire.";
+  String get aiChatSymptomsConfirmed => 'Oui, ça me convient !';
+
   @override
-  String get aiChatIReadIt => "Je l’ai lu";
+  String get aiChatSetSymptomsTitle => 'Tes symptômes sont prêts';
+
   @override
-  String get aiChatSymptomsPrompt => "J’ai présélectionné tes symptômes. Est-ce correct ou souhaites-tu en ajouter ?";
+  String get aiChatOpenSymptoms => 'Voir les symptômes';
+
   @override
-  String get aiChatSymptomsConfirmed => "Oui, ça me convient !";
+  String get aiChatArticleTitle => 'Des crampes qui persistent';
+
   @override
-  String get aiChatSetSymptomsTitle => "Tes symptômes sont prêts";
+  String get aiChatArticleSubtitle =>
+      'Quand les douleurs menstruelles sortent de l’ordinaire.';
+
   @override
-  String get aiChatOpenSymptoms => "Voir les symptômes";
+  String get aiChatArticleDescription =>
+      'Découvre pourquoi les crampes peuvent persister et quand demander de l’aide. Explore des moyens doux qui peuvent soulager l’inconfort.';
+
   @override
-  String get aiChatArticleTitle => "Des crampes qui persistent";
+  String get aiChatReadNow => 'Lire maintenant';
+
   @override
-  String get aiChatArticleSubtitle => "Quand les douleurs menstruelles sortent de l’ordinaire.";
+  String get aiChatAfterPmsSupport =>
+      'Nous savons que ces journées peuvent être difficiles. Tu n’es pas seule.';
+
   @override
-  String get aiChatArticleDescription => "Découvre pourquoi les crampes peuvent persister et quand demander de l’aide. Explore des moyens doux qui peuvent soulager l’inconfort.";
+  String get aiChatCalendarPmsDoctor =>
+      'Ton calendrier indique des jours de SPM du 13 au 17 et un rendez-vous médical le 18.';
+
   @override
-  String get aiChatReadNow => "Lire maintenant";
+  String get aiChatSuggestDate =>
+      'Je te propose plutôt le 19. Qu’en penses-tu ?';
+
   @override
-  String get aiChatAfterPmsSupport => "Nous savons que ces journées peuvent être difficiles. Tu n’es pas seule.";
+  String get aiChatAssistantLabel => 'Ton assistant';
+
   @override
-  String get aiChatCalendarPmsDoctor => "Ton calendrier indique des jours de SPM du 13 au 17 et un rendez-vous médical le 18.";
+  String get aiChatPmsConflict => 'Conflit avec un jour de SPM';
+
   @override
-  String get aiChatSuggestDate => "Je te propose plutôt le 19. Qu’en penses-tu ?";
+  String get aiChatDoctorVisitConflict => 'Conflit avec un rendez-vous médical';
+
   @override
-  String get aiChatAssistantLabel => "Ton assistant";
+  String get aiChatAskAnything => 'Pose ta question…';
+
   @override
-  String get aiChatPmsConflict => "Conflit avec un jour de SPM";
+  String get appointmentConfirmed => 'Rendez-vous confirmé !';
+
   @override
-  String get aiChatDoctorVisitConflict => "Conflit avec un rendez-vous médical";
+  String appointmentBooked(String doctor) {
+    return 'Ton rendez-vous avec le Dr $doctor est confirmé.';
+  }
+
   @override
-  String get aiChatAskAnything => "Pose ta question…";
+  String appointmentReviewCount(int count) {
+    return '$count avis';
+  }
+
   @override
-  String get appointmentConfirmed => "Rendez-vous confirmé !";
+  String get appointmentGynecologist => 'Gynécologue';
+
   @override
-  String appointmentBooked(String doctor) => 'Ton rendez-vous avec le Dr $doctor est confirmé.';
+  String get appointmentGynOncologyFocus =>
+      'Spécialisé en dépistage oncologique gynécologique';
+
   @override
-  String appointmentReviewCount(int count) => '$count avis';
+  String get appointmentVideoConsultation => 'Consultation vidéo';
+
   @override
-  String get appointmentGynecologist => "Gynécologue";
+  String get appointmentDoneBackToChat =>
+      'Terminer et revenir à la conversation';
+
   @override
-  String get appointmentGynOncologyFocus => "Spécialisé en dépistage oncologique gynécologique";
+  String get aiChatSymptomCramps => 'Crampes';
+
   @override
-  String get appointmentVideoConsultation => "Consultation vidéo";
+  String get aiChatSymptomHeadache => 'Mal de tête';
+
   @override
-  String get appointmentDoneBackToChat => "Terminer et revenir à la conversation";
+  String get periodLogSheetTitle => 'Enregistrer tes règles';
+
   @override
-  String get aiChatSymptomCramps => "Crampes";
-  @override
-  String get aiChatSymptomHeadache => "Mal de tête";
-  @override
-  String get periodLogSheetTitle => "Enregistrer tes règles";
-  @override
-  String get periodLogSheetSubtitle => "Choisis l’action qui correspond le mieux à aujourd’hui.";
+  String get periodLogSheetSubtitle =>
+      'Choisis l’action qui correspond le mieux à aujourd’hui.';
 }
