@@ -62,7 +62,7 @@ class _SelfCareHomeScreenState extends State<SelfCareHomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _SelfCareHeader(
-                    onNotificationTap: () => context.go('/notification'),
+                    onNotificationTap: () => context.push('/profile/notifications'),
                   ),
                   const SizedBox(height: 18),
                   Center(

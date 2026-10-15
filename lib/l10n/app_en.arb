@@ -679,5 +679,13 @@
   "@selfCareArticleReadTime": {"placeholders": {"minutes": {"type": "int"}}},
   "@selfCareMinutes": {"placeholders": {"minutes": {"type": "int"}}},
   "@selfCareRound": {"placeholders": {"round": {"type": "int"}}},
-  "@selfCareOnlyMinutesLeft": {"placeholders": {"minutes": {"type": "int"}}}
+  "@selfCareOnlyMinutesLeft": {"placeholders": {"minutes": {"type": "int"}}},
+  "minimumAgeMessage": "Peria is for people aged {age} and older.",
+  "@minimumAgeMessage": {"placeholders": {"age": {"type": "int"}}},
+  "ageRestrictedTitle": "Age requirement",
+  "ageRestrictedBody": "Peria isn't available under {age}. Update your date of birth to continue.",
+  "@ageRestrictedBody": {"placeholders": {"age": {"type": "int"}}},
+  "updateDateOfBirth": "Update date of birth",
+  "pressBackAgainToExit": "Press back again to leave",
+  "symptomLogUnavailable": "Saved symptoms couldn't be loaded. You can still log this day."
 }

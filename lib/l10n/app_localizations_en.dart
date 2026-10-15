@@ -1931,4 +1931,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get periodLogSheetSubtitle =>
       'Choose the period update that best describes today.';
+
+  @override
+  String minimumAgeMessage(int age) {
+    return 'Peria is for people aged $age and older.';
+  }
+
+  @override
+  String get ageRestrictedTitle => 'Age requirement';
+
+  @override
+  String ageRestrictedBody(int age) {
+    return 'Peria isn\'t available under $age. Update your date of birth to continue.';
+  }
+
+  @override
+  String get updateDateOfBirth => 'Update date of birth';
+
+  @override
+  String get pressBackAgainToExit => 'Press back again to leave';
+
+  @override
+  String get symptomLogUnavailable =>
+      'Saved symptoms couldn\'t be loaded. You can still log this day.';
 }
