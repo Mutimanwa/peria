@@ -1957,4 +1957,27 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get periodLogSheetSubtitle =>
       'Choisis l’action qui correspond le mieux à aujourd’hui.';
+
+  @override
+  String minimumAgeMessage(int age) {
+    return 'Peria est réservée aux personnes de $age ans et plus.';
+  }
+
+  @override
+  String get ageRestrictedTitle => 'Âge requis';
+
+  @override
+  String ageRestrictedBody(int age) {
+    return 'Peria n\'est pas disponible avant $age ans. Mets à jour ta date de naissance pour continuer.';
+  }
+
+  @override
+  String get updateDateOfBirth => 'Modifier la date de naissance';
+
+  @override
+  String get pressBackAgainToExit => 'Appuie encore une fois pour quitter';
+
+  @override
+  String get symptomLogUnavailable =>
+      'Tes symptômes enregistrés n\'ont pas pu être chargés. Tu peux quand même noter cette journée.';
 }

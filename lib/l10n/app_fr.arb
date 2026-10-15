@@ -679,5 +679,13 @@
   "@selfCareArticleReadTime": {"placeholders": {"minutes": {"type": "int"}}},
   "@selfCareMinutes": {"placeholders": {"minutes": {"type": "int"}}},
   "@selfCareRound": {"placeholders": {"round": {"type": "int"}}},
-  "@selfCareOnlyMinutesLeft": {"placeholders": {"minutes": {"type": "int"}}}
+  "@selfCareOnlyMinutesLeft": {"placeholders": {"minutes": {"type": "int"}}},
+  "minimumAgeMessage": "Peria est réservée aux personnes de {age} ans et plus.",
+  "@minimumAgeMessage": {"placeholders": {"age": {"type": "int"}}},
+  "ageRestrictedTitle": "Âge requis",
+  "ageRestrictedBody": "Peria n'est pas disponible avant {age} ans. Mets à jour ta date de naissance pour continuer.",
+  "@ageRestrictedBody": {"placeholders": {"age": {"type": "int"}}},
+  "updateDateOfBirth": "Modifier la date de naissance",
+  "pressBackAgainToExit": "Appuie encore une fois pour quitter",
+  "symptomLogUnavailable": "Tes symptômes enregistrés n'ont pas pu être chargés. Tu peux quand même noter cette journée."
 }

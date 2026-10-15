@@ -10,6 +10,7 @@ import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
@@ -37,6 +38,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   // ── Transition de phase (AnimatedSwitcher) ───────────────────────
   late AnimationController _phaseCtrl;
   late Animation<double> _phaseAnim;
+  DateTime _calendarMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
   @override
   void initState() {
@@ -212,60 +214,81 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
             bottom: false,
             child: Column(
               children: [
-                // AppBar
-                _AppBar(onAvatarTap: () => context.go('/profile')),
-                const SizedBox(height: 10),
-
-                // Texte subtitle
-                Text(
-                  daysUntilNext == null
-                      ? l10n.nextPeriodUnknown
-                      : daysUntilNext <= 0
-                          ? l10n.periodIsDue
-                          : l10n.nextPeriodInDays(daysUntilNext),
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.neutral700,
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Column(
+                      children: [
+                        _AppBar(onAvatarTap: () => context.push('/profile')),
+                        const SizedBox(height: 10),
+                        Text(
+                          daysUntilNext == null
+                              ? l10n.nextPeriodUnknown
+                              : daysUntilNext <= 0
+                                  ? l10n.periodIsDue
+                                  : l10n.nextPeriodInDays(daysUntilNext),
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.neutral700,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        AnimatedBuilder(
+                          animation: Listenable.merge(
+                              [_wave1Ctrl, _wave2Ctrl, _phaseAnim]),
+                          builder: (_, __) {
+                            return SizedBox(
+                              width: size.width * 0.55,
+                              height: size.width * 0.55,
+                              child: _CycleWheel(
+                                config: cfg,
+                                wave1: _wave1Ctrl.value,
+                                wave2: _wave2Ctrl.value,
+                                phaseAnim: _phaseAnim.value,
+                                progress: cycleProgress,
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 18),
+                        _HomeMonthCalendar(
+                          config: cfg,
+                          month: _calendarMonth,
+                          today: status?.now ?? DateTime.now(),
+                          onPrevious: () => setState(() {
+                            _calendarMonth = DateTime(
+                              _calendarMonth.year,
+                              _calendarMonth.month - 1,
+                            );
+                          }),
+                          onNext: () => setState(() {
+                            _calendarMonth = DateTime(
+                              _calendarMonth.year,
+                              _calendarMonth.month + 1,
+                            );
+                          }),
+                        ),
+                        const SizedBox(height: 18),
+                        const SizedBox(
+                          height: 230,
+                          child: _ArticlesRow(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 14),
-
-                // ── Roue animée ──────────────────────────────────
-                AnimatedBuilder(
-                  animation:
-                      Listenable.merge([_wave1Ctrl, _wave2Ctrl, _phaseAnim]),
-                  builder: (_, __) {
-                    return SizedBox(
-                      width: size.width * 0.55, // Decreased as requested
-                      height: size.width * 0.55,
-                      child: _CycleWheel(
-                        config: cfg,
-                        wave1: _wave1Ctrl.value,
-                        wave2: _wave2Ctrl.value,
-                        phaseAnim: _phaseAnim.value,
-                        progress: cycleProgress,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 22),
-
-                // ── Calendrier semaine ───────────────────────────
-                _WeekCalendar(config: cfg, now: status?.now ?? DateTime.now()),
-                const SizedBox(height: 28),
-
-                // ── Boutons Log ──────────────────────────────────
+                // Log actions stay put while the month dates scroll above them.
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  padding: const EdgeInsets.fromLTRB(22, 8, 22, 108),
                   child: Row(
                     children: [
                       Expanded(
                         child: _LogBtn(
                           label: l10n.logSymptoms,
                           filled: false,
-                          onTap: () => context.go('/symptoms'),
+                          onTap: () => context.push('/symptoms'),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -276,23 +299,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                           onTap: _showQuickPeriodSheet,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 18),
-
-                // ── Cartes articles ──────────────────────────────
-                const Expanded(
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              bottom: 10), // Increased to clear floating nav
-                          child: _ArticlesRow(),
-                        ),
-                      ),
-                      // Floating Bottom Nav - Now managed by Shell
                     ],
                   ),
                 ),
@@ -597,7 +603,7 @@ class _AppBar extends StatelessWidget {
                   children: [
                     InkWell(
                         onTap: () {
-                          context.go("/notification");
+                          context.push('/profile/notifications');
                         },
                         child: Image.asset(AppAssets.notificationBell)),
                     Positioned(
@@ -621,7 +627,7 @@ class _AppBar extends StatelessWidget {
               // Button pour calendrier
               InkWell(
                   onTap: () {
-                    context.go("/calendar");
+                    context.push('/calendar');
                   },
                   child: Image.asset(AppAssets.calendar))
             ],
@@ -920,82 +926,163 @@ class _CycleWheelPainter extends CustomPainter {
 // ════════════════════════════════════════════════════════════════════
 //  CALENDRIER SEMAINE — 7 jours, aujourd'hui surligné
 // ════════════════════════════════════════════════════════════════════
-class _WeekCalendar extends StatelessWidget {
-  final _PhaseConfig config;
-  final DateTime now;
-
-  const _WeekCalendar({
+class _HomeMonthCalendar extends StatelessWidget {
+  const _HomeMonthCalendar({
     required this.config,
-    required this.now,
+    required this.month,
+    required this.today,
+    required this.onPrevious,
+    required this.onNext,
   });
 
-  DateTime _startOfDay(DateTime d) => DateTime(d.year, d.month, d.day);
+  final _PhaseConfig config;
+  final DateTime month;
+  final DateTime today;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
-  bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
-  }
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   @override
   Widget build(BuildContext context) {
-    // Week starts Monday (weekday: Mon=1..Sun=7)
-    final today = _startOfDay(now);
-    final weekStart = today.subtract(Duration(days: today.weekday - 1));
-    final weekDays = List.generate(7, (i) => weekStart.add(Duration(days: i)));
+    final locale = Localizations.localeOf(context).toString();
+    final firstDay = DateTime(month.year, month.month, 1);
+    final dayCount = DateTime(month.year, month.month + 1, 0).day;
+    final startOffset = firstDay.weekday - 1;
+    final rows = MonthGridLayout.rowCount(
+      startOffset: startOffset,
+      dayCount: dayCount,
+    );
+    final cells = MonthGridLayout.cellCount(
+      startOffset: startOffset,
+      dayCount: dayCount,
+    );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(7, (i) {
-          final date = weekDays[i];
-          final isToday = _isSameDay(date, today);
-          return SizedBox(
-            width: 42,
-            child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+        decoration: BoxDecoration(
+          color: AppColors.white.withOpacity(0.72),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.grey200),
+        ),
+        child: Column(
+          children: [
+            Row(
               children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: 42,
-                  height: 58,
-                  decoration: BoxDecoration(
-                    color: isToday ? config.calHighlight : Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${date.day}',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 17,
-                          fontWeight:
-                              isToday ? FontWeight.w700 : FontWeight.w500,
-                          color:
-                              isToday ? config.calTextColor : AppColors.grey700,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        DateFormat.E(Localizations.localeOf(context).toString())
-                            .format(date)
-                            .replaceAll('.', ''),
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color:
-                              isToday ? config.calTextColor : AppColors.grey500,
-                        ),
-                      ),
-                    ],
+                _MonthArrow(icon: Icons.chevron_left_rounded, onTap: onPrevious),
+                Expanded(
+                  child: Text(
+                    DateFormat.yMMMM(locale).format(month),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.grey900,
+                    ),
                   ),
                 ),
+                _MonthArrow(icon: Icons.chevron_right_rounded, onTap: onNext),
               ],
             ),
-          );
-        }),
+            const SizedBox(height: 8),
+            Row(
+              children: List.generate(7, (index) {
+                final label = DateFormat.E(locale)
+                    .format(DateTime(2024, 1, 1 + index))
+                    .replaceAll('.', '');
+                return Expanded(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 11,
+                      color: AppColors.grey500,
+                    ),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 6),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final height = MonthGridLayout.heightFor(
+                  width: constraints.maxWidth,
+                  rows: rows,
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                );
+                return SizedBox(
+                  height: height,
+                  child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                    ),
+                    itemCount: cells,
+                    itemBuilder: (context, index) {
+                      final dayNum = index - startOffset + 1;
+                      if (dayNum < 1 || dayNum > dayCount) {
+                        return const SizedBox.shrink();
+                      }
+                      final date = DateTime(month.year, month.month, dayNum);
+                      final isToday = _isSameDay(date, today);
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: isToday
+                              ? config.calHighlight
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$dayNum',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              fontWeight:
+                                  isToday ? FontWeight.w700 : FontWeight.w500,
+                              color: isToday
+                                  ? config.calTextColor
+                                  : AppColors.grey700,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MonthArrow extends StatelessWidget {
+  const _MonthArrow({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: SizedBox(
+        width: 32,
+        height: 32,
+        child: Icon(icon, color: AppColors.grey700),
       ),
     );
   }

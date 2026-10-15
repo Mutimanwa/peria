@@ -3643,6 +3643,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose the period update that best describes today.'**
   String get periodLogSheetSubtitle;
+
+  /// No description provided for @minimumAgeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Peria is for people aged {age} and older.'**
+  String minimumAgeMessage(int age);
+
+  /// No description provided for @ageRestrictedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Age requirement'**
+  String get ageRestrictedTitle;
+
+  /// No description provided for @ageRestrictedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Peria isn\'t available under {age}. Update your date of birth to continue.'**
+  String ageRestrictedBody(int age);
+
+  /// No description provided for @updateDateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Update date of birth'**
+  String get updateDateOfBirth;
+
+  /// No description provided for @pressBackAgainToExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Press back again to leave'**
+  String get pressBackAgainToExit;
+
+  /// No description provided for @symptomLogUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved symptoms couldn\'t be loaded. You can still log this day.'**
+  String get symptomLogUnavailable;
 }
 
 class _AppLocalizationsDelegate

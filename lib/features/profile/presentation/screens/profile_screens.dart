@@ -51,12 +51,12 @@ class ProfileScreen extends ConsumerWidget {
                   MenuItemData(
                     l10n.personalInformation,
                     Icons.person_outline,
-                    () => context.go('/profile/personal-info'),
+                    () => context.push('/profile/personal-info'),
                   ),
                   MenuItemData(
                     l10n.accountSecurity,
                     Icons.shield_outlined,
-                    () => context.go('/profile/account-security'),
+                    () => context.push('/profile/account-security'),
                   ),
                 ]),
                 const SizedBox(height: 22),
@@ -72,7 +72,7 @@ class ProfileScreen extends ConsumerWidget {
                 SectionLabel(l10n.supportLegal),
                 MenuGroup(items: [
                   MenuItemData(l10n.helpSupport, Icons.help_outline_rounded,
-                      () => context.go('/profile/help-support')),
+                      () => context.push('/profile/help-support')),
                   MenuItemData(l10n.logOut, Icons.logout_rounded, () {},
                       danger: true),
                 ]),

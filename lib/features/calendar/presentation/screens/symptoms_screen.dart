@@ -5,7 +5,6 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
 import 'package:peria_app/features/calendar/presentation/constants/symptom_constants.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
-import 'package:peria_app/features/calendar/presentation/widgets/symptoms_squeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -105,25 +104,54 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     }
   }
 
+  void _selectDate(DateTime date) {
+    setState(() {
+      _selectedDate = DateTime(date.year, date.month, date.day);
+      _selectedByCategory = {};
+      _notesController.clear();
+      _intensity = null;
+      _loadedDocumentId = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
     final asyncLog = ref.watch(symptomLogProvider(_selectedDate));
-    
-    if (asyncLog.isLoading) {
-      return const SymptomsSkeleton();
-    }
     ref.listen<AsyncValue<SymptomLog?>>(symptomLogProvider(_selectedDate),
         (previous, next) {
       if (!mounted) return;
-      if (next.hasValue && next.value != null) {
-        final loaded = next.value!;
-        if (_loadedDocumentId != loaded.id) {
-          setState(() => _applyLog(loaded));
-        }
-      }
+      next.when(
+        data: (log) {
+          if (!mounted || _loadedDocumentId != null) return;
+          if (_notesController.text.trim().isNotEmpty ||
+              _selectedByCategory.isNotEmpty ||
+              _intensity != null) {
+            return;
+          }
+          setState(() => _applyLog(log));
+        },
+        error: (_, __) {},
+        loading: () {},
+      );
     });
+    if (asyncLog.hasValue &&
+        _loadedDocumentId == null &&
+        _notesController.text.trim().isEmpty &&
+        _selectedByCategory.isEmpty &&
+        _intensity == null) {
+      final loaded = asyncLog.value;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _loadedDocumentId != null) return;
+        if (_notesController.text.trim().isNotEmpty ||
+            _selectedByCategory.isNotEmpty ||
+            _intensity != null) {
+          return;
+        }
+        setState(() => _applyLog(loaded));
+      });
+    }
 
     return PageScaffold(
       showBack: true,
@@ -132,9 +160,35 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
       title: l10n.logSymptoms,
       child: Stack(
         children: [
-          SingleChildScrollView(
+          const Positioned.fill(child: ColoredBox(color: AppColors.white)),
+          if (asyncLog.isLoading)
+            const Positioned(
+              top: 64,
+              left: 24,
+              right: 24,
+              child: LinearProgressIndicator(
+                minHeight: 3,
+                color: AppColors.primary,
+                backgroundColor: AppColors.primary50,
+              ),
+            ),
+          if (asyncLog.hasError)
+            Positioned(
+              top: 72,
+              left: 24,
+              right: 24,
+              child: Text(
+                l10n.symptomLogUnavailable,
+                style: AppText.caption.copyWith(color: AppColors.error),
+              ),
+            ),
+          Positioned.fill(
+            child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(top: 80, bottom: 100),
+              padding: EdgeInsets.only(
+                top: asyncLog.hasError ? 108 : 80,
+                bottom: 100,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -171,9 +225,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                         final isFutureDate = date.isAfter(DateTime.now());
 
                         return GestureDetector(
-                          onTap: isFutureDate
-                              ? null
-                              : () => setState(() => _selectedDate = date),
+                          onTap: isFutureDate ? null : () => _selectDate(date),
                           child: Container(
                             width: 56,
                             margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -246,6 +298,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                 ],
               ),
             ),
+          ),
           ),
           Positioned(
             bottom: 24,

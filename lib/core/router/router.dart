@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/router/app_back_navigation.dart';
+import 'package:peria_app/core/theme/app_colors.dart';
+import 'package:peria_app/features/onboarding/presentation/widgets/minimum_age_gate.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/features/calendar/presentation/screens/calendar_screen.dart';
 import 'package:peria_app/features/calendar/presentation/screens/edit_calendar_screen.dart';
 import 'package:peria_app/features/calendar/presentation/screens/symptoms_screen.dart';
@@ -46,10 +50,24 @@ bool hasCompletedOnboarding = false;
 
 // Authentication state managed by Firebase AuthProvider
 
+final GoRouterRefreshStream routerRefresh =
+    GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges());
+
 // Function to update onboarding state
 void updateOnboardingState(bool completed) {
+  final changed = hasCompletedOnboarding != completed;
   hasCompletedOnboarding = completed;
+  if (changed) routerRefresh.refresh();
 }
+
+const _completedOnboardingLocations = <String>{
+  '/splash',
+  '/welcome',
+  '/ask-name',
+  '/date-of-birth',
+  '/set-goals',
+  '/last-period',
+};
 
 String? resolveRouterRedirect({
   required String location,
@@ -77,8 +95,13 @@ String? resolveRouterRedirect({
     return '/welcome';
   }
 
+  if (hasCompletedOnboarding &&
+      _completedOnboardingLocations.contains(location)) {
+    return '/cycle';
+  }
+
   if (location == '/splash' || location == '/welcome') {
-    return hasCompletedOnboarding ? '/cycle' : '/ask-name';
+    return '/ask-name';
   }
 
   return null;
@@ -111,6 +134,8 @@ class GoRouterRefreshStream extends ChangeNotifier {
 
   late final StreamSubscription<dynamic> _subscription;
 
+  void refresh() => notifyListeners();
+
   @override
   void dispose() {
     _subscription.cancel();
@@ -118,12 +143,75 @@ class GoRouterRefreshStream extends ChangeNotifier {
   }
 }
 
+/// System back must not finish the activity when [GoRouter.go] replaced the
+/// stack. Pop a real route first, otherwise walk to the logical parent, and
+/// only leave the app after a second press on a root screen.
+class PeriaBackButtonDispatcher extends RootBackButtonDispatcher {
+  PeriaBackButtonDispatcher(this.router);
+
+  final GoRouter router;
+  DateTime? _lastRootBackAt;
+
+  @override
+  Future<bool> didPopRoute() async {
+    final root = navigatorKey.currentState;
+    if (root != null && root.canPop()) {
+      root.pop();
+      _lastRootBackAt = null;
+      return true;
+    }
+    final shell = shellNavigatorKey.currentState;
+    if (shell != null && shell.canPop()) {
+      shell.pop();
+      _lastRootBackAt = null;
+      return true;
+    }
+    final popped = await router.routerDelegate.popRoute();
+    if (popped) {
+      _lastRootBackAt = null;
+      return true;
+    }
+
+    final path = router.routerDelegate.currentConfiguration.uri.path;
+    final target = resolveAppBackTarget(path);
+    if (target != null && target != path) {
+      _lastRootBackAt = null;
+      router.go(target);
+      return true;
+    }
+
+    final now = DateTime.now();
+    final last = _lastRootBackAt;
+    if (last != null && now.difference(last) < const Duration(seconds: 2)) {
+      return false;
+    }
+    _lastRootBackAt = now;
+    _showExitHint();
+    return true;
+  }
+
+  void _showExitHint() {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger == null) return;
+    final message = AppLocalizations.of(context).pressBackAgainToExit;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+  }
+}
+
 // Modifie l'initialLocation pour pointer vers /check-onboarding
 final GoRouter appRouter = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: '/splash',
-  refreshListenable:
-      GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+  refreshListenable: routerRefresh,
   redirect: routerRedirect,
   routes: [
     GoRoute(
@@ -242,6 +330,24 @@ final GoRouter appRouter = GoRouter(
         path: '/profile/notifications',
         pageBuilder: (context, state) => _buildSlideTransitionPage(
             context, state, const NotificationsScreen())),
+    // Older buttons still call `/notification`. Keep the alias so that tap
+    // opens the screen instead of a missing-route error.
+    GoRoute(
+      path: '/notification',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const NotificationsScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/notifications',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const NotificationsScreen(),
+      ),
+    ),
     GoRoute(
         path: '/profile/account-security',
         pageBuilder: (context, state) => _buildSlideTransitionPage(
@@ -394,14 +500,24 @@ final GoRouter appRouter = GoRouter(
   ],
 );
 
+final PeriaBackButtonDispatcher periaBackButtonDispatcher =
+    PeriaBackButtonDispatcher(appRouter);
+
 CustomTransitionPage _buildSlideTransitionPage(
   BuildContext context,
   GoRouterState state,
   Widget child,
 ) {
+  final location = state.matchedLocation;
+  final pageChild = ColoredBox(
+    color: AppColors.white,
+    child: isAgeGateExempt(location)
+        ? child
+        : MinimumAgeGate(child: child),
+  );
   return CustomTransitionPage(
     key: state.pageKey,
-    child: child,
+    child: pageChild,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return SlideTransition(
         position: Tween<Offset>(

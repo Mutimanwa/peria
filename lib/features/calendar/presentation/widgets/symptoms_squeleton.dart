@@ -7,9 +7,11 @@ class SymptomsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: Shimmer.fromColors(
       baseColor: AppColors.grey100,
-      highlightColor: Colors.white,
+      highlightColor: AppColors.grey200,
       child: Stack(
         children: [
           SingleChildScrollView(
@@ -75,6 +77,7 @@ class SymptomsSkeleton extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

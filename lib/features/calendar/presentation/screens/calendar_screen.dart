@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
@@ -285,12 +286,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       onBack: () => safeRouterBack(context, fallbackRoute: '/cycle'),
       showTitle: true,
       title: l10n.calendarTitle,
-      child: Stack(
+      child: Column(
         children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 100, bottom: 120), // Espace sous l'AppBar et pour la nav
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(top: 100, bottom: 16),
               child: Column(
                 children: [
                   // ── Calendrier Card ────────
@@ -489,24 +489,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 AppText.body.copyWith(color: AppColors.grey600),
                           ),
                           const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: PrimaryButton(
-                                  label: l10n.logPeriodButton,
-                                  onPressed: _showQuickPeriodSheet,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: OutlineButton(
-                                  label: l10n.logSymptoms,
-                                  onPressed: () => context.go('/symptoms'),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
                           Text(
                             l10n.calendarDateRangeHelp,
                             style: AppText.caption
@@ -524,6 +506,26 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   const SizedBox(height: 24),
                 ],
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: PrimaryButton(
+                    label: l10n.logPeriodButton,
+                    onPressed: _showQuickPeriodSheet,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlineButton(
+                    label: l10n.logSymptoms,
+                    onPressed: () => context.push('/symptoms'),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -556,15 +558,34 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     required Set<DateTime> journalDays,
   }) {
     final int totalDays = lastDay.day;
-    final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
+    const crossAxisSpacing = 4.0;
+    const mainAxisSpacing = 8.0;
+    final rows = MonthGridLayout.rowCount(
+      startOffset: startOffset,
+      dayCount: totalDays,
+    );
+    final totalCells = MonthGridLayout.cellCount(
+      startOffset: startOffset,
+      dayCount: totalDays,
+    );
 
-    return GridView.builder(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = MonthGridLayout.heightFor(
+          width: constraints.maxWidth,
+          rows: rows,
+          crossAxisSpacing: crossAxisSpacing,
+          mainAxisSpacing: mainAxisSpacing,
+        );
+        return SizedBox(
+          height: height,
+          child: GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 4,
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
         childAspectRatio: 1,
       ),
       itemCount: totalCells,
@@ -602,7 +623,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           ),
         );
       },
-    );
+            ),
+          );
+        },
+      );
   }
 }
 
