@@ -11,6 +11,7 @@ import 'package:peria_app/features/journal/data/models/mood.dart';
 import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/features/journal/presentation/widgets/journal_attachment_view.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -29,6 +30,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   String _moodId = 'calm';
   JournalEntry? _existing;
   bool _isSaving = false;
+  final List<String> _attachments = [];
 
   @override
   void initState() {
@@ -55,6 +57,9 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
         _titleController.text = _existing!.title;
         _contentController.text = _existing!.content;
         _moodId = _existing!.mood;
+        _attachments
+          ..clear()
+          ..addAll(_existing!.attachments);
       }
     }
   }
@@ -65,7 +70,10 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
     final cleanContent = _contentController.text.trim();
 
     // On n'enregistre pas une note totalement vide
-    if (cleanTitle.isEmpty && cleanContent.isEmpty) {
+    if (cleanTitle.isEmpty && cleanContent.isEmpty && _attachments.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.journalEntryEmpty)),
+      );
       return;
     }
 
@@ -79,6 +87,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
             title: cleanTitle,
             content: cleanContent,
             mood: _moodId,
+            attachments: List<String>.from(_attachments),
           )
         : JournalEntry(
             id: 'entry_${now.millisecondsSinceEpoch}', // Préfixe propre pour l'identifiant
@@ -87,12 +96,13 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
             title: cleanTitle,
             content: cleanContent,
             mood: _moodId,
+            attachments: List<String>.from(_attachments),
           );
 
     try {
       await ref.read(journalProvider.notifier).upsert(entry);
       if (mounted) {
-        context.go('/journal');
+        safeRouterBack(context, fallbackRoute: '/journal');
       }
     } catch (e) {
       // Sécurité en cas d'échec de la base de données locale
@@ -120,7 +130,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
 
     return PageScaffold(
       showBack: true,
-      onBack: () => context.go('/journal'),
+      onBack: () => safeRouterBack(context, fallbackRoute: '/journal'),
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -188,6 +198,46 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  if (_attachments.isNotEmpty) ...[
+                    SizedBox(
+                      height: 88,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _attachments.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          final path = _attachments[index];
+                          return Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: journalAttachmentView(path),
+                              ),
+                              Positioned(
+                                top: 2,
+                                right: 2,
+                                child: GestureDetector(
+                                  onTap: () => setState(
+                                    () => _attachments.removeAt(index),
+                                  ),
+                                  child: const CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.black54,
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   
                   // Input Contenu
                   TextField(
@@ -257,11 +307,6 @@ Widget _buildBottomToolbar() {
             ),
           ),
           
-          // 5. Audio / Micro
-          _ToolbarIcon(
-            icon: Icons.mic_none,
-            onPressed: _startVoiceTyping,
-          ),
         ],
       ),
     );
@@ -352,11 +397,7 @@ Future<void> _insertImage() async {
 
   void _handleSelectedImage(String path) {
     final l10n = AppLocalizations.of(context);
-    // Pour l'instant, on insère le tag du chemin local dans le texte de l'éditeur.
-    // Plus tard, dans ton modèle JournalEntry, tu pourras ajouter un champ List<String> imagePaths
-    // et faire un affichage sous forme de grille d'images dans l'UI.
-    _insertTextAtCursor("\n🖼️ [image:$path] \n");
-    
+    setState(() => _attachments.add(path));
     HapticFeedback.lightImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -384,14 +425,6 @@ Future<void> _insertImage() async {
     _contentController.value = TextEditingValue(
       text: text.replaceRange(selection.start, selection.end, transformedText),
       selection: selection,
-    );
-  }
-
-  // Action Micro : Note vocale ou dictée
-  void _startVoiceTyping() {
-    HapticFeedback.mediumImpact();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).journalAudioComingSoon), duration: const Duration(seconds: 1)),
     );
   }
 

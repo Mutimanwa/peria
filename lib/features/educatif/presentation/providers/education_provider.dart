@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:peria_app/core/services/app_locale_provider.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
@@ -96,7 +97,7 @@ final filteredEducationArticlesProvider = Provider<List<EducationArticle>>((ref)
   return articles.where((article) {
     final titleMatch = article.title.toLowerCase().contains(query);
     final descMatch = article.shortDescription.toLowerCase().contains(query);
-    final tagMatch = article.tags.any((tag) => tag.contains(query));
+    final tagMatch = article.tags.any((tag) => tag.toLowerCase().contains(query));
 
     return titleMatch || descMatch || tagMatch;
   }).toList();
@@ -128,7 +129,7 @@ final filteredArticlesByAxisProvider = Provider<List<EducationArticle>>((ref) {
   return articlesByAxis.where((article) {
     final titleMatch = article.title.toLowerCase().contains(query);
     final descMatch = article.shortDescription.toLowerCase().contains(query);
-    final tagMatch = article.tags.any((tag) => tag.contains(query));
+    final tagMatch = article.tags.any((tag) => tag.toLowerCase().contains(query));
 
     return titleMatch || descMatch || tagMatch;
   }).toList();
@@ -153,6 +154,36 @@ class ReadArticlesNotifier extends StateNotifier<Set<String>> {
 final readArticlesProvider =
     StateNotifierProvider<ReadArticlesNotifier, Set<String>>((ref) {
   return ReadArticlesNotifier();
+});
+
+class SavedArticlesNotifier extends StateNotifier<Set<String>> {
+  SavedArticlesNotifier() : super(<String>{}) {
+    _load();
+  }
+
+  static const _storageKey = 'education.saved_articles';
+
+  Future<void> _load() async {
+    final preferences = await SharedPreferences.getInstance();
+    final saved = preferences.getStringList(_storageKey);
+    if (saved == null) return;
+    state = saved.toSet();
+  }
+
+  Future<void> toggle(String articleId) async {
+    final next = {...state};
+    if (!next.add(articleId)) {
+      next.remove(articleId);
+    }
+    state = next;
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setStringList(_storageKey, next.toList());
+  }
+}
+
+final savedArticlesProvider =
+    StateNotifierProvider<SavedArticlesNotifier, Set<String>>((ref) {
+  return SavedArticlesNotifier();
 });
 
 final totalReadingTimeProvider = Provider<int>((ref) {

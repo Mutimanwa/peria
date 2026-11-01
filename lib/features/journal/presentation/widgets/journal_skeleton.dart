@@ -4,10 +4,12 @@ import 'package:peria_app/core/theme/theme.dart';
 
 class JournalSkeleton extends StatelessWidget {
   final int count;
+  final bool cardsOnly;
   
   const JournalSkeleton({
     super.key,
     this.count = 4,
+    this.cardsOnly = false,
   });
 
   @override
@@ -18,19 +20,22 @@ class JournalSkeleton extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header skeleton
-          _buildHeaderSkeleton(),
-          
-          // Week calendar skeleton
-          _buildWeekCalendarSkeleton(),
-          
-          // Summary bar skeleton
-          _buildSummaryBarSkeleton(),
-          
-          // Quick log composer skeleton
-          _buildQuickLogComposerSkeleton(),
-          
-          // Journal cards skeletons
+          if (!cardsOnly) ...[
+            _buildHeaderSkeleton(),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 2, 20, 12),
+              child: SizedBox(
+                height: 168,
+                width: double.infinity,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                ),
+              ),
+            ),
+          ],
           ...List.generate(
             count,
             (index) => _buildJournalCardSkeleton(),

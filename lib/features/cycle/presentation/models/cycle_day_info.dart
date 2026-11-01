@@ -1,4 +1,5 @@
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 
 /// A canonical view of cycle data for one calendar date.
@@ -65,4 +66,11 @@ class CycleDayInfo {
   final bool isOverdue;
 
   bool get isPeriodDay => isLoggedPeriod || isPredictedPeriod;
+
+  /// Phase shown on the calendar. Logged and predicted period days stay
+  /// menstrual even if the projected phase window says otherwise.
+  CyclePhase? get phase {
+    if (isLoggedPeriod || isPredictedPeriod) return CyclePhase.menstrual;
+    return status?.phase;
+  }
 }

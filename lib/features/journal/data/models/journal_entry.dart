@@ -95,6 +95,7 @@ class JournalEntry {
     String? title,
     String? content,
     String? mood,
+    List<String>? attachments,
   }) {
     return JournalEntry(
       id: id ?? this.id,

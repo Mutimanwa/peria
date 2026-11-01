@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
+import 'package:peria_app/features/calendar/presentation/calendar_phase_style.dart';
+import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
@@ -191,12 +193,46 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   String _formatDate(DateTime date, String locale) =>
       DateFormat.yMMMMd(locale).format(date);
 
+  String _phaseLabel(CyclePhase phase, AppLocalizations l10n) {
+    switch (phase) {
+      case CyclePhase.menstrual:
+        return l10n.cyclePhasePeriod;
+      case CyclePhase.follicular:
+        return l10n.cyclePhaseFollicular;
+      case CyclePhase.ovulation:
+        return l10n.cyclePhaseOvulation;
+      case CyclePhase.luteal:
+        return l10n.cyclePhaseLuteal;
+    }
+  }
+
+  String _phaseDetail(CycleDayInfo cycleDay, AppLocalizations l10n) {
+    if (cycleDay.isOverdue) return l10n.calendarExpectedNotLogged;
+    if (cycleDay.isLoggedPeriod) return l10n.calendarLoggedPeriodDescription;
+    if (cycleDay.isPredictedPeriod) {
+      return l10n.calendarPredictedPeriodDescription;
+    }
+    if (cycleDay.isPmsDay) return l10n.calendarPmsDayDescription;
+    if (cycleDay.isFertileWindow) return l10n.calendarFertilityWindowDescription;
+    return l10n.calendarSelectedDay;
+  }
+
   _CalendarDayState _dayState(
     DateTime day,
     CycleDayInfo cycleDay,
     AppLocalizations l10n,
   ) {
-    if (cycleDay.status == null && !cycleDay.isLoggedPeriod) {
+    final phase = cycleDay.phase;
+    if (phase == null) {
+      if (_isToday(day)) {
+        return _CalendarDayState(
+          label: l10n.todayLabel,
+          description: l10n.calendarNoCyclePredictionAvailable,
+          color: AppColors.grey900,
+          softColor: AppColors.grey100,
+          icon: Icons.today_rounded,
+        );
+      }
       return _CalendarDayState(
         label: l10n.calendarNoCycleData,
         description: l10n.calendarNoCyclePredictionAvailable,
@@ -205,66 +241,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         icon: Icons.calendar_today_outlined,
       );
     }
-    if (cycleDay.isOverdue) {
-      return _CalendarDayState(
-        label: l10n.calendarOverdue,
-        description: l10n.calendarExpectedNotLogged,
-        color: AppColors.error,
-        softColor: Color(0xFFFFE6E6),
-        icon: Icons.warning_amber_rounded,
-      );
-    }
-    if (cycleDay.isLoggedPeriod) {
-      return _CalendarDayState(
-        label: l10n.calendarLoggedPeriodDay,
-        description: l10n.calendarLoggedPeriodDescription,
-        color: AppColors.primary400,
-        softColor: AppColors.primary50,
-        icon: Icons.water_drop,
-      );
-    }
-    if (cycleDay.isPredictedPeriod) {
-      return _CalendarDayState(
-        label: l10n.calendarPredictedPeriodDay,
-        description: l10n.calendarPredictedPeriodDescription,
-        color: AppColors.primary400,
-        softColor: AppColors.primary50,
-        icon: Icons.water_drop_outlined,
-      );
-    }
-    if (cycleDay.isFertileWindow) {
-      return _CalendarDayState(
-        label: l10n.calendarFertilityWindow,
-        description: l10n.calendarFertilityWindowDescription,
-        color: AppColors.secondary500,
-        softColor: AppColors.secondary50,
-        icon: Icons.auto_awesome,
-      );
-    }
-    if (cycleDay.isPmsDay) {
-      return _CalendarDayState(
-        label: l10n.calendarPmsDay,
-        description: l10n.calendarPmsDayDescription,
-        color: AppColors.warning700,
-        softColor: AppColors.warning50,
-        icon: Icons.bolt_rounded,
-      );
-    }
-    if (_isToday(day)) {
-      return _CalendarDayState(
-        label: l10n.todayLabel,
-        description: l10n.calendarSelectedDay,
-        color: AppColors.grey900,
-        softColor: AppColors.grey100,
-        icon: Icons.today_rounded,
-      );
-    }
+
+    final style = CalendarPhaseStyle.of(phase);
     return _CalendarDayState(
-      label: l10n.calendarRegularDay,
-      description: l10n.calendarNoTrackedCycleEvent,
-      color: AppColors.grey700,
-      softColor: AppColors.grey100,
-      icon: Icons.calendar_today_outlined,
+      label: _phaseLabel(phase, l10n),
+      description: _phaseDetail(cycleDay, l10n),
+      color: cycleDay.isOverdue ? AppColors.error : style.foreground,
+      softColor: cycleDay.isOverdue ? const Color(0xFFFFE6E6) : style.background,
+      icon: cycleDay.isOverdue ? Icons.warning_amber_rounded : style.icon,
     );
   }
 
@@ -289,8 +273,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 100, bottom: 120), // Espace sous l'AppBar et pour la nav
+              padding: const EdgeInsets.only(top: 100, bottom: 32),
               child: Column(
                 children: [
                   // ── Calendrier Card ────────
@@ -452,13 +435,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             spacing: 16,
                             runSpacing: 10,
                             children: [
-                              _buildLegendItem(l10n.calendarLegendPmsDay, AppColors.warning50),
-                              _buildLegendItem(l10n.calendarLegendLoggedPeriod, AppColors.primary100),
-                              _buildLegendItem(l10n.calendarLegendPredictedPeriod, AppColors.primary50),
-                              _buildLegendItem(l10n.calendarLegendFertilityWindow, AppColors.secondary100),
-                              _buildLegendItem(l10n.calendarLegendSymptoms, AppColors.success),
-                              _buildLegendItem(l10n.calendarLegendJournal, AppColors.grey700),
-                              _buildLegendItem(l10n.calendarLegendToday, AppColors.grey900),
+                              for (final phase in CyclePhase.values)
+                                _buildLegendItem(
+                                  _phaseLabel(phase, l10n),
+                                  CalendarPhaseStyle.of(phase).accent,
+                                ),
+                              _buildLegendItem(
+                                l10n.calendarLegendSymptoms,
+                                AppColors.success,
+                              ),
+                              _buildLegendItem(
+                                l10n.calendarLegendJournal,
+                                AppColors.grey700,
+                              ),
+                              _buildLegendItem(
+                                l10n.calendarLegendToday,
+                                AppColors.grey900,
+                              ),
                             ],
                           ),
                         ],
@@ -501,7 +494,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               Expanded(
                                 child: OutlineButton(
                                   label: l10n.logSymptoms,
-                                  onPressed: () => context.go('/symptoms'),
+                                  onPressed: () => context.push('/symptoms'),
                                 ),
                               ),
                             ],
@@ -563,9 +556,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        mainAxisSpacing: 8,
+        mainAxisSpacing: 6,
         crossAxisSpacing: 4,
-        childAspectRatio: 1,
+        mainAxisExtent: 52,
       ),
       itemCount: totalCells,
       itemBuilder: (ctx, i) {
@@ -588,10 +581,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         final cycleDay = ref.watch(cycleDayInfoProvider(day));
 
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () => _selectDay(day),
           child: _DayCell(
             day: day,
             isSelected: isSelected,
+            phase: cycleDay.phase,
             isLoggedPeriod: cycleDay.isLoggedPeriod,
             isPredictedPeriod: cycleDay.isPredictedPeriod,
             isFertileWindow: cycleDay.isFertileWindow,
@@ -609,6 +604,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 class _DayCell extends StatelessWidget {
   final DateTime day;
   final bool isSelected;
+  final CyclePhase? phase;
   final bool isLoggedPeriod;
   final bool isPredictedPeriod;
   final bool isFertileWindow;
@@ -620,6 +616,7 @@ class _DayCell extends StatelessWidget {
   const _DayCell({
     required this.day,
     required this.isSelected,
+    required this.phase,
     this.isLoggedPeriod = false,
     this.isPredictedPeriod = false,
     this.isFertileWindow = false,
@@ -631,111 +628,83 @@ class _DayCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color? bgColor;
-    Color textColor = AppColors.neutral900;
-    Color borderColor = Colors.transparent;
-    IconData? badgeIcon;
-    Color secondaryDotColor = Colors.transparent;
-
-    if (isLoggedPeriod) {
-      bgColor = AppColors.primary100;
-      textColor = AppColors.primary400;
-      borderColor = AppColors.primary200;
-      badgeIcon = Icons.water_drop;
-    } else if (isPredictedPeriod) {
-      bgColor = AppColors.primary50;
-      textColor = AppColors.primary400;
-      borderColor = AppColors.primary100;
-      badgeIcon = Icons.water_drop_outlined;
-    } else if (isFertileWindow) {
-      bgColor = AppColors.secondary100;
-      textColor = AppColors.secondary500;
-      borderColor = AppColors.secondary200;
-      badgeIcon = Icons.auto_awesome;
-    } else if (isPms) {
-      bgColor = AppColors.warning50;
-      textColor = AppColors.warning700;
-      borderColor = AppColors.warning200;
-      badgeIcon = Icons.bolt_rounded;
-    }
-
-    if (isSelected) {
-      bgColor = AppColors.grey900;
-      textColor = AppColors.white;
-      borderColor = AppColors.grey900;
-    } else if (isToday) {
-      borderColor = AppColors.grey300;
-    }
-
-    if (hasSymptoms) {
-      secondaryDotColor = AppColors.success;
-    } else if (hasJournal) {
-      secondaryDotColor = AppColors.grey700;
-    }
+    final style = phase == null ? null : CalendarPhaseStyle.of(phase!);
+    final bgColor = style?.background ?? Colors.transparent;
+    final textColor = style?.foreground ?? AppColors.neutral900;
+    final accent = style?.accent ?? AppColors.grey300;
+    final borderColor = isSelected
+        ? AppColors.grey900
+        : isToday
+            ? AppColors.grey900
+            : accent.withOpacity(style == null ? 0 : 0.45);
+    final marker = hasSymptoms
+        ? AppColors.success
+        : hasJournal
+            ? AppColors.grey700
+            : Colors.transparent;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
+      width: double.infinity,
+      height: double.infinity,
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : null,
+        border: Border.all(
+          color: borderColor,
+          width: isSelected || isToday ? 1.6 : 1,
+        ),
       ),
       child: Stack(
         children: [
+          if (style != null)
+            Positioned(
+              left: 8,
+              right: 8,
+              bottom: 5,
+              child: Container(
+                height: 3,
+                decoration: BoxDecoration(
+                  color: accent,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ),
           Center(
             child: Text(
               '${day.day}',
               style: AppText.label.copyWith(
                 color: textColor,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
           ),
-          if (!isSelected && badgeIcon != null)
+          if (isLoggedPeriod || isPredictedPeriod || isFertileWindow || isPms)
             Positioned(
-              right: 4,
-              bottom: 4,
+              right: 3,
+              top: 3,
               child: Icon(
-                badgeIcon,
-                size: 10,
-                color: textColor.withOpacity(0.75),
+                isLoggedPeriod
+                    ? Icons.water_drop
+                    : isPredictedPeriod
+                        ? Icons.water_drop_outlined
+                        : isPms
+                            ? Icons.bolt_rounded
+                            : Icons.auto_awesome,
+                size: 9,
+                color: textColor.withOpacity(0.8),
               ),
             ),
-          if (!isSelected && secondaryDotColor != Colors.transparent)
+          if (marker != Colors.transparent)
             Positioned(
               left: 5,
-              bottom: 5,
+              top: 5,
               child: Container(
                 width: 6,
                 height: 6,
                 decoration: BoxDecoration(
-                  color: secondaryDotColor,
+                  color: marker,
                   shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          if (!isSelected && isToday)
-            Positioned(
-              top: 5,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  width: 5,
-                  height: 5,
-                  decoration: const BoxDecoration(
-                    color: AppColors.grey900,
-                    shape: BoxShape.circle,
-                  ),
                 ),
               ),
             ),

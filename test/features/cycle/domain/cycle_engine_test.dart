@@ -287,4 +287,31 @@ void main() {
     });
   });
 
+  group('CycleEngine - phase coverage', () {
+    test('assigns all four phases across one projected cycle', () {
+      final log = PeriodLog(
+        id: 'anchor',
+        startDate: DateTime(2024, 1, 1),
+        endDate: DateTime(2024, 1, 5),
+        isEstimated: false,
+      );
+
+      CyclePhase phaseOn(DateTime date) {
+        return CycleEngine.computeFromLogs(
+          logs: [log],
+          userCycleLengthDays: 28,
+          userPeriodLengthDays: 5,
+          pmsDaysSetting: 5,
+          now: date,
+        )!.phase;
+      }
+
+      expect(phaseOn(DateTime(2024, 1, 3)), CyclePhase.menstrual);
+      expect(phaseOn(DateTime(2024, 1, 29)), CyclePhase.menstrual);
+      expect(phaseOn(DateTime(2024, 1, 10)), CyclePhase.follicular);
+      expect(phaseOn(DateTime(2024, 1, 14)), CyclePhase.ovulation);
+      expect(phaseOn(DateTime(2024, 1, 22)), CyclePhase.luteal);
+    });
+  });
+
 }
