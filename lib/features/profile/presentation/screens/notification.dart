@@ -42,9 +42,11 @@ class NotificationsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final settingsState = ref.watch(appSettingsProvider);
     return SimplePage(
-      title: l10n.notifications,
+      title: l10n.notificationSettings,
+      fallbackRoute: '/profile/settings',
       child: settingsState.when(
-        data: (settings) => Column(
+        data: (settings) => SingleChildScrollView(
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ToggleGroup(items: [
@@ -121,6 +123,7 @@ class NotificationsScreen extends ConsumerWidget {
               ),
             ]),
           ],
+          ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => Center(child: Text(l10n.unableToLoadNotifications)),

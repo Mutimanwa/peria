@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -51,12 +52,12 @@ class ProfileScreen extends ConsumerWidget {
                   MenuItemData(
                     l10n.personalInformation,
                     Icons.person_outline,
-                    () => context.go('/profile/personal-info'),
+                    () => context.push('/profile/personal-info'),
                   ),
                   MenuItemData(
                     l10n.accountSecurity,
                     Icons.shield_outlined,
-                    () => context.go('/profile/account-security'),
+                    () => context.push('/profile/account-security'),
                   ),
                 ]),
                 const SizedBox(height: 22),
@@ -65,20 +66,33 @@ class ProfileScreen extends ConsumerWidget {
                   MenuItemData(
                     l10n.settings,
                     Icons.settings_outlined,
-                    () => context.go('/profile/settings'),
+                    () => context.push('/profile/settings'),
                   ),
                 ]),
                 const SizedBox(height: 22),
                 SectionLabel(l10n.supportLegal),
                 MenuGroup(items: [
                   MenuItemData(l10n.helpSupport, Icons.help_outline_rounded,
-                      () => context.go('/profile/help-support')),
-                  MenuItemData(l10n.logOut, Icons.logout_rounded, () {},
-                      danger: true),
+                      () => context.push('/profile/help-support')),
+                  MenuItemData(
+                    l10n.logOut,
+                    Icons.logout_rounded,
+                    () => _signOut(context),
+                    danger: true,
+                  ),
                 ]),
               ],
             ),
           ),
         ));
   }
+}
+
+Future<void> _signOut(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+  } catch (_) {
+    // Still leave the signed-in area if the session is already gone.
+  }
+  if (context.mounted) context.go('/welcome');
 }

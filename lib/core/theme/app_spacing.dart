@@ -19,6 +19,9 @@ class AppSpacing {
   static const double s10 = 120.0;
 
   // Semantic aliases
+  /// Same left/right inset on the main tab screens.
+  static const double page = 20;
+
   static const double xs = s1; //  8px
   static const double sm = s2; // 16px
   static const double md = s3; // 24px

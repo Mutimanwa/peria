@@ -1957,4 +1957,21 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get periodLogSheetSubtitle =>
       'Choisis l’action qui correspond le mieux à aujourd’hui.';
+
+  @override
+  String get notificationSettings => 'Réglages des notifications';
+
+  @override
+  String get notificationInboxEmpty => 'Aucune notification pour le moment';
+
+  @override
+  String get notificationInboxSubtitle =>
+      'Voici les rappels prévus sur cet appareil.';
+
+  @override
+  String get journalEntryEmpty =>
+      'Écris un titre ou quelques mots avant d’enregistrer.';
+
+  @override
+  String get savedArticles => 'Articles enregistrés';
 }

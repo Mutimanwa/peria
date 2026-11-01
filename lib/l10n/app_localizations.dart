@@ -3643,6 +3643,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose the period update that best describes today.'**
   String get periodLogSheetSubtitle;
+
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification settings'**
+  String get notificationSettings;
+
+  /// No description provided for @notificationInboxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notificationInboxEmpty;
+
+  /// No description provided for @notificationInboxSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'These are the reminders planned on this device.'**
+  String get notificationInboxSubtitle;
+
+  /// No description provided for @journalEntryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a title or a few words before saving.'**
+  String get journalEntryEmpty;
+
+  /// No description provided for @savedArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved articles'**
+  String get savedArticles;
 }
 
 class _AppLocalizationsDelegate

@@ -1931,4 +1931,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get periodLogSheetSubtitle =>
       'Choose the period update that best describes today.';
+
+  @override
+  String get notificationSettings => 'Notification settings';
+
+  @override
+  String get notificationInboxEmpty => 'No notifications yet';
+
+  @override
+  String get notificationInboxSubtitle =>
+      'These are the reminders planned on this device.';
+
+  @override
+  String get journalEntryEmpty => 'Write a title or a few words before saving.';
+
+  @override
+  String get savedArticles => 'Saved articles';
 }

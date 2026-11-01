@@ -28,9 +28,13 @@ class SettingScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SectionLabel(l10n.appearance),
+            SectionLabel(l10n.notifications),
             MenuGroup(items: [
-              MenuItemData(l10n.theme, Icons.palette_outlined, () {}),
+              MenuItemData(
+                l10n.notificationSettings,
+                Icons.notifications_outlined,
+                () => context.push('/profile/notifications'),
+              ),
             ]),
             const SizedBox(height: 22),
             SectionLabel(l10n.language),
@@ -89,10 +93,8 @@ class SettingScreen extends ConsumerWidget {
               MenuItemData(
                 l10n.journalCloudSync,
                 Icons.cloud_outlined,
-                () => context.go('/profile/journal-sync'),
+                () => context.push('/profile/journal-sync'),
               ),
-              MenuItemData(
-                  l10n.connectedApps, Icons.all_inclusive_rounded, () {}),
             ]),
             const SizedBox(height: 22),
             SectionLabel(l10n.about),

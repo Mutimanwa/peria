@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/shared/widgets/custom_bottom_nav.dart';
 
-/// Shell widget that wraps authenticated routes with custom bottom navigation
+/// Shell widget that wraps the main tabs with a full-width bottom menu.
 class ShellNavigation extends StatefulWidget {
   final Widget child;
 
@@ -17,11 +17,6 @@ class ShellNavigation extends StatefulWidget {
 
 class _ShellNavigationState extends State<ShellNavigation> {
   GoRouter? _router;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -40,54 +35,37 @@ class _ShellNavigationState extends State<ShellNavigation> {
   }
 
   void _onRouteChanged() {
-    if (mounted) {
-      setState(() {});
-    }
+    if (mounted) setState(() {});
   }
 
   NavItem get _currentItem {
     final route =
         _router?.routerDelegate.currentConfiguration.uri.toString() ?? '';
-    if (route.startsWith('/cycle')) {
-      return NavItem.cycle;
-    } else if (route.startsWith('/journal')) {
-      return NavItem.journal;
-    } else if (route.startsWith('/education')) {
-      return NavItem.education;
-    }
-    return NavItem.cycle; // Default to cycle
+    if (route.startsWith('/journal')) return NavItem.journal;
+    if (route.startsWith('/education')) return NavItem.education;
+    return NavItem.cycle;
   }
 
   void _onNavItemTapped(NavItem item) {
-    // Navigate to different routes based on item
     switch (item) {
       case NavItem.cycle:
         context.go('/cycle');
-        break;
       case NavItem.journal:
         context.go('/journal');
-        break;
       case NavItem.education:
         context.go('/education');
-        break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: CustomBottomNav(
-            currentIndex: _currentItem,
-            onTap: _onNavItemTapped,
-          ),
-        ),
-      ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: widget.child,
+      bottomNavigationBar: CustomBottomNav(
+        currentIndex: _currentItem,
+        onTap: _onNavItemTapped,
+      ),
     );
   }
 }
