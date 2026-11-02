@@ -105,17 +105,17 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         _policyAcceptedLanguageCode = null;
                         _errorMessage = null;
                       });
+                      final messenger = ScaffoldMessenger.of(context);
+                      final l10n = AppLocalizations.of(context);
                       try {
                         await ref
                             .read(appLocaleProvider.notifier)
                             .setLanguageCode(languageCode);
                       } catch (_) {
                         if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        messenger.showSnackBar(
                           SnackBar(
-                            content: Text(
-                              AppLocalizations.of(context).languageSaveError,
-                            ),
+                            content: Text(l10n.languageSaveError),
                           ),
                         );
                       }

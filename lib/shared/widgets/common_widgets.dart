@@ -476,7 +476,7 @@ class JournalMoodTone  {
 
 class EmptyJournal extends StatelessWidget {
   const EmptyJournal({super.key, 
-    required this.hasQuery,
+    this.hasQuery = false,
     required this.selectedDate,
   });
 

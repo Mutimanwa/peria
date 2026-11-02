@@ -346,15 +346,7 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context,
         state,
-        const NotificationsScreen(),
-      ),
-    ),
-    GoRoute(
-      path: '/notifications',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const NotificationsScreen(),
+        const NotificationInboxScreen(),
       ),
     ),
     GoRoute(
@@ -508,6 +500,9 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
+final PeriaBackButtonDispatcher periaBackButtonDispatcher =
+    PeriaBackButtonDispatcher(appRouter);
 
 CustomTransitionPage _buildTabPage(
   BuildContext context,

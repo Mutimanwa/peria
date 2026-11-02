@@ -56,11 +56,11 @@ class AiChatScreen extends StatelessWidget {
                         _SuggestionCard(
                             title: l10n.aiSuggestionDrinkWater,
                             imagePath: 'moc/Chat Page-66.png'),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         _SuggestionCard(
                             title: l10n.aiSuggestionMoveGently,
                             imagePath: 'moc/Chat Page-67.png'),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         _SuggestionCard(
                             title: l10n.aiSuggestionTakePause,
                             imagePath: 'moc/Chat Page-69.png'),

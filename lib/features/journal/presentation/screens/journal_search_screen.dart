@@ -108,7 +108,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
                 decoration: InputDecoration(
                   hintText: l10n.searchJournalHint,
                   border: InputBorder.none,
-                  icon: Icon(Icons.search, color: AppColors.grey400),
+                  icon: const Icon(Icons.search, color: AppColors.grey400),
                 ),
               ),
             ),
