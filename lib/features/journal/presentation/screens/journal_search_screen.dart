@@ -7,6 +7,7 @@ import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
 import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/features/journal/presentation/widgets/journal_date_sheet.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -52,8 +53,12 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
                       return _buildEmptyState(l10n);
                     }
                     return ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.page,
+                        8,
+                        AppSpacing.page,
+                        24,
+                      ),
                       itemCount: filtered.length,
                       itemBuilder: (context, index) =>
                           _SearchResultCard(entry: filtered[index]),
@@ -73,10 +78,18 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
 
   Widget _buildHeader(AppLocalizations l10n) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.page,
+        16,
+        AppSpacing.page,
+        12,
+      ),
       child: Row(
         children: [
-          BackIconButton(onPressed: () => context.go('/journal')),
+          BackIconButton(
+            onPressed: () =>
+                safeRouterBack(context, fallbackRoute: '/journal'),
+          ),
           const SizedBox(width: 16),
           Expanded(
             child: Container(
@@ -95,7 +108,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
                 decoration: InputDecoration(
                   hintText: l10n.searchJournalHint,
                   border: InputBorder.none,
-                  icon: Icon(Icons.search, color: AppColors.grey400),
+                  icon: const Icon(Icons.search, color: AppColors.grey400),
                 ),
               ),
             ),
@@ -108,12 +121,14 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
   Widget _buildFilterBar(AppLocalizations l10n) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.page, 0, AppSpacing.page, 8),
       child: Row(
         children: [
           _FilterChip(
-            label: l10n.journalSearchAllMoods,
-            isSelected: _selectedMood == 'all',
+            label: _selectedMood == 'all'
+                ? l10n.journalSearchAllMoods
+                : Mood.fromId(_selectedMood).localizedLabel(l10n),
+            isSelected: _selectedMood != 'all',
             onSelected: () => _showMoodPicker(),
           ),
           const SizedBox(width: 8),
@@ -124,6 +139,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
           ),
           const SizedBox(width: 8),
           _FilterChip(
+            icon: Icons.calendar_today_outlined,
             label: _getDateRangeLabel(l10n),
             isSelected: _dateRange != null,
             onSelected: () => _selectDateRange(),
@@ -138,7 +154,8 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
     final locale = Localizations.localeOf(context).toString();
     final start = DateFormat.MMMd(locale).format(_dateRange!.start);
     final end = DateFormat.MMMd(locale).format(_dateRange!.end);
-    return '$start - $end';
+    if (start == end) return start;
+    return '$start – $end';
   }
 
   List<JournalEntry> _filterEntries(List<JournalEntry> entries) {
@@ -148,10 +165,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
           e.content.toLowerCase().contains(query);
       final matchesMood = _selectedMood == 'all' || e.mood == _selectedMood;
       final matchesFavorite = !_onlyFavorites || e.isFavorite;
-      final matchesDate = _dateRange == null ||
-          (e.createdAt.isAfter(_dateRange!.start) &&
-              e.createdAt
-                  .isBefore(_dateRange!.end.add(const Duration(days: 1))));
+      final matchesDate = _dateRange == null || _isInRange(e.createdAt);
       return matchesQuery && matchesMood && matchesFavorite && matchesDate;
     }).toList();
   }
@@ -175,79 +189,95 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
     final l10n = AppLocalizations.of(context);
     final result = await showModalBottomSheet<String>(
       context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(l10n.journalFilterByMood, style: AppText.h4),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                _MoodPickerItem(
-                    label: l10n.journalAllFilter,
-                    icon: Icons.bubble_chart_rounded,
-                    isSelected: _selectedMood == 'all',
-                    onTap: () => Navigator.pop(context, 'all')),
-                ...Mood.all.map((m) => _MoodPickerItem(
-                      label: m.localizedLabel(l10n),
-                      icon: m.icon,
-                      isSelected: _selectedMood == m.id,
-                      onTap: () => Navigator.pop(context, m.id),
-                    )),
-              ],
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.46),
+      elevation: 0,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(top: 28),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.22),
+                blurRadius: 28,
+                spreadRadius: 2,
+                offset: const Offset(0, -10),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey300,
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(l10n.journalFilterByMood, style: AppText.h4),
+                  const SizedBox(height: 24),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      _MoodPickerItem(
+                        label: l10n.journalAllFilter,
+                        icon: Icons.bubble_chart_rounded,
+                        isSelected: _selectedMood == 'all',
+                        onTap: () => Navigator.pop(context, 'all'),
+                      ),
+                      ...Mood.all.map(
+                        (m) => _MoodPickerItem(
+                          label: m.localizedLabel(l10n),
+                          icon: m.icon,
+                          isSelected: _selectedMood == m.id,
+                          onTap: () => Navigator.pop(context, m.id),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );
     if (result != null) setState(() => _selectedMood = result);
   }
 
+  bool _isInRange(DateTime date) {
+    final range = _dateRange;
+    if (range == null) return true;
+    final day = DateTime(date.year, date.month, date.day);
+    final start = DateTime(range.start.year, range.start.month, range.start.day);
+    final end = DateTime(range.end.year, range.end.month, range.end.day);
+    return !day.isBefore(start) && !day.isAfter(end);
+  }
+
   Future<void> _selectDateRange() async {
-    final l10n = AppLocalizations.of(context);
-    final picked = await showDateRangePicker(
+    final entries = ref.read(journalProvider).value ?? const <JournalEntry>[];
+    final choice = await showJournalRangeSheet(
       context: context,
-      initialDateRange: _dateRange,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-      confirmText: l10n.ok,
-      saveText: l10n.save,
-      helpText: l10n.selectDateRange,
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: AppColors.primary500,
-            onPrimary: Colors.white,
-            surface: Colors.white,
-            onSurface: AppColors.grey900,
-            secondary: AppColors.primary500,
-          ),
-          dialogBackgroundColor: Colors.white,
-          datePickerTheme: DatePickerThemeData(
-            headerBackgroundColor: AppColors.primary500,
-            headerForegroundColor: Colors.white,
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(28),
-            ),
-            dayStyle: AppText.body,
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.primary500,
-              textStyle: AppText.label.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        child: child!,
-      ),
+      initialRange: _dateRange,
+      markedDays: {
+        for (final entry in entries)
+          DateTime(entry.createdAt.year, entry.createdAt.month, entry.createdAt.day),
+      },
     );
-    if (picked != null) setState(() => _dateRange = picked);
+    if (choice == null || !choice.apply || !mounted) return;
+    setState(() => _dateRange = choice.range);
   }
 }
 
@@ -255,30 +285,44 @@ class _FilterChip extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onSelected;
+  final IconData? icon;
 
-  const _FilterChip(
-      {required this.label,
-      required this.isSelected,
-      required this.onSelected});
+  const _FilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onSelected,
+    this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final color = isSelected ? AppColors.white : AppColors.grey700;
     return GestureDetector(
       onTap: onSelected,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        duration: const Duration(milliseconds: 180),
+        height: 44,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.grey900 : AppColors.white,
+          color: isSelected ? AppColors.grey900 : AppColors.grey100,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-              color: isSelected ? AppColors.grey900 : AppColors.grey200),
         ),
-        child: Text(
-          label,
-          style: AppText.label.copyWith(
-              color: isSelected ? Colors.white : AppColors.grey700,
-              fontWeight: FontWeight.bold),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: AppText.label.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -340,7 +384,7 @@ class _SearchResultCard extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     final mood = Mood.fromId(entry.mood);
     return GestureDetector(
-      onTap: () => context.go('/journal/detail/${entry.id}'),
+      onTap: () => context.push('/journal/detail/${entry.id}'),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:peria_app/core/errors/app_error_handler.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
 import 'package:peria_app/features/educatif/presentation/providers/education_provider.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:peria_app/shared/widgets/health_information_notice.dart';
 
 class EducationArticleDetailScreen extends ConsumerWidget {
@@ -20,15 +19,17 @@ class EducationArticleDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final article = ref.watch(educationArticleProvider(articleId));
+    final isSaved = ref.watch(savedArticlesProvider).contains(articleId);
 
     if (article == null) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.white,
           elevation: 0,
-          leading: GestureDetector(
-            onTap: () => context.pop(),
-            child: const Icon(Icons.chevron_left_rounded, color: AppColors.grey900),
+          leading: IconButton(
+            onPressed: () =>
+                safeRouterBack(context, fallbackRoute: '/education'),
+            icon: const Icon(Icons.chevron_left_rounded, color: AppColors.grey900),
           ),
         ),
         body: Center(
@@ -46,56 +47,70 @@ class EducationArticleDetailScreen extends ConsumerWidget {
           ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 12, 18, 100),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.page,
+                12,
+                AppSpacing.page,
+                32,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.75),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.grey200),
-                          ),
-                          child: const Icon(
-                            Icons.chevron_left_rounded,
-                            color: AppColors.grey900,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        article.axis.localizedLabel(l10n),
-                        style: AppText.h4.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.grey700,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          AppErrorHandler.showSuccess(
+                      Material(
+                        color: AppColors.white.withOpacity(0.75),
+                        borderRadius: BorderRadius.circular(14),
+                        child: InkWell(
+                          onTap: () => safeRouterBack(
                             context,
-                            l10n.educationArticleSaved,
-                          );
-                        },
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: AppColors.white.withOpacity(0.75),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: AppColors.grey200),
+                            fallbackRoute: '/education',
                           ),
-                          child: const Icon(
-                            Icons.bookmark_outline,
+                          borderRadius: BorderRadius.circular(14),
+                          child: const SizedBox(
+                            width: 44,
+                            height: 44,
+                            child: Icon(
+                              Icons.chevron_left_rounded,
+                              color: AppColors.grey900,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          article.axis.localizedLabel(l10n),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.h4.copyWith(
+                            fontWeight: FontWeight.w600,
                             color: AppColors.grey700,
-                            size: 18,
+                          ),
+                        ),
+                      ),
+                      Material(
+                        color: AppColors.white.withOpacity(0.75),
+                        borderRadius: BorderRadius.circular(14),
+                        child: InkWell(
+                          onTap: () {
+                            ref
+                                .read(savedArticlesProvider.notifier)
+                                .toggle(article.id);
+                          },
+                          borderRadius: BorderRadius.circular(14),
+                          child: SizedBox(
+                            width: 44,
+                            height: 44,
+                            child: Icon(
+                              isSaved
+                                  ? Icons.bookmark_rounded
+                                  : Icons.bookmark_outline,
+                              color: isSaved
+                                  ? AppColors.primary400
+                                  : AppColors.grey700,
+                            ),
                           ),
                         ),
                       ),

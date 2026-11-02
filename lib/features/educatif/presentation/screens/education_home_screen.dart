@@ -43,6 +43,11 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
     final personalizedSuggestions =
         ref.watch(personalizedEducationSuggestionsProvider);
     final contextTags = ref.watch(educationContextTagsProvider);
+    final savedIds = ref.watch(savedArticlesProvider);
+    final savedArticles = ref
+        .watch(allEducationArticlesProvider)
+        .where((article) => savedIds.contains(article.id))
+        .toList(growable: false);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -53,7 +58,12 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
           ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.page,
+                8,
+                AppSpacing.page,
+                24,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -71,11 +81,18 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                           children: [
                             Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () => context.go('/profile'),
-                                  child: const CircleAvatar(
-                                    radius: 18,
-                                    backgroundImage: AssetImage(AppAssets.avatar,
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () => context.push('/profile'),
+                                    customBorder: const CircleBorder(),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(4),
+                                      child: CircleAvatar(
+                                        radius: 20,
+                                        backgroundImage:
+                                            AssetImage(AppAssets.avatar),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -169,6 +186,20 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                       ],
                     ),
                   ),
+                  if (searchQuery.isEmpty && savedArticles.isNotEmpty) ...[
+                    const SizedBox(height: 18),
+                    Text(
+                      l10n.savedArticles,
+                      style: AppText.h5.copyWith(color: AppColors.grey900),
+                    ),
+                    const SizedBox(height: 12),
+                    for (final article in savedArticles)
+                      _ArticleCard(
+                        article: article,
+                        onTap: () =>
+                            context.push('/education/article/${article.id}'),
+                      ),
+                  ],
                   if (searchQuery.isEmpty && personalizedSuggestions.isNotEmpty) ...[
                     const SizedBox(height: 18),
                     _ContextSuggestionsCard(
@@ -214,26 +245,16 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                       ),
                     )
                   else
-                    SizedBox(
-                      height: 200,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        // padding: const EdgeInsets.symmetric(horizontal: 5),
-                        itemCount: filteredArticles.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 14),
-                        itemBuilder: (context, index) {
-                          final article = filteredArticles[index];
-                          return SizedBox(
-                            width: 280,
-                            child: _ArticleCard(
-                              article: article,
-                              onTap: () {
-                                context.push('/education/article/${article.id}');
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                    Column(
+                      children: [
+                        for (final article in filteredArticles)
+                          _ArticleCard(
+                            article: article,
+                            onTap: () {
+                              context.push('/education/article/${article.id}');
+                            },
+                          ),
+                      ],
                     ),
                   const SizedBox(height: 24),
                   _EducationHeroCard(
@@ -242,7 +263,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                     footer: l10n.educationHeroFooter,
                     accent: AppColors.primary400,
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
@@ -257,7 +278,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
     AppLocalizations l10n,
   ) {
     return SizedBox(
-      height: 40,
+      height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -269,7 +290,8 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
             onTap: () => setState(() => _selectedAxis = category.axis),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
                 color: selected ? AppColors.grey900 : AppColors.grey100,
                 borderRadius: BorderRadius.circular(20),

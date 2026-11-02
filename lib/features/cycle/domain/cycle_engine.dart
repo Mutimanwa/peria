@@ -257,9 +257,12 @@ class CycleEngine {
     final nextPeriodStart = _addCalendarDays(currentCycleStart, cycleLengthDays);
     final pmsDays = _computePmsDays(nextPeriodStart, pmsDaysSetting);
     
-    // Phase detection with adjusted windows for irregular cycles
+    // Phase detection with adjusted windows for irregular cycles.
+    // Predicted period days are menstrual even when they are not a saved log.
     CyclePhase phase;
-    if (isInPeriod) {
+    final isPredictedPeriodDay =
+        dayOfCycle >= 1 && dayOfCycle <= periodLengthDays;
+    if (isInPeriod || isPredictedPeriodDay) {
       phase = CyclePhase.menstrual;
     } else if (dayOfCycle >= ovulationRangeStartDay &&
         dayOfCycle <= ovulationRangeEndDay) {

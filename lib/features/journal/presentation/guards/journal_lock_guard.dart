@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:peria_app/features/journal/presentation/widgets/journal_skeleton.dart';
 import 'package:peria_app/features/profile/presentation/providers/security_provider.dart';
-import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:peria_app/shared/widgets/pin_code_input.dart';
 
 class JournalLockGuard extends ConsumerWidget {
   final Widget child;
-  final String entryId; // For detail/edit routes
 
   const JournalLockGuard({
     super.key,
     required this.child,
-    this.entryId = '',
   });
 
   @override
@@ -25,30 +22,21 @@ class JournalLockGuard extends ConsumerWidget {
 
     return securityAsync.when(
       data: (security) {
-        if (security.journalLockEnabled) {
-          return _LockOverlay(
-            onVerified: () => _onUnlock(context),
-            child: child,
-          );
-        }
-        return child;
+        final locked =
+            security.journalLockEnabled && !security.isSessionValid;
+        if (!locked) return child;
+        return _LockOverlay(child: child);
       },
       loading: () => const Center(child: JournalSkeleton()),
-      error: (_, __) => child, // Fallback
+      error: (_, __) => child,
     );
-  }
-
-  void _onUnlock(BuildContext context) {
-    // Unlock success - navigate to journal screen
-    context.go('/journal${entryId.isNotEmpty ? '/detail/$entryId' : ''}');
   }
 }
 
 class _LockOverlay extends ConsumerStatefulWidget {
-  final VoidCallback onVerified;
   final Widget child;
 
-  const _LockOverlay({required this.onVerified, required this.child});
+  const _LockOverlay({required this.child});
 
   @override
   ConsumerState<_LockOverlay> createState() => _LockOverlayState();
@@ -73,30 +61,20 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
   }
 
   Future<void> _authenticate() async {
-    try {
-      final didAuth = await _localAuth.authenticate(
-        localizedReason: AppLocalizations.of(context).journalUnlockReason,
-        options: const AuthenticationOptions(biometricOnly: false),
-      );
-      if (didAuth && mounted) {
-        widget.onVerified();
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => _error = AppLocalizations.of(context).securityBiometricFailed);
-      }
-    }
+    final result = await ref.read(securityProvider.notifier).authenticate();
+    if (!mounted || result.isSuccess || result.requiresPin) return;
+    setState(
+      () => _error = AppLocalizations.of(context).securityBiometricFailed,
+    );
   }
 
   Future<void> _verifyPin(String pin) async {
     if (pin.length != 4) return;
 
-    final isValid = await SecurityService.verifyPin(pin);
-    if (isValid && mounted) {
-      widget.onVerified();
-    } else {
-      setState(() => _error = AppLocalizations.of(context).securityIncorrectPin);
-    }
+    final result =
+        await ref.read(securityProvider.notifier).authenticateWithPin(pin);
+    if (!mounted || result.isSuccess) return;
+    setState(() => _error = AppLocalizations.of(context).securityIncorrectPin);
   }
 
   @override
@@ -107,7 +85,18 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
         widget.child,
         Scaffold(
           backgroundColor: Colors.black54,
-          body: Center(
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    onPressed: () =>
+                        safeRouterBack(context, fallbackRoute: '/cycle'),
+                    icon: const Icon(Icons.arrow_back_rounded),
+                  ),
+                ),
+                Center(
             child: Container(
               padding: const EdgeInsets.all(32),
               margin: const EdgeInsets.all(24),
@@ -171,6 +160,9 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                   ],
                 ],
               ),
+            ),
+          ),
+              ],
             ),
           ),
         ),

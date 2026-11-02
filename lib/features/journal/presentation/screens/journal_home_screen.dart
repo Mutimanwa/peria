@@ -96,7 +96,8 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
         backgroundColor: AppColors.grey900,
         icon: const Icon(Icons.edit_document, color: Colors.white),
         label: Text(l10n.newEntry,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       )
     );
@@ -262,7 +263,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                             borderRadius: BorderRadius.circular(15)),
                       ),
                       child: Text(l10n.save,
-                          style: TextStyle(color: Colors.white)),
+                          style: const TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),

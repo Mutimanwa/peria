@@ -1,6 +1,7 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -19,53 +20,43 @@ class CustomBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Container(
-      height: 72,
-      margin: const EdgeInsets.fromLTRB(40, 0, 40, 20),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(179),
-        borderRadius: BorderRadius.circular(40),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(15),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-        border: Border.all(color: Colors.white.withAlpha(128), width: 1.5),
+    final items = <({NavItem item, String label, IconData? icon, bool cycle})>[
+      (item: NavItem.cycle, label: l10n.navCycle, icon: null, cycle: true),
+      (
+        item: NavItem.education,
+        label: l10n.navEducation,
+        icon: Icons.school_rounded,
+        cycle: false,
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(40),
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _NavItemWidget(
-                  item: NavItem.cycle,
-                  label: l10n.navCycle,
-                  iconPainter: _CycleIconPainter(),
-                  isActive: currentIndex == NavItem.cycle,
-                  onTap: () => onTap(NavItem.cycle),
+      (
+        item: NavItem.journal,
+        label: l10n.navJournal,
+        icon: Icons.menu_book_rounded,
+        cycle: false,
+      ),
+    ];
+
+    return Material(
+      color: AppColors.white,
+      elevation: 12,
+      shadowColor: Colors.black26,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 68,
+          child: Row(
+            children: [
+              for (final item in items)
+                Expanded(
+                  child: _NavItemWidget(
+                    label: item.label,
+                    icon: item.icon,
+                    useCycleIcon: item.cycle,
+                    isActive: currentIndex == item.item,
+                    onTap: () => onTap(item.item),
+                  ),
                 ),
-                _NavItemWidget(
-                  item: NavItem.education,
-                  label: l10n.navEducation,
-                  icon: Icons.school,
-                  isActive: currentIndex == NavItem.education,
-                  onTap: () => onTap(NavItem.education),
-                ),
-                _NavItemWidget(
-                  item: NavItem.journal,
-                  label: l10n.navJournal,
-                  icon: Icons.menu_book_outlined,
-                  isActive: currentIndex == NavItem.journal,
-                  onTap: () => onTap(NavItem.journal),
-                ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
@@ -74,88 +65,76 @@ class CustomBottomNav extends StatelessWidget {
 }
 
 class _NavItemWidget extends StatelessWidget {
-  final NavItem item;
   final String label;
-  final CustomPainter? iconPainter;
   final IconData? icon;
+  final bool useCycleIcon;
   final bool isActive;
   final VoidCallback onTap;
 
   const _NavItemWidget({
-    required this.item,
     required this.label,
-    this.iconPainter,
-    this.icon,
+    required this.icon,
+    required this.useCycleIcon,
     required this.isActive,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (isActive) {
-      return GestureDetector(
+    final foreground = isActive ? AppColors.white : AppColors.neutral900;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         onTap: onTap,
-        child: Container(
-          constraints: const BoxConstraints(minWidth: 100, minHeight: 50),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.neutral900,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildIcon(Colors.white),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  fontFamily: 'Poppins',
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isActive ? AppColors.neutral900 : Colors.transparent,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildIcon(foreground),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: foreground,
+                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                    fontSize: 11,
+                    fontFamily: 'Poppins',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 48,
-        height: 48,
-        alignment: Alignment.center,
-        child: _buildIcon(AppColors.neutral900),
       ),
     );
   }
 
   Widget _buildIcon(Color color) {
-    if (iconPainter != null) {
+    if (useCycleIcon) {
       return SizedBox(
-        width: 20,
-        height: 20,
-        child: CustomPaint(
-          painter: _proxyPainter(iconPainter!, color),
-        ),
+        width: 22,
+        height: 22,
+        child: CustomPaint(painter: _CycleIconPainter(color: color)),
       );
     }
-    return Icon(icon, color: color, size: 24);
-  }
-
-  CustomPainter _proxyPainter(CustomPainter original, Color color) {
-    if (original is _CycleIconPainter) return _CycleIconPainter(color: color);
-    return original;
+    return Icon(icon, color: color, size: 22);
   }
 }
 
-// ── Icons Painters (Internal to this widget) ───────────────────────────
-
 class _CycleIconPainter extends CustomPainter {
   final Color color;
+
   _CycleIconPainter({this.color = Colors.black});
 
   @override
@@ -177,12 +156,11 @@ class _CycleIconPainter extends CustomPainter {
     );
     final arrowX = cx + r * math.cos(-math.pi * 0.9);
     final arrowY = cy + r * math.sin(-math.pi * 0.9);
-    canvas.drawLine(
-        Offset(arrowX - 3, arrowY + 5), Offset(arrowX, arrowY), paint);
-    canvas.drawLine(
-        Offset(arrowX + 4, arrowY + 3), Offset(arrowX, arrowY), paint);
+    canvas.drawLine(Offset(arrowX - 3, arrowY + 5), Offset(arrowX, arrowY), paint);
+    canvas.drawLine(Offset(arrowX + 4, arrowY + 3), Offset(arrowX, arrowY), paint);
   }
 
   @override
-  bool shouldRepaint(_) => false;
+  bool shouldRepaint(covariant _CycleIconPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

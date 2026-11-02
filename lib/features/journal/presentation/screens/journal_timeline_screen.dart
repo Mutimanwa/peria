@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
-import 'package:peria_app/features/journal/presentation/mood_localization.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -20,7 +19,7 @@ class JournalTimelineScreen extends ConsumerWidget {
 
     return PageScaffold(
       showBack: true,
-      onBack: () => context.go('/journal'),
+      onBack: () => safeRouterBack(context, fallbackRoute: '/journal'),
       showTitle: true,
       title: l10n.journalTimeline,
       child: Padding(
@@ -114,7 +113,7 @@ class _TimelineCard extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     final mood = Mood.fromId(entry.mood);
     return GestureDetector(
-      onTap: () => context.go('/journal/detail/${entry.id}'),
+      onTap: () => context.push('/journal/detail/${entry.id}'),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),

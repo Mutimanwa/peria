@@ -33,6 +33,7 @@ import 'package:peria_app/features/profile/presentation/screens/connect_partner.
 import 'package:peria_app/features/profile/presentation/screens/invite_partner_pending.dart';
 import 'package:peria_app/features/profile/presentation/screens/invite_partner_screen.dart';
 import 'package:peria_app/features/profile/presentation/screens/notification.dart';
+import 'package:peria_app/features/profile/presentation/screens/notification_inbox_screen.dart';
 import 'package:peria_app/features/profile/presentation/screens/partner_screen.dart';
 import 'package:peria_app/features/profile/presentation/screens/personal_info.dart';
 import 'package:peria_app/features/profile/presentation/screens/profile_screens.dart';
@@ -327,6 +328,14 @@ final GoRouter appRouter = GoRouter(
         pageBuilder: (context, state) => _buildSlideTransitionPage(
             context, state, const PersonalInformationScreen())),
     GoRoute(
+      path: '/notifications',
+      pageBuilder: (context, state) => _buildSlideTransitionPage(
+        context,
+        state,
+        const NotificationInboxScreen(),
+      ),
+    ),
+    GoRoute(
         path: '/profile/notifications',
         pageBuilder: (context, state) => _buildSlideTransitionPage(
             context, state, const NotificationsScreen())),
@@ -337,15 +346,7 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context,
         state,
-        const NotificationsScreen(),
-      ),
-    ),
-    GoRoute(
-      path: '/notifications',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const NotificationsScreen(),
+        const NotificationInboxScreen(),
       ),
     ),
     GoRoute(
@@ -452,7 +453,7 @@ final GoRouter appRouter = GoRouter(
         // CYCLE - Main cycle tracking and calendar
         GoRoute(
           path: '/cycle',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
+          pageBuilder: (context, state) => _buildTabPage(
             context,
             state,
             const CycleHomeScreen(),
@@ -460,7 +461,7 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/journal',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
+          pageBuilder: (context, state) => _buildTabPage(
             context,
             state,
             const JournalLockGuard(child: JournalScreens()),
@@ -479,7 +480,7 @@ final GoRouter appRouter = GoRouter(
         // EDUCATION - Educational content about cycles, fertility, health
         GoRoute(
           path: '/education',
-          pageBuilder: (context, state) => _buildSlideTransitionPage(
+          pageBuilder: (context, state) => _buildTabPage(
             context,
             state,
             const EducationHomeScreen(),
@@ -502,6 +503,20 @@ final GoRouter appRouter = GoRouter(
 
 final PeriaBackButtonDispatcher periaBackButtonDispatcher =
     PeriaBackButtonDispatcher(appRouter);
+
+CustomTransitionPage _buildTabPage(
+  BuildContext context,
+  GoRouterState state,
+  Widget child,
+) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
+  );
+}
 
 CustomTransitionPage _buildSlideTransitionPage(
   BuildContext context,

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -65,7 +66,7 @@ class ProfileScreen extends ConsumerWidget {
                   MenuItemData(
                     l10n.settings,
                     Icons.settings_outlined,
-                    () => context.go('/profile/settings'),
+                    () => context.push('/profile/settings'),
                   ),
                 ]),
                 const SizedBox(height: 22),
@@ -73,12 +74,25 @@ class ProfileScreen extends ConsumerWidget {
                 MenuGroup(items: [
                   MenuItemData(l10n.helpSupport, Icons.help_outline_rounded,
                       () => context.push('/profile/help-support')),
-                  MenuItemData(l10n.logOut, Icons.logout_rounded, () {},
-                      danger: true),
+                  MenuItemData(
+                    l10n.logOut,
+                    Icons.logout_rounded,
+                    () => _signOut(context),
+                    danger: true,
+                  ),
                 ]),
               ],
             ),
           ),
         ));
   }
+}
+
+Future<void> _signOut(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+  } catch (_) {
+    // Still leave the signed-in area if the session is already gone.
+  }
+  if (context.mounted) context.go('/welcome');
 }

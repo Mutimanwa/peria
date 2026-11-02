@@ -3644,41 +3644,35 @@ abstract class AppLocalizations {
   /// **'Choose the period update that best describes today.'**
   String get periodLogSheetSubtitle;
 
-  /// No description provided for @minimumAgeMessage.
+  /// No description provided for @notificationSettings.
   ///
   /// In en, this message translates to:
-  /// **'Peria is for people aged {age} and older.'**
-  String minimumAgeMessage(int age);
+  /// **'Notification settings'**
+  String get notificationSettings;
 
-  /// No description provided for @ageRestrictedTitle.
+  /// No description provided for @notificationInboxEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Age requirement'**
-  String get ageRestrictedTitle;
+  /// **'No notifications yet'**
+  String get notificationInboxEmpty;
 
-  /// No description provided for @ageRestrictedBody.
+  /// No description provided for @notificationInboxSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Peria isn\'t available under {age}. Update your date of birth to continue.'**
-  String ageRestrictedBody(int age);
+  /// **'These are the reminders planned on this device.'**
+  String get notificationInboxSubtitle;
 
-  /// No description provided for @updateDateOfBirth.
+  /// No description provided for @journalEntryEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Update date of birth'**
-  String get updateDateOfBirth;
+  /// **'Write a title or a few words before saving.'**
+  String get journalEntryEmpty;
 
-  /// No description provided for @pressBackAgainToExit.
+  /// No description provided for @savedArticles.
   ///
   /// In en, this message translates to:
-  /// **'Press back again to leave'**
-  String get pressBackAgainToExit;
-
-  /// No description provided for @symptomLogUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Saved symptoms couldn\'t be loaded. You can still log this day.'**
-  String get symptomLogUnavailable;
+  /// **'Saved articles'**
+  String get savedArticles;
 }
 
 class _AppLocalizationsDelegate

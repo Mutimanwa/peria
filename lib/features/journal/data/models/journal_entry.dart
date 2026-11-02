@@ -95,6 +95,14 @@ class JournalEntry {
     String? title,
     String? content,
     String? mood,
+    List<String>? tags,
+    int? intensity,
+    bool? isFavorite,
+    bool? isPrivate,
+    String? location,
+    List<String>? attachments,
+    int? energyLevel,
+    int? stressLevel,
   }) {
     return JournalEntry(
       id: id ?? this.id,

@@ -1933,25 +1933,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose the period update that best describes today.';
 
   @override
-  String minimumAgeMessage(int age) {
-    return 'Peria is for people aged $age and older.';
-  }
+  String get notificationSettings => 'Notification settings';
 
   @override
-  String get ageRestrictedTitle => 'Age requirement';
+  String get notificationInboxEmpty => 'No notifications yet';
 
   @override
-  String ageRestrictedBody(int age) {
-    return 'Peria isn\'t available under $age. Update your date of birth to continue.';
-  }
+  String get notificationInboxSubtitle =>
+      'These are the reminders planned on this device.';
 
   @override
-  String get updateDateOfBirth => 'Update date of birth';
+  String get journalEntryEmpty => 'Write a title or a few words before saving.';
 
   @override
-  String get pressBackAgainToExit => 'Press back again to leave';
-
-  @override
-  String get symptomLogUnavailable =>
-      'Saved symptoms couldn\'t be loaded. You can still log this day.';
+  String get savedArticles => 'Saved articles';
 }

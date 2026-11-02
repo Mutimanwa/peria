@@ -77,6 +77,7 @@ class MenuGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.grey100,
         borderRadius: BorderRadius.circular(22),
@@ -86,12 +87,16 @@ class MenuGroup extends StatelessWidget {
           final item = items[index];
           return Column(
             children: [
-              InkWell(
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
                 borderRadius: BorderRadius.circular(22),
                 onTap: item.onTap,
-                child: Padding(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 56),
+                  child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   child: Row(
                     children: [
                       Container(
@@ -133,6 +138,8 @@ class MenuGroup extends StatelessWidget {
                           color: AppColors.grey400),
                     ],
                   ),
+                ),
+                ),
                 ),
               ),
               if (index != items.length - 1)

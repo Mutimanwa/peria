@@ -19,99 +19,151 @@ class AccountSecurityScreen extends ConsumerStatefulWidget {
 }
 
 class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
-  Future<void> _showPinDialog({required bool isNew}) async {
+  Future<bool> _showPinSheet({required bool enableJournalLock}) async {
     final l10n = AppLocalizations.of(context);
+    final security = ref.read(securityProvider).value;
+    final isNew = security?.pinConfigured != true;
     String? pin;
     String? error;
-    bool isConfirming = false;
+    var isConfirming = false;
+    var saved = false;
 
-    await showDialog<void>(
+    await showModalBottomSheet<void>(
       context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28)),
-              title: Column(
-                children: [
-                  Text(
-                    isConfirming
-                        ? l10n.confirmPin
-                        : (isNew ? l10n.setPinLock : l10n.newPin),
-                    textAlign: TextAlign.center,
-                    style: AppText.h4,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    isConfirming
-                        ? l10n.enterPin // Or a "re-enter" key
-                        : (isNew ? l10n.enterPin : l10n.newPin),
-                    textAlign: TextAlign.center,
-                    style: AppText.caption.copyWith(color: AppColors.grey500),
-                  ),
-                ],
-              ),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: PinCodeInput(
-                  key: ValueKey(
-                      isConfirming), // Force rebuild for step transition
-                  length: 4,
-                  autoFocus: true,
-                  obscureText: true,
-                  showVisibilityToggle: true,
-                  error: error,
-                  onChanged: (v) {
-                    if (error != null) {
-                      setDialogState(() => error = null);
-                    }
-                  },
-                  onCompleted: (value) async {
-                    if (!isConfirming) {
-                      setDialogState(() {
-                        pin = value;
-                        isConfirming = true;
-                        error = null;
-                      });
-                    } else {
-                      if (value == pin) {
-                        final navigator = Navigator.of(context);
-                        await ref
-                            .read(securityProvider.notifier)
-                            .createPin(pin!);
-                        if (isNew) {
-                          await ref
-                              .read(securityProvider.notifier)
-                              .setAppLockEnabled(true);
-                        }
-                        navigator.pop();
-                      } else {
-                        setDialogState(() {
-                          error = l10n.pinsDoNotMatch;
-                        });
-                      }
-                    }
-                  },
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.46),
+      elevation: 0,
+      clipBehavior: Clip.none,
+      builder: (sheetContext) {
+        final bottomInset = MediaQuery.viewInsetsOf(sheetContext).bottom;
+        return Padding(
+          padding: EdgeInsets.only(top: 28, bottom: bottomInset),
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              final title = isConfirming
+                  ? l10n.confirmPin
+                  : (isNew ? l10n.setPinLock : l10n.newPin);
+              final subtitle = isConfirming
+                  ? l10n.confirmPin
+                  : (enableJournalLock
+                      ? l10n.globalSecurityRequiredForJournal
+                      : l10n.enterPin);
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(28)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.22),
+                      blurRadius: 28,
+                      spreadRadius: 2,
+                      offset: const Offset(0, -10),
+                    ),
+                  ],
                 ),
-              ),
-              actionsPadding: const EdgeInsets.only(bottom: 16),
-              actions: [
-                Center(
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(l10n.cancel,
-                        style: AppText.body.copyWith(color: AppColors.grey500)),
+                child: SafeArea(
+                  top: false,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey300,
+                            borderRadius: BorderRadius.circular(99),
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: AppText.h4,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          subtitle,
+                          textAlign: TextAlign.center,
+                          style: AppText.body.copyWith(color: AppColors.grey600),
+                        ),
+                        const SizedBox(height: 20),
+                        PinCodeInput(
+                          key: ValueKey(isConfirming),
+                          length: 4,
+                          autoFocus: true,
+                          obscureText: true,
+                          showVisibilityToggle: true,
+                          error: error,
+                          onChanged: (_) {
+                            if (error != null) {
+                              setSheetState(() => error = null);
+                            }
+                          },
+                          onCompleted: (value) async {
+                            if (!isConfirming) {
+                              setSheetState(() {
+                                pin = value;
+                                isConfirming = true;
+                                error = null;
+                              });
+                              return;
+                            }
+                            if (value != pin) {
+                              setSheetState(() => error = l10n.pinsDoNotMatch);
+                              return;
+                            }
+                            try {
+                              await ref
+                                  .read(securityProvider.notifier)
+                                  .createPin(pin!);
+                              if (isNew) {
+                                await ref
+                                    .read(securityProvider.notifier)
+                                    .setAppLockEnabled(true);
+                              }
+                              if (enableJournalLock) {
+                                await ref
+                                    .read(securityProvider.notifier)
+                                    .setJournalLockEnabled(true);
+                              }
+                              saved = true;
+                              if (sheetContext.mounted) {
+                                Navigator.of(sheetContext).pop();
+                              }
+                            } catch (_) {
+                              setSheetState(
+                                () => error = l10n.securityAuthenticationError,
+                              );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        TextButton(
+                          onPressed: () => Navigator.of(sheetContext).pop(),
+                          child: Text(
+                            l10n.cancel,
+                            style:
+                                AppText.body.copyWith(color: AppColors.grey500),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            );
-          },
+              );
+            },
+          ),
         );
       },
     );
+    return saved;
   }
 
   void _showDiscreteFeedback(String message) {
@@ -163,7 +215,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                   security.appLockEnabled,
                   (v) async {
                     if (!security.pinConfigured && v) {
-                      await _showPinDialog(isNew: true);
+                      await _showPinSheet(enableJournalLock: false);
                       return;
                     }
                     await ref
@@ -194,9 +246,14 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                   l10n.journalLock,
                   security.journalLockEnabled,
                   (v) async {
-                    if (!security.appLockEnabled && v) {
-                      _showDependencyWarning();
+                    if (v && !security.pinConfigured) {
+                      await _showPinSheet(enableJournalLock: true);
                       return;
+                    }
+                    if (v && !security.appLockEnabled) {
+                      await ref
+                          .read(securityProvider.notifier)
+                          .setAppLockEnabled(true);
                     }
                     await ref
                         .read(securityProvider.notifier)
@@ -219,7 +276,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                 MenuItemData(
                   l10n.changePin,
                   Icons.lock_outline,
-                  () => _showPinDialog(isNew: false),
+                  () => _showPinSheet(enableJournalLock: false),
                 ),
                 MenuItemData(
                   l10n.clearLocalData,

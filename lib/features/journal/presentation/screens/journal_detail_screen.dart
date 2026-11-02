@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +7,9 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/journal/data/models/journal_entry.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
 import 'package:peria_app/features/journal/presentation/mood_localization.dart';
+import 'package:peria_app/features/journal/presentation/journal_content.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
+import 'package:peria_app/features/journal/presentation/widgets/journal_attachment_view.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -22,27 +23,19 @@ class JournalDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
-  late PageController _pageController;
+  PageController? _pageController;
   int _currentIndex = 0;
   List<JournalEntry> _allEntries = [];
-  bool _isControllerInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // On initialise le controller par défaut, on ajustera la page dès que les données seront là
-    _pageController = PageController();
-  }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 
   // --- LOGIQUE MÉTIER RELOCALISÉE ICI POUR ACCÉDER À L'ÉTAT ---
   void _editEntry(JournalEntry entry) {
-    context.go('/journal/edit/${entry.id}');
+    context.push('/journal/edit/${entry.id}');
   }
 
   void _deleteEntry(JournalEntry entry) {
@@ -82,8 +75,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
               // 3. Fermer le dialogue d'abord en utilisant son propre contexte
               Navigator.pop(dialogContext);
 
-              // 4. Rediriger l'utilisatrice vers la liste des journaux
-              context.go('/journal');
+              safeRouterBack(context, fallbackRoute: '/journal');
             },
             child: Text(l10n.delete, style: const TextStyle(color: Colors.white)),
           ),
@@ -136,24 +128,29 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
     return entriesAsync.when(
       data: (entries) {
         if (entries.isEmpty) return _buildEmptyState(l10n);
+        if (!entries.any((entry) => entry.id == widget.entryId)) {
+          return PageScaffold(
+            onBack: () => safeRouterBack(context, fallbackRoute: '/journal'),
+            title: l10n.journalTitle,
+            child: Center(child: Text(l10n.unableToLoadJournal)),
+          );
+        }
 
         _allEntries = entries;
 
-        // Trouver l'index correspondant à l'ID passé en paramètre
-        if (!_isControllerInitialized) {
-          final matchedIndex =
-              _allEntries.indexWhere((e) => e.id == widget.entryId);
-          _currentIndex = matchedIndex != -1 ? matchedIndex : 0;
-
-          // Réinitialiser le controller avec la bonne page initiale une seule fois
-          _pageController = PageController(initialPage: _currentIndex);
-          _isControllerInitialized = true;
+        final matchedIndex =
+            _allEntries.indexWhere((e) => e.id == widget.entryId);
+        if (_pageController == null) {
+          _currentIndex = matchedIndex;
+          _pageController = PageController(initialPage: matchedIndex);
         }
-
+        if (_currentIndex >= _allEntries.length) {
+          _currentIndex = _allEntries.length - 1;
+        }
         final currentEntry = _allEntries[_currentIndex];
 
         return PageScaffold(
-          onBack: () => context.go('/journal'),
+          onBack: () => safeRouterBack(context, fallbackRoute: '/journal'),
           actions: [
             IconButton(
               onPressed: () => _showOptions(context, currentEntry),
@@ -161,7 +158,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
             )
           ],
           child: PageView.builder(
-            controller: _pageController,
+            controller: _pageController!,
             itemCount: _allEntries.length,
             onPageChanged: (index) => setState(() => _currentIndex = index),
             itemBuilder: (context, index) {
@@ -179,7 +176,7 @@ class _JournalDetailScreenState extends ConsumerState<JournalDetailScreen> {
   Widget _buildEmptyState(AppLocalizations l10n) {
     return PageScaffold(
       showBack: true,
-      onBack: () => context.go('/journal'),
+      onBack: () => safeRouterBack(context, fallbackRoute: '/journal'),
       showTitle: true,
       title: l10n.journalTitle,
       child: Center(
@@ -295,6 +292,7 @@ class _ContentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = journalContentView(entry);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: TweenAnimationBuilder<double>(
@@ -306,8 +304,30 @@ class _ContentSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Divider(height: 40, color: AppColors.grey100),
+            if (content.images.isNotEmpty) ...[
+              SizedBox(
+                height: 160,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: content.images.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  itemBuilder: (context, index) {
+                    final path = content.images[index];
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: journalAttachmentView(
+                        path,
+                        width: 160,
+                        height: 160,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             Text(
-              entry.content,
+              content.text,
               style: AppText.body.copyWith(
                 color: AppColors.grey800,
                 fontSize: 18,

@@ -1,16 +1,15 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
+import 'package:peria_app/core/theme/app_spacing.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
-import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
@@ -38,7 +37,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   // ── Transition de phase (AnimatedSwitcher) ───────────────────────
   late AnimationController _phaseCtrl;
   late Animation<double> _phaseAnim;
-  DateTime _calendarMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
   @override
   void initState() {
@@ -96,9 +94,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           // Angle du badge sur l'anneau (0 = 3h, -π/2 = 12h)
           // Period → badge à ~2h30 (droite légèrement haut)
           badgeAngleDeg: -40.0,
-          // Surbrillance du jour dans le calendrier
-          calHighlight: AppColors.primary200,
-          calTextColor: AppColors.primary400,
           // Couleur des dots de l'anneau
           dotColor: AppColors.secondary300,
           // Couleur de fond du gap (anneau blanc entre outer et inner)
@@ -114,8 +109,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           textColor: AppColors.neutral900,
           badgeDay: dayOfCycle,
           badgeAngleDeg: -160.0, // gauche ~10h
-          calHighlight: AppColors.warning50,
-          calTextColor: AppColors.warning700,
           dotColor: AppColors.secondary200,
           ringBg: AppColors.warning50.withOpacity(0.5),
         );
@@ -129,8 +122,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           textColor: AppColors.secondary800,
           badgeDay: dayOfCycle,
           badgeAngleDeg: 90.0, // bas ~6h
-          calHighlight: AppColors.secondary100,
-          calTextColor: AppColors.secondary600,
           dotColor: AppColors.secondary300,
           ringBg: AppColors.secondary50,
         );
@@ -144,8 +135,6 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
           textColor: AppColors.secondary800,
           badgeDay: dayOfCycle,
           badgeAngleDeg: -20.0,
-          calHighlight: AppColors.secondary50,
-          calTextColor: AppColors.secondary600,
           dotColor: AppColors.secondary200,
           ringBg: AppColors.secondary50,
         );
@@ -155,8 +144,14 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   Future<void> _showQuickPeriodSheet() async {
     await showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.46),
+      elevation: 0,
+      clipBehavior: Clip.none,
       builder: (_) => _QuickPeriodLogSheet(
         onOpenStructuredEdit: () {
           if (mounted) context.push('/edit-calendar');
@@ -214,19 +209,24 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
             bottom: false,
             child: Column(
               children: [
+                _AppBar(onAvatarTap: () => context.push('/profile')),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.page,
+                      8,
+                      AppSpacing.page,
+                      24,
+                    ),
                     child: Column(
                       children: [
-                        _AppBar(onAvatarTap: () => context.push('/profile')),
-                        const SizedBox(height: 10),
                         Text(
                           daysUntilNext == null
                               ? l10n.nextPeriodUnknown
                               : daysUntilNext <= 0
                                   ? l10n.periodIsDue
                                   : l10n.nextPeriodInDays(daysUntilNext),
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 14,
@@ -234,14 +234,15 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                             color: AppColors.neutral700,
                           ),
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 18),
                         AnimatedBuilder(
                           animation: Listenable.merge(
-                              [_wave1Ctrl, _wave2Ctrl, _phaseAnim]),
+                            [_wave1Ctrl, _wave2Ctrl, _phaseAnim],
+                          ),
                           builder: (_, __) {
                             return SizedBox(
-                              width: size.width * 0.55,
-                              height: size.width * 0.55,
+                              width: size.width * 0.62,
+                              height: size.width * 0.62,
                               child: _CycleWheel(
                                 config: cfg,
                                 wave1: _wave1Ctrl.value,
@@ -252,54 +253,28 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                             );
                           },
                         ),
-                        const SizedBox(height: 18),
-                        _HomeMonthCalendar(
-                          config: cfg,
-                          month: _calendarMonth,
-                          today: status?.now ?? DateTime.now(),
-                          onPrevious: () => setState(() {
-                            _calendarMonth = DateTime(
-                              _calendarMonth.year,
-                              _calendarMonth.month - 1,
-                            );
-                          }),
-                          onNext: () => setState(() {
-                            _calendarMonth = DateTime(
-                              _calendarMonth.year,
-                              _calendarMonth.month + 1,
-                            );
-                          }),
-                        ),
-                        const SizedBox(height: 18),
-                        const SizedBox(
-                          height: 230,
-                          child: _ArticlesRow(),
+                        const SizedBox(height: 28),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _LogBtn(
+                                label: l10n.logSymptoms,
+                                filled: false,
+                                onTap: () => context.push('/symptoms'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _LogBtn(
+                                label: l10n.logPeriodButton,
+                                filled: true,
+                                onTap: _showQuickPeriodSheet,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                ),
-                // Log actions stay put while the month dates scroll above them.
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(22, 8, 22, 108),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _LogBtn(
-                          label: l10n.logSymptoms,
-                          filled: false,
-                          onTap: () => context.push('/symptoms'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _LogBtn(
-                          label: l10n.logPeriodButton,
-                          filled: true,
-                          onTap: _showQuickPeriodSheet,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ],
@@ -423,19 +398,27 @@ class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
         !logsState.hasError &&
         !_isSaving;
     final logs = logsState.value ?? const <PeriodLog>[];
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, bottomInset + 16),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(28),
+      padding: EdgeInsets.only(top: 28, bottom: bottomInset),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.22),
+              blurRadius: 28,
+              spreadRadius: 2,
+              offset: const Offset(0, -10),
             ),
+          ],
+        ),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -548,7 +531,12 @@ class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.page,
+        18,
+        AppSpacing.page,
+        0,
+      ),
       child: Row(
         children: [
           // ── Avatar utilisateur (gauche) ─────────────────────
@@ -592,44 +580,25 @@ class _AppBar extends StatelessWidget {
             ),
           ),
 
-          // ── Icônes droite ────────────────────────────────────
           Row(
             children: [
-              // Cloche + badge rouge
-              SizedBox(
-                width: 28,
-                height: 28,
-                child: Stack(
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          context.push('/profile/notifications');
-                        },
-                        child: Image.asset(AppAssets.notificationBell)),
-                    Positioned(
-                      top: 1,
-                      right: 1,
-                      child: Container(
-                        width: 9,
-                        height: 9,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                          border:
-                              Border.all(color: AppColors.white, width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ],
+              _HeaderAction(
+                onTap: () => context.push('/notifications'),
+                child: Image.asset(
+                  AppAssets.notificationBell,
+                  width: 22,
+                  height: 22,
                 ),
               ),
-              const SizedBox(width: 10),
-              // Button pour calendrier
-              InkWell(
-                  onTap: () {
-                    context.push('/calendar');
-                  },
-                  child: Image.asset(AppAssets.calendar))
+              const SizedBox(width: 8),
+              _HeaderAction(
+                onTap: () => context.push('/calendar'),
+                child: Image.asset(
+                  AppAssets.calendar,
+                  width: 22,
+                  height: 22,
+                ),
+              ),
             ],
           ),
         ],
@@ -641,6 +610,30 @@ class _AppBar extends StatelessWidget {
 // ════════════════════════════════════════════════════════════════════
 //  LOGO PERIA — 2 cercles entrelacés
 // ════════════════════════════════════════════════════════════════════
+class _HeaderAction extends StatelessWidget {
+  const _HeaderAction({required this.onTap, required this.child});
+
+  final VoidCallback onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.white,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: Center(child: child),
+        ),
+      ),
+    );
+  }
+}
+
 class _PeriaLogo extends StatelessWidget {
   final double size;
   const _PeriaLogo({required this.size});
@@ -924,171 +917,6 @@ class _CycleWheelPainter extends CustomPainter {
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  CALENDRIER SEMAINE — 7 jours, aujourd'hui surligné
-// ════════════════════════════════════════════════════════════════════
-class _HomeMonthCalendar extends StatelessWidget {
-  const _HomeMonthCalendar({
-    required this.config,
-    required this.month,
-    required this.today,
-    required this.onPrevious,
-    required this.onNext,
-  });
-
-  final _PhaseConfig config;
-  final DateTime month;
-  final DateTime today;
-  final VoidCallback onPrevious;
-  final VoidCallback onNext;
-
-  bool _isSameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-
-  @override
-  Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context).toString();
-    final firstDay = DateTime(month.year, month.month, 1);
-    final dayCount = DateTime(month.year, month.month + 1, 0).day;
-    final startOffset = firstDay.weekday - 1;
-    final rows = MonthGridLayout.rowCount(
-      startOffset: startOffset,
-      dayCount: dayCount,
-    );
-    final cells = MonthGridLayout.cellCount(
-      startOffset: startOffset,
-      dayCount: dayCount,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-        decoration: BoxDecoration(
-          color: AppColors.white.withOpacity(0.72),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _MonthArrow(icon: Icons.chevron_left_rounded, onTap: onPrevious),
-                Expanded(
-                  child: Text(
-                    DateFormat.yMMMM(locale).format(month),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.grey900,
-                    ),
-                  ),
-                ),
-                _MonthArrow(icon: Icons.chevron_right_rounded, onTap: onNext),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: List.generate(7, (index) {
-                final label = DateFormat.E(locale)
-                    .format(DateTime(2024, 1, 1 + index))
-                    .replaceAll('.', '');
-                return Expanded(
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 11,
-                      color: AppColors.grey500,
-                    ),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 6),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final height = MonthGridLayout.heightFor(
-                  width: constraints.maxWidth,
-                  rows: rows,
-                  crossAxisSpacing: 4,
-                  mainAxisSpacing: 4,
-                );
-                return SizedBox(
-                  height: height,
-                  child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7,
-                      mainAxisSpacing: 4,
-                      crossAxisSpacing: 4,
-                    ),
-                    itemCount: cells,
-                    itemBuilder: (context, index) {
-                      final dayNum = index - startOffset + 1;
-                      if (dayNum < 1 || dayNum > dayCount) {
-                        return const SizedBox.shrink();
-                      }
-                      final date = DateTime(month.year, month.month, dayNum);
-                      final isToday = _isSameDay(date, today);
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: isToday
-                              ? config.calHighlight
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$dayNum',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                              fontWeight:
-                                  isToday ? FontWeight.w700 : FontWeight.w500,
-                              color: isToday
-                                  ? config.calTextColor
-                                  : AppColors.grey700,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MonthArrow extends StatelessWidget {
-  const _MonthArrow({required this.icon, required this.onTap});
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox(
-        width: 32,
-        height: 32,
-        child: Icon(icon, color: AppColors.grey700),
-      ),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════════════
 //  BOUTONS LOG SYMPTOM / LOG PERIOD
 // ════════════════════════════════════════════════════════════════════
 class _LogBtn extends StatelessWidget {
@@ -1209,130 +1037,6 @@ class _QuickActionTile extends StatelessWidget {
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  SECTION ARTICLES — 3 cards horizontales avec images 3D
-// ════════════════════════════════════════════════════════════════════
-class _ArticlesRow extends StatelessWidget {
-  const _ArticlesRow();
-
-  @override
-  Widget build(BuildContext context) {
-    // Config des 3 articles
-    // Couleurs selon maquette : article 1 et 3 rose, article 2 violet
-    final l10n = AppLocalizations.of(context);
-    final articles = [
-      _ArticleCfg(
-        title: l10n.articleHealthyDiet,
-        bg: AppColors.primary100,
-        textColor: AppColors.primary600,
-        image: AppAssets.imageSkin,
-        width: 140,
-        height: 140,
-        marginTop: 25,
-      ),
-      _ArticleCfg(
-        title: l10n.articleSkinCare,
-        bg: AppColors.secondary100,
-        textColor: AppColors.secondary600,
-        image: AppAssets.imageSkin,
-        width: 185,
-        height: 155,
-        marginTop: 0,
-      ),
-      _ArticleCfg(
-        title: l10n.articleYogaTips,
-        bg: AppColors.primary100,
-        textColor: AppColors.primary600,
-        image: AppAssets.imageYoga,
-        width: 140,
-        height: 140,
-        marginTop: 25,
-      ),
-    ];
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: articles.asMap().entries.map((entry) {
-          final isLast = entry.key == articles.length - 1;
-          return Padding(
-            padding: EdgeInsets.only(right: isLast ? 0 : 12),
-            child: _ArticleCard(cfg: entry.value),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
-
-class _ArticleCfg {
-  final String title;
-  final Color bg;
-  final Color textColor;
-  final String image;
-  final double width;
-  final double height;
-  final double marginTop;
-
-  const _ArticleCfg({
-    required this.title,
-    required this.bg,
-    required this.textColor,
-    required this.image,
-    required this.width,
-    required this.height,
-    required this.marginTop,
-  });
-}
-
-class _ArticleCard extends StatelessWidget {
-  final _ArticleCfg cfg;
-  const _ArticleCard({required this.cfg});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: cfg.marginTop),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: cfg.width,
-            height: cfg.height,
-            decoration: BoxDecoration(
-              color: cfg.bg,
-              borderRadius: BorderRadius.circular(28), // Premium rounding
-            ),
-            clipBehavior: Clip.antiAlias,
-            alignment: Alignment.center,
-            child: Image.asset(
-              cfg.image,
-              fit: BoxFit.contain,
-              width: cfg.width * 0.85,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(left: 6),
-            child: Text(
-              cfg.title,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: cfg.textColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ════════════════════════════════════════════════════════════════════
 //  DATA CLASS — Configuration d'une phase
 // ════════════════════════════════════════════════════════════════════
 class _PhaseConfig {
@@ -1348,9 +1052,6 @@ class _PhaseConfig {
   final int badgeDay;
   // Angle en DEGRÉS (0° = 3h, -90° = 12h, 90° = 6h, 180°/-180° = 9h)
   final double badgeAngleDeg;
-  // Calendrier semaine
-  final Color calHighlight;
-  final Color calTextColor;
   // Dots de l'anneau
   final Color dotColor;
   // Fond de l'anneau (zone entre dots et cercle intérieur)
@@ -1365,8 +1066,6 @@ class _PhaseConfig {
     required this.textColor,
     required this.badgeDay,
     required this.badgeAngleDeg,
-    required this.calHighlight,
-    required this.calTextColor,
     required this.dotColor,
     required this.ringBg,
   });

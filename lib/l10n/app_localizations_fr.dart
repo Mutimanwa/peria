@@ -1959,25 +1959,19 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisis l’action qui correspond le mieux à aujourd’hui.';
 
   @override
-  String minimumAgeMessage(int age) {
-    return 'Peria est réservée aux personnes de $age ans et plus.';
-  }
+  String get notificationSettings => 'Réglages des notifications';
 
   @override
-  String get ageRestrictedTitle => 'Âge requis';
+  String get notificationInboxEmpty => 'Aucune notification pour le moment';
 
   @override
-  String ageRestrictedBody(int age) {
-    return 'Peria n\'est pas disponible avant $age ans. Mets à jour ta date de naissance pour continuer.';
-  }
+  String get notificationInboxSubtitle =>
+      'Voici les rappels prévus sur cet appareil.';
 
   @override
-  String get updateDateOfBirth => 'Modifier la date de naissance';
+  String get journalEntryEmpty =>
+      'Écris un titre ou quelques mots avant d’enregistrer.';
 
   @override
-  String get pressBackAgainToExit => 'Appuie encore une fois pour quitter';
-
-  @override
-  String get symptomLogUnavailable =>
-      'Tes symptômes enregistrés n\'ont pas pu être chargés. Tu peux quand même noter cette journée.';
+  String get savedArticles => 'Articles enregistrés';
 }

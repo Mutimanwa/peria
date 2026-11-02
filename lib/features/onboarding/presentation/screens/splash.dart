@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
@@ -45,44 +46,55 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.bgGradient),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Center(
-                child: FadeTransition(
-                  opacity: _fade,
-                  child: ScaleTransition(
-                    scale: _scale,
-                    child: Image.asset(AppAssets.logo,
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.contain,
+    final l10n = AppLocalizations.of(context);
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      // White splash: dark status-bar icons, white system bars.
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: ColoredBox(
+          color: AppColors.white,
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Center(
+                  child: FadeTransition(
+                    opacity: _fade,
+                    child: ScaleTransition(
+                      scale: _scale,
+                      child: Image.asset(
+                        AppAssets.logo,
+                        width: 140,
+                        height: 140,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 22,
-                child: Center(
-                  child: Text(
-                    l10n.madeByIm,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.grey600,
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 22,
+                  child: Center(
+                    child: Text(
+                      l10n.madeByIm,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.grey600,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
