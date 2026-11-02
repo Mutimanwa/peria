@@ -19,7 +19,7 @@ jobs:
       # 2. JDK attendu par Gradle/AGP. Le runner "ubuntu-latest" fournit
       #    désormais un JDK 25 que Gradle 8.14 refuse ("What went wrong: 25.0.5").
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
