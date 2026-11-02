@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
+import 'package:peria_app/core/router/router.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/features/onboarding/domain/minimum_age.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -42,29 +44,49 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
     super.dispose();
   }
 
+  Future<void> _continue() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) return;
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .patch((profile) => profile.copyWith(displayName: name))
+          .timeout(const Duration(seconds: 3));
+    } catch (_) {
+      // A failed profile write must not trap the user on this screen.
+    }
+    if (!mounted) return;
+    context.go('/date-of-birth');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () => context.go('/cycle'),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 70),
-        child: Column(
-          children: [
-            // ── Illustration 3D ────────────────────────────────
-            Container(
-                width: 200,
-                height: 200,
-                alignment: Alignment.center,
-                child: Image.asset(AppAssets.login)),
-            const SizedBox(height: 32),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+      // Skip still has to pass the age step. It must not open the app, and it
+      // must not be treated as a finished onboarding.
+      onSkip: () => context.go('/date-of-birth'),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.fromLTRB(24, 72, 24, 24 + keyboard),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: (constraints.maxHeight - 96 - keyboard)
+                    .clamp(0, double.infinity),
+              ),
               child: Column(
                 children: [
+                  SizedBox(
+                    width: keyboard > 0 ? 88 : 160,
+                    height: keyboard > 0 ? 88 : 160,
+                    child: Image.asset(AppAssets.login, fit: BoxFit.contain),
+                  ),
+                  const SizedBox(height: 24),
                   Text(l10n.askNameTitle,
                       style: AppText.h1, textAlign: TextAlign.center),
                   const SizedBox(height: 10),
@@ -75,30 +97,18 @@ class _AskNameScreenState extends ConsumerState<AskNameScreen> {
                     hint: l10n.enterYourNameHint,
                     controller: _nameController,
                     keyboardType: TextInputType.name,
+                    scrollPadding: EdgeInsets.only(bottom: keyboard + 96),
+                  ),
+                  const SizedBox(height: 28),
+                  PrimaryButton(
+                    label: l10n.continueCta,
+                    onPressed: _hasName ? _continue : null,
                   ),
                 ],
               ),
             ),
-
-            const Spacer(),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
-              child: PrimaryButton(
-                label: l10n.continueCta,
-                onPressed: _hasName
-                    ? () {
-                        // Persist displayName for later flows.
-                        ref.read(userProfileProvider.notifier).patch((p) =>
-                            p.copyWith(
-                                displayName: _nameController.text.trim()));
-                        context.go("/date-of-birth");
-                      }
-                    : null,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -127,10 +137,35 @@ class DateOfBirthScreen extends ConsumerStatefulWidget {
 class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
   int _selectedMonth = 0; // index
   int _selectedDay = 0;
-  int _selectedYear = 0;
+  // Default to 18 years ago so a typical adult is not blocked, while ages
+  // under 10 stay selectable and rejected.
+  int _selectedYear = 18;
 
   final List<int> _days = List.generate(31, (i) => i + 1);
   final List<int> _years = List.generate(80, (i) => DateTime.now().year - i);
+
+  DateTime get _selectedDate => calendarDate(
+        _years[_selectedYear],
+        _selectedMonth + 1,
+        _days[_selectedDay],
+      );
+
+  bool get _isOldEnough => isAtLeastMinimumAge(_selectedDate, DateTime.now());
+
+  Future<void> _continue() async {
+    if (!_isOldEnough) return;
+    final selectedDob = _selectedDate;
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .patch((profile) => profile.copyWith(dateOfBirth: selectedDob))
+          .timeout(const Duration(seconds: 3));
+    } catch (_) {
+      // Age was already checked locally. Don't block the flow on a write error.
+    }
+    if (!mounted) return;
+    context.go(hasCompletedOnboarding ? '/cycle' : '/last-period');
+  }
 
 
   @override
@@ -141,114 +176,95 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
       12,
       (index) => DateFormat.MMMM(locale).format(DateTime(2024, index + 1, 1)),
     );
-    final selectedDate = DateTime(
-      _years[_selectedYear],
-      _selectedMonth + 1,
-      _days[_selectedDay],
-    );
-    final displayDate = DateFormat.yMd(locale).format(selectedDate);
+    final displayDate = DateFormat.yMd(locale).format(_selectedDate);
+    final oldEnough = _isOldEnough;
     return OnboardingScaffold(
       showBack: true,
-      showSkip: true,
-      onSkip: () => context.go('/cycle'),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 70),
-        child: Column(
-          children: [
-            // ── Illustration 3D personnage avec livre ───────────
-
-            Container(
-                width: 200,
-                height: 200,
-                alignment: Alignment.center,
-                child: Image.asset(AppAssets.birthday)),
-            const SizedBox(height: 28),
-
-            Text(l10n.dateOfBirthTitle,
-                style: AppText.h1, textAlign: TextAlign.center),
-            const SizedBox(height: 8),
-            Text(l10n.dateOfBirthSubtitle,
-                style: AppText.body, textAlign: TextAlign.center),
-            const SizedBox(height: 24),
-
-            // ── Champ date display ──────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
-                height: 52,
-                decoration: BoxDecoration(
-                  color: AppColors.grey100,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(displayDate, style: AppText.label),
-                    ),
-                    const Icon(Icons.calendar_today_outlined,
-                        size: 20, color: AppColors.grey500),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Séparateur
-            const Divider(color: AppColors.grey200, height: 1),
-            const SizedBox(height: 8),
-
-            // ── Scroll Picker : Mois | Jour | Année ─────────────
-            SizedBox(
-              height: 180,
-              child: Row(
+      showSkip: false,
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 72, 24, 12),
+              child: Column(
                 children: [
-                  // Mois
-                  Expanded(
-                      child: _ScrollColumn(
-                    items: months,
-                    selected: _selectedMonth,
-                    onChanged: (i) => setState(() => _selectedMonth = i),
-                  )),
-                  // Jour
-                  Expanded(
-                      child: _ScrollColumn(
-                    items: _days.map((d) => d.toString()).toList(),
-                    selected: _selectedDay,
-                    onChanged: (i) => setState(() => _selectedDay = i),
-                  )),
-                  // Année
-                  Expanded(
-                      child: _ScrollColumn(
-                    items: _years.map((y) => y.toString()).toList(),
-                    selected: _selectedYear,
-                    onChanged: (i) => setState(() => _selectedYear = i),
-                  )),
+                  SizedBox(
+                    width: 140,
+                    height: 140,
+                    child: Image.asset(AppAssets.birthday, fit: BoxFit.contain),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(l10n.dateOfBirthTitle,
+                      style: AppText.h1, textAlign: TextAlign.center),
+                  const SizedBox(height: 8),
+                  Text(l10n.dateOfBirthSubtitle,
+                      style: AppText.body, textAlign: TextAlign.center),
+                  const SizedBox(height: 24),
+                  Container(
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: AppColors.grey100,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(displayDate, style: AppText.label),
+                        ),
+                        const Icon(Icons.calendar_today_outlined,
+                            size: 20, color: AppColors.grey500),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Divider(color: AppColors.grey200, height: 1),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 180,
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: _ScrollColumn(
+                          items: months,
+                          selected: _selectedMonth,
+                          onChanged: (i) => setState(() => _selectedMonth = i),
+                        )),
+                        Expanded(
+                            child: _ScrollColumn(
+                          items: _days.map((d) => d.toString()).toList(),
+                          selected: _selectedDay,
+                          onChanged: (i) => setState(() => _selectedDay = i),
+                        )),
+                        Expanded(
+                            child: _ScrollColumn(
+                          items: _years.map((y) => y.toString()).toList(),
+                          selected: _selectedYear,
+                          onChanged: (i) => setState(() => _selectedYear = i),
+                        )),
+                      ],
+                    ),
+                  ),
+                  if (!oldEnough) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.minimumAgeMessage(minimumAccountAgeYears),
+                      style: AppText.body.copyWith(color: AppColors.error),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ],
               ),
             ),
-
-            const Spacer(),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
-              child: PrimaryButton(
-                label: l10n.continueCta,
-                onPressed: () {
-                  final selectedDob = DateTime(
-                    _years[_selectedYear],
-                    _selectedMonth + 1,
-                    _selectedDay + 1,
-                  );
-                  ref
-                      .read(userProfileProvider.notifier)
-                      .patch((p) => p.copyWith(dateOfBirth: selectedDob));
-                  context.go("/last-period");
-                },
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            child: PrimaryButton(
+              label: l10n.continueCta,
+              onPressed: oldEnough ? _continue : null,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

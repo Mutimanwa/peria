@@ -207,6 +207,7 @@ class PillTextField extends StatelessWidget {
   final Widget? suffix;
   final bool readOnly;
   final VoidCallback? onTap;
+  final EdgeInsets scrollPadding;
 
   const PillTextField({
     super.key,
@@ -217,6 +218,7 @@ class PillTextField extends StatelessWidget {
     this.suffix,
     this.readOnly = false,
     this.onTap,
+    this.scrollPadding = const EdgeInsets.all(20),
   });
 
   @override
@@ -227,6 +229,7 @@ class PillTextField extends StatelessWidget {
       keyboardType: keyboardType,
       readOnly: readOnly,
       onTap: onTap,
+      scrollPadding: scrollPadding,
       style: AppText.label,
       decoration: InputDecoration(
         hintText: hint,
@@ -276,6 +279,8 @@ class OnboardingScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Keep the keyboard inset visible so onboarding fields can scroll above it.
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: const BoxDecoration(gradient: AppColors.bgGradient),
         child: SafeArea(

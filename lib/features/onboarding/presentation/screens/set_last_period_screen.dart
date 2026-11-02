@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/router/router.dart';
 import 'package:peria_app/core/services/onboarding_service.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -77,6 +78,21 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
 
   bool get _canContinue => _startDate != null;
 
+  Future<void> _finishOnboarding({DateTime? periodStart}) async {
+    try {
+      await ref
+          .read(userProfileProvider.notifier)
+          .patch((profile) => profile.copyWith(lastPeriodStart: periodStart))
+          .timeout(const Duration(seconds: 3));
+    } catch (_) {
+      // Entering the app must not depend on a profile write.
+    }
+    await OnboardingService.setOnboardingCompleted();
+    updateOnboardingState(true);
+    if (!mounted) return;
+    context.go('/cycle');
+  }
+
   @override
   Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context);
@@ -90,36 +106,24 @@ final l10n = AppLocalizations.of(context);
     return OnboardingScaffold(
       showBack: true,
       showSkip: true,
-      onSkip: () {
-        safeRouterBack(context, fallbackRoute: '/welcome');
-      },
+      onSkip: () => _finishOnboarding(),
       child: Column(
         children: [
-          const SizedBox(height: 72),
-
-          // ── Titre ──────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                Text(l10n.whenWasYourLastPeriodTitle,
-                    style: AppText.h1, textAlign: TextAlign.center),
-                const SizedBox(height: 10),
-                Text(
-                  l10n.whenWasYourLastPeriodSubtitle,
-                  style: AppText.body,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-
-          // ── Calendrier ─────────────────────────────────────
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 72, 24, 12),
+              child: Column(
+                children: [
+                  Text(l10n.whenWasYourLastPeriodTitle,
+                      style: AppText.h1, textAlign: TextAlign.center),
+                  const SizedBox(height: 10),
+                  Text(
+                    l10n.whenWasYourLastPeriodSubtitle,
+                    style: AppText.body,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -167,13 +171,8 @@ final l10n = AppLocalizations.of(context);
                       }),
                     ),
                     const SizedBox(height: 8),
-
-                    // Grille des jours
-                    Expanded(
-                      child: _buildCalendarGrid(firstDay, lastDay, startOffset),
-                    ),
-
-                    // Bouton "Today"
+                    _buildCalendarGrid(firstDay, lastDay, startOffset),
+                    const SizedBox(height: 12),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
@@ -191,28 +190,19 @@ final l10n = AppLocalizations.of(context);
                     ),
                   ],
                 ),
+                  ),
+                ],
               ),
             ),
           ),
-
-          // ── Boutons bas ─────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
             child: Row(
               children: [
                 Expanded(
                   child: OutlineButton(
                     label: l10n.notSure,
-                    onPressed: () {
-                      // MVP behavior:
-                      // - user explicitly doesn't know the last period start date
-                      // - we proceed without setting lastPeriodStart (keeps it null)
-                      // - downstream cycle logic will show "unknown" predictions until user logs a period
-                      ref.read(userProfileProvider.notifier).patch((p) => p.copyWith(lastPeriodStart: null));
-                       OnboardingService.setOnboardingCompleted();
-                      updateOnboardingState(true);
-                      context.go('/cycle');
-                    },
+                    onPressed: () => _finishOnboarding(),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -220,14 +210,7 @@ final l10n = AppLocalizations.of(context);
                   child: PrimaryButton(
                     label: l10n.continueCta,
                     onPressed: _canContinue
-                        ? () {
-                            final start = _startDate!;
-                            ref.read(userProfileProvider.notifier).patch(
-                                (p) => p.copyWith(lastPeriodStart: start));
-                            OnboardingService.setOnboardingCompleted();
-                            updateOnboardingState(true);
-                            context.go("/cycle");
-                          }
+                        ? () => _finishOnboarding(periodStart: _startDate)
                         : null,
                   ),
                 ),
@@ -243,13 +226,53 @@ final l10n = AppLocalizations.of(context);
   Widget _buildCalendarGrid(
       DateTime firstDay, DateTime lastDay, int startOffset) {
     final int totalDays = lastDay.day;
-    final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
+    const crossAxisSpacing = 4.0;
+    const mainAxisSpacing = 4.0;
+    final int totalCells = MonthGridLayout.cellCount(
+      startOffset: startOffset,
+      dayCount: totalDays,
+    );
 
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = MonthGridLayout.heightFor(
+          width: constraints.maxWidth,
+          rows: MonthGridLayout.rowCount(
+            startOffset: startOffset,
+            dayCount: totalDays,
+          ),
+          crossAxisSpacing: crossAxisSpacing,
+          mainAxisSpacing: mainAxisSpacing,
+        );
+        return SizedBox(
+          height: height,
+          child: _dayGrid(
+            totalCells: totalCells,
+            totalDays: totalDays,
+            startOffset: startOffset,
+            crossAxisSpacing: crossAxisSpacing,
+            mainAxisSpacing: mainAxisSpacing,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _dayGrid({
+    required int totalCells,
+    required int totalDays,
+    required int startOffset,
+    required double crossAxisSpacing,
+    required double mainAxisSpacing,
+  }) {
     return GridView.builder(
+      shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        mainAxisSpacing: 4,
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
+        childAspectRatio: 1,
       ),
       itemCount: totalCells,
       itemBuilder: (ctx, i) {

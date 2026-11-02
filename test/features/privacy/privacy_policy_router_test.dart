@@ -78,5 +78,29 @@ void main() {
         '/cycle',
       );
     });
+
+    test('does not reopen the name screen after onboarding is completed', () {
+      expect(
+        resolveRouterRedirect(
+          location: '/ask-name',
+          isAuthenticated: true,
+          hasAcceptedPrivacyPolicy: true,
+          hasCompletedOnboarding: true,
+        ),
+        '/cycle',
+      );
+    });
+
+    test('keeps a new user on the name screen until onboarding is finished', () {
+      expect(
+        resolveRouterRedirect(
+          location: '/ask-name',
+          isAuthenticated: true,
+          hasAcceptedPrivacyPolicy: true,
+          hasCompletedOnboarding: false,
+        ),
+        isNull,
+      );
+    });
   });
 }

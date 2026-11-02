@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,6 +8,7 @@ import 'package:peria_app/core/services/app_locale_provider.dart';
 import 'package:peria_app/core/services/local_notification_provider.dart';
 import 'package:peria_app/core/services/local_notification_service.dart';
 import 'package:peria_app/core/services/multitask_protection_service.dart';
+import 'package:peria_app/core/services/onboarding_service.dart';
 import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/storage/hive_setup.dart';
@@ -27,6 +29,12 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // Restore onboarding before the first redirect, otherwise every cold start
+  // sends an already onboarded user back to the name screen.
+  final onboardingCompleted = await OnboardingService.isOnboardingCompleted(
+    uid: FirebaseAuth.instance.currentUser?.uid,
+  );
+  updateOnboardingState(onboardingCompleted);
   await LocalNotificationService.instance.initialize();
 
   runApp(const ProviderScope(child: PeriaApp()));
@@ -56,7 +64,10 @@ class PeriaApp extends ConsumerWidget {
         colorSchemeSeed: const Color(0xFFFD587A),
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       ),
-      routerConfig: appRouter,
+      routeInformationProvider: appRouter.routeInformationProvider,
+      routeInformationParser: appRouter.routeInformationParser,
+      routerDelegate: appRouter.routerDelegate,
+      backButtonDispatcher: periaBackButtonDispatcher,
     );
   }
 }

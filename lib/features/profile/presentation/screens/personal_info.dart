@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/features/onboarding/domain/minimum_age.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
@@ -245,6 +246,7 @@ class _DatePickerBottomSheet extends StatefulWidget {
 class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
   late DateTime _currentMonth;
   DateTime? _selectedDate;
+  bool _ageRejected = false;
 
   @override
   void initState() {
@@ -268,6 +270,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
   void _selectDate(DateTime date) {
     setState(() {
       _selectedDate = date;
+      _ageRejected = false;
     });
   }
 
@@ -383,9 +386,13 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
                 ),
                 TextButton(
                   onPressed: () {
-                    if (_selectedDate != null) {
-                      widget.onDateSelected(_selectedDate!);
+                    final date = _selectedDate;
+                    if (date == null) return;
+                    if (!isAtLeastMinimumAge(date, DateTime.now())) {
+                      setState(() => _ageRejected = true);
+                      return;
                     }
+                    widget.onDateSelected(date);
                   },
                   child: Text(
                     l10n.ok,
@@ -422,14 +429,21 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
             ),
           ),
           const Divider(height: 16, color: AppColors.grey200),
-          // Calendrier
+          if (_ageRejected)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+              child: Text(
+                l10n.minimumAgeMessage(minimumAccountAgeYears),
+                style: AppText.caption.copyWith(color: AppColors.error),
+                textAlign: TextAlign.center,
+              ),
+            ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
               child: _buildCalendar(),
             ),
           ),
-          const SizedBox(height: 20),
         ],
       ),
     );

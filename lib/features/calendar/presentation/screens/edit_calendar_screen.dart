@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/core/theme/app_typography.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
@@ -309,15 +310,34 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
   Widget _buildCalendarGrid(DateTime firstDay, DateTime lastDay,
       int startOffset, DateTime monthDate) {
     final int totalDays = lastDay.day;
-    final int totalCells = ((startOffset + totalDays) / 7).ceil() * 7;
+    const crossAxisSpacing = 4.0;
+    const mainAxisSpacing = 8.0;
+    final rows = MonthGridLayout.rowCount(
+      startOffset: startOffset,
+      dayCount: totalDays,
+    );
+    final totalCells = MonthGridLayout.cellCount(
+      startOffset: startOffset,
+      dayCount: totalDays,
+    );
 
-    return GridView.builder(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = MonthGridLayout.heightFor(
+          width: constraints.maxWidth,
+          rows: rows,
+          crossAxisSpacing: crossAxisSpacing,
+          mainAxisSpacing: mainAxisSpacing,
+        );
+        return SizedBox(
+          height: height,
+          child: GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 4,
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
         childAspectRatio: 1,
       ),
       itemCount: totalCells,
@@ -352,7 +372,10 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
           ),
         );
       },
-    );
+            ),
+          );
+        },
+      );
   }
 }
 

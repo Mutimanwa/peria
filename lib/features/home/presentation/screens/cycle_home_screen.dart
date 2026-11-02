@@ -10,6 +10,7 @@ import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
@@ -37,6 +38,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   // ── Transition de phase (AnimatedSwitcher) ───────────────────────
   late AnimationController _phaseCtrl;
   late Animation<double> _phaseAnim;
+  DateTime _calendarMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
   @override
   void initState() {
