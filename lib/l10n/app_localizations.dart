@@ -3673,6 +3673,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved articles'**
   String get savedArticles;
+
+  /// No description provided for @articleNotHelpful.
+  ///
+  /// In en, this message translates to:
+  /// **'Not helpful'**
+  String get articleNotHelpful;
+
+  /// No description provided for @articleHelpful.
+  ///
+  /// In en, this message translates to:
+  /// **'Helpful'**
+  String get articleHelpful;
+
+  /// No description provided for @articleAddComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Comment'**
+  String get articleAddComment;
+
+  /// No description provided for @articleFeedbackQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you not satisfied with?'**
+  String get articleFeedbackQuestion;
+
+  /// No description provided for @articleFeedbackNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us more about the issue…'**
+  String get articleFeedbackNoteHint;
+
+  /// No description provided for @articleFeedbackReferences.
+  ///
+  /// In en, this message translates to:
+  /// **'References'**
+  String get articleFeedbackReferences;
+
+  /// No description provided for @articleFeedbackUnclearMechanism.
+  ///
+  /// In en, this message translates to:
+  /// **'Unclear mechanism'**
+  String get articleFeedbackUnclearMechanism;
+
+  /// No description provided for @articleFeedbackInsufficientEvidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient evidence'**
+  String get articleFeedbackInsufficientEvidence;
+
+  /// No description provided for @articleFeedbackSideEffects.
+  ///
+  /// In en, this message translates to:
+  /// **'Side effects'**
+  String get articleFeedbackSideEffects;
+
+  /// No description provided for @articleFeedbackTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'Translation'**
+  String get articleFeedbackTranslation;
+
+  /// No description provided for @articleFeedbackDesign.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get articleFeedbackDesign;
+
+  /// No description provided for @articleFeedbackOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'Others'**
+  String get articleFeedbackOthers;
+
+  /// No description provided for @articleFeedbackThanksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for feedback!'**
+  String get articleFeedbackThanksTitle;
+
+  /// No description provided for @articleFeedbackThanksBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback received. We’ll do our best to bring you a better experience.'**
+  String get articleFeedbackThanksBody;
+
+  /// No description provided for @articleFeedbackOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get articleFeedbackOk;
 }
 
 class _AppLocalizationsDelegate

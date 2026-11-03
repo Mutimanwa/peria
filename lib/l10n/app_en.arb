@@ -692,5 +692,20 @@
   "@ageRestrictedBody": {"placeholders": {"age": {"type": "int"}}},
   "updateDateOfBirth": "Update date of birth",
   "pressBackAgainToExit": "Press back again to leave",
-  "symptomLogUnavailable": "Saved symptoms couldn't be loaded. You can still log this day."
+  "symptomLogUnavailable": "Saved symptoms couldn't be loaded. You can still log this day.",
+  "articleNotHelpful": "Not helpful",
+  "articleHelpful": "Helpful",
+  "articleAddComment": "Add Comment",
+  "articleFeedbackQuestion": "What are you not satisfied with?",
+  "articleFeedbackNoteHint": "Tell us more about the issue…",
+  "articleFeedbackReferences": "References",
+  "articleFeedbackUnclearMechanism": "Unclear mechanism",
+  "articleFeedbackInsufficientEvidence": "Insufficient evidence",
+  "articleFeedbackSideEffects": "Side effects",
+  "articleFeedbackTranslation": "Translation",
+  "articleFeedbackDesign": "Design",
+  "articleFeedbackOthers": "Others",
+  "articleFeedbackThanksTitle": "Thanks for feedback!",
+  "articleFeedbackThanksBody": "Feedback received. We’ll do our best to bring you a better experience.",
+  "articleFeedbackOk": "OK"
 }

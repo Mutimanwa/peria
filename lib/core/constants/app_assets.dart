@@ -9,6 +9,12 @@ class AppAssets {
   static const String avatarAssistant = 'assets/images/onboarding/avatar_assistant.png';
   static const String avatarIllustration = 'assets/images/onboarding/avatar_illustration.png';
 
+  // 3D mascot illustrations (education articles and feedback flow)
+  static const String mascotArticle =
+      'assets/images/mascot/mascot_article.png';
+  static const String mascotFeedback =
+      'assets/images/mascot/mascot_feedback.png';
+
   static const String imageEat = 'assets/images/eat.png';
   static const String imageSkin = 'assets/images/skin.png';
   static const String imageYoga = 'assets/images/yoga.png';

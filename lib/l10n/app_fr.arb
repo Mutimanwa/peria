@@ -692,5 +692,20 @@
   "@ageRestrictedBody": {"placeholders": {"age": {"type": "int"}}},
   "updateDateOfBirth": "Modifier la date de naissance",
   "pressBackAgainToExit": "Appuie encore une fois pour quitter",
-  "symptomLogUnavailable": "Tes symptômes enregistrés n'ont pas pu être chargés. Tu peux quand même noter cette journée."
+  "symptomLogUnavailable": "Tes symptômes enregistrés n'ont pas pu être chargés. Tu peux quand même noter cette journée.",
+  "articleNotHelpful": "Pas utile",
+  "articleHelpful": "Utile",
+  "articleAddComment": "Ajouter un commentaire",
+  "articleFeedbackQuestion": "Qu’est-ce qui ne te satisfait pas ?",
+  "articleFeedbackNoteHint": "Explique-nous ton souci…",
+  "articleFeedbackReferences": "Références",
+  "articleFeedbackUnclearMechanism": "Mécanisme flou",
+  "articleFeedbackInsufficientEvidence": "Preuves insuffisantes",
+  "articleFeedbackSideEffects": "Effets secondaires",
+  "articleFeedbackTranslation": "Traduction",
+  "articleFeedbackDesign": "Design",
+  "articleFeedbackOthers": "Autres",
+  "articleFeedbackThanksTitle": "Merci pour ton avis !",
+  "articleFeedbackThanksBody": "Avis bien reçu. Nous ferons de notre mieux pour t’offrir une meilleure expérience.",
+  "articleFeedbackOk": "OK"
 }

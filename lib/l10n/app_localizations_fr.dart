@@ -1974,4 +1974,49 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get savedArticles => 'Articles enregistrés';
+
+  @override
+  String get articleNotHelpful => 'Pas utile';
+
+  @override
+  String get articleHelpful => 'Utile';
+
+  @override
+  String get articleAddComment => 'Ajouter un commentaire';
+
+  @override
+  String get articleFeedbackQuestion => 'Qu’est-ce qui ne te satisfait pas ?';
+
+  @override
+  String get articleFeedbackNoteHint => 'Explique-nous ton souci…';
+
+  @override
+  String get articleFeedbackReferences => 'Références';
+
+  @override
+  String get articleFeedbackUnclearMechanism => 'Mécanisme flou';
+
+  @override
+  String get articleFeedbackInsufficientEvidence => 'Preuves insuffisantes';
+
+  @override
+  String get articleFeedbackSideEffects => 'Effets secondaires';
+
+  @override
+  String get articleFeedbackTranslation => 'Traduction';
+
+  @override
+  String get articleFeedbackDesign => 'Design';
+
+  @override
+  String get articleFeedbackOthers => 'Autres';
+
+  @override
+  String get articleFeedbackThanksTitle => 'Merci pour ton avis !';
+
+  @override
+  String get articleFeedbackThanksBody => 'Avis bien reçu. Nous ferons de notre mieux pour t’offrir une meilleure expérience.';
+
+  @override
+  String get articleFeedbackOk => 'OK';
 }
