@@ -720,5 +720,7 @@
   "testPositive": "Positive",
   "testNegative": "Negative",
   "testNone": "No tests",
-  "backToEducation": "Back to the education space"
+  "backToEducation": "Back to the education space",
+  "calendarEditPeriod": "Edit Period",
+  "daySymptomsEmpty": "No symptoms logged for this day."
 }

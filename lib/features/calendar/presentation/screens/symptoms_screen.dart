@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/data/models/symptom_log.dart';
 import 'package:peria_app/features/calendar/presentation/constants/symptom_constants.dart';
+import 'package:peria_app/features/calendar/presentation/symptom_localization.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
@@ -17,8 +18,6 @@ class SymptomsScreen extends ConsumerStatefulWidget {
 }
 
 class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
-  static const int _waterGoalMl = 2000;
-
   late DateTime _selectedDate;
   late DateTime _weekStart;
   Map<String, Set<String>> _selectedByCategory = {};
@@ -125,6 +124,8 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     );
 
     await repository.saveForDate(log);
+    ref.invalidate(symptomLogProvider(normalizedDate));
+    ref.invalidate(symptomLogsProvider);
     if (mounted) {
       safeRouterBack(context, fallbackRoute: '/cycle');
     }
@@ -413,18 +414,18 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     for (final entry in _categories.entries) {
       final options = entry.value.where((option) {
         if (query.isEmpty) return true;
-        return _label(context, option.label).toLowerCase().contains(query);
+        return symptomLabel(l10n, option.label).toLowerCase().contains(query);
       }).toList();
 
       if (options.isEmpty) continue;
 
       cards.add(
         _CategoryCard(
-          title: _label(context, entry.key),
+          title: symptomLabel(l10n, entry.key),
           children: [
             for (final option in options)
               _SymptomChip(
-                label: _label(context, option.label),
+                label: symptomLabel(l10n, option.label),
                 icon: option.icon,
                 isSelected: _isSelected(entry.key, option.label),
                 onTap: () => _toggleSelection(entry.key, option.label),
@@ -485,7 +486,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
       icon: Icons.local_drink_outlined,
       title: l10n.symptomWater,
       editTooltip: l10n.symptomEdit,
-      value: '$total ml / $_waterGoalMl ml',
+      value: '$total ml / $kWaterGoalMl ml',
       onEdit: () async {
         final water = await showModalBottomSheet<double>(
           context: context,
@@ -554,89 +555,6 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
     );
   }
 
-  String _label(BuildContext context, String key) {
-    final l10n = AppLocalizations.of(context);
-    switch (key) {
-      case 'Pregnancy test':
-        return l10n.pregnancyTest;
-      case 'Faint line':
-        return l10n.testFaintLine;
-      case 'Positive':
-        return l10n.testPositive;
-      case 'Negative':
-        return l10n.testNegative;
-      case 'No tests':
-        return l10n.testNone;
-      case 'Sexual activity':
-        return l10n.sexualActivity;
-      case 'Protected Sex':
-        return l10n.protectedSex;
-      case 'Orgasm':
-        return l10n.orgasm;
-      case 'High activity':
-        return l10n.highActivity;
-      case 'Unprotected sex':
-        return l10n.unprotectedSex;
-      case 'Mental':
-        return l10n.mental;
-      case 'Breathing Exercises':
-        return l10n.breathingExercises;
-      case 'Stress':
-        return l10n.stress;
-      case 'Yoga':
-        return l10n.yoga;
-      case 'Meditation':
-        return l10n.meditation;
-      case 'Discharge':
-        return l10n.discharge;
-      case 'Unusual':
-        return l10n.unusual;
-      case 'Sticky':
-        return l10n.sticky;
-      case 'Bleeding':
-        return l10n.bleeding;
-      case 'Heavy Bleeding':
-        return l10n.heavyBleeding;
-      case 'Low Bleeding':
-        return l10n.lowBleeding;
-      case 'Physical activity':
-        return l10n.physicalActivity;
-      case 'No Exercise':
-        return l10n.noExercise;
-      case 'Team sports':
-        return l10n.teamSports;
-      case 'Cycling':
-        return l10n.cycling;
-      case 'Gym':
-        return l10n.gym;
-      case 'Dancing':
-        return l10n.dancing;
-      case 'Aerobics':
-        return l10n.aerobics;
-      case 'Swimming':
-        return l10n.swimming;
-      case 'Mood':
-        return l10n.mood;
-      case 'Anxious':
-        return l10n.anxious;
-      case 'Sad':
-        return l10n.sad;
-      case 'Happy':
-        return l10n.happy;
-      case 'Calm':
-        return l10n.calm;
-      case 'Angry':
-        return l10n.angry;
-      case 'Energetic':
-        return l10n.energetic;
-      case 'Confused':
-        return l10n.confused;
-      case 'Depressed':
-        return l10n.depressed;
-      default:
-        return key;
-    }
-  }
 }
 
 class _WeekArrow extends StatelessWidget {

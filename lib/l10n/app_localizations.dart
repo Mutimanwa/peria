@@ -3804,6 +3804,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit'**
   String get symptomEdit;
+  /// No description provided for @calendarEditPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Period'**
+  String get calendarEditPeriod;
+
+  /// No description provided for @daySymptomsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No symptoms logged for this day.'**
+  String get daySymptomsEmpty;
+
   /// No description provided for @backToEducation.
   ///
   /// In en, this message translates to:

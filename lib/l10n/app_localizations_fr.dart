@@ -2062,4 +2062,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backToEducation => 'Retour à l\'espace éducation';
+
+  @override
+  String get calendarEditPeriod => 'Modifier la période';
+
+  @override
+  String get daySymptomsEmpty => 'Aucun symptôme noté pour ce jour.';
 }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
+import 'package:peria_app/features/calendar/presentation/widgets/day_symptoms_card.dart';
 import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/calendar/presentation/calendar_phase_style.dart';
@@ -35,7 +36,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   void _selectDay(DateTime day) {
     setState(() {
-      _selectedDate = day;
+      _selectedDate = DateTime(day.year, day.month, day.day);
     });
   }
 
@@ -279,7 +280,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 children: [
                   // ── Calendrier Card ────────
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.white,
@@ -401,32 +402,25 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          Container(
+                          SizedBox(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: AppColors.grey50,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.grey200),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  l10n.calendarMonthlyOverview,
-                                  style: AppText.label.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.grey900,
-                                  ),
+                            height: 52,
+                            child: ElevatedButton.icon(
+                              onPressed: _showQuickPeriodSheet,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.grey900,
+                                foregroundColor: AppColors.white,
+                                elevation: 0,
+                                shape: const StadiumBorder(),
+                              ),
+                              icon: const Icon(Icons.edit_outlined, size: 18),
+                              label: Text(
+                                l10n.calendarEditPeriod,
+                                style: AppText.label.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  l10n.calendarMonthlyOverviewHelp,
-                                  style: AppText.caption.copyWith(
-                                    color: AppColors.grey600,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -463,81 +457,15 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   const SizedBox(height: 24),
 
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.grey200),
-                      ),
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(l10n.calendarQuickCapture, style: AppText.h4),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.calendarQuickCaptureHelp,
-                            style:
-                                AppText.body.copyWith(color: AppColors.grey600),
-                          ),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: PrimaryButton(
-                                  label: l10n.logPeriodButton,
-                                  onPressed: _showQuickPeriodSheet,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: OutlineButton(
-                                  label: l10n.logSymptoms,
-                                  onPressed: () => context.push('/symptoms'),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            l10n.calendarDateRangeHelp,
-                            style: AppText.caption
-                                .copyWith(color: AppColors.grey600),
-                          ),
-                          const SizedBox(height: 12),
-                          OutlineButton(
-                            label: l10n.calendarEditTitle,
-                            onPressed: () => context.push('/edit-calendar'),
-                          ),
-                        ],
-                      ),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+                    child: DaySymptomsCard(
+                      date: _selectedDate,
+                      onEdit: () => context.push('/symptoms'),
                     ),
                   ),
                   const SizedBox(height: 24),
                 ],
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: PrimaryButton(
-                    label: l10n.logPeriodButton,
-                    onPressed: _showQuickPeriodSheet,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlineButton(
-                    label: l10n.logSymptoms,
-                    onPressed: () => context.push('/symptoms'),
-                  ),
-                ),
-              ],
             ),
           ),
         ],

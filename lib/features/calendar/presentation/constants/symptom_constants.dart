@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Daily water target shown on the symptom screens.
+const int kWaterGoalMl = 2000;
+
 class SymptomOption {
   const SymptomOption(this.label, this.icon);
 
