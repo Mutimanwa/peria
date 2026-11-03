@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 
@@ -501,16 +502,14 @@ class EmptyJournal extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(20),
+          SizedBox(
+            height: 140,
+            child: Image.asset(
+              AppAssets.mascotSearch,
+              fit: BoxFit.contain,
             ),
-            child: const Icon(Icons.edit_note_rounded, size: 30, color: AppColors.primary500),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 8),
           Text(
             hasQuery
                 ? l10n.noMatchingNotes

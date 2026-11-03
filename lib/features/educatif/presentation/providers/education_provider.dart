@@ -186,6 +186,44 @@ final savedArticlesProvider =
   return SavedArticlesNotifier();
 });
 
+/// "Helpful" / "not helpful" vote kept on the device for each article.
+class ArticleFeedbackNotifier extends StateNotifier<Map<String, String>> {
+  ArticleFeedbackNotifier() : super(const <String, String>{}) {
+    _load();
+  }
+
+  static const _storageKey = 'education.article_feedback';
+
+  Future<void> _load() async {
+    final preferences = await SharedPreferences.getInstance();
+    final saved = preferences.getStringList(_storageKey);
+    if (saved == null) return;
+    final votes = <String, String>{};
+    for (final entry in saved) {
+      final separator = entry.indexOf('|');
+      if (separator <= 0) continue;
+      votes[entry.substring(0, separator)] = entry.substring(separator + 1);
+    }
+    state = votes;
+  }
+
+  /// [vote] is 'up' or 'down'.
+  Future<void> setVote(String articleId, String vote) async {
+    final next = {...state, articleId: vote};
+    state = next;
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setStringList(
+      _storageKey,
+      [for (final entry in next.entries) '${entry.key}|${entry.value}'],
+    );
+  }
+}
+
+final articleFeedbackProvider =
+    StateNotifierProvider<ArticleFeedbackNotifier, Map<String, String>>((ref) {
+  return ArticleFeedbackNotifier();
+});
+
 final totalReadingTimeProvider = Provider<int>((ref) {
   final articles = ref.watch(allEducationArticlesProvider);
   return articles.fold(0, (sum, article) => sum + article.readingTimeMinutes);

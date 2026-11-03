@@ -18,6 +18,23 @@ void main() {
       expect(log.tags, contains(SymptomTag.mood));
     });
 
+    test('round-trips weight and water values', () {
+      final log = SymptomLog(
+        id: '3',
+        date: DateTime(2026, 4, 25),
+        selections: const {},
+        updatedAt: DateTime(2026, 4, 25, 9),
+        weightKg: 75.02,
+        waterMl: 750,
+      );
+
+      final restored = SymptomLog.fromJson(log.toJson());
+
+      expect(restored.weightKg, closeTo(75.02, 0.001));
+      expect(restored.waterMl, 750);
+      expect(restored.hasContent, isTrue);
+    });
+
     test('keeps backward compatibility for empty legacy records', () {
       final log = SymptomLog.fromJson({
         'id': '2',
@@ -28,6 +45,8 @@ void main() {
 
       expect(log.freeNotes, '');
       expect(log.intensity, isNull);
+      expect(log.weightKg, isNull);
+      expect(log.waterMl, isNull);
       expect(log.hasContent, isFalse);
       expect(log.tags, isEmpty);
     });

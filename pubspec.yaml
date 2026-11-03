@@ -63,6 +63,7 @@ flutter:
     - assets/images/logo/
     - assets/images/icons/
     - assets/images/
+    - assets/images/mascot/
     - moc/
 
 flutter_launcher_icons:

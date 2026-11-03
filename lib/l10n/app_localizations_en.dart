@@ -1336,7 +1336,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journalInsightsNotEnoughData =>
-      'Not enough data for insights yet 🌿';
+      'Not enough data for insights yet';
 
   @override
   String get journalQuickThought => 'Quick thought';
@@ -1351,7 +1351,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalCaptureMoment => 'Tap to capture a quick moment...';
 
   @override
-  String get journalQuickThoughtSaved => 'Quick thought saved 😌';
+  String get journalQuickThoughtSaved => 'Quick thought saved';
 
   @override
   String get journalStreak => 'Streak';
@@ -1947,4 +1947,98 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savedArticles => 'Saved articles';
+
+  @override
+  String get articleNotHelpful => 'Not helpful';
+
+  @override
+  String get articleHelpful => 'Helpful';
+
+  @override
+  String get articleAddComment => 'Add Comment';
+
+  @override
+  String get articleFeedbackQuestion => 'What are you not satisfied with?';
+
+  @override
+  String get articleFeedbackNoteHint => 'Tell us more about the issue…';
+
+  @override
+  String get articleFeedbackReferences => 'References';
+
+  @override
+  String get articleFeedbackUnclearMechanism => 'Unclear mechanism';
+
+  @override
+  String get articleFeedbackInsufficientEvidence => 'Insufficient evidence';
+
+  @override
+  String get articleFeedbackSideEffects => 'Side effects';
+
+  @override
+  String get articleFeedbackTranslation => 'Translation';
+
+  @override
+  String get articleFeedbackDesign => 'Design';
+
+  @override
+  String get articleFeedbackOthers => 'Others';
+
+  @override
+  String get articleFeedbackThanksTitle => 'Thanks for feedback!';
+
+  @override
+  String get articleFeedbackThanksBody => 'Feedback received. We’ll do our best to bring you a better experience.';
+
+  @override
+  String get articleFeedbackOk => 'OK';
+
+  @override
+  String get symptomWeight => 'Weight';
+
+  @override
+  String get symptomWater => 'Water';
+
+  @override
+  String get symptomSearchHint => 'Search symptom...';
+
+  @override
+  String get symptomWeightHint => 'Please type a value from 25 kg to 300 kg';
+
+  @override
+  String get symptomWaterHint => 'How much water did you drink today?';
+
+  @override
+  String get symptomNoMatch => 'No symptom matches your search.';
+
+  @override
+  String get symptomEdit => 'Edit';
+
+  @override
+  String get symptomLogUnavailable =>
+      'Saved symptoms couldn\'t be loaded. You can still log this day.';
+
+  @override
+  String get pregnancyTest => 'Pregnancy test';
+
+  @override
+  String get testFaintLine => 'Faint line';
+
+  @override
+  String get testPositive => 'Positive';
+
+  @override
+  String get testNegative => 'Negative';
+
+  @override
+  String get testNone => 'No tests';
+
+  @override
+  String get backToEducation => 'Back to the education space';
+
+  @override
+  String get calendarEditPeriod => 'Edit Period';
+
+  @override
+  String get daySymptomsEmpty => 'No symptoms logged for this day.';
 }
