@@ -213,16 +213,16 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                   const SizedBox(height: 24),
                   if (filteredArticles.isEmpty)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 48),
+                      padding: const EdgeInsets.symmetric(vertical: 24),
                       child: Center(
                         child: Column(
                           children: [
-                            const Icon(
-                              Icons.search_off,
-                              size: 48,
-                              color: AppColors.grey400,
+                            Image.asset(
+                              AppAssets.mascotSearch,
+                              height: 168,
+                              fit: BoxFit.contain,
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 4),
                             Text(
                               _isSearching
                                   ? l10n.educationNoArticleFound
@@ -501,20 +501,46 @@ class _EducationHeroCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: AppText.h4.copyWith(
-              color: AppColors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            subtitle,
-            style: AppText.body.copyWith(
-              color: AppColors.white.withOpacity(0.92),
-              height: 1.5,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppText.h4.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      subtitle,
+                      style: AppText.body.copyWith(
+                        color: AppColors.white.withOpacity(0.92),
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  width: 84,
+                  height: 84,
+                  color: AppColors.white,
+                  child: Image.asset(
+                    AppAssets.mascotArticle,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 18),
           Container(

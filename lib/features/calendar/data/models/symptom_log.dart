@@ -15,6 +15,8 @@ class SymptomLog {
     required this.updatedAt,
     this.freeNotes = '',
     this.intensity,
+    this.weightKg,
+    this.waterMl,
   });
 
   final String id;
@@ -23,6 +25,12 @@ class SymptomLog {
   final DateTime updatedAt;
   final String freeNotes;
   final int? intensity;
+
+  /// Body weight in kilograms, when the user logged it.
+  final double? weightKg;
+
+  /// Water drunk during the day, in millilitres.
+  final int? waterMl;
 
   static final Map<String, SymptomTag> _selectionTagMap = {
     'Stress': SymptomTag.mood,
@@ -49,7 +57,12 @@ class SymptomLog {
 
   bool get hasSelections => selections.values.any((items) => items.isNotEmpty);
 
-  bool get hasContent => hasSelections || freeNotes.trim().isNotEmpty || intensity != null;
+  bool get hasContent =>
+      hasSelections ||
+      freeNotes.trim().isNotEmpty ||
+      intensity != null ||
+      weightKg != null ||
+      waterMl != null;
 
   List<SymptomTag> get tags {
     final normalized = <SymptomTag>{};
@@ -78,6 +91,8 @@ class SymptomLog {
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       freeNotes: json['freeNotes'] as String? ?? '',
       intensity: json['intensity'] as int?,
+      weightKg: (json['weightKg'] as num?)?.toDouble(),
+      waterMl: json['waterMl'] as int?,
     );
   }
 
@@ -89,6 +104,8 @@ class SymptomLog {
       'updatedAt': updatedAt.toIso8601String(),
       'freeNotes': freeNotes,
       'intensity': intensity,
+      'weightKg': weightKg,
+      'waterMl': waterMl,
     };
   }
 
@@ -99,6 +116,8 @@ class SymptomLog {
     DateTime? updatedAt,
     String? freeNotes,
     int? intensity,
+    double? weightKg,
+    int? waterMl,
   }) {
     return SymptomLog(
       id: id ?? this.id,
@@ -107,6 +126,8 @@ class SymptomLog {
       updatedAt: updatedAt ?? this.updatedAt,
       freeNotes: freeNotes ?? this.freeNotes,
       intensity: intensity ?? this.intensity,
+      weightKg: weightKg ?? this.weightKg,
+      waterMl: waterMl ?? this.waterMl,
     );
   }
 }

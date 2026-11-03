@@ -2561,7 +2561,7 @@ abstract class AppLocalizations {
   /// No description provided for @journalInsightsNotEnoughData.
   ///
   /// In en, this message translates to:
-  /// **'Not enough data for insights yet 🌿'**
+  /// **'Not enough data for insights yet'**
   String get journalInsightsNotEnoughData;
 
   /// No description provided for @journalQuickThought.
@@ -2591,7 +2591,7 @@ abstract class AppLocalizations {
   /// No description provided for @journalQuickThoughtSaved.
   ///
   /// In en, this message translates to:
-  /// **'Quick thought saved 😌'**
+  /// **'Quick thought saved'**
   String get journalQuickThoughtSaved;
 
   /// No description provided for @journalStreak.
@@ -3763,6 +3763,88 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get articleFeedbackOk;
+  /// No description provided for @symptomWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get symptomWeight;
+
+  /// No description provided for @symptomWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get symptomWater;
+
+  /// No description provided for @symptomSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search symptom...'**
+  String get symptomSearchHint;
+
+  /// No description provided for @symptomWeightHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please type a value from 25 kg to 300 kg'**
+  String get symptomWeightHint;
+
+  /// No description provided for @symptomWaterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How much water did you drink today?'**
+  String get symptomWaterHint;
+
+  /// No description provided for @symptomNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No symptom matches your search.'**
+  String get symptomNoMatch;
+
+  /// No description provided for @symptomEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get symptomEdit;
+  /// No description provided for @backToEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the education space'**
+  String get backToEducation;
+
+  /// No description provided for @pregnancyTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Pregnancy test'**
+  String get pregnancyTest;
+
+  /// No description provided for @testFaintLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Faint line'**
+  String get testFaintLine;
+
+  /// No description provided for @testPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Positive'**
+  String get testPositive;
+
+  /// No description provided for @testNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Negative'**
+  String get testNegative;
+
+  /// No description provided for @testNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No tests'**
+  String get testNone;
+
+  /// No description provided for @symptomLogUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved symptoms couldn't be loaded. You can still log this day.'**
+  String get symptomLogUnavailable;
 }
 
 class _AppLocalizationsDelegate

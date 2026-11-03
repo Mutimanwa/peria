@@ -1336,7 +1336,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journalInsightsNotEnoughData =>
-      'Not enough data for insights yet 🌿';
+      'Not enough data for insights yet';
 
   @override
   String get journalQuickThought => 'Quick thought';
@@ -1351,7 +1351,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalCaptureMoment => 'Tap to capture a quick moment...';
 
   @override
-  String get journalQuickThoughtSaved => 'Quick thought saved 😌';
+  String get journalQuickThoughtSaved => 'Quick thought saved';
 
   @override
   String get journalStreak => 'Streak';
@@ -1992,4 +1992,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get articleFeedbackOk => 'OK';
+
+  @override
+  String get symptomWeight => 'Weight';
+
+  @override
+  String get symptomWater => 'Water';
+
+  @override
+  String get symptomSearchHint => 'Search symptom...';
+
+  @override
+  String get symptomWeightHint => 'Please type a value from 25 kg to 300 kg';
+
+  @override
+  String get symptomWaterHint => 'How much water did you drink today?';
+
+  @override
+  String get symptomNoMatch => 'No symptom matches your search.';
+
+  @override
+  String get symptomEdit => 'Edit';
+
+  @override
+  String get symptomLogUnavailable =>
+      'Saved symptoms couldn\'t be loaded. You can still log this day.';
+
+  @override
+  String get pregnancyTest => 'Pregnancy test';
+
+  @override
+  String get testFaintLine => 'Faint line';
+
+  @override
+  String get testPositive => 'Positive';
+
+  @override
+  String get testNegative => 'Negative';
+
+  @override
+  String get testNone => 'No tests';
+
+  @override
+  String get backToEducation => 'Back to the education space';
 }

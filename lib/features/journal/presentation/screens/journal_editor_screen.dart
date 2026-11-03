@@ -191,7 +191,11 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                       hintText: l10n.myDairy,
-                      hintStyle: const TextStyle(color: AppColors.grey300),
+                      hintStyle: AppText.h3.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24,
+                        color: AppColors.grey400,
+                      ),
                       border: InputBorder.none,
                       isDense: true,
                     ),
@@ -248,7 +252,11 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                         fontSize: 17, height: 1.6, color: AppColors.grey800),
                     decoration: InputDecoration(
                       hintText: l10n.aboutYourDay,
-                      hintStyle: const TextStyle(color: AppColors.grey300),
+                      hintStyle: AppText.body.copyWith(
+                        fontSize: 17,
+                        height: 1.6,
+                        color: AppColors.grey500,
+                      ),
                       border: InputBorder.none,
                     ),
                   ),
@@ -410,7 +418,7 @@ Future<void> _insertImage() async {
   void _toggleCase() {
     final selection = _contentController.selection;
     if (!selection.isValid || selection.isCollapsed) {
-      _insertTextAtCursor("✨ "); // Si rien n'est sélectionné, on insère un emoji de style
+      // Sans sélection, on laisse le curseur tel quel : aucun emoji décoratif.
       return;
     }
 

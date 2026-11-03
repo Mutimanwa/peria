@@ -49,10 +49,39 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                 ),
               ),
               Expanded(
-                child: Center(
-                  child: Text(
-                    l10n.educationArticleNotFound,
-                    style: AppText.h5.copyWith(color: AppColors.grey600),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.page,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AppAssets.mascotSearch,
+                        height: 200,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.educationArticleNotFound,
+                        textAlign: TextAlign.center,
+                        style: AppText.h5.copyWith(color: AppColors.grey600),
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () => safeRouterBack(
+                          context,
+                          fallbackRoute: '/education',
+                        ),
+                        child: Text(
+                          l10n.backToEducation,
+                          style: AppText.label.copyWith(
+                            color: AppColors.primary500,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -130,23 +159,23 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                     ],
                     const SizedBox(height: 20),
                     _ArticleSection(
-                      emoji: '🩸',
+                      icon: Icons.water_drop_outlined,
                       title: l10n.educationExplanation,
                       content: article.explanation,
                     ),
                     _ArticleSection(
-                      emoji: '🔍',
+                      icon: Icons.search_rounded,
                       title: l10n.educationObserve,
                       content: article.observations,
                     ),
                     _ArticleSection(
-                      emoji: '🌿',
+                      icon: Icons.spa_outlined,
                       title: l10n.educationAdvice,
                       content: article.advice,
                     ),
                     if (article.whenToConsult.trim().isNotEmpty)
                       _ArticleSection(
-                        emoji: '⚠️',
+                        icon: Icons.warning_amber_rounded,
                         title: l10n.educationWhenToConsult,
                         content: article.whenToConsult,
                         isWarning: true,
@@ -279,20 +308,22 @@ class _ArticleMeta extends StatelessWidget {
   }
 }
 
-/// One emoji-titled block; plain lines become paragraphs, prefixed lines become
+/// One icon-titled block; plain lines become paragraphs, prefixed lines become
 /// bullets, matching the article mockup.
 class _ArticleSection extends StatelessWidget {
   const _ArticleSection({
-    required this.emoji,
+    required this.icon,
     required this.title,
     required this.content,
     this.isWarning = false,
   });
 
-  final String emoji;
+  final IconData icon;
   final String title;
   final String content;
   final bool isWarning;
+
+  Color get accent => isWarning ? AppColors.error : AppColors.primary400;
 
   @override
   Widget build(BuildContext context) {
@@ -308,15 +339,23 @@ class _ArticleSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 18)),
-              const SizedBox(width: 8),
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Icon(icon, size: 17, color: accent),
+              ),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   title,
                   style: AppText.h6.copyWith(
-                    color: isWarning ? AppColors.error : AppColors.grey900,
+                    color: AppColors.grey900,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -358,8 +397,16 @@ class _SectionLine extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('•', style: style.copyWith(fontWeight: FontWeight.w700)),
-        const SizedBox(width: 8),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          width: 5,
+          height: 5,
+          decoration: const BoxDecoration(
+            color: AppColors.primary300,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 10),
         Expanded(child: Text(value, style: style)),
       ],
     );

@@ -1353,7 +1353,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get journalInsightsNotEnoughData =>
-      'Pas encore assez de données pour afficher des tendances 🌿';
+      'Pas encore assez de données pour afficher des tendances';
 
   @override
   String get journalQuickThought => 'Note rapide';
@@ -1368,7 +1368,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalCaptureMoment => 'Appuie pour noter un instant…';
 
   @override
-  String get journalQuickThoughtSaved => 'Note rapide enregistrée 😌';
+  String get journalQuickThoughtSaved => 'Note rapide enregistrée';
 
   @override
   String get journalStreak => 'Série';
@@ -2019,4 +2019,47 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get articleFeedbackOk => 'OK';
+
+  @override
+  String get symptomWeight => 'Poids';
+
+  @override
+  String get symptomWater => 'Eau';
+
+  @override
+  String get symptomSearchHint => 'Rechercher un symptôme...';
+
+  @override
+  String get symptomWeightHint => 'Indique une valeur entre 25 kg et 300 kg';
+
+  @override
+  String get symptomWaterHint => 'Combien d’eau as-tu bue aujourd’hui ?';
+
+  @override
+  String get symptomNoMatch => 'Aucun symptôme ne correspond à ta recherche.';
+
+  @override
+  String get symptomEdit => 'Modifier';
+
+  @override
+  String get symptomLogUnavailable =>
+      'Tes symptômes enregistrés n\'ont pas pu être chargés. Tu peux quand même noter cette journée.';
+
+  @override
+  String get pregnancyTest => 'Test de grossesse';
+
+  @override
+  String get testFaintLine => 'Ligne pâle';
+
+  @override
+  String get testPositive => 'Positif';
+
+  @override
+  String get testNegative => 'Négatif';
+
+  @override
+  String get testNone => 'Aucun test';
+
+  @override
+  String get backToEducation => 'Retour à l\'espace éducation';
 }

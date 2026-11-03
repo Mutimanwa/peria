@@ -14,6 +14,10 @@ class AppAssets {
       'assets/images/mascot/mascot_article.png';
   static const String mascotFeedback =
       'assets/images/mascot/mascot_feedback.png';
+  static const String mascotSearch =
+      'assets/images/mascot/mascot_search.png';
+  static const String mascotThanks =
+      'assets/images/mascot/mascot_thanks.png';
 
   static const String imageEat = 'assets/images/eat.png';
   static const String imageSkin = 'assets/images/skin.png';

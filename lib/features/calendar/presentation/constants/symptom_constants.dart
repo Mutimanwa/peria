@@ -8,6 +8,12 @@ class SymptomOption {
 }
 
 const Map<String, List<SymptomOption>> symptomCategories = {
+  'Pregnancy test': [
+    SymptomOption('Faint line', Icons.remove_outlined),
+    SymptomOption('Positive', Icons.check_circle_outline),
+    SymptomOption('No tests', Icons.do_not_disturb_on_outlined),
+    SymptomOption('Negative', Icons.cancel_outlined),
+  ],
   'Sexual activity': [
     SymptomOption('Protected Sex', Icons.female),
     SymptomOption('Orgasm', Icons.favorite_border),

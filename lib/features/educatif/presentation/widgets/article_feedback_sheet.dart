@@ -283,20 +283,39 @@ Future<void> showArticleFeedbackThanks(BuildContext context) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.success, width: 3),
-              ),
-              child: Icon(
-                Icons.check_rounded,
-                size: 40,
-                color: AppColors.success,
+            SizedBox(
+              height: 132,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    AppAssets.mascotThanks,
+                    height: 132,
+                    fit: BoxFit.contain,
+                  ),
+                  Positioned(
+                    right: 24,
+                    bottom: 6,
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.success, width: 2.5),
+                      ),
+                      child: const Icon(
+                        Icons.check_rounded,
+                        size: 20,
+                        color: AppColors.success,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
             Text(
               l10n.articleFeedbackThanksTitle,
               textAlign: TextAlign.center,
