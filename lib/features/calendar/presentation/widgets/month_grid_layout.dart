@@ -18,11 +18,15 @@ class MonthGridLayout {
     double crossAxisSpacing = 4,
     double mainAxisSpacing = 4,
     double childAspectRatio = 1,
+    double? mainAxisExtent,
   }) {
-    if (rows <= 0 || width <= 0 || childAspectRatio <= 0) return 0;
+    if (rows <= 0 || width <= 0) return 0;
     final cellWidth = (width - crossAxisSpacing * 6) / 7;
     if (cellWidth <= 0) return 0;
-    final cellHeight = cellWidth / childAspectRatio;
+    // When the grid pins a fixed row height (mainAxisExtent) the aspect ratio
+    // is irrelevant: the height must follow that extent, otherwise the last
+    // row is clipped.
+    final cellHeight = mainAxisExtent ?? (childAspectRatio <= 0 ? 0 : cellWidth / childAspectRatio);
     // Extra pixels avoid a sub-pixel clip of the last date row.
     return rows * cellHeight + (rows - 1) * mainAxisSpacing + 2;
   }
