@@ -2068,4 +2068,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get daySymptomsEmpty => 'Aucun symptôme noté pour ce jour.';
+
+  @override
+  String get calendarEditScreenTitle => 'Calendrier';
 }

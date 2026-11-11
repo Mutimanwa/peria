@@ -6,13 +6,11 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/calendar/presentation/widgets/day_symptoms_card.dart';
 import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
-import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/calendar/presentation/calendar_phase_style.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
-import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -38,146 +36,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     setState(() {
       _selectedDate = DateTime(day.year, day.month, day.day);
     });
-  }
-
-  Future<void> _showQuickPeriodSheet() async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        final l10n = AppLocalizations.of(context);
-        final today = DateTime.now();
-        final todayStart = DateTime(today.year, today.month, today.day);
-
-        Future<void> savePeriodLog({
-          required DateTime start,
-          required DateTime end,
-        }) async {
-          final navigator = Navigator.of(context);
-          final log = PeriodLog(
-            id: DateTime.now().microsecondsSinceEpoch.toString(),
-            startDate: start,
-            endDate: end,
-            isEstimated: false,
-          );
-          await ref.read(periodLogsProvider.notifier).add(log);
-
-          final currentProfile = ref.read(userProfileProvider).value;
-          final currentLast = currentProfile?.lastPeriodStart;
-          if (currentLast == null || start.isAfter(currentLast)) {
-            await ref.read(userProfileProvider.notifier).patch(
-                  (p) => p.copyWith(lastPeriodStart: start),
-                );
-          }
-
-          if (mounted) navigator.pop();
-        }
-
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(28),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey300,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Text(l10n.periodLogSheetTitle, style: AppText.h4),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.periodLogSheetSubtitle,
-                  style: AppText.body.copyWith(color: AppColors.grey600),
-                ),
-                const SizedBox(height: 18),
-                _QuickActionTile(
-                  icon: Icons.play_arrow_rounded,
-                  title: l10n.periodStartedToday,
-                  subtitle: l10n.periodStartedTodaySubtitle,
-                  color: AppColors.primary400,
-                  onTap: () =>
-                      savePeriodLog(start: todayStart, end: todayStart),
-                ),
-                const SizedBox(height: 12),
-                _QuickActionTile(
-                  icon: Icons.water_drop_outlined,
-                  title: l10n.addTodayPeriodDay,
-                  subtitle: l10n.addTodayPeriodDaySubtitle,
-                  color: AppColors.primary500,
-                  onTap: () {
-                    final logs = ref.read(periodLogsProvider).value ?? const [];
-                    if (logs.isEmpty) {
-                      savePeriodLog(start: todayStart, end: todayStart);
-                      return;
-                    }
-                    final latest = logs.first;
-                    final updated = PeriodLog(
-                      id: latest.id,
-                      startDate: latest.startDate,
-                      endDate: todayStart.isAfter(latest.endDate)
-                          ? todayStart
-                          : latest.endDate,
-                      isEstimated: latest.isEstimated,
-                    );
-                    ref.read(periodLogsProvider.notifier).add(updated);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: 12),
-                _QuickActionTile(
-                  icon: Icons.stop_rounded,
-                  title: l10n.periodEndedToday,
-                  subtitle: l10n.periodEndedTodaySubtitle,
-                  color: AppColors.warning700,
-                  onTap: () {
-                    final logs = ref.read(periodLogsProvider).value ?? const [];
-                    if (logs.isEmpty) {
-                      Navigator.of(context).pop();
-                      return;
-                    }
-                    final latest = logs.first;
-                    final updated = PeriodLog(
-                      id: latest.id,
-                      startDate: latest.startDate,
-                      endDate: todayStart,
-                      isEstimated: latest.isEstimated,
-                    );
-                    ref.read(periodLogsProvider.notifier).add(updated);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: 16),
-                OutlineButton(
-                  label: l10n.openStructuredPeriodEdit,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    context.push('/edit-calendar');
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   DateTime _normalizeDay(DateTime d) => DateTime(d.year, d.month, d.day);
@@ -402,29 +260,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          SizedBox(
-                            width: double.infinity,
-                            height: 52,
-                            child: ElevatedButton.icon(
-                              onPressed: _showQuickPeriodSheet,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.grey900,
-                                foregroundColor: AppColors.white,
-                                elevation: 0,
-                                shape: const StadiumBorder(),
-                              ),
-                              icon: const Icon(Icons.edit_outlined, size: 18),
-                              label: Text(
-                                l10n.calendarEditPeriod,
-                                style: AppText.label.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
                           Wrap(
                             alignment: WrapAlignment.center,
                             spacing: 16,
@@ -449,6 +284,29 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               ),
                             ],
                           ),
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: ElevatedButton.icon(
+                              onPressed: () => context.push('/edit-calendar'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.grey900,
+                                foregroundColor: AppColors.white,
+                                elevation: 0,
+                                shape: const StadiumBorder(),
+                              ),
+                              icon: const Icon(Icons.edit_outlined, size: 18),
+                              label: Text(
+                                l10n.calendarEditPeriod,
+                                style: AppText.label.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),
@@ -719,75 +577,6 @@ class _NavArrow extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(icon, size: 20, color: AppColors.grey700),
-      ),
-    );
-  }
-}
-
-class _QuickActionTile extends StatelessWidget {
-  const _QuickActionTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.grey50,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppText.label.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.grey900,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: AppText.caption.copyWith(color: AppColors.grey600),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.grey500,
-            ),
-          ],
-        ),
       ),
     );
   }

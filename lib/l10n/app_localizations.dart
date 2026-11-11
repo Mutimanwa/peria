@@ -3809,6 +3809,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Period'**
   String get calendarEditPeriod;
+  /// No description provided for @calendarEditScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get calendarEditScreenTitle;
+
 
   /// No description provided for @daySymptomsEmpty.
   ///

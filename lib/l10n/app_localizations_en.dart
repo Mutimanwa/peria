@@ -2041,4 +2041,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daySymptomsEmpty => 'No symptoms logged for this day.';
+
+  @override
+  String get calendarEditScreenTitle => 'Calendar';
 }

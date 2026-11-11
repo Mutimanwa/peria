@@ -722,5 +722,6 @@
   "testNone": "No tests",
   "backToEducation": "Back to the education space",
   "calendarEditPeriod": "Edit Period",
-  "daySymptomsEmpty": "No symptoms logged for this day."
+  "daySymptomsEmpty": "No symptoms logged for this day.",
+  "calendarEditScreenTitle": "Calendar"
 }
