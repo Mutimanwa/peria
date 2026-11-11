@@ -722,5 +722,14 @@
   "testNone": "No tests",
   "backToEducation": "Back to the education space",
   "calendarEditPeriod": "Edit Period",
-  "daySymptomsEmpty": "No symptoms logged for this day."
+  "daySymptomsEmpty": "No symptoms logged for this day.",
+  "calendarEditScreenTitle": "Calendar",
+  "educationAxisAll": "All",
+  "changePhoto": "Change photo",
+  "takePhoto": "Take a photo",
+  "chooseFromGallery": "Choose from gallery",
+  "removePhoto": "Remove photo",
+  "anonymousLogoutTitle": "Sign out of your anonymous account?",
+  "anonymousLogoutMessage": "You are using an anonymous account. If you sign out now, your cycle, journal and symptoms data stored on this device will be lost for good.",
+  "photoUpdateFailed": "The photo could not be updated."
 }

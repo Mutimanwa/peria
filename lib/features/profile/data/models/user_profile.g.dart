@@ -23,13 +23,14 @@ class UserProfileAdapter extends TypeAdapter<UserProfile> {
       periodLengthDays: fields[3] as int,
       lastPeriodStart: fields[4] as DateTime?,
       isCycleRegular: fields[5] as bool,
+      avatarBase64: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserProfile obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.displayName)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class UserProfileAdapter extends TypeAdapter<UserProfile> {
       ..writeByte(4)
       ..write(obj.lastPeriodStart)
       ..writeByte(5)
-      ..write(obj.isCycleRegular);
+      ..write(obj.isCycleRegular)
+      ..writeByte(8)
+      ..write(obj.avatarBase64);
   }
 
   @override

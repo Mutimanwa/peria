@@ -2068,4 +2068,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get daySymptomsEmpty => 'Aucun symptôme noté pour ce jour.';
+
+  @override
+  String get calendarEditScreenTitle => 'Calendrier';
+
+  @override
+  String get educationAxisAll => 'Tout';
+
+  @override
+  String get changePhoto => 'Modifier la photo';
+
+  @override
+  String get takePhoto => 'Prendre une photo';
+
+  @override
+  String get chooseFromGallery => 'Choisir dans la galerie';
+
+  @override
+  String get removePhoto => 'Supprimer la photo';
+
+  @override
+  String get anonymousLogoutTitle => 'Se déconnecter du compte anonyme ?';
+
+  @override
+  String get anonymousLogoutMessage => 'Tu utilises un compte anonyme. Si tu te déconnectes maintenant, tes données de cycle, de journal et de symptômes enregistrées sur cet appareil seront définitivement perdues.';
+
+  @override
+  String get photoUpdateFailed => 'La photo n\'a pas pu être mise à jour.';
 }

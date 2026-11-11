@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:peria_app/core/services/onboarding_service.dart';
 import 'package:peria_app/core/theme/theme.dart';
-// import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -38,6 +40,22 @@ class SetGoalsScreen extends ConsumerStatefulWidget {
 class _SetGoalsScreenState extends ConsumerState<SetGoalsScreen> {
   // Ensemble des indices sélectionnés
   final Set<int> _selected = {};
+  bool _initializedFromProfile = false;
+
+  Future<void> _save(List<String> labels) async {
+    final selectedLabels = _selected.map((i) => labels[i]).toList();
+    await ref.read(userProfileProvider.notifier).patch(
+          (profile) => profile.copyWith(goals: selectedLabels),
+        );
+    if (!mounted) return;
+    final onboardingDone = await OnboardingService.isOnboardingCompleted();
+    if (!mounted) return;
+    if (onboardingDone) {
+      safeRouterBack(context, fallbackRoute: '/profile');
+    } else {
+      context.go('/last-period');
+    }
+  }
 
   void _toggleGoal(int index) {
     setState(() {
@@ -76,6 +94,23 @@ final l10n = AppLocalizations.of(context);
       ),
     ];
     final bool canContinue = _selected.isNotEmpty;
+
+    // Pre-select what the user already saved when the page is opened from the
+    // profile (the onboarding flow starts with an empty selection).
+    final savedGoals = ref.watch(userProfileProvider).value?.goals;
+    if (!_initializedFromProfile &&
+        savedGoals != null &&
+        savedGoals.isNotEmpty) {
+      _initializedFromProfile = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          for (var i = 0; i < goals.length; i++) {
+            if (savedGoals.contains(goals[i].label)) _selected.add(i);
+          }
+        });
+      });
+    }
 
     return OnboardingScaffold(
       showBack: true,
@@ -134,14 +169,7 @@ final l10n = AppLocalizations.of(context);
             child: PrimaryButton(
               label: l10n.continueCta,
               onPressed: canContinue
-                  ? () {
-                      // final goals =
-                      //     _selected.map((i) => _goals[i].label).toList();
-                      // ref
-                      //     .read(userProfileProvider.notifier)
-                      //     .patch((p) => p.copyWith(goals: goals));
-                      // context.go("/last-period");
-                    }
+                  ? () => _save(goals.map((goal) => goal.label).toList())
                   : null,
             ),
           ),

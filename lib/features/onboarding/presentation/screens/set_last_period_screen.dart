@@ -37,15 +37,31 @@ class _SetLastPeriodScreenState extends ConsumerState<SetLastPeriodScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
 
+  static DateTime get _today {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  bool _isFuture(DateTime day) =>
+      DateTime(day.year, day.month, day.day).isAfter(_today);
+
+  bool get _canGoToNextMonth =>
+      _displayMonth.isBefore(DateTime(_today.year, _today.month));
+
   void _prevMonth() => setState(() {
         _displayMonth = DateTime(_displayMonth.year, _displayMonth.month - 1);
       });
 
-  void _nextMonth() => setState(() {
-        _displayMonth = DateTime(_displayMonth.year, _displayMonth.month + 1);
-      });
+  void _nextMonth() {
+    // A period cannot start in the future: never offer months ahead of today.
+    if (!_canGoToNextMonth) return;
+    setState(() {
+      _displayMonth = DateTime(_displayMonth.year, _displayMonth.month + 1);
+    });
+  }
 
   void _selectDay(DateTime day) {
+    if (_isFuture(day)) return;
     setState(() {
       if (_startDate == null || (_startDate != null && _endDate != null)) {
         // Premier tap → début de plage
@@ -146,7 +162,7 @@ final l10n = AppLocalizations.of(context);
                           ),
                         ),
                         _NavArrow(
-                            onTap: _nextMonth,
+                            onTap: _canGoToNextMonth ? _nextMonth : null,
                             icon: Icons.chevron_right_rounded),
                       ],
                     ),
@@ -290,10 +306,16 @@ final l10n = AppLocalizations.of(context);
         final day = DateTime(_displayMonth.year, _displayMonth.month, dayNum);
         final selected = _isSelected(day);
         final edge = _isRangeEdge(day);
+        final isFuture = _isFuture(day);
 
         return GestureDetector(
-          onTap: () => _selectDay(day),
-          child: _DayCell(day: day, selected: selected, isEdge: edge),
+          onTap: isFuture ? null : () => _selectDay(day),
+          child: _DayCell(
+            day: day,
+            selected: selected,
+            isEdge: edge,
+            disabled: isFuture,
+          ),
         );
       },
     );
@@ -305,14 +327,19 @@ class _DayCell extends StatelessWidget {
   final DateTime day;
   final bool selected;
   final bool isEdge;
+  final bool disabled;
 
-  const _DayCell(
-      {required this.day, required this.selected, required this.isEdge});
+  const _DayCell({
+    required this.day,
+    required this.selected,
+    required this.isEdge,
+    this.disabled = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     Color? bg;
-    Color textColor = AppColors.black;
+    Color textColor = disabled ? AppColors.grey300 : AppColors.black;
 
     if (isEdge) {
       bg = AppColors.primary;
@@ -343,7 +370,7 @@ class _DayCell extends StatelessWidget {
 
 // ── Flèche navigation mois ─────────────────────────────
 class _NavArrow extends StatelessWidget {
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final IconData icon;
 
   const _NavArrow({required this.onTap, required this.icon});
@@ -359,7 +386,11 @@ class _NavArrow extends StatelessWidget {
           border: Border.all(color: AppColors.grey200),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, size: 20, color: AppColors.grey700),
+        child: Icon(
+          icon,
+          size: 20,
+          color: onTap == null ? AppColors.grey300 : AppColors.grey700,
+        ),
       ),
     );
   }

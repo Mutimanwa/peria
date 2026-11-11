@@ -722,5 +722,14 @@
   "testNone": "Aucun test",
   "backToEducation": "Retour à l'espace éducation",
   "calendarEditPeriod": "Modifier la période",
-  "daySymptomsEmpty": "Aucun symptôme noté pour ce jour."
+  "daySymptomsEmpty": "Aucun symptôme noté pour ce jour.",
+  "calendarEditScreenTitle": "Calendrier",
+  "educationAxisAll": "Tout",
+  "changePhoto": "Modifier la photo",
+  "takePhoto": "Prendre une photo",
+  "chooseFromGallery": "Choisir dans la galerie",
+  "removePhoto": "Supprimer la photo",
+  "anonymousLogoutTitle": "Se déconnecter du compte anonyme ?",
+  "anonymousLogoutMessage": "Tu utilises un compte anonyme. Si tu te déconnectes maintenant, tes données de cycle, de journal et de symptômes enregistrées sur cet appareil seront définitivement perdues.",
+  "photoUpdateFailed": "La photo n'a pas pu être mise à jour."
 }

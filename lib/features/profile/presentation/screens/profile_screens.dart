@@ -2,12 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/features/profile/presentation/widgets/profile_skeleton.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
+import 'package:peria_app/shared/widgets/profile_avatar.dart';
 import 'package:peria_app/shared/widgets/profile_widgets.dart';
 
 // Recuperation des infos de l'utilisateur
@@ -31,9 +32,9 @@ class ProfileScreen extends ConsumerWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                const CircleAvatar(
+                ProfileAvatar(
+                  avatarBase64: profile.avatarBase64,
                   radius: 46,
-                  backgroundImage: AssetImage(AppAssets.avatar),
                 ),
                 const SizedBox(height: 16),
 
@@ -77,7 +78,7 @@ class ProfileScreen extends ConsumerWidget {
                   MenuItemData(
                     l10n.logOut,
                     Icons.logout_rounded,
-                    () => _signOut(context),
+                    () => _signOut(context, ref),
                     danger: true,
                   ),
                 ]),
@@ -88,7 +89,54 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-Future<void> _signOut(BuildContext context) async {
+Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+  final l10n = AppLocalizations.of(context);
+  final isAnonymous =
+      ref.read(authProvider).user?.isAnonymous ??
+          FirebaseAuth.instance.currentUser?.isAnonymous ??
+          false;
+
+  // An anonymous account has no way back: leaving it deletes everything.
+  if (isAnonymous) {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        title: Text(
+          l10n.anonymousLogoutTitle,
+          style: AppText.h5.copyWith(fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          l10n.anonymousLogoutMessage,
+          style: AppText.body.copyWith(color: AppColors.grey600, height: 1.45),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              l10n.cancel,
+              style: AppText.label.copyWith(color: AppColors.grey700),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              l10n.logOut,
+              style: AppText.label.copyWith(
+                color: AppColors.error,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+  }
+
   try {
     await FirebaseAuth.instance.signOut();
   } catch (_) {

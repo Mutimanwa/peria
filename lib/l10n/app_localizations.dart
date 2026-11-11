@@ -2737,6 +2737,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'about {minutes} min read'**
   String educationReadingTime(int minutes);
+  /// No description provided for @educationAxisAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get educationAxisAll;
+  /// No description provided for @photoUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo could not be updated.'**
+  String get photoUpdateFailed;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get changePhoto;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @anonymousLogoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of your anonymous account?'**
+  String get anonymousLogoutTitle;
+
+  /// No description provided for @anonymousLogoutMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You are using an anonymous account. If you sign out now, your cycle, journal and symptoms data stored on this device will be lost for good.'**
+  String get anonymousLogoutMessage;
+
+
 
   /// No description provided for @selfCarePrompt.
   ///
@@ -3809,6 +3857,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Period'**
   String get calendarEditPeriod;
+  /// No description provided for @calendarEditScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get calendarEditScreenTitle;
+
 
   /// No description provided for @daySymptomsEmpty.
   ///
