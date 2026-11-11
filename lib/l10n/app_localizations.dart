@@ -2737,6 +2737,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'about {minutes} min read'**
   String educationReadingTime(int minutes);
+  /// No description provided for @educationAxisAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get educationAxisAll;
+
 
   /// No description provided for @selfCarePrompt.
   ///

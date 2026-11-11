@@ -5,6 +5,7 @@ import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/presentation/education_mascots.dart';
 import 'package:peria_app/features/educatif/presentation/providers/education_provider.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
@@ -16,7 +17,7 @@ class EducationHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
-  EducationAxis _selectedAxis = EducationAxis.cycleBasics;
+  EducationAxis? _selectedAxis; // null = all axes ("Tout")
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
 
@@ -36,18 +37,24 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final searchQuery = ref.watch(educationSearchProvider);
-    final filteredArticles = searchQuery.isEmpty
-        ? ref.watch(educationArticlesByAxisProvider(_selectedAxis))
-        : ref.watch(filteredEducationArticlesProvider);
+    final allArticles = ref.watch(allEducationArticlesProvider);
     final categories = ref.watch(educationCategoriesProvider);
     final personalizedSuggestions =
         ref.watch(personalizedEducationSuggestionsProvider);
     final contextTags = ref.watch(educationContextTagsProvider);
     final savedIds = ref.watch(savedArticlesProvider);
-    final savedArticles = ref
-        .watch(allEducationArticlesProvider)
+    final savedArticles = allArticles
         .where((article) => savedIds.contains(article.id))
         .toList(growable: false);
+
+    final filteredByAxis = _selectedAxis == null
+        ? allArticles
+        : allArticles
+            .where((article) => article.axis == _selectedAxis)
+            .toList(growable: false);
+    final articles = searchQuery.isEmpty
+        ? filteredByAxis
+        : ref.watch(filteredEducationArticlesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -58,217 +65,225 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
           ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.page,
-                8,
-                AppSpacing.page,
-                24,
-              ),
+              padding: const EdgeInsets.only(top: 8, bottom: 28),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.white.withOpacity(0.95),
-                      borderRadius: BorderRadius.circular(22),
+                  _buildHeader(l10n),
+                  const SizedBox(height: 22),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
                     ),
-                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () => context.push('/profile'),
-                                    customBorder: const CircleBorder(),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(4),
-                                      child: CircleAvatar(
-                                        radius: 20,
-                                        backgroundImage:
-                                            AssetImage(AppAssets.avatar),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      l10n.educationGreeting,
-                                      style: AppText.label.copyWith(
-                                        color: AppColors.grey900,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    Text(
-                                      l10n.educationSpace,
-                                      style: AppText.caption.copyWith(
-                                        color: AppColors.grey600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                             HeaderIconButton(
-                              icon: _isSearching ? Icons.close_rounded : Icons.search_rounded,
-                              onTap: () {
-                                if (_isSearching && _searchController.text.isNotEmpty) {
-                                  _clearSearch();
-                                  return;
-                                }
-                                setState(() => _isSearching = !_isSearching);
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18),
-                        Text(
-                          l10n.educationWhatToLearn,
-                          style: AppText.h2,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildAxisChips(categories, l10n),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              searchQuery.isEmpty
-                                  ? l10n.educationRecentArticles
-                                  : l10n.educationSearchResults,
-                              style: AppText.h5.copyWith(
-                                color: AppColors.grey900,
-                              ),
-                            ),
-                           
-                          ],
-                        ),
-                        if (_isSearching) ...[
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.grey100,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              autofocus: true,
-                              style: AppText.body,
-                              decoration: InputDecoration(
-                                hintText: l10n.educationSearchHint,
-                                hintStyle: AppText.caption.copyWith(
-                                  color: AppColors.grey500,
-                                ),
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              onChanged: (value) {
-                                ref
-                                    .read(educationSearchProvider.notifier)
-                                    .updateQuery(value);
-                              },
-                            ),
-                          ),
-                        ],
-                      ],
+                    child: Text(
+                      l10n.educationWhatToLearn,
+                      textAlign: TextAlign.center,
+                      style: AppText.h2.copyWith(
+                        color: AppColors.grey900,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
                     ),
                   ),
-                  if (searchQuery.isEmpty && savedArticles.isNotEmpty) ...[
+                  if (_isSearching) ...[
                     const SizedBox(height: 18),
-                    Text(
-                      l10n.savedArticles,
-                      style: AppText.h5.copyWith(color: AppColors.grey900),
-                    ),
-                    const SizedBox(height: 12),
-                    for (final article in savedArticles)
-                      _ArticleCard(
-                        article: article,
-                        onTap: () =>
-                            context.push('/education/article/${article.id}'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.page,
                       ),
+                      child: Container(
+                        height: 48,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(99),
+                          border: Border.all(color: AppColors.grey200),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.search_rounded,
+                              size: 19,
+                              color: AppColors.grey500,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                autofocus: true,
+                                style: AppText.body,
+                                decoration: InputDecoration(
+                                  hintText: l10n.educationSearchHint,
+                                  hintStyle: AppText.body.copyWith(
+                                    color: AppColors.grey500,
+                                  ),
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                onChanged: (value) {
+                                  ref
+                                      .read(educationSearchProvider.notifier)
+                                      .updateQuery(value);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 18),
+                  _buildAxisChips(categories, l10n),
+                  const SizedBox(height: 24),
+                  if (searchQuery.isEmpty && savedArticles.isNotEmpty) ...[
+                    _SectionTitle(label: l10n.savedArticles),
+                    const SizedBox(height: 12),
+                    _buildCarousel(savedArticles),
+                    const SizedBox(height: 22),
                   ],
                   if (searchQuery.isEmpty && personalizedSuggestions.isNotEmpty) ...[
-                    const SizedBox(height: 18),
-                    _ContextSuggestionsCard(
-                      tags: contextTags,
-                      articles: personalizedSuggestions,
-                      onOpenArticle: (articleId) {
-                        context.push('/education/article/$articleId');
-                      },
-                    ),
-                  ],
-                  const SizedBox(height: 24),
-                  if (filteredArticles.isEmpty)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              AppAssets.mascotSearch,
-                              height: 168,
-                              fit: BoxFit.contain,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _isSearching
-                                  ? l10n.educationNoArticleFound
-                                  : l10n.educationNoArticles,
-                              style: AppText.h5.copyWith(
-                                color: AppColors.grey600,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              _isSearching
-                                  ? l10n.educationTryAnotherSearch
-                                  : l10n.educationChooseCategory,
-                              style: AppText.caption.copyWith(
-                                color: AppColors.grey500,
-                              ),
-                            ),
-                          ],
-                        ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.page,
                       ),
-                    )
-                  else
-                    Column(
-                      children: [
-                        for (final article in filteredArticles)
-                          _ArticleCard(
-                            article: article,
-                            onTap: () {
-                              context.push('/education/article/${article.id}');
-                            },
-                          ),
-                      ],
+                      child: _ContextSuggestionsCard(
+                        tags: contextTags,
+                        articles: personalizedSuggestions,
+                        onOpenArticle: (articleId) {
+                          context.push('/education/article/$articleId');
+                        },
+                      ),
                     ),
-                  const SizedBox(height: 24),
-                  _EducationHeroCard(
-                    title: l10n.educationHeroTitle,
-                    subtitle: l10n.educationHeroSubtitle,
-                    footer: l10n.educationHeroFooter,
-                    accent: AppColors.primary400,
+                    const SizedBox(height: 22),
+                  ],
+                  _SectionTitle(
+                    label: searchQuery.isEmpty
+                        ? l10n.educationRecentArticles
+                        : l10n.educationSearchResults,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
+                  if (articles.isEmpty)
+                    _buildEmptyState(l10n)
+                  else
+                    _buildCarousel(articles),
+                  const SizedBox(height: 26),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.page,
+                    ),
+                    child: _EducationHeroCard(
+                      title: l10n.educationHeroTitle,
+                      subtitle: l10n.educationHeroSubtitle,
+                      footer: l10n.educationHeroFooter,
+                      accent: AppColors.primary400,
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+      child: Row(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => context.push('/profile'),
+              customBorder: const CircleBorder(),
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: AssetImage(AppAssets.avatar),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(AppAssets.logo, height: 20),
+                const SizedBox(width: 6),
+                Text(
+                  'Peria',
+                  style: AppText.h5.copyWith(
+                    color: AppColors.primary500,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          HeaderIconButton(
+            icon: _isSearching ? Icons.close_rounded : Icons.search_rounded,
+            onTap: () {
+              if (_isSearching && _searchController.text.isNotEmpty) {
+                _clearSearch();
+                return;
+              }
+              setState(() => _isSearching = !_isSearching);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCarousel(List<EducationArticle> articles) {
+    return SizedBox(
+      height: 236,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+        itemCount: articles.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 14),
+        itemBuilder: (context, index) {
+          final article = articles[index];
+          return _ArticleCard(
+            article: article,
+            onTap: () => context.push('/education/article/${article.id}'),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+      child: Center(
+        child: Column(
+          children: [
+            Image.asset(
+              AppAssets.mascotSearch,
+              height: 164,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _isSearching ? l10n.educationNoArticleFound : l10n.educationNoArticles,
+              textAlign: TextAlign.center,
+              style: AppText.h5.copyWith(color: AppColors.grey600),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              _isSearching
+                  ? l10n.educationTryAnotherSearch
+                  : l10n.educationChooseCategory,
+              textAlign: TextAlign.center,
+              style: AppText.caption.copyWith(color: AppColors.grey500),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -281,23 +296,28 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
       height: 44,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+        itemCount: categories.length + 1,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
-          final category = categories[index];
-          final selected = _selectedAxis == category.axis;
+          final isAll = index == 0;
+          final axis = isAll ? null : categories[index - 1].axis;
+          final selected = _selectedAxis == axis;
           return GestureDetector(
-            onTap: () => setState(() => _selectedAxis = category.axis),
+            onTap: () => setState(() => _selectedAxis = axis),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 180),
               alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
               decoration: BoxDecoration(
-                color: selected ? AppColors.grey900 : AppColors.grey100,
+                color: selected ? AppColors.grey900 : AppColors.white,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: selected ? AppColors.grey900 : AppColors.grey200,
+                ),
               ),
               child: Text(
-                category.axis.localizedLabel(l10n),
+                isAll ? l10n.educationAxisAll : axis!.localizedLabel(l10n),
                 style: AppText.label.copyWith(
                   color: selected ? AppColors.white : AppColors.grey700,
                   fontWeight: FontWeight.w600,
@@ -306,6 +326,26 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+      child: Text(
+        label,
+        style: AppText.h4.copyWith(
+          color: AppColors.grey900,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
@@ -377,7 +417,10 @@ class _ContextSuggestionsCard extends StatelessWidget {
               runSpacing: 8,
               children: tags.take(5).map((tag) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.grey100,
                     borderRadius: BorderRadius.circular(999),
@@ -409,17 +452,14 @@ class _ContextSuggestionsCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: article.axis.color.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(
-                          article.axis.icon,
-                          color: article.axis.color,
-                          size: 18,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          mascotForAxis(article.axis),
+                          width: 44,
+                          height: 44,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -574,6 +614,8 @@ class _EducationHeroCard extends StatelessWidget {
   }
 }
 
+/// Article tile used across the education home carousels: topic mascot on a
+/// soft pink tile, title and reading time underneath (see `moc/Self-Care.jpg`).
 class _ArticleCard extends StatelessWidget {
   final EducationArticle article;
   final VoidCallback onTap;
@@ -590,143 +632,97 @@ class _ArticleCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
+        width: 176,
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.grey200,
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.grey200),
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withOpacity(0.04),
-              offset: const Offset(0, 2),
-              blurRadius: 8,
+              offset: const Offset(0, 4),
+              blurRadius: 12,
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    article.title,
-                    style: AppText.h6.copyWith(
-                      fontWeight: FontWeight.w600,
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              child: SizedBox(
+                height: 132,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      mascotForAxis(article.axis),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
                     ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.primary100.withOpacity(0.30),
+                            AppColors.primary50.withOpacity(0.05),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    article.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _getDifficultyColor(article.difficultyLevel),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    _getDifficultyLabel(l10n, article.difficultyLevel),
-                    style: AppText.caption.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w600,
+                    style: AppText.label.copyWith(
+                      color: AppColors.grey900,
+                      fontWeight: FontWeight.w700,
+                      height: 1.3,
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              article.shortDescription,
-              style: AppText.caption.copyWith(
-                color: AppColors.grey600,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: article.tags
-                        .take(2)
-                        .map(
-                          (tag) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.grey100,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              tag,
-                              style: AppText.label.copyWith(
-                                color: AppColors.grey700,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.grey50,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(height: 6),
+                  Row(
                     children: [
                       const Icon(
-                        Icons.schedule,
-                        size: 12,
-                        color: AppColors.grey600,
+                        Icons.schedule_rounded,
+                        size: 13,
+                        color: AppColors.grey500,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        l10n.educationReadingTime(article.readingTimeMinutes),
-                        style: AppText.label.copyWith(
-                          color: AppColors.grey600,
-                          fontSize: 11,
+                      Expanded(
+                        child: Text(
+                          l10n.educationReadingTime(
+                            article.readingTimeMinutes,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.caption.copyWith(
+                            color: AppColors.grey500,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Color _getDifficultyColor(int level) {
-    if (level == 1) return AppColors.success;
-    if (level == 2) return AppColors.warning;
-    return AppColors.error;
-  }
-
-  String _getDifficultyLabel(AppLocalizations l10n, int level) {
-    if (level == 1) return l10n.difficultyEasy;
-    if (level == 2) return l10n.difficultyMedium;
-    return l10n.difficultyAdvanced;
   }
 }

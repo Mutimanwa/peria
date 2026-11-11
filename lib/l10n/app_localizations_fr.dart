@@ -2071,4 +2071,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get calendarEditScreenTitle => 'Calendrier';
+
+  @override
+  String get educationAxisAll => 'Tout';
 }

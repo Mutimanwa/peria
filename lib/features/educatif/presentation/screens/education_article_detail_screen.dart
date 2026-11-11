@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
+import 'package:peria_app/features/educatif/presentation/education_mascots.dart';
 import 'package:peria_app/features/educatif/presentation/providers/education_provider.dart';
 import 'package:peria_app/features/educatif/presentation/widgets/article_feedback_sheet.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
@@ -241,7 +242,7 @@ class _ArticleHero extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              AppAssets.mascotArticle,
+              mascotForAxis(article.axis),
               fit: BoxFit.contain,
               alignment: Alignment.bottomCenter,
             ),

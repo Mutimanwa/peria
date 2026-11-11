@@ -723,5 +723,6 @@
   "backToEducation": "Back to the education space",
   "calendarEditPeriod": "Edit Period",
   "daySymptomsEmpty": "No symptoms logged for this day.",
-  "calendarEditScreenTitle": "Calendar"
+  "calendarEditScreenTitle": "Calendar",
+  "educationAxisAll": "All"
 }

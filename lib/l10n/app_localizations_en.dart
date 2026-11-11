@@ -2044,4 +2044,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendarEditScreenTitle => 'Calendar';
+
+  @override
+  String get educationAxisAll => 'All';
 }

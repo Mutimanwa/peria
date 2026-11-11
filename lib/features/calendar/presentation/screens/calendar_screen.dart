@@ -129,204 +129,200 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       onBack: () => safeRouterBack(context, fallbackRoute: '/cycle'),
       showTitle: true,
       title: l10n.calendarTitle,
-      child: Column(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 100, bottom: 32),
-              child: Column(
-                children: [
-                  // ── Calendrier Card ────────
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.grey200),
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          // Navigation mois
-                          Row(
-                            children: [
-                              _NavArrow(
-                                  onTap: _prevMonth,
-                                  icon: Icons.chevron_left_rounded),
-                              Expanded(
-                                child: Text(
-                                  DateFormat.yMMMM(locale).format(_displayMonth),
-                                  style: AppText.h4,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              _NavArrow(
-                                  onTap: _nextMonth,
-                                  icon: Icons.chevron_right_rounded),
-                            ],
+      // The scroll view must be the direct child of the scaffold: wrapping it
+      // in a Column without Expanded leaves it unconstrained and it never scrolls.
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 100, bottom: 32),
+        child: Column(
+          children: [
+            // ── Calendrier Card ────────
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.grey200),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    // Navigation mois
+                    Row(
+                      children: [
+                        _NavArrow(
+                            onTap: _prevMonth,
+                            icon: Icons.chevron_left_rounded),
+                        Expanded(
+                          child: Text(
+                            DateFormat.yMMMM(locale).format(_displayMonth),
+                            style: AppText.h4,
+                            textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 16),
+                        ),
+                        _NavArrow(
+                            onTap: _nextMonth,
+                            icon: Icons.chevron_right_rounded),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
 
-                          // Weekday headings follow the app's selected locale.
-                          Row(
-                            children: List.generate(7, (index) {
-                              final weekday = DateTime(2024, 1, 1 + index);
-                              final label = DateFormat.E(locale)
-                                  .format(weekday)
-                                  .replaceAll('.', '');
-                              return Expanded(
-                                child: Text(
-                                  label,
-                                  style: AppText.caption.copyWith(
-                                    color: AppColors.grey400,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              );
-                            }),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Grille des jours
-                          _buildCalendarGrid(
-                            firstDay,
-                            lastDay,
-                            startOffset,
-                            symptomDays: symptomDays,
-                            journalDays: journalDays,
-                          ),
-                          const SizedBox(height: 16),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 220),
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: selectedState.softColor,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: selectedState.color.withOpacity(0.14),
-                              ),
+                    // Weekday headings follow the app's selected locale.
+                    Row(
+                      children: List.generate(7, (index) {
+                        final weekday = DateTime(2024, 1, 1 + index);
+                        final label = DateFormat.E(locale)
+                            .format(weekday)
+                            .replaceAll('.', '');
+                        return Expanded(
+                          child: Text(
+                            label,
+                            style: AppText.caption.copyWith(
+                              color: AppColors.grey400,
                             ),
-                            child: Row(
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Grille des jours
+                    _buildCalendarGrid(
+                      firstDay,
+                      lastDay,
+                      startOffset,
+                      symptomDays: symptomDays,
+                      journalDays: journalDays,
+                    ),
+                    const SizedBox(height: 16),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: selectedState.softColor,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: selectedState.color.withOpacity(0.14),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color:
+                                  selectedState.color.withOpacity(0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              selectedState.icon,
+                              color: selectedState.color,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: 42,
-                                  height: 42,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        selectedState.color.withOpacity(0.12),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    selectedState.icon,
-                                    color: selectedState.color,
-                                    size: 20,
+                                Text(
+                                  _formatDate(_selectedDate, locale),
+                                  style: AppText.label.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.grey900,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        _formatDate(_selectedDate, locale),
-                                        style: AppText.label.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.grey900,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        selectedState.label,
-                                        style: AppText.body.copyWith(
-                                          color: selectedState.color,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        selectedState.description,
-                                        style: AppText.caption.copyWith(
-                                          color: AppColors.grey600,
-                                        ),
-                                      ),
-                                    ],
+                                const SizedBox(height: 2),
+                                Text(
+                                  selectedState.label,
+                                  style: AppText.body.copyWith(
+                                    color: selectedState.color,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  selectedState.description,
+                                  style: AppText.caption.copyWith(
+                                    color: AppColors.grey600,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16),
-
-                          Wrap(
-                            alignment: WrapAlignment.center,
-                            spacing: 16,
-                            runSpacing: 10,
-                            children: [
-                              for (final phase in CyclePhase.values)
-                                _buildLegendItem(
-                                  _phaseLabel(phase, l10n),
-                                  CalendarPhaseStyle.of(phase).accent,
-                                ),
-                              _buildLegendItem(
-                                l10n.calendarLegendSymptoms,
-                                AppColors.success,
-                              ),
-                              _buildLegendItem(
-                                l10n.calendarLegendJournal,
-                                AppColors.grey700,
-                              ),
-                              _buildLegendItem(
-                                l10n.calendarLegendToday,
-                                AppColors.grey900,
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(
-                            width: double.infinity,
-                            height: 52,
-                            child: ElevatedButton.icon(
-                              onPressed: () => context.push('/edit-calendar'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.grey900,
-                                foregroundColor: AppColors.white,
-                                elevation: 0,
-                                shape: const StadiumBorder(),
-                              ),
-                              icon: const Icon(Icons.edit_outlined, size: 18),
-                              label: Text(
-                                l10n.calendarEditPeriod,
-                                style: AppText.label.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
                         ],
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 16),
 
-                  const SizedBox(height: 24),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
-                    child: DaySymptomsCard(
-                      date: _selectedDate,
-                      onEdit: () => context.push('/symptoms'),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 16,
+                      runSpacing: 10,
+                      children: [
+                        for (final phase in CyclePhase.values)
+                          _buildLegendItem(
+                            _phaseLabel(phase, l10n),
+                            CalendarPhaseStyle.of(phase).accent,
+                          ),
+                        _buildLegendItem(
+                          l10n.calendarLegendSymptoms,
+                          AppColors.success,
+                        ),
+                        _buildLegendItem(
+                          l10n.calendarLegendJournal,
+                          AppColors.grey700,
+                        ),
+                        _buildLegendItem(
+                          l10n.calendarLegendToday,
+                          AppColors.grey900,
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        onPressed: () => context.push('/edit-calendar'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.grey900,
+                          foregroundColor: AppColors.white,
+                          elevation: 0,
+                          shape: const StadiumBorder(),
+                        ),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: Text(
+                          l10n.calendarEditPeriod,
+                          style: AppText.label.copyWith(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 24),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.page),
+              child: DaySymptomsCard(
+                date: _selectedDate,
+                onEdit: () => context.push('/symptoms'),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }

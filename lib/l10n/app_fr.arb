@@ -723,5 +723,6 @@
   "backToEducation": "Retour à l'espace éducation",
   "calendarEditPeriod": "Modifier la période",
   "daySymptomsEmpty": "Aucun symptôme noté pour ce jour.",
-  "calendarEditScreenTitle": "Calendrier"
+  "calendarEditScreenTitle": "Calendrier",
+  "educationAxisAll": "Tout"
 }
