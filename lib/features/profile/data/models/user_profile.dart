@@ -20,6 +20,8 @@ class UserProfile {
   final String? email;
   @HiveField(7)
   final List<String>? goals;
+  @HiveField(8)
+  final String? avatarBase64;
 
   const UserProfile({
     this.displayName,
@@ -30,6 +32,7 @@ class UserProfile {
     this.isCycleRegular = true,
     this.email,
     this.goals,
+    this.avatarBase64,
   });
 
   UserProfile copyWith({
@@ -41,6 +44,8 @@ class UserProfile {
     bool? isCycleRegular,
     String? email,
     List<String>? goals,
+    String? avatarBase64,
+    bool clearAvatar = false,
   }) {
     return UserProfile(
       displayName: displayName ?? this.displayName,
@@ -52,6 +57,7 @@ class UserProfile {
       isCycleRegular: isCycleRegular ?? this.isCycleRegular,
       email: email ?? this.email,
       goals: goals ?? this.goals,
+      avatarBase64: clearAvatar ? null : (avatarBase64 ?? this.avatarBase64),
     );
   }
 
@@ -87,6 +93,7 @@ class UserProfile {
       email: json['email'] as String?,
       goals:
           (json['goals'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      avatarBase64: json['avatarBase64'] as String?,
     );
   }
 
@@ -100,6 +107,7 @@ class UserProfile {
       'isCycleRegular': isCycleRegular,
       'email': email,
       'goals': goals,
+      'avatarBase64': avatarBase64,
     };
   }
 }

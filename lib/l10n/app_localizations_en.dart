@@ -2047,4 +2047,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get educationAxisAll => 'All';
+
+  @override
+  String get changePhoto => 'Change photo';
+
+  @override
+  String get takePhoto => 'Take a photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from gallery';
+
+  @override
+  String get removePhoto => 'Remove photo';
+
+  @override
+  String get anonymousLogoutTitle => 'Sign out of your anonymous account?';
+
+  @override
+  String get anonymousLogoutMessage => 'You are using an anonymous account. If you sign out now, your cycle, journal and symptoms data stored on this device will be lost for good.';
+
+  @override
+  String get photoUpdateFailed => 'The photo could not be updated.';
 }

@@ -7,6 +7,8 @@ import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/educatif/data/models/education_article.dart';
 import 'package:peria_app/features/educatif/presentation/education_mascots.dart';
 import 'package:peria_app/features/educatif/presentation/providers/education_provider.dart';
+import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/shared/widgets/profile_avatar.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 
 class EducationHomeScreen extends ConsumerStatefulWidget {
@@ -198,11 +200,12 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
             child: InkWell(
               onTap: () => context.push('/profile'),
               customBorder: const CircleBorder(),
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: CircleAvatar(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: ProfileAvatar(
+                  avatarBase64:
+                      ref.watch(userProfileProvider).value?.avatarBase64,
                   radius: 20,
-                  backgroundImage: AssetImage(AppAssets.avatar),
                 ),
               ),
             ),

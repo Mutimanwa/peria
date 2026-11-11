@@ -32,7 +32,17 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
     return DateTime(now.year, now.month - 1);
   }
 
+  static DateTime get _today {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  bool _isFuture(DateTime day) =>
+      DateTime(day.year, day.month, day.day).isAfter(_today);
+
   void _selectDay(DateTime day) {
+    // Never trust the picker: a period cannot be logged in the future.
+    if (_isFuture(day)) return;
     setState(() {
       if (_startDate == null || (_startDate != null && _endDate != null)) {
         _startDate = day;
@@ -223,10 +233,15 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
                 return const SizedBox.shrink();
               }
               final day = DateTime(monthDate.year, monthDate.month, dayNum);
+              final disabled = _isFuture(day) && !_isSelected(day);
               return GestureDetector(
-                onTap: () => _selectDay(day),
+                onTap: disabled ? null : () => _selectDay(day),
                 behavior: HitTestBehavior.opaque,
-                child: _DayCell(day: day, selected: _isSelected(day)),
+                child: _DayCell(
+                  day: day,
+                  selected: _isSelected(day),
+                  disabled: disabled,
+                ),
               );
             },
           ),
@@ -237,10 +252,15 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
 }
 
 class _DayCell extends StatelessWidget {
-  const _DayCell({required this.day, required this.selected});
+  const _DayCell({
+    required this.day,
+    required this.selected,
+    this.disabled = false,
+  });
 
   final DateTime day;
   final bool selected;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +274,9 @@ class _DayCell extends StatelessWidget {
       child: Text(
         '${day.day}',
         style: AppText.label.copyWith(
-          color: selected ? AppColors.primary600 : AppColors.grey900,
+          color: selected
+              ? AppColors.primary600
+              : (disabled ? AppColors.grey300 : AppColors.grey900),
           fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
         ),
       ),

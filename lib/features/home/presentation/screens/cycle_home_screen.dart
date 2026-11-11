@@ -12,6 +12,7 @@ import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
+import 'package:peria_app/shared/widgets/profile_avatar.dart';
 
 import 'package:peria_app/l10n/app_localizations.dart';
 
@@ -209,7 +210,10 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
             bottom: false,
             child: Column(
               children: [
-                _AppBar(onAvatarTap: () => context.push('/profile')),
+                _AppBar(
+                  onAvatarTap: () => context.push('/profile'),
+                  avatarBase64: ref.watch(userProfileProvider).value?.avatarBase64,
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(
@@ -526,7 +530,8 @@ class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
 // ════════════════════════════════════════════════════════════════════
 class _AppBar extends StatelessWidget {
   final VoidCallback onAvatarTap;
-  const _AppBar({required this.onAvatarTap});
+  final String? avatarBase64;
+  const _AppBar({required this.onAvatarTap, this.avatarBase64});
 
   @override
   Widget build(BuildContext context) {
@@ -556,7 +561,15 @@ class _AppBar extends StatelessWidget {
                       offset: const Offset(0, 2)),
                 ],
               ),
-              child: Image.asset(AppAssets.avatar, fit: BoxFit.cover),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: profileAvatarImage(avatarBase64),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
           ),
 
