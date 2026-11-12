@@ -101,6 +101,40 @@ class UserRepository {
     await ensureUserDocument(additionalData: userData);
   }
 
+  /// Deletes the whole `users/{uid}` subtree.
+  ///
+  /// Firestore has no cascade delete, so every subcollection is walked
+  /// explicitly, deepest first, before the profile document itself is removed.
+  Future<void> deleteAllUserData() async {
+    final uid = currentUid;
+    _log('deleteAllUserData start uid=$uid');
+    final userRef = _firestore.collection('users').doc(uid);
+    final collections = await userRef.listCollections();
+    for (final collection in collections) {
+      await _deleteCollection(collection);
+    }
+    await userRef.delete();
+    _log('deleteAllUserData done uid=$uid');
+  }
+
+  Future<void> _deleteCollection(
+    CollectionReference<Map<String, dynamic>> collection,
+  ) async {
+    const pageSize = 100;
+    while (true) {
+      final snapshot = await collection.limit(pageSize).get();
+      if (snapshot.docs.isEmpty) return;
+      for (final doc in snapshot.docs) {
+        final nested = await doc.reference.listCollections();
+        for (final collection in nested) {
+          await _deleteCollection(collection);
+        }
+        await doc.reference.delete();
+      }
+      if (snapshot.docs.length < pageSize) return;
+    }
+  }
+
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserProfile() async {
     _log('getUserProfile called');
     await ensureUserDocument();

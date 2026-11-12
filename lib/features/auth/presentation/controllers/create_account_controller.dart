@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/features/auth/domain/auth_validators.dart';
-import 'package:peria_app/features/auth/domain/create_account_navigation_target.dart';
 
 final createAccountControllerProvider =
     StateNotifierProvider<CreateAccountController, CreateAccountState>((ref) {
@@ -58,9 +57,5 @@ class CreateAccountController extends StateNotifier<CreateAccountState> {
 
   void toggleShowConfirmPassword() {
     state = state.copyWith(showConfirmPassword: !state.showConfirmPassword);
-  }
-
-  CreateAccountNavigationTarget onContinueTapped() {
-    return CreateAccountNavigationTarget.otp;
   }
 }

@@ -8,8 +8,11 @@ class AuthValidators {
     return v.contains('@') && v.contains('.') && !v.contains(' ');
   }
 
+  /// Firebase accepts six characters; Peria asks for eight so a stolen
+  /// password is not trivially brute-forced.
+  static const int minimumPasswordLength = 8;
+
   static bool isPasswordValid(String value) {
-    // MVP: just non-empty (UI can be improved later).
-    return value.trim().isNotEmpty;
+    return value.trim().length >= minimumPasswordLength;
   }
 }

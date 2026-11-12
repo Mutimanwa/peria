@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/theme/theme.dart';
-import 'package:peria_app/features/auth/domain/create_account_navigation_target.dart';
+import 'package:peria_app/features/auth/domain/auth_validators.dart';
+import 'package:peria_app/features/auth/presentation/auth_error_text.dart';
+import 'package:peria_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:peria_app/features/auth/presentation/screens/verify_email_screen.dart';
+import 'package:peria_app/features/auth/presentation/widgets/forgot_password_sheet.dart';
 import 'package:peria_app/features/auth/domain/email_flow_navigation_target.dart';
 import 'package:peria_app/features/auth/presentation/controllers/continue_with_email_controller.dart';
 import 'package:peria_app/features/auth/presentation/controllers/create_account_controller.dart';
@@ -153,6 +158,49 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   final _pwdController = TextEditingController();
   final _confirmController = TextEditingController();
 
+  bool _submitting = false;
+  String? _error;
+
+  Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context);
+    final email =
+        ref.read(continueWithEmailControllerProvider).email.trim();
+    final state = ref.read(createAccountControllerProvider);
+
+    if (!AuthValidators.isEmailValid(email)) {
+      setState(() => _error = l10n.authErrorInvalidEmail);
+      return;
+    }
+
+    final wasAnonymous =
+        FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
+
+    setState(() {
+      _submitting = true;
+      _error = null;
+    });
+
+    try {
+      await ref.read(authRepositoryProvider).createAccount(
+            email: email,
+            password: state.password,
+          );
+      if (!mounted) return;
+      // A fresh sign-up still has to pick a name and a birth date; a linked
+      // anonymous account already went through onboarding.
+      context.go(
+        '/verify-email',
+        extra: VerifyEmailArgs(email: email, isNewAccount: !wasAnonymous),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _submitting = false;
+        _error = authErrorText(l10n, authErrorCodeFrom(error));
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -179,12 +227,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   Widget build(BuildContext context) {
 final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccountControllerProvider);
 
-    void goTo(CreateAccountNavigationTarget target) {
-      switch (target) {
-        case CreateAccountNavigationTarget.otp:
-          context.go('/otp');
-      }
-    }
+    final isAnonymous =
+        FirebaseAuth.instance.currentUser?.isAnonymous ?? false;
 
     return OnboardingScaffold(
       showBack: true,
@@ -233,10 +277,24 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                           .toggleShowPassword,
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      l10n.passwordMinLengthHint,
+                      style: AppText.caption
+                          .copyWith(color: AppColors.grey500),
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {/* TODO: mot de passe oublié */},
+                      onPressed: () => showForgotPasswordSheet(
+                        context,
+                        initialEmail: ref
+                            .read(continueWithEmailControllerProvider)
+                            .email
+                            .trim(),
+                      ),
                       child: Text(l10n.forgotYourPassword,
                           style: AppText.caption
                               .copyWith(color: AppColors.grey500)),
@@ -263,18 +321,33 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                           .toggleShowConfirmPassword,
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(l10n.forgotYourPassword,
-                          style: AppText.caption
-                              .copyWith(color: AppColors.grey500)),
-                    ),
-                  ),
                 ],
               ),
             ),
+
+            if (isAnonymous) ...[
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  l10n.createAccountKeepsData,
+                  style: AppText.caption.copyWith(color: AppColors.grey600),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+
+            if (_error != null) ...[
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  _error!,
+                  style: AppText.caption.copyWith(color: AppColors.error),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
 
             const Spacer(),
 
@@ -282,11 +355,7 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
               child: PrimaryButton(
                 label: l10n.continueCta,
-                onPressed: state.canContinue
-                    ? () => goTo(ref
-                        .read(createAccountControllerProvider.notifier)
-                        .onContinueTapped())
-                    : null,
+                onPressed: state.canContinue && !_submitting ? _submit : null,
               ),
             ),
           ],

@@ -153,7 +153,18 @@ final l10n = AppLocalizations.of(context);
                           size: 22, color: AppColors.black),
                       onPressed: controller.onContinueWithAppleTapped,
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () => context.push('/sign-in'),
+                      child: Text(
+                        l10n.alreadyHaveAccount,
+                        style: AppText.label.copyWith(
+                          color: AppColors.primary600,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),

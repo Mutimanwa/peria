@@ -50,6 +50,12 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 28),
                 SectionLabel(l10n.myAccount),
                 MenuGroup(items: [
+                  if (FirebaseAuth.instance.currentUser?.isAnonymous ?? false)
+                    MenuItemData(
+                      l10n.createAccount,
+                      Icons.person_add_alt_1_outlined,
+                      () => context.push('/email'),
+                    ),
                   MenuItemData(
                     l10n.personalInformation,
                     Icons.person_outline,

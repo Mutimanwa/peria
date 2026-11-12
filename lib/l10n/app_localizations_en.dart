@@ -139,13 +139,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get days => 'Days';
 
-  @override
-  String get otpTitle => 'Enter verification code';
 
-  @override
-  String otpSubtitle(String email) {
-    return 'We sent a code to $email';
-  }
 
   @override
   String get didntGetCode => 'Didn\'t get the code?';
@@ -158,8 +152,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get resendNow => 'Resend now';
 
-  @override
-  String get otpContinue => 'Continue';
 
   @override
   String get journalTitle => 'Journal';
@@ -2068,4 +2060,118 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoUpdateFailed => 'The photo could not be updated.';
+
+  @override
+  String get authErrorInvalidEmail => 'This email address is not valid.';
+
+  @override
+  String get authErrorWrongPassword => 'Incorrect password.';
+
+  @override
+  String get authErrorUserNotFound => 'No account matches this address.';
+
+  @override
+  String get authErrorUserDisabled => 'This account has been disabled.';
+
+  @override
+  String get authErrorEmailInUse => 'An account already exists with this address.';
+
+  @override
+  String get authErrorWeakPassword => 'Choose a password with at least 8 characters.';
+
+  @override
+  String get authErrorTooManyRequests => 'Too many attempts. Try again in a few minutes.';
+
+  @override
+  String get authErrorNetwork => 'Connection failed. Check your network.';
+
+  @override
+  String get authErrorRecentLogin => 'Sign in again to confirm this action.';
+
+  @override
+  String get authErrorAlreadySignedIn => 'You are already signed in to an account.';
+
+  @override
+  String get authErrorNotSignedIn => 'No account is signed in.';
+
+  @override
+  String get authErrorUnknown => 'Something went wrong. Try again.';
+
+  @override
+  String get signInTitle => 'Welcome back';
+
+  @override
+  String get signInSubtitle => 'Sign in to find your tracking.';
+
+  @override
+  String get signInCta => 'Sign in';
+
+  @override
+  String get alreadyHaveAccount => 'I already have an account';
+
+  @override
+  String get dontHaveAccount => 'No account yet?';
+
+  @override
+  String get createAccount => 'Create an account';
+
+  @override
+  String get verifyEmailTitle => 'Verify your email address';
+
+  @override
+  String verifyEmailSubtitle(String email) => 'We sent a confirmation link to $email.';
+
+  @override
+  String get verifyEmailCta => 'I\'ve verified my email';
+
+  @override
+  String get verifyEmailNotVerified => 'Not confirmed yet. Open the link we emailed you, then try again.';
+
+  @override
+  String get verifyEmailResent => 'Confirmation email sent again.';
+
+  @override
+  String get verifyEmailSuccessTitle => 'Email confirmed';
+
+  @override
+  String get verifyEmailSuccessMessage => 'Your account is secure, you can continue.';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot password';
+
+  @override
+  String get forgotPasswordSubtitle => 'Enter your account address: we\'ll send you a link to choose a new password.';
+
+  @override
+  String get forgotPasswordSend => 'Send link';
+
+  @override
+  String forgotPasswordSentMessage(String email) => 'If an account exists for $email, a link has just been sent.';
+
+  @override
+  String get deleteAccount => 'Delete my account';
+
+  @override
+  String get deleteAccountTitle => 'Permanently delete your account?';
+
+  @override
+  String get deleteAccountMessage => 'Your cycles, symptoms, journal notes and settings will be erased from this device and the cloud. This cannot be undone.';
+
+  @override
+  String get deleteAccountPasswordLabel => 'Confirm your password';
+
+  @override
+  String get deleteAccountConfirm => 'Delete permanently';
+
+  @override
+  String get deleteAccountFailed => 'Deletion failed. Try again.';
+
+  @override
+  String get deleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get passwordMinLengthHint => 'At least 8 characters';
+
+  @override
+  String get createAccountKeepsData => 'Your current tracking will be kept.';
 }
