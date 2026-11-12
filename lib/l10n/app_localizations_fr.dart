@@ -2201,4 +2201,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get createAccountKeepsData => 'Ton suivi actuel sera conservé.';
+
+  @override
+  String get back => 'Retour';
+
+  @override
+  String get previousMonth => 'Mois précédent';
+
+  @override
+  String get nextMonth => 'Mois suivant';
+
+  @override
+  String get showPassword => 'Afficher le mot de passe';
+
+  @override
+  String get hidePassword => 'Masquer le mot de passe';
+
+  @override
+  String get search => 'Rechercher';
+
+  @override
+  String get close => 'Fermer';
 }

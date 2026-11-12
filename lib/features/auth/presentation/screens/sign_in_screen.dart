@@ -114,6 +114,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               obscure: _obscure,
               controller: _passwordController,
               suffix: IconButton(
+                tooltip: _obscure ? l10n.showPassword : l10n.hidePassword,
                 icon: Icon(
                   _obscure
                       ? Icons.visibility_off_outlined

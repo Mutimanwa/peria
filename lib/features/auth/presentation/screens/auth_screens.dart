@@ -266,6 +266,9 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                     obscure: !state.showPassword,
                     controller: _pwdController,
                     suffix: IconButton(
+                      tooltip: state.showPassword
+                          ? l10n.hidePassword
+                          : l10n.showPassword,
                       icon: Icon(
                         state.showPassword
                             ? Icons.visibility_outlined
@@ -310,6 +313,9 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                     obscure: !state.showConfirmPassword,
                     controller: _confirmController,
                     suffix: IconButton(
+                      tooltip: state.showConfirmPassword
+                          ? l10n.hidePassword
+                          : l10n.showPassword,
                       icon: Icon(
                         state.showConfirmPassword
                             ? Icons.visibility_outlined

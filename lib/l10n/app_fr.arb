@@ -773,5 +773,12 @@
   "deleteAccountFailed": "La suppression a échoué. Réessaie.",
   "deleteAccountSuccess": "Ton compte a été supprimé.",
   "passwordMinLengthHint": "8 caractères minimum",
-  "createAccountKeepsData": "Ton suivi actuel sera conservé."
+  "createAccountKeepsData": "Ton suivi actuel sera conservé.",
+  "back": "Retour",
+  "previousMonth": "Mois précédent",
+  "nextMonth": "Mois suivant",
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
+  "search": "Rechercher",
+  "close": "Fermer"
 }

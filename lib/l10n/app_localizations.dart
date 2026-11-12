@@ -4124,6 +4124,48 @@ abstract class AppLocalizations {
   /// **'Ton suivi actuel sera conservé.'**
   String get createAccountKeepsData;
 
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @previousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// No description provided for @nextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
 }
 
 class _AppLocalizationsDelegate

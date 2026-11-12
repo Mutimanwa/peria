@@ -2174,4 +2174,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get createAccountKeepsData => 'Your current tracking will be kept.';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get previousMonth => 'Previous month';
+
+  @override
+  String get nextMonth => 'Next month';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get close => 'Close';
 }

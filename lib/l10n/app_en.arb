@@ -773,5 +773,12 @@
   "deleteAccountFailed": "Deletion failed. Try again.",
   "deleteAccountSuccess": "Your account has been deleted.",
   "passwordMinLengthHint": "At least 8 characters",
-  "createAccountKeepsData": "Your current tracking will be kept."
+  "createAccountKeepsData": "Your current tracking will be kept.",
+  "back": "Back",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "search": "Search",
+  "close": "Close"
 }

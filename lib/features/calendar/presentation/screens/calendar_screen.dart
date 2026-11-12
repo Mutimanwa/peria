@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:peria_app/core/theme/theme.dart';
 import 'package:peria_app/features/calendar/presentation/providers/symptom_provider.dart';
 import 'package:peria_app/features/calendar/presentation/widgets/day_symptoms_card.dart';
+import 'package:peria_app/features/calendar/presentation/day_semantics.dart';
 import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/calendar/presentation/calendar_phase_style.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
@@ -151,8 +152,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     Row(
                       children: [
                         _NavArrow(
-                            onTap: _prevMonth,
-                            icon: Icons.chevron_left_rounded),
+                          onTap: _prevMonth,
+                          icon: Icons.chevron_left_rounded,
+                          semanticLabel: l10n.previousMonth,
+                        ),
                         Expanded(
                           child: Text(
                             DateFormat.yMMMM(locale).format(_displayMonth),
@@ -161,8 +164,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                         ),
                         _NavArrow(
-                            onTap: _nextMonth,
-                            icon: Icons.chevron_right_rounded),
+                          onTap: _nextMonth,
+                          icon: Icons.chevron_right_rounded,
+                          semanticLabel: l10n.nextMonth,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -352,6 +357,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     required Set<DateTime> symptomDays,
     required Set<DateTime> journalDays,
   }) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
     final int totalDays = lastDay.day;
     const crossAxisSpacing = 4.0;
     const mainAxisSpacing = 6.0;
@@ -390,10 +397,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         final dayNum = i - startOffset + 1;
         if (dayNum < 1 || dayNum > totalDays) {
           final nextDayNum = dayNum < 1 ? 0 : dayNum - totalDays;
-          return Center(
-            child: Text(
-              dayNum < 1 ? '' : nextDayNum.toString(),
-              style: AppText.caption.copyWith(color: AppColors.grey200),
+          return ExcludeSemantics(
+            child: Center(
+              child: Text(
+                dayNum < 1 ? '' : nextDayNum.toString(),
+                style: AppText.caption.copyWith(color: AppColors.grey200),
+              ),
             ),
           );
         }
@@ -404,21 +413,47 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             day.day == _selectedDate.day;
 
         final cycleDay = ref.watch(cycleDayInfoProvider(day));
+        final isToday = _isToday(day);
+        final hasSymptoms = _containsDay(symptomDays, day);
+        final hasJournal = _containsDay(journalDays, day);
 
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _selectDay(day),
-          child: _DayCell(
-            day: day,
-            isSelected: isSelected,
-            phase: cycleDay.phase,
+        return Semantics(
+          button: true,
+          selected: isSelected,
+          label: calendarDaySemanticsLabel(
+            dateLabel: DateFormat.yMMMMd(locale).format(day),
+            isToday: isToday,
             isLoggedPeriod: cycleDay.isLoggedPeriod,
             isPredictedPeriod: cycleDay.isPredictedPeriod,
             isFertileWindow: cycleDay.isFertileWindow,
             isPms: cycleDay.isPmsDay,
-            isToday: _isToday(day),
-            hasSymptoms: _containsDay(symptomDays, day),
-            hasJournal: _containsDay(journalDays, day),
+            hasSymptoms: hasSymptoms,
+            hasJournal: hasJournal,
+            todayLabel: l10n.calendarLegendToday,
+            loggedPeriodLabel: l10n.calendarLegendLoggedPeriod,
+            predictedPeriodLabel: l10n.calendarLegendPredictedPeriod,
+            fertilityWindowLabel: l10n.calendarLegendFertilityWindow,
+            pmsLabel: l10n.calendarLegendPmsDay,
+            symptomsLabel: l10n.calendarLegendSymptoms,
+            journalLabel: l10n.calendarLegendJournal,
+          ),
+          child: ExcludeSemantics(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _selectDay(day),
+              child: _DayCell(
+                day: day,
+                isSelected: isSelected,
+                phase: cycleDay.phase,
+                isLoggedPeriod: cycleDay.isLoggedPeriod,
+                isPredictedPeriod: cycleDay.isPredictedPeriod,
+                isFertileWindow: cycleDay.isFertileWindow,
+                isPms: cycleDay.isPmsDay,
+                isToday: isToday,
+                hasSymptoms: hasSymptoms,
+                hasJournal: hasJournal,
+              ),
+            ),
           ),
         );
       },
@@ -561,21 +596,34 @@ class _CalendarDayState {
 class _NavArrow extends StatelessWidget {
   final VoidCallback onTap;
   final IconData icon;
+  final String semanticLabel;
 
-  const _NavArrow({required this.onTap, required this.icon});
+  const _NavArrow({
+    required this.onTap,
+    required this.icon,
+    required this.semanticLabel,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.grey200),
-          borderRadius: BorderRadius.circular(10),
+    // 44 px keeps the touch target inside the accessibility minimum while the
+    // glyph stays the same size as the mockup.
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.grey200),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 20, color: AppColors.grey700),
+          ),
         ),
-        child: Icon(icon, size: 20, color: AppColors.grey700),
       ),
     );
   }

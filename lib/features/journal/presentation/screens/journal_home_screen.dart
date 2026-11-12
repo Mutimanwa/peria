@@ -116,11 +116,13 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
               Row(
                 children: [
                   IconButton(
+                    tooltip: l10n.journalTimeline,
                     onPressed: () => context.go('/journal/timeline'),
                     icon: const Icon(Icons.calendar_month_outlined,
                         color: AppColors.grey700),
                   ),
                   IconButton(
+                    tooltip: l10n.search,
                     onPressed: () => context.go('/journal/search'),
                     icon: const Icon(Icons.search_rounded,
                         color: AppColors.grey700),

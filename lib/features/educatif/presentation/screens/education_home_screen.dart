@@ -228,6 +228,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
           ),
           HeaderIconButton(
             icon: _isSearching ? Icons.close_rounded : Icons.search_rounded,
+            semanticLabel: _isSearching ? l10n.close : l10n.search,
             onTap: () {
               if (_isSearching && _searchController.text.isNotEmpty) {
                 _clearSearch();
