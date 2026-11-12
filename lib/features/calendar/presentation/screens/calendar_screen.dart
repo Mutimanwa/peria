@@ -359,6 +359,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
+    final monthDays = ref.watch(
+      monthCycleDayInfoProvider(
+        DateTime(_displayMonth.year, _displayMonth.month),
+      ),
+    );
     final int totalDays = lastDay.day;
     const crossAxisSpacing = 4.0;
     const mainAxisSpacing = 6.0;
@@ -412,7 +417,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             day.month == _selectedDate.month &&
             day.day == _selectedDate.day;
 
-        final cycleDay = ref.watch(cycleDayInfoProvider(day));
+        final cycleDay = monthDays[dayNum];
+        if (cycleDay == null) return const SizedBox.shrink();
         final isToday = _isToday(day);
         final hasSymptoms = _containsDay(symptomDays, day);
         final hasJournal = _containsDay(journalDays, day);
