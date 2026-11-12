@@ -101,36 +101,44 @@ class UserRepository {
     await ensureUserDocument(additionalData: userData);
   }
 
+  /// Subcollections that belong to a user, kept in one place so the deletion
+  /// cannot silently skip a module.
+  static const List<String> userDataModules = <String>[
+    'settings',
+    'partner',
+    'journal',
+    'period_logs',
+    'symptoms',
+  ];
+
   /// Deletes the whole `users/{uid}` subtree.
   ///
-  /// Firestore has no cascade delete, so every subcollection is walked
-  /// explicitly, deepest first, before the profile document itself is removed.
+  /// Firestore has no cascade delete and the Flutter SDK cannot list
+  /// subcollections, so every known module is emptied page by page before the
+  /// profile document itself is removed. A new module must be added to
+  /// [userDataModules] to be erased with the account.
   Future<void> deleteAllUserData() async {
     final uid = currentUid;
     _log('deleteAllUserData start uid=$uid');
-    final userRef = _firestore.collection('users').doc(uid);
-    final collections = await userRef.listCollections();
-    for (final collection in collections) {
-      await _deleteCollection(collection);
+    for (final module in userDataModules) {
+      await _deleteCollection(userCollectionFor(uid, module));
     }
-    await userRef.delete();
+    await _firestore.collection('users').doc(uid).delete();
     _log('deleteAllUserData done uid=$uid');
   }
 
   Future<void> _deleteCollection(
     CollectionReference<Map<String, dynamic>> collection,
   ) async {
-    const pageSize = 100;
+    const pageSize = 200;
     while (true) {
       final snapshot = await collection.limit(pageSize).get();
       if (snapshot.docs.isEmpty) return;
+      final batch = _firestore.batch();
       for (final doc in snapshot.docs) {
-        final nested = await doc.reference.listCollections();
-        for (final collection in nested) {
-          await _deleteCollection(collection);
-        }
-        await doc.reference.delete();
+        batch.delete(doc.reference);
       }
+      await batch.commit();
       if (snapshot.docs.length < pageSize) return;
     }
   }

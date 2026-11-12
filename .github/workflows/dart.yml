@@ -7,10 +7,6 @@ on:
     branches: [ "main" ]
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,20 +36,7 @@ jobs:
 
       # 5. Analyse
       - name: Analyze code
-        run: |
-          set +e
-          flutter analyze --no-fatal-infos --no-fatal-warnings > /tmp/analyze.txt 2>&1
-          code=$?
-          cat /tmp/analyze.txt
-          exit $code
-
-      - name: Report analyze output
-        if: failure()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          { echo 'flutter analyze'; echo '```'; cat /tmp/analyze.txt; echo '```'; } > /tmp/body.md
-          gh pr comment "${{ github.event.pull_request.number }}" --body-file /tmp/body.md || true
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       # 6. Tests
       - name: Run tests
