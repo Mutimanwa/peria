@@ -283,6 +283,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 18),
 
                     SizedBox(
                       width: double.infinity,
@@ -353,7 +354,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }) {
     final int totalDays = lastDay.day;
     const crossAxisSpacing = 4.0;
-    const mainAxisSpacing = 8.0;
+    const mainAxisSpacing = 6.0;
+    const dayCellHeight = 52.0;
     final rows = MonthGridLayout.rowCount(
       startOffset: startOffset,
       dayCount: totalDays,
@@ -370,6 +372,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           rows: rows,
           crossAxisSpacing: crossAxisSpacing,
           mainAxisSpacing: mainAxisSpacing,
+          mainAxisExtent: dayCellHeight,
         );
         return SizedBox(
           height: height,
@@ -378,9 +381,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 7,
-        mainAxisSpacing: 6,
-        crossAxisSpacing: 4,
-        mainAxisExtent: 52,
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisExtent: dayCellHeight,
       ),
       itemCount: totalCells,
       itemBuilder: (ctx, i) {

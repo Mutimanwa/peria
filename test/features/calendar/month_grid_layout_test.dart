@@ -22,4 +22,23 @@ void main() {
       greaterThan(MonthGridLayout.heightFor(width: 280, rows: 5)),
     );
   });
+
+  test('a pinned row height drives the reserved height', () {
+    // The calendar grid pins mainAxisExtent: 52 / mainAxisSpacing: 6. The
+    // container height must follow those values, otherwise the last week is
+    // clipped on months that need six rows.
+    final height = MonthGridLayout.heightFor(
+      width: 280,
+      rows: 6,
+      mainAxisSpacing: 6,
+      mainAxisExtent: 52,
+    );
+    expect(height, 6 * 52 + 5 * 6 + 2);
+    expect(
+      height,
+      greaterThan(
+        MonthGridLayout.heightFor(width: 280, rows: 5, mainAxisExtent: 52),
+      ),
+    );
+  });
 }
