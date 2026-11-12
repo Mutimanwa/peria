@@ -7,6 +7,8 @@ on:
     branches: [ "main" ]
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,12 +44,12 @@ jobs:
           code=$?
           cat /tmp/analyze.txt
           if [ $code -ne 0 ]; then
-            {
-              echo "### flutter analyze (debug)"
-              echo '```'
-              tail -80 /tmp/analyze.txt
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
+            cp /tmp/analyze.txt analyze-report.txt
+            git config user.name "peria-ci"
+            git config user.email "ci@peria.app"
+            git add analyze-report.txt
+            git commit -m "ci: analyze report" || true
+            git push || true
           fi
           exit $code
 
