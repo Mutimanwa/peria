@@ -36,7 +36,20 @@ jobs:
 
       # 5. Analyse
       - name: Analyze code
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        run: |
+          set +e
+          flutter analyze --no-fatal-infos --no-fatal-warnings > /tmp/analyze.txt 2>&1
+          code=$?
+          cat /tmp/analyze.txt
+          if [ $code -ne 0 ]; then
+            {
+              echo "### flutter analyze (debug)"
+              echo '```'
+              tail -80 /tmp/analyze.txt
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit $code
 
       # 6. Tests
       - name: Run tests
