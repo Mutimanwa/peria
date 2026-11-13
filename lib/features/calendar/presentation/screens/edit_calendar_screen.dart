@@ -171,7 +171,7 @@ class _EditCalendarScreenState extends ConsumerState<EditCalendarScreen> {
               return Expanded(
                 child: Text(
                   label.toLowerCase(),
-                  style: AppText.caption.copyWith(color: AppColors.grey400),
+                  style: AppText.caption.copyWith(color: AppColors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
               );
@@ -276,7 +276,7 @@ class _DayCell extends StatelessWidget {
         style: AppText.label.copyWith(
           color: selected
               ? AppColors.primary600
-              : (disabled ? AppColors.grey300 : AppColors.grey900),
+              : (disabled ? AppColors.textSecondary : AppColors.grey900),
           fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
         ),
       ),

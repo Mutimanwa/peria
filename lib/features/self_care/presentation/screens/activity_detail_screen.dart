@@ -52,7 +52,7 @@ class ActivityDetailScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               l10n.selfCareActivityDescription,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 18),
             HealthInformationNotice(
@@ -179,7 +179,7 @@ class _StepTile extends StatelessWidget {
                 Text(localizeSelfCareData(step.title, l10n),
                     style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
                 Text(localizeSelfCareData(step.subtitle, l10n),
-                    style: AppText.caption.copyWith(color: AppColors.grey500)),
+                    style: AppText.caption.copyWith(color: AppColors.textSecondary)),
               ],
             ),
           ),

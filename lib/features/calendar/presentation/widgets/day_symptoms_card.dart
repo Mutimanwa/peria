@@ -88,7 +88,7 @@ class DaySymptomsCard extends ConsumerWidget {
                 ? const SizedBox(height: 8)
                 : Text(
                     l10n.daySymptomsEmpty,
-                    style: AppText.caption.copyWith(color: AppColors.grey500),
+                    style: AppText.caption.copyWith(color: AppColors.textSecondary),
                   )
           else ...[
             for (final entry in categories.entries)
@@ -148,7 +148,7 @@ class _CategoryRow extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
           ),
           Expanded(
@@ -178,7 +178,7 @@ class _CategoryRow extends StatelessWidget {
                 if (hidden > 0)
                   Text(
                     '…',
-                    style: AppText.body.copyWith(color: AppColors.grey500),
+                    style: AppText.body.copyWith(color: AppColors.textSecondary),
                   ),
               ],
             ),
@@ -216,7 +216,7 @@ class _InlineRow extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
           ),
           Expanded(

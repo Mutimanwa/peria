@@ -38,7 +38,7 @@ class SkincareScreen extends StatelessWidget {
               ),
             ),
             Text(localizeSelfCareData(kSkinCareSteps[1].subtitle, l10n),
-                style: AppText.body.copyWith(color: AppColors.grey500)),
+                style: AppText.body.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 14),
             Expanded(
               child: Column(
@@ -69,7 +69,7 @@ class SkincareScreen extends StatelessWidget {
                         const Text('8', style: AppText.h2),
                         Text(l10n.selfCareTimes,
                             style: AppText.body
-                                .copyWith(color: AppColors.grey500)),
+                                .copyWith(color: AppColors.textSecondary)),
                         const SizedBox(height: 18),
                         Container(
                           padding: const EdgeInsets.all(14),

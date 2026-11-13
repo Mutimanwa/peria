@@ -35,7 +35,7 @@ class CongratulationsScreen extends StatelessWidget {
               Text(
                 l10n.selfCareCongratulationsMessage,
                 textAlign: TextAlign.center,
-                style: AppText.body.copyWith(color: AppColors.grey600),
+                style: AppText.body.copyWith(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 28),
               PrimaryButton(

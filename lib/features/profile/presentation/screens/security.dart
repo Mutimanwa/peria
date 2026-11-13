@@ -93,7 +93,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                         Text(
                           subtitle,
                           textAlign: TextAlign.center,
-                          style: AppText.body.copyWith(color: AppColors.grey600),
+                          style: AppText.body.copyWith(color: AppColors.textSecondary),
                         ),
                         const SizedBox(height: 20),
                         PinCodeInput(
@@ -152,7 +152,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                           child: Text(
                             l10n.cancel,
                             style:
-                                AppText.body.copyWith(color: AppColors.grey500),
+                                AppText.body.copyWith(color: AppColors.textSecondary),
                           ),
                         ),
                       ],

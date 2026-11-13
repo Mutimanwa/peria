@@ -85,7 +85,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           ),
           content: Text(
             l10n.anonymousLogoutMessage,
-            style: AppText.body.copyWith(color: AppColors.grey600, height: 1.45),
+            style: AppText.body.copyWith(color: AppColors.textSecondary, height: 1.45),
           ),
           actions: [
             TextButton(
@@ -100,7 +100,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
               child: Text(
                 l10n.signInCta,
                 style: AppText.label.copyWith(
-                  color: AppColors.error,
+                  color: AppColors.textError,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -268,7 +268,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         child: Text(
                           copy.journalSyncNotice,
                           style: AppText.caption.copyWith(
-                            color: AppColors.grey600,
+                            color: AppColors.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -279,7 +279,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       Text(
                         _errorMessage!,
                         style: AppText.caption.copyWith(
-                          color: AppColors.error,
+                          color: AppColors.textError,
                         ),
                         textAlign: TextAlign.center,
                       ),

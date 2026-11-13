@@ -32,7 +32,7 @@ class ArticleDetailScreen extends StatelessWidget {
             const SizedBox(height: 14),
             Text(
               l10n.selfCareArticleReadTime(4),
-              style: AppText.caption.copyWith(color: AppColors.grey500),
+              style: AppText.caption.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 10),
             Text(
@@ -134,7 +134,7 @@ class ArticleDetailScreen extends StatelessWidget {
               Text(
                 l10n.selfCareFeedbackReceived,
                 textAlign: TextAlign.center,
-                style: AppText.body.copyWith(color: AppColors.grey600),
+                style: AppText.body.copyWith(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 18),
               SizedBox(

@@ -143,7 +143,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
         ),
         content: Text(
           l10n.verifyEmailSuccessMessage,
-          style: AppText.body.copyWith(color: AppColors.grey600, height: 1.45),
+          style: AppText.body.copyWith(color: AppColors.textSecondary, height: 1.45),
         ),
         actions: [
           TextButton(
@@ -196,7 +196,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 subtitle,
-                style: AppText.body.copyWith(color: AppColors.grey600),
+                style: AppText.body.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -207,7 +207,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
                   _error!,
-                  style: AppText.caption.copyWith(color: AppColors.error),
+                  style: AppText.caption.copyWith(color: AppColors.textError),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -216,7 +216,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
             if (_notice != null) ...[
               Text(
                 _notice!,
-                style: AppText.caption.copyWith(color: AppColors.success),
+                style: AppText.caption.copyWith(color: AppColors.textSuccess),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
@@ -235,7 +235,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                     style: AppText.body.copyWith(
                       color: _seconds == 0
                           ? AppColors.primary
-                          : AppColors.grey400,
+                          : AppColors.textSecondary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

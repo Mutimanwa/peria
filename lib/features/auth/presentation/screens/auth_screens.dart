@@ -285,7 +285,7 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                     child: Text(
                       l10n.passwordMinLengthHint,
                       style: AppText.caption
-                          .copyWith(color: AppColors.grey500),
+                          .copyWith(color: AppColors.textSecondary),
                     ),
                   ),
                   Align(
@@ -300,7 +300,7 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                       ),
                       child: Text(l10n.forgotYourPassword,
                           style: AppText.caption
-                              .copyWith(color: AppColors.grey500)),
+                              .copyWith(color: AppColors.textSecondary)),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -337,7 +337,7 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
                   l10n.createAccountKeepsData,
-                  style: AppText.caption.copyWith(color: AppColors.grey600),
+                  style: AppText.caption.copyWith(color: AppColors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -349,7 +349,7 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
                   _error!,
-                  style: AppText.caption.copyWith(color: AppColors.error),
+                  style: AppText.caption.copyWith(color: AppColors.textError),
                   textAlign: TextAlign.center,
                 ),
               ),

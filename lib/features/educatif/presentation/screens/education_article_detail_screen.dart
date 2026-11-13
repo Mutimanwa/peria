@@ -66,7 +66,7 @@ class EducationArticleDetailScreen extends ConsumerWidget {
                       Text(
                         l10n.educationArticleNotFound,
                         textAlign: TextAlign.center,
-                        style: AppText.h5.copyWith(color: AppColors.grey600),
+                        style: AppText.h5.copyWith(color: AppColors.textSecondary),
                       ),
                       const SizedBox(height: 16),
                       TextButton(
@@ -287,7 +287,7 @@ class _ArticleMeta extends StatelessWidget {
             DateFormat.yMMMMd(locale).format(article.lastUpdated),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppText.caption.copyWith(color: AppColors.grey500),
+            style: AppText.caption.copyWith(color: AppColors.textSecondary),
           ),
         ),
         const SizedBox(width: 8),
@@ -302,7 +302,7 @@ class _ArticleMeta extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           l10n.educationReadingTime(article.readingTimeMinutes),
-          style: AppText.caption.copyWith(color: AppColors.grey500),
+          style: AppText.caption.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );

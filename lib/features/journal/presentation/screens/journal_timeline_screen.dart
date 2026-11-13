@@ -155,7 +155,7 @@ class _TimelineCard extends StatelessWidget {
                         Text(
                           DateFormat('HH:mm', locale).format(entry.updatedAt),
                           style: AppText.caption
-                              .copyWith(color: AppColors.grey500),
+                              .copyWith(color: AppColors.textSecondary),
                         ),
                       ],
                     ),

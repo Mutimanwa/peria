@@ -117,7 +117,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                                 decoration: InputDecoration(
                                   hintText: l10n.educationSearchHint,
                                   hintStyle: AppText.body.copyWith(
-                                    color: AppColors.grey500,
+                                    color: AppColors.textSecondary,
                                   ),
                                   border: InputBorder.none,
                                   isDense: true,
@@ -276,7 +276,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
             Text(
               _isSearching ? l10n.educationNoArticleFound : l10n.educationNoArticles,
               textAlign: TextAlign.center,
-              style: AppText.h5.copyWith(color: AppColors.grey600),
+              style: AppText.h5.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 6),
             Text(
@@ -284,7 +284,7 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
                   ? l10n.educationTryAnotherSearch
                   : l10n.educationChooseCategory,
               textAlign: TextAlign.center,
-              style: AppText.caption.copyWith(color: AppColors.grey500),
+              style: AppText.caption.copyWith(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -407,7 +407,7 @@ class _ContextSuggestionsCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       l10n.educationSuggestionsSubtitle,
-                      style: AppText.caption.copyWith(color: AppColors.grey600),
+                      style: AppText.caption.copyWith(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -486,7 +486,7 @@ class _ContextSuggestionsCard extends StatelessWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: AppText.caption.copyWith(
-                                color: AppColors.grey600,
+                                color: AppColors.textSecondary,
                               ),
                             ),
                           ],
@@ -715,7 +715,7 @@ class _ArticleCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppText.caption.copyWith(
-                            color: AppColors.grey500,
+                            color: AppColors.textSecondary,
                           ),
                         ),
                       ),

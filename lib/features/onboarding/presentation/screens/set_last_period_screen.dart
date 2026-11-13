@@ -179,7 +179,7 @@ final l10n = AppLocalizations.of(context);
                           child: Text(
                             label,
                             style: AppText.caption.copyWith(
-                              color: AppColors.grey400,
+                              color: AppColors.textSecondary,
                             ),
                             textAlign: TextAlign.center,
                           ),

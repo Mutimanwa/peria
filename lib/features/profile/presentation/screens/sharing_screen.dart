@@ -25,7 +25,7 @@ class SharingSettingsScreen extends ConsumerWidget {
             const SizedBox(height: 10),
             Text(
               l10n.manageSharedCycleData,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 22),
             ToggleGroup(items: [

@@ -269,7 +269,7 @@ class _JournalCalendarSheetState extends State<_JournalCalendarSheet> {
                       ),
                       child: Text(
                         l10n.clearAll,
-                        style: AppText.body.copyWith(color: AppColors.grey600),
+                        style: AppText.body.copyWith(color: AppColors.textSecondary),
                       ),
                     ),
                   ] else ...[
@@ -323,7 +323,7 @@ class _WeekdayRow extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: AppText.caption.copyWith(color: AppColors.grey400),
+            style: AppText.caption.copyWith(color: AppColors.textSecondary),
           ),
         );
       }),

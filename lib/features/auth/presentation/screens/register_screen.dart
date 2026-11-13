@@ -129,7 +129,7 @@ final l10n = AppLocalizations.of(context);
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(l10n.orDivider,
                               style: AppText.caption
-                                  .copyWith(color: AppColors.grey400)),
+                                  .copyWith(color: AppColors.textSecondary)),
                         ),
                         const Expanded(
                             child: Divider(

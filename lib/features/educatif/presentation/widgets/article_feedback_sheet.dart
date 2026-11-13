@@ -191,7 +191,7 @@ class _ArticleFeedbackSheetState extends ConsumerState<_ArticleFeedbackSheet> {
                       border: InputBorder.none,
                       hintText: l10n.articleFeedbackNoteHint,
                       hintStyle:
-                          AppText.body.copyWith(color: AppColors.grey500),
+                          AppText.body.copyWith(color: AppColors.textSecondary),
                     ),
                   ),
                 ),
@@ -326,7 +326,7 @@ Future<void> showArticleFeedbackThanks(BuildContext context) {
               l10n.articleFeedbackThanksBody,
               textAlign: TextAlign.center,
               style: AppText.body.copyWith(
-                color: AppColors.grey600,
+                color: AppColors.textSecondary,
                 height: 1.5,
               ),
             ),

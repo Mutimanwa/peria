@@ -47,6 +47,19 @@ class AppColors {
   static const Color neutral900 = Color(0xFF292929);
   static const Color neutral950 = Color(0xFF121212);
 
+  // ─── Text tokens (WCAG AA on white) ───────────────────────────────────────
+  /// Secondary text: hints, descriptions, legends.
+  ///
+  /// 5.1:1 on white — the neutral aliases below are lighter and were used for
+  /// text everywhere, which failed WCAG AA (grey400 was 1.9:1).
+  static const Color textSecondary = Color(0xFF6B6B6B);
+
+  /// Error text. 6.5:1 on white (the fill colour `error` is 3.8:1).
+  static const Color textError = error700;
+
+  /// Success text. 5.0:1 on white (the fill colour `success` is 2.3:1).
+  static const Color textSuccess = success700;
+
   // ─── Background ──────────────────────────────────────────────────────────
   static const Color backgroundLight = neutral50; // #FFFFFF
   static const Color backgroundDark = neutral950; // #121212

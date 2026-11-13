@@ -48,7 +48,7 @@ class NotificationInboxScreen extends ConsumerWidget {
             children: [
               Text(
                 l10n.notificationInboxSubtitle,
-                style: AppText.body.copyWith(color: AppColors.grey600),
+                style: AppText.body.copyWith(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 16),
               if (!value.allowNotifications || planned.isEmpty)
@@ -154,7 +154,7 @@ class _NotificationCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   when,
-                  style: AppText.caption.copyWith(color: AppColors.grey600),
+                  style: AppText.caption.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),

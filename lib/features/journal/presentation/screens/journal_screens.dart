@@ -192,7 +192,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                     const SizedBox(height: 4),
                     Text(
                       l10n.journalSubtitle,
-                      style: AppText.body.copyWith(color: AppColors.grey600),
+                      style: AppText.body.copyWith(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -306,7 +306,7 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppText.caption.copyWith(color: AppColors.grey400),
+                      style: AppText.caption.copyWith(color: AppColors.textSecondary),
                     ),
                   ),
               ],
@@ -508,7 +508,7 @@ class _JournalCard extends StatelessWidget {
                           const SizedBox(width: 10),
                           Text(
                             DateFormat('HH:mm').format(entry.updatedAt),
-                            style: AppText.caption.copyWith(color: AppColors.grey500),
+                            style: AppText.caption.copyWith(color: AppColors.textSecondary),
                           ),
                         ],
                       ),

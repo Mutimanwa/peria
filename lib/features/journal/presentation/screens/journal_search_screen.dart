@@ -179,7 +179,7 @@ class _JournalSearchScreenState extends ConsumerState<JournalSearchScreen> {
               size: 64, color: AppColors.grey200),
           const SizedBox(height: 16),
           Text(l10n.journalSearchNoResults,
-              style: AppText.h5.copyWith(color: AppColors.grey400)),
+              style: AppText.h5.copyWith(color: AppColors.textSecondary)),
         ],
       ),
     );
@@ -414,7 +414,7 @@ class _SearchResultCard extends StatelessWidget {
                   ),
                   Text(
                     DateFormat('d MMM • HH:mm', locale).format(entry.createdAt),
-                    style: AppText.caption.copyWith(color: AppColors.grey400),
+                    style: AppText.caption.copyWith(color: AppColors.textSecondary),
                   ),
                 ],
               ),

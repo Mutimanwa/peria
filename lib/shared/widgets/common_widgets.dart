@@ -50,7 +50,7 @@ class PrimaryButton extends StatelessWidget {
         child: Text(label,
             style: enabled
                 ? AppText.btnPrimary
-                : AppText.btnPrimary.copyWith(color: AppColors.grey500)),
+                : AppText.btnPrimary.copyWith(color: AppColors.textSecondary)),
       ),
     );
   }
@@ -311,7 +311,7 @@ class OnboardingScaffold extends StatelessWidget {
                     onTap: onSkip,
                     child: Text(AppLocalizations.of(context).skip,
                         style: AppText.body.copyWith(
-                            color: AppColors.grey500,
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500)),
                   ),
                 ),
@@ -531,7 +531,7 @@ class EmptyJournal extends StatelessWidget {
                     ? l10n.startFirstNote
                     : l10n.journalQuickLogPrompt),
             textAlign: TextAlign.center,
-            style: AppText.body.copyWith(color: AppColors.grey600),
+            style: AppText.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -569,7 +569,7 @@ class JournalMetaChip extends StatelessWidget {
           Text(
             label,
             style: AppText.label.copyWith(
-              color: AppColors.grey600,
+              color: AppColors.textSecondary,
               fontSize: 10,
             ),
           ),

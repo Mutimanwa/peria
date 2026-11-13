@@ -41,7 +41,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
               ),
             ),
             Text(l10n.selfCareFullBodyCardio,
-                style: AppText.body.copyWith(color: AppColors.grey500)),
+                style: AppText.body.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 18),
             ClipRRect(
               borderRadius: BorderRadius.circular(24),
@@ -140,7 +140,7 @@ class _ActivityTimerScreenState extends State<ActivityTimerScreen> {
               Text(
                 l10n.selfCareOnlyMinutesLeft(2),
                 textAlign: TextAlign.center,
-                style: AppText.body.copyWith(color: AppColors.grey600),
+                style: AppText.body.copyWith(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 18),
               Row(

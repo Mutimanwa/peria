@@ -115,7 +115,7 @@ class _ForgotPasswordSheetState extends ConsumerState<_ForgotPasswordSheet> {
                   _sent
                       ? l10n.forgotPasswordSentMessage(_controller.text.trim())
                       : l10n.forgotPasswordSubtitle,
-                  style: AppText.body.copyWith(color: AppColors.grey600),
+                  style: AppText.body.copyWith(color: AppColors.textSecondary),
                 ),
                 if (!_sent) ...[
                   const SizedBox(height: 20),
@@ -130,7 +130,7 @@ class _ForgotPasswordSheetState extends ConsumerState<_ForgotPasswordSheet> {
                     const SizedBox(height: 8),
                     Text(
                       _error!,
-                      style: AppText.caption.copyWith(color: AppColors.error),
+                      style: AppText.caption.copyWith(color: AppColors.textError),
                     ),
                   ],
                   const SizedBox(height: 20),

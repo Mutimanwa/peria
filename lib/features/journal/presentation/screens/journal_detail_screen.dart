@@ -277,7 +277,7 @@ class _HeroSection extends StatelessWidget {
             Text(
               DateFormat('EEEE, d MMMM • HH:mm', locale).format(entry.createdAt),
               style:
-                  AppText.body.copyWith(color: AppColors.grey500, fontSize: 14),
+                  AppText.body.copyWith(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
         ),

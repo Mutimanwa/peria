@@ -14,7 +14,7 @@ class SectionLabel extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(text,
             style: AppText.caption.copyWith(
-                color: AppColors.grey500, fontWeight: FontWeight.w700)),
+                color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
       ),
     );
   }
@@ -131,7 +131,7 @@ class MenuGroup extends StatelessWidget {
                           child: Text(
                             item.trailingText!,
                             style:
-                                AppText.body.copyWith(color: AppColors.grey400),
+                                AppText.body.copyWith(color: AppColors.textSecondary),
                           ),
                         ),
                       const Icon(Icons.chevron_right_rounded,

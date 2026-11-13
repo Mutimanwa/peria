@@ -43,7 +43,7 @@ class _StrengthDetailScreenState extends State<StrengthDetailScreen> {
               ),
             ),
             Text(l10n.selfCareFullBodyCardio,
-                style: AppText.body.copyWith(color: AppColors.grey500)),
+                style: AppText.body.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(24),

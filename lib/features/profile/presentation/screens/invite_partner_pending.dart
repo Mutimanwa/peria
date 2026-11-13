@@ -39,7 +39,7 @@ class PartnerInvitationPendingScreen extends ConsumerWidget {
             const SizedBox(height: 10),
             Text(
               l10n.partnerInvitationPendingDescription,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -86,7 +86,7 @@ class PartnerInvitationPendingScreen extends ConsumerWidget {
                           const SizedBox(width: 6),
                           Text(
                             l10n.statusPendingApproval,
-                            style: AppText.body.copyWith(color: AppColors.grey600),
+                            style: AppText.body.copyWith(color: AppColors.textSecondary),
                           ),
                         ],
                       ),

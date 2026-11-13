@@ -95,7 +95,7 @@ class _DeleteAccountDialogState extends ConsumerState<_DeleteAccountDialog> {
         children: [
           Text(
             l10n.deleteAccountMessage,
-            style: AppText.body.copyWith(color: AppColors.grey600, height: 1.45),
+            style: AppText.body.copyWith(color: AppColors.textSecondary, height: 1.45),
           ),
           if (needsPassword) ...[
             const SizedBox(height: 16),
@@ -111,7 +111,7 @@ class _DeleteAccountDialogState extends ConsumerState<_DeleteAccountDialog> {
             const SizedBox(height: 12),
             Text(
               _error!,
-              style: AppText.caption.copyWith(color: AppColors.error),
+              style: AppText.caption.copyWith(color: AppColors.textError),
             ),
           ],
         ],
@@ -129,7 +129,7 @@ class _DeleteAccountDialogState extends ConsumerState<_DeleteAccountDialog> {
           child: Text(
             l10n.deleteAccountConfirm,
             style: AppText.label.copyWith(
-              color: AppColors.error,
+              color: AppColors.textError,
               fontWeight: FontWeight.w700,
             ),
           ),

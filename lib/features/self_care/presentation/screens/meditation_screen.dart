@@ -57,7 +57,7 @@ class MeditationScreen extends StatelessWidget {
                           Text(
                             l10n.selfCarePeaceRelaxation,
                             style:
-                                AppText.body.copyWith(color: AppColors.grey600),
+                                AppText.body.copyWith(color: AppColors.textSecondary),
                           ),
                         ],
                       ),
@@ -105,7 +105,7 @@ class MeditationScreen extends StatelessWidget {
                               Text(
                                 localizeSelfCareData(entry.value['subtitle']!, l10n),
                                 style: AppText.body
-                                    .copyWith(color: AppColors.grey500),
+                                    .copyWith(color: AppColors.textSecondary),
                               ),
                             ],
                           ),

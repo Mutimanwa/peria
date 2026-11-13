@@ -183,7 +183,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           child: Text(
                             label,
                             style: AppText.caption.copyWith(
-                              color: AppColors.grey400,
+                              color: AppColors.textSecondary,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -253,7 +253,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 Text(
                                   selectedState.description,
                                   style: AppText.caption.copyWith(
-                                    color: AppColors.grey600,
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ],

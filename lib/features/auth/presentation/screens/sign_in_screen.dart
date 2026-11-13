@@ -94,7 +94,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             const SizedBox(height: 10),
             Text(
               l10n.signInSubtitle,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 40),
 
@@ -133,7 +133,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 ),
                 child: Text(
                   l10n.forgotYourPassword,
-                  style: AppText.caption.copyWith(color: AppColors.grey500),
+                  style: AppText.caption.copyWith(color: AppColors.textSecondary),
                 ),
               ),
             ),
@@ -142,7 +142,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               const SizedBox(height: 4),
               Text(
                 _error!,
-                style: AppText.caption.copyWith(color: AppColors.error),
+                style: AppText.caption.copyWith(color: AppColors.textError),
               ),
             ],
 
@@ -157,7 +157,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 onPressed: () => context.go('/register'),
                 child: Text(
                   l10n.dontHaveAccount,
-                  style: AppText.caption.copyWith(color: AppColors.grey500),
+                  style: AppText.caption.copyWith(color: AppColors.textSecondary),
                 ),
               ),
             ),
