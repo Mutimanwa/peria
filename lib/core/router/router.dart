@@ -13,7 +13,8 @@ import 'package:peria_app/features/journal/presentation/screens/journal_editor_s
 import 'package:peria_app/features/journal/presentation/screens/journal_screens.dart';
 import 'package:peria_app/features/onboarding/presentation/screens/splash.dart';
 import 'package:peria_app/features/auth/presentation/screens/auth_screens.dart';
-import 'package:peria_app/features/auth/presentation/screens/otp_screen.dart';
+import 'package:peria_app/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:peria_app/features/auth/presentation/screens/verify_email_screen.dart';
 import 'package:peria_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:peria_app/features/home/presentation/screens/cycle_home_screen.dart';
 import 'package:peria_app/features/journal/presentation/screens/journal_timeline_screen.dart';
@@ -87,9 +88,10 @@ String? resolveRouterRedirect({
       location == '/privacy-policy' ||
       location == '/splash' ||
       location.startsWith('/register') ||
+      location == '/sign-in' ||
       location == '/email' ||
       location == '/create-account' ||
-      location == '/otp';
+      location == '/verify-email';
 
   if (!isAuthenticated) {
     if (isAuthRoute) return null;
@@ -264,12 +266,25 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/otp',
+      path: '/sign-in',
       pageBuilder: (context, state) => _buildSlideTransitionPage(
         context,
         state,
-        const OtpScreen(),
+        const SignInScreen(),
       ),
+    ),
+    GoRoute(
+      path: '/verify-email',
+      pageBuilder: (context, state) {
+        final extra = state.extra;
+        return _buildSlideTransitionPage(
+          context,
+          state,
+          VerifyEmailScreen(
+            args: extra is VerifyEmailArgs ? extra : const VerifyEmailArgs(),
+          ),
+        );
+      },
     ),
     GoRoute(
       path: '/ask-name',

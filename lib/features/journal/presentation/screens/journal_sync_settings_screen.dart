@@ -353,7 +353,7 @@ class _JournalSyncSettingsScreenState
                             ? l10n.journalSyncEnabledDescription
                             : l10n.journalSyncDisabledDescription,
                         style: AppText.caption.copyWith(
-                          color: AppColors.grey600,
+                          color: AppColors.textSecondary,
                           height: 1.4,
                         ),
                       ),
@@ -429,7 +429,7 @@ class _JournalSyncSettingsScreenState
                 Text(
                   l10n.journalCloudLegacyCopyNotice,
                   style: AppText.caption.copyWith(
-                    color: AppColors.grey600,
+                    color: AppColors.textSecondary,
                     height: 1.45,
                   ),
                 ),

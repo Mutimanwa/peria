@@ -48,15 +48,6 @@
   },
   "day": "Jour",
   "days": "Jours",
-  "otpTitle": "Saisis le code de verification",
-  "otpSubtitle": "Nous avons envoye un code a {email}",
-  "@otpSubtitle": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
   "didntGetCode": "Tu n'as pas recu le code ?",
   "resendIn": "Renvoyer dans {seconds}s",
   "@resendIn": {
@@ -67,7 +58,6 @@
     }
   },
   "resendNow": "Renvoyer maintenant",
-  "otpContinue": "Continuer",
   "journalTitle": "Journal",
   "journalCloudSync": "Synchronisation cloud du journal",
   "journalSyncDescription": "Par défaut, ton journal reste chiffré sur cet appareil. Si tu l’actives, les notes existantes et futures sont stockées dans ton compte Peria via Firebase Firestore. La copie cloud n’est pas chiffrée de bout en bout par Peria.",
@@ -731,5 +721,64 @@
   "removePhoto": "Supprimer la photo",
   "anonymousLogoutTitle": "Se déconnecter du compte anonyme ?",
   "anonymousLogoutMessage": "Tu utilises un compte anonyme. Si tu te déconnectes maintenant, tes données de cycle, de journal et de symptômes enregistrées sur cet appareil seront définitivement perdues.",
-  "photoUpdateFailed": "La photo n'a pas pu être mise à jour."
+  "photoUpdateFailed": "La photo n'a pas pu être mise à jour.",
+  "authErrorInvalidEmail": "Cette adresse e-mail n'est pas valide.",
+  "authErrorWrongPassword": "Mot de passe incorrect.",
+  "authErrorUserNotFound": "Aucun compte ne correspond à cette adresse.",
+  "authErrorUserDisabled": "Ce compte a été désactivé.",
+  "authErrorEmailInUse": "Un compte existe déjà avec cette adresse.",
+  "authErrorWeakPassword": "Choisis un mot de passe de 8 caractères minimum.",
+  "authErrorTooManyRequests": "Trop de tentatives. Réessaie dans quelques minutes.",
+  "authErrorNetwork": "Connexion impossible. Vérifie ton réseau.",
+  "authErrorRecentLogin": "Reconnecte-toi pour confirmer cette action.",
+  "authErrorAlreadySignedIn": "Tu es déjà connectée à un compte.",
+  "authErrorNotSignedIn": "Aucun compte connecté.",
+  "authErrorUnknown": "Une erreur est survenue. Réessaie.",
+  "signInTitle": "Bon retour",
+  "signInSubtitle": "Connecte-toi pour retrouver ton suivi.",
+  "signInCta": "Se connecter",
+  "alreadyHaveAccount": "J'ai déjà un compte",
+  "dontHaveAccount": "Pas encore de compte ?",
+  "createAccount": "Créer un compte",
+  "verifyEmailTitle": "Vérifie ton adresse e-mail",
+  "verifyEmailSubtitle": "Nous avons envoyé un lien de confirmation à {email}.",
+  "@verifyEmailSubtitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailCta": "J'ai vérifié mon e-mail",
+  "verifyEmailNotVerified": "Ce n'est pas encore confirmé. Ouvre le lien reçu par e-mail, puis réessaie.",
+  "verifyEmailResent": "E-mail de confirmation renvoyé.",
+  "verifyEmailSuccessTitle": "Adresse confirmée",
+  "verifyEmailSuccessMessage": "Ton compte est sécurisé, tu peux continuer.",
+  "forgotPasswordTitle": "Mot de passe oublié",
+  "forgotPasswordSubtitle": "Indique l'adresse de ton compte : nous t'enverrons un lien pour choisir un nouveau mot de passe.",
+  "forgotPasswordSend": "Envoyer le lien",
+  "forgotPasswordSentMessage": "Si un compte existe pour {email}, un lien vient d'être envoyé.",
+  "@forgotPasswordSentMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAccount": "Supprimer mon compte",
+  "deleteAccountTitle": "Supprimer définitivement ton compte ?",
+  "deleteAccountMessage": "Tes cycles, symptômes, notes de journal et réglages seront effacés de cet appareil et du cloud. Cette action est irréversible.",
+  "deleteAccountPasswordLabel": "Confirme ton mot de passe",
+  "deleteAccountConfirm": "Supprimer définitivement",
+  "deleteAccountFailed": "La suppression a échoué. Réessaie.",
+  "deleteAccountSuccess": "Ton compte a été supprimé.",
+  "passwordMinLengthHint": "8 caractères minimum",
+  "createAccountKeepsData": "Ton suivi actuel sera conservé.",
+  "back": "Retour",
+  "previousMonth": "Mois précédent",
+  "nextMonth": "Mois suivant",
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
+  "search": "Rechercher",
+  "close": "Fermer"
 }

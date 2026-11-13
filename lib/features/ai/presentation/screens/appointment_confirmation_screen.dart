@@ -68,7 +68,7 @@ class AppointmentConfirmationScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               l10n.appointmentBooked('Adrian Cole'),
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 24),
             Container(
@@ -107,10 +107,10 @@ class AppointmentConfirmationScreen extends StatelessWidget {
                             const Text('Dr. Adrian Cole', style: AppText.h5),
                             Text(l10n.appointmentGynecologist,
                                 style: AppText.body
-                                    .copyWith(color: AppColors.grey600)),
+                                    .copyWith(color: AppColors.textSecondary)),
                             Text(l10n.appointmentGynOncologyFocus,
                                 style: AppText.caption
-                                    .copyWith(color: AppColors.grey500)),
+                                    .copyWith(color: AppColors.textSecondary)),
                           ],
                         ),
                       ),

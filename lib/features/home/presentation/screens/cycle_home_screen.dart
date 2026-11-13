@@ -442,7 +442,7 @@ class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
                 const SizedBox(height: 6),
                 Text(
                   l10n.logPeriodSheetSubtitle,
-                  style: AppText.body.copyWith(color: AppColors.grey600),
+                  style: AppText.body.copyWith(color: AppColors.textSecondary),
                 ),
                 if (logsState.isLoading || _isSaving) ...[
                   const SizedBox(height: 14),
@@ -459,7 +459,7 @@ class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
                             ? l10n.periodLogSaving
                             : l10n.periodLogLoading,
                         style: AppText.caption.copyWith(
-                          color: AppColors.grey600,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -469,14 +469,14 @@ class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
                   const SizedBox(height: 14),
                   Text(
                     l10n.periodLogLoadError,
-                    style: AppText.caption.copyWith(color: AppColors.error),
+                    style: AppText.caption.copyWith(color: AppColors.textError),
                   ),
                 ],
                 if (_feedback != null) ...[
                   const SizedBox(height: 14),
                   Text(
                     _feedback!,
-                    style: AppText.caption.copyWith(color: AppColors.error),
+                    style: AppText.caption.copyWith(color: AppColors.textError),
                   ),
                 ],
                 const SizedBox(height: 18),
@@ -1025,14 +1025,14 @@ class _QuickActionTile extends StatelessWidget {
                     title,
                     style: AppText.label.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: enabled ? AppColors.grey900 : AppColors.grey500,
+                      color: enabled ? AppColors.grey900 : AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: AppText.caption.copyWith(
-                      color: enabled ? AppColors.grey600 : AppColors.grey400,
+                      color: enabled ? AppColors.textSecondary : AppColors.textSecondary,
                     ),
                   ),
                 ],

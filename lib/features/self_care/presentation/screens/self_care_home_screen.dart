@@ -260,7 +260,7 @@ class _SelfCareCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     localizeSelfCareData(card.subtitle, l10n),
-                    style: AppText.caption.copyWith(color: AppColors.grey600),
+                    style: AppText.caption.copyWith(color: AppColors.textSecondary),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),

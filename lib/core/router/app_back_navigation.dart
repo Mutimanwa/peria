@@ -37,7 +37,8 @@ String? resolveAppBackTarget(String location) {
     '/register': '/welcome',
     '/email': '/register',
     '/create-account': '/email',
-    '/otp': '/email',
+    '/verify-email': '/email',
+    '/sign-in': '/welcome',
     '/privacy-policy': '/welcome',
   };
 
@@ -63,7 +64,8 @@ bool isAgeGateExempt(String location) {
     '/register',
     '/email',
     '/create-account',
-    '/otp',
+    '/verify-email',
+    '/sign-in',
     '/ask-name',
     '/date-of-birth',
     '/set-goals',

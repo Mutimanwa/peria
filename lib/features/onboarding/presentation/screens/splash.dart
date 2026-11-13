@@ -88,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen>
                         fontFamily: 'Poppins',
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.grey600,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ),

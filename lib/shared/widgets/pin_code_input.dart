@@ -172,7 +172,7 @@ class _PinCodeInputState extends State<PinCodeInput>
           const SizedBox(height: 12),
           Text(
             widget.error!,
-            style: AppText.caption.copyWith(color: AppColors.error),
+            style: AppText.caption.copyWith(color: AppColors.textError),
           ),
         ],
       ],

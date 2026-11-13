@@ -39,7 +39,7 @@ class ActivityStepScreen extends StatelessWidget {
               ),
             ),
             Text(localizeSelfCareData(step.subtitle, l10n),
-                style: AppText.body.copyWith(color: AppColors.grey500)),
+                style: AppText.body.copyWith(color: AppColors.textSecondary)),
             const SizedBox(height: 18),
             Expanded(
               child: Column(
@@ -76,7 +76,7 @@ class ActivityStepScreen extends StatelessWidget {
                           const SizedBox(height: 22),
                           Text('00:24',
                               style: AppText.h6
-                                  .copyWith(color: AppColors.grey600)),
+                                  .copyWith(color: AppColors.textSecondary)),
                         ],
                       ),
                     ],

@@ -48,15 +48,6 @@
   },
   "day": "Day",
   "days": "Days",
-  "otpTitle": "Enter verification code",
-  "otpSubtitle": "We sent a code to {email}",
-  "@otpSubtitle": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
   "didntGetCode": "Didn't get the code?",
   "resendIn": "Resend in {seconds}s",
   "@resendIn": {
@@ -67,7 +58,6 @@
     }
   },
   "resendNow": "Resend now",
-  "otpContinue": "Continue",
   "journalTitle": "Journal",
   "journalCloudSync": "Journal cloud sync",
   "journalSyncDescription": "By default, your journal stays encrypted on this device. If you opt in, existing and future entries are stored in your Peria account in Firebase Firestore. The cloud copy is not end-to-end encrypted by Peria.",
@@ -731,5 +721,64 @@
   "removePhoto": "Remove photo",
   "anonymousLogoutTitle": "Sign out of your anonymous account?",
   "anonymousLogoutMessage": "You are using an anonymous account. If you sign out now, your cycle, journal and symptoms data stored on this device will be lost for good.",
-  "photoUpdateFailed": "The photo could not be updated."
+  "photoUpdateFailed": "The photo could not be updated.",
+  "authErrorInvalidEmail": "This email address is not valid.",
+  "authErrorWrongPassword": "Incorrect password.",
+  "authErrorUserNotFound": "No account matches this address.",
+  "authErrorUserDisabled": "This account has been disabled.",
+  "authErrorEmailInUse": "An account already exists with this address.",
+  "authErrorWeakPassword": "Choose a password with at least 8 characters.",
+  "authErrorTooManyRequests": "Too many attempts. Try again in a few minutes.",
+  "authErrorNetwork": "Connection failed. Check your network.",
+  "authErrorRecentLogin": "Sign in again to confirm this action.",
+  "authErrorAlreadySignedIn": "You are already signed in to an account.",
+  "authErrorNotSignedIn": "No account is signed in.",
+  "authErrorUnknown": "Something went wrong. Try again.",
+  "signInTitle": "Welcome back",
+  "signInSubtitle": "Sign in to find your tracking.",
+  "signInCta": "Sign in",
+  "alreadyHaveAccount": "I already have an account",
+  "dontHaveAccount": "No account yet?",
+  "createAccount": "Create an account",
+  "verifyEmailTitle": "Verify your email address",
+  "verifyEmailSubtitle": "We sent a confirmation link to {email}.",
+  "@verifyEmailSubtitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailCta": "I've verified my email",
+  "verifyEmailNotVerified": "Not confirmed yet. Open the link we emailed you, then try again.",
+  "verifyEmailResent": "Confirmation email sent again.",
+  "verifyEmailSuccessTitle": "Email confirmed",
+  "verifyEmailSuccessMessage": "Your account is secure, you can continue.",
+  "forgotPasswordTitle": "Forgot password",
+  "forgotPasswordSubtitle": "Enter your account address: we'll send you a link to choose a new password.",
+  "forgotPasswordSend": "Send link",
+  "forgotPasswordSentMessage": "If an account exists for {email}, a link has just been sent.",
+  "@forgotPasswordSentMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAccount": "Delete my account",
+  "deleteAccountTitle": "Permanently delete your account?",
+  "deleteAccountMessage": "Your cycles, symptoms, journal notes and settings will be erased from this device and the cloud. This cannot be undone.",
+  "deleteAccountPasswordLabel": "Confirm your password",
+  "deleteAccountConfirm": "Delete permanently",
+  "deleteAccountFailed": "Deletion failed. Try again.",
+  "deleteAccountSuccess": "Your account has been deleted.",
+  "passwordMinLengthHint": "At least 8 characters",
+  "createAccountKeepsData": "Your current tracking will be kept.",
+  "back": "Back",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "search": "Search",
+  "close": "Close"
 }

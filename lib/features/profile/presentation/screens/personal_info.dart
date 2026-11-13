@@ -388,7 +388,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
             return Expanded(
               child: Text(
                 label,
-                style: AppText.caption.copyWith(color: AppColors.grey400),
+                style: AppText.caption.copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
             );
@@ -432,7 +432,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
                   style: AppText.label.copyWith(
                     color: isSelected
                         ? AppColors.white
-                        : (isFuture ? AppColors.grey300 : AppColors.grey900),
+                        : (isFuture ? AppColors.textSecondary : AppColors.grey900),
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
                   ),
                 ),
@@ -538,7 +538,7 @@ class _DatePickerBottomSheetState extends State<_DatePickerBottomSheet> {
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
               child: Text(
                 l10n.minimumAgeMessage(minimumAccountAgeYears),
-                style: AppText.caption.copyWith(color: AppColors.error),
+                style: AppText.caption.copyWith(color: AppColors.textError),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -572,7 +572,7 @@ class _EditableField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppText.label.copyWith(color: AppColors.grey500)),
+        Text(label, style: AppText.label.copyWith(color: AppColors.textSecondary)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
@@ -785,7 +785,7 @@ class _EmailEditFieldState extends State<_EmailEditField> {
       children: [
         Text(
           l10n.emailAddressLabel,
-          style: AppText.label.copyWith(color: AppColors.grey500),
+          style: AppText.label.copyWith(color: AppColors.textSecondary),
         ),
         const SizedBox(height: 8),
         TextFormField(

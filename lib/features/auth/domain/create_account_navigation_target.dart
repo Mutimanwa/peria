@@ -1,3 +1,0 @@
-enum CreateAccountNavigationTarget {
-  otp,
-}

@@ -123,6 +123,32 @@ final cycleDayInfoProvider = Provider.family<CycleDayInfo, DateTime>(
   },
 );
 
+/// Day info for a whole displayed month, computed once.
+///
+/// The calendar grid used to watch [cycleDayInfoProvider] from each of its
+/// cells: 42 subscriptions (and 42 kept-alive family instances) for a single
+/// screen. One memoised map per month keeps the same data with a single
+/// subscription.
+final monthCycleDayInfoProvider =
+    Provider.family<Map<int, CycleDayInfo>, DateTime>((ref, month) {
+  final year = month.year;
+  final monthIndex = month.month;
+  final lastDay = DateTime(year, monthIndex + 1, 0).day;
+  final logs = ref.watch(periodLogsProvider).value ?? const <PeriodLog>[];
+  final today = DateTime.now();
+  final days = <int, CycleDayInfo>{};
+  for (var day = 1; day <= lastDay; day++) {
+    final date = DateTime(year, monthIndex, day);
+    days[day] = CycleDayInfo.forDate(
+      date: date,
+      status: ref.watch(cycleStatusForDateProvider(date)),
+      periodLogs: logs,
+      today: today,
+    );
+  }
+  return Map<int, CycleDayInfo>.unmodifiable(days);
+});
+
 // --- CYCLE DAY PROVIDER ---
 final cycleDayForDateProvider = Provider.family<int?, DateTime>((ref, date) {
   return ref.watch(cycleStatusForDateProvider(date))?.dayOfCycle;

@@ -46,7 +46,7 @@ class PartnerScreen extends ConsumerWidget {
                   : (partner.isPending
                       ? l10n.partnerPendingBody
                       : l10n.partnerInviteBody),
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const Spacer(),

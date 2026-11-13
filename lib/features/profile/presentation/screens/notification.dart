@@ -64,7 +64,7 @@ class NotificationsScreen extends ConsumerWidget {
                   Text(
                     l10n.notificationPrivacyDescription,
                     style: AppText.caption.copyWith(
-                      color: AppColors.grey600,
+                      color: AppColors.textSecondary,
                       height: 1.4,
                     ),
                   ),
@@ -72,7 +72,7 @@ class NotificationsScreen extends ConsumerWidget {
                   Text(
                     l10n.notificationScheduleDescription,
                     style: AppText.caption.copyWith(
-                      color: AppColors.grey600,
+                      color: AppColors.textSecondary,
                       height: 1.4,
                     ),
                   ),

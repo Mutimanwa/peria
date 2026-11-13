@@ -77,7 +77,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: l10n.helpSearchHint,
-                    hintStyle: AppText.body.copyWith(color: AppColors.grey400),
+                    hintStyle: AppText.body.copyWith(color: AppColors.textSecondary),
                     border: InputBorder.none,
                     prefixIcon: null,
                     suffixIcon:
@@ -128,7 +128,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                         child: Text(
                           faq['answer']!,
                           style:
-                              AppText.body.copyWith(color: AppColors.grey600),
+                              AppText.body.copyWith(color: AppColors.textSecondary),
                         ),
                       ),
                     ],
@@ -145,7 +145,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
                       l10n.helpContactUs,
-                      style: AppText.label.copyWith(color: AppColors.grey400),
+                      style: AppText.label.copyWith(color: AppColors.textSecondary),
                     ),
                   ),
                   const Expanded(child: Divider(color: AppColors.grey300)),

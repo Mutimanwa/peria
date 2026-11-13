@@ -44,12 +44,18 @@ class ProfileScreen extends ConsumerWidget {
                 // if(profile.email != null)
                 //   Text(
                 //     profile.email ?? ' ',
-                //     style: AppText.body.copyWith(color: AppColors.grey500),
+                //     style: AppText.body.copyWith(color: AppColors.textSecondary),
                 //   ),
 
                 const SizedBox(height: 28),
                 SectionLabel(l10n.myAccount),
                 MenuGroup(items: [
+                  if (FirebaseAuth.instance.currentUser?.isAnonymous ?? false)
+                    MenuItemData(
+                      l10n.createAccount,
+                      Icons.person_add_alt_1_outlined,
+                      () => context.push('/email'),
+                    ),
                   MenuItemData(
                     l10n.personalInformation,
                     Icons.person_outline,
@@ -111,7 +117,7 @@ Future<void> _signOut(BuildContext context, WidgetRef ref) async {
         ),
         content: Text(
           l10n.anonymousLogoutMessage,
-          style: AppText.body.copyWith(color: AppColors.grey600, height: 1.45),
+          style: AppText.body.copyWith(color: AppColors.textSecondary, height: 1.45),
         ),
         actions: [
           TextButton(
@@ -126,7 +132,7 @@ Future<void> _signOut(BuildContext context, WidgetRef ref) async {
             child: Text(
               l10n.logOut,
               style: AppText.label.copyWith(
-                color: AppColors.error,
+                color: AppColors.textError,
                 fontWeight: FontWeight.w700,
               ),
             ),

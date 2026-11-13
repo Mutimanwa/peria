@@ -140,13 +140,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get days => 'Jours';
 
-  @override
-  String get otpTitle => 'Saisis le code de verification';
 
-  @override
-  String otpSubtitle(String email) {
-    return 'Nous avons envoye un code a $email';
-  }
 
   @override
   String get didntGetCode => 'Tu n\'as pas recu le code ?';
@@ -159,8 +153,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get resendNow => 'Renvoyer maintenant';
 
-  @override
-  String get otpContinue => 'Continuer';
 
   @override
   String get journalTitle => 'Journal';
@@ -2095,4 +2087,139 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get photoUpdateFailed => 'La photo n\'a pas pu être mise à jour.';
+
+  @override
+  String get authErrorInvalidEmail => 'Cette adresse e-mail n\'est pas valide.';
+
+  @override
+  String get authErrorWrongPassword => 'Mot de passe incorrect.';
+
+  @override
+  String get authErrorUserNotFound => 'Aucun compte ne correspond à cette adresse.';
+
+  @override
+  String get authErrorUserDisabled => 'Ce compte a été désactivé.';
+
+  @override
+  String get authErrorEmailInUse => 'Un compte existe déjà avec cette adresse.';
+
+  @override
+  String get authErrorWeakPassword => 'Choisis un mot de passe de 8 caractères minimum.';
+
+  @override
+  String get authErrorTooManyRequests => 'Trop de tentatives. Réessaie dans quelques minutes.';
+
+  @override
+  String get authErrorNetwork => 'Connexion impossible. Vérifie ton réseau.';
+
+  @override
+  String get authErrorRecentLogin => 'Reconnecte-toi pour confirmer cette action.';
+
+  @override
+  String get authErrorAlreadySignedIn => 'Tu es déjà connectée à un compte.';
+
+  @override
+  String get authErrorNotSignedIn => 'Aucun compte connecté.';
+
+  @override
+  String get authErrorUnknown => 'Une erreur est survenue. Réessaie.';
+
+  @override
+  String get signInTitle => 'Bon retour';
+
+  @override
+  String get signInSubtitle => 'Connecte-toi pour retrouver ton suivi.';
+
+  @override
+  String get signInCta => 'Se connecter';
+
+  @override
+  String get alreadyHaveAccount => 'J\'ai déjà un compte';
+
+  @override
+  String get dontHaveAccount => 'Pas encore de compte ?';
+
+  @override
+  String get createAccount => 'Créer un compte';
+
+  @override
+  String get verifyEmailTitle => 'Vérifie ton adresse e-mail';
+
+  @override
+  String verifyEmailSubtitle(String email) => 'Nous avons envoyé un lien de confirmation à $email.';
+
+  @override
+  String get verifyEmailCta => 'J\'ai vérifié mon e-mail';
+
+  @override
+  String get verifyEmailNotVerified => 'Ce n\'est pas encore confirmé. Ouvre le lien reçu par e-mail, puis réessaie.';
+
+  @override
+  String get verifyEmailResent => 'E-mail de confirmation renvoyé.';
+
+  @override
+  String get verifyEmailSuccessTitle => 'Adresse confirmée';
+
+  @override
+  String get verifyEmailSuccessMessage => 'Ton compte est sécurisé, tu peux continuer.';
+
+  @override
+  String get forgotPasswordTitle => 'Mot de passe oublié';
+
+  @override
+  String get forgotPasswordSubtitle => 'Indique l\'adresse de ton compte : nous t\'enverrons un lien pour choisir un nouveau mot de passe.';
+
+  @override
+  String get forgotPasswordSend => 'Envoyer le lien';
+
+  @override
+  String forgotPasswordSentMessage(String email) => 'Si un compte existe pour $email, un lien vient d\'être envoyé.';
+
+  @override
+  String get deleteAccount => 'Supprimer mon compte';
+
+  @override
+  String get deleteAccountTitle => 'Supprimer définitivement ton compte ?';
+
+  @override
+  String get deleteAccountMessage => 'Tes cycles, symptômes, notes de journal et réglages seront effacés de cet appareil et du cloud. Cette action est irréversible.';
+
+  @override
+  String get deleteAccountPasswordLabel => 'Confirme ton mot de passe';
+
+  @override
+  String get deleteAccountConfirm => 'Supprimer définitivement';
+
+  @override
+  String get deleteAccountFailed => 'La suppression a échoué. Réessaie.';
+
+  @override
+  String get deleteAccountSuccess => 'Ton compte a été supprimé.';
+
+  @override
+  String get passwordMinLengthHint => '8 caractères minimum';
+
+  @override
+  String get createAccountKeepsData => 'Ton suivi actuel sera conservé.';
+
+  @override
+  String get back => 'Retour';
+
+  @override
+  String get previousMonth => 'Mois précédent';
+
+  @override
+  String get nextMonth => 'Mois suivant';
+
+  @override
+  String get showPassword => 'Afficher le mot de passe';
+
+  @override
+  String get hidePassword => 'Masquer le mot de passe';
+
+  @override
+  String get search => 'Rechercher';
+
+  @override
+  String get close => 'Fermer';
 }

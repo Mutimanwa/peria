@@ -344,17 +344,7 @@ abstract class AppLocalizations {
   /// **'Days'**
   String get days;
 
-  /// No description provided for @otpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter verification code'**
-  String get otpTitle;
 
-  /// No description provided for @otpSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'We sent a code to {email}'**
-  String otpSubtitle(String email);
 
   /// No description provided for @didntGetCode.
   ///
@@ -374,11 +364,6 @@ abstract class AppLocalizations {
   /// **'Resend now'**
   String get resendNow;
 
-  /// No description provided for @otpContinue.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue'**
-  String get otpContinue;
 
   /// No description provided for @journalTitle.
   ///
@@ -3911,6 +3896,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved symptoms couldn't be loaded. You can still log this day.'**
   String get symptomLogUnavailable;
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Cette adresse e-mail n'est pas valide.'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Mot de passe incorrect.'**
+  String get authErrorWrongPassword;
+
+  /// No description provided for @authErrorUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Aucun compte ne correspond à cette adresse.'**
+  String get authErrorUserNotFound;
+
+  /// No description provided for @authErrorUserDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Ce compte a été désactivé.'**
+  String get authErrorUserDisabled;
+
+  /// No description provided for @authErrorEmailInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Un compte existe déjà avec cette adresse.'**
+  String get authErrorEmailInUse;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Choisis un mot de passe de 8 caractères minimum.'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Trop de tentatives. Réessaie dans quelques minutes.'**
+  String get authErrorTooManyRequests;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Connexion impossible. Vérifie ton réseau.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorRecentLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Reconnecte-toi pour confirmer cette action.'**
+  String get authErrorRecentLogin;
+
+  /// No description provided for @authErrorAlreadySignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Tu es déjà connectée à un compte.'**
+  String get authErrorAlreadySignedIn;
+
+  /// No description provided for @authErrorNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Aucun compte connecté.'**
+  String get authErrorNotSignedIn;
+
+  /// No description provided for @authErrorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Une erreur est survenue. Réessaie.'**
+  String get authErrorUnknown;
+
+  /// No description provided for @signInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bon retour'**
+  String get signInTitle;
+
+  /// No description provided for @signInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecte-toi pour retrouver ton suivi.'**
+  String get signInSubtitle;
+
+  /// No description provided for @signInCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Se connecter'**
+  String get signInCta;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'J'ai déjà un compte'**
+  String get alreadyHaveAccount;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Pas encore de compte ?'**
+  String get dontHaveAccount;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Créer un compte'**
+  String get createAccount;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vérifie ton adresse e-mail'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nous avons envoyé un lien de confirmation à {email}.'**
+  String verifyEmailSubtitle(String email);
+
+  /// No description provided for @verifyEmailCta.
+  ///
+  /// In en, this message translates to:
+  /// **'J'ai vérifié mon e-mail'**
+  String get verifyEmailCta;
+
+  /// No description provided for @verifyEmailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Ce n'est pas encore confirmé. Ouvre le lien reçu par e-mail, puis réessaie.'**
+  String get verifyEmailNotVerified;
+
+  /// No description provided for @verifyEmailResent.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail de confirmation renvoyé.'**
+  String get verifyEmailResent;
+
+  /// No description provided for @verifyEmailSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Adresse confirmée'**
+  String get verifyEmailSuccessTitle;
+
+  /// No description provided for @verifyEmailSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Ton compte est sécurisé, tu peux continuer.'**
+  String get verifyEmailSuccessMessage;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mot de passe oublié'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Indique l'adresse de ton compte : nous t'enverrons un lien pour choisir un nouveau mot de passe.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @forgotPasswordSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Envoyer le lien'**
+  String get forgotPasswordSend;
+
+  /// No description provided for @forgotPasswordSentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Si un compte existe pour {email}, un lien vient d'être envoyé.'**
+  String forgotPasswordSentMessage(String email);
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Supprimer mon compte'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supprimer définitivement ton compte ?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tes cycles, symptômes, notes de journal et réglages seront effacés de cet appareil et du cloud. Cette action est irréversible.'**
+  String get deleteAccountMessage;
+
+  /// No description provided for @deleteAccountPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirme ton mot de passe'**
+  String get deleteAccountPasswordLabel;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Supprimer définitivement'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'La suppression a échoué. Réessaie.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ton compte a été supprimé.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @passwordMinLengthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'8 caractères minimum'**
+  String get passwordMinLengthHint;
+
+  /// No description provided for @createAccountKeepsData.
+  ///
+  /// In en, this message translates to:
+  /// **'Ton suivi actuel sera conservé.'**
+  String get createAccountKeepsData;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @previousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get previousMonth;
+
+  /// No description provided for @nextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get nextMonth;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
 }
 
 class _AppLocalizationsDelegate

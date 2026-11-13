@@ -94,7 +94,7 @@ class AiChatScreen extends StatelessWidget {
                   Center(
                       child: Text(DateFormat.MMMEd(locale).format(DateTime(2025, 4, 9)),
                           style: AppText.caption
-                              .copyWith(color: AppColors.grey500))),
+                              .copyWith(color: AppColors.textSecondary))),
                   const SizedBox(height: 12),
                   _Bubble(
                       text:
@@ -154,7 +154,7 @@ class _AiHeader extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Perry', style: AppText.h6.copyWith(fontWeight: FontWeight.w700)),
         Text(AppLocalizations.of(context).aiChatAssistantLabel,
-            style: AppText.caption.copyWith(color: AppColors.grey500)),
+            style: AppText.caption.copyWith(color: AppColors.textSecondary)),
       ]),
     ]);
   }
@@ -242,7 +242,7 @@ class _ArticleCard extends StatelessWidget {
                     Text(l10n.aiChatArticleTitle, style: AppText.h5),
                     const SizedBox(height: 8),
                     Text(l10n.aiChatArticleSubtitle,
-                        style: AppText.body.copyWith(color: AppColors.grey500)),
+                        style: AppText.body.copyWith(color: AppColors.textSecondary)),
                   ]),
             ),
           ]),
@@ -257,7 +257,7 @@ class _ArticleCard extends StatelessWidget {
                 size: 16, color: AppColors.grey500),
             const SizedBox(width: 4),
             Text(l10n.selfCareMinutesRead(4),
-                style: AppText.caption.copyWith(color: AppColors.grey500)),
+                style: AppText.caption.copyWith(color: AppColors.textSecondary)),
             const Spacer(),
             Text(l10n.aiChatReadNow,
                 style: AppText.label.copyWith(fontWeight: FontWeight.w700)),
@@ -502,7 +502,7 @@ class _Composer extends StatelessWidget {
               borderRadius: BorderRadius.circular(26)),
           child: Row(children: [
             Text(AppLocalizations.of(context).aiChatAskAnything,
-                style: AppText.body.copyWith(color: AppColors.grey400)),
+                style: AppText.body.copyWith(color: AppColors.textSecondary)),
             const Spacer(),
             const Icon(Icons.add_box_outlined, color: AppColors.grey500),
           ]),

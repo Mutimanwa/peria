@@ -225,7 +225,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
               right: 20,
               child: Text(
                 l10n.symptomLogUnavailable,
-                style: AppText.caption.copyWith(color: AppColors.error),
+                style: AppText.caption.copyWith(color: AppColors.textError),
               ),
             ),
           Positioned.fill(
@@ -341,7 +341,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                             '${date.day}',
                             style: AppText.h6.copyWith(
                               color: isFuture
-                                  ? AppColors.grey300
+                                  ? AppColors.textSecondary
                                   : (isSelected
                                       ? AppColors.primary500
                                       : AppColors.grey900),
@@ -355,7 +355,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                             style: AppText.caption.copyWith(
                               color: isSelected
                                   ? AppColors.primary500
-                                  : AppColors.grey500,
+                                  : AppColors.textSecondary,
                               fontWeight:
                                   isSelected ? FontWeight.w600 : FontWeight.w400,
                             ),
@@ -392,7 +392,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
                   border: InputBorder.none,
                   isDense: true,
                   hintText: l10n.symptomSearchHint,
-                  hintStyle: AppText.body.copyWith(color: AppColors.grey500),
+                  hintStyle: AppText.body.copyWith(color: AppColors.textSecondary),
                 ),
                 onChanged: (value) => setState(() => _query = value.trim()),
               ),
@@ -441,7 +441,7 @@ class _SymptomsScreenState extends ConsumerState<SymptomsScreen> {
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
           child: Text(
             l10n.symptomNoMatch,
-            style: AppText.body.copyWith(color: AppColors.grey600),
+            style: AppText.body.copyWith(color: AppColors.textSecondary),
           ),
         ),
       );
@@ -866,7 +866,7 @@ class _NoteSheetState extends State<_NoteSheet> {
                 border: InputBorder.none,
                 isDense: true,
                 hintText: widget.hint,
-                hintStyle: AppText.body.copyWith(color: AppColors.grey500),
+                hintStyle: AppText.body.copyWith(color: AppColors.textSecondary),
               ),
             ),
           ),
@@ -990,14 +990,14 @@ class _ValueSheetState extends State<_ValueSheet> {
                       isDense: true,
                       hintText: '0',
                       hintStyle: AppText.h4.copyWith(
-                        color: AppColors.grey400,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ),
                 ),
                 Text(
                   widget.unit,
-                  style: AppText.label.copyWith(color: AppColors.grey600),
+                  style: AppText.label.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -1005,7 +1005,7 @@ class _ValueSheetState extends State<_ValueSheet> {
           const SizedBox(height: 10),
           Text(
             widget.hint,
-            style: AppText.caption.copyWith(color: AppColors.grey600),
+            style: AppText.caption.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 16),
           PrimaryButton(

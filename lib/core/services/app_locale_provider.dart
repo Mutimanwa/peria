@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _appLocalePreferenceKey = 'peria_app_locale';
+/// Kept across an account deletion so the interface language does not
+/// silently reset.
+const String kAppLocalePreferenceKey = 'peria_app_locale';
+const _appLocalePreferenceKey = kAppLocalePreferenceKey;
 
 final appLocaleProvider =
     StateNotifierProvider<AppLocaleNotifier, Locale?>((ref) {

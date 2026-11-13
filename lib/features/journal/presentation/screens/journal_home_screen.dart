@@ -116,11 +116,13 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
               Row(
                 children: [
                   IconButton(
+                    tooltip: l10n.journalTimeline,
                     onPressed: () => context.go('/journal/timeline'),
                     icon: const Icon(Icons.calendar_month_outlined,
                         color: AppColors.grey700),
                   ),
                   IconButton(
+                    tooltip: l10n.search,
                     onPressed: () => context.go('/journal/search'),
                     icon: const Icon(Icons.search_rounded,
                         color: AppColors.grey700),
@@ -131,7 +133,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
           ),
           Text(
             DateFormat('EEEE, d MMMM', Localizations.localeOf(context).toString()).format(DateTime.now()),
-            style: AppText.body.copyWith(color: AppColors.grey500),
+            style: AppText.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -157,7 +159,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
           ),
           const SizedBox(height: 4),
           Text("– T.S. Eliot",
-              style: AppText.caption.copyWith(color: AppColors.grey500)),
+              style: AppText.caption.copyWith(color: AppColors.textSecondary)),
         ],
       ),
     );
@@ -242,7 +244,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
                   decoration: InputDecoration(
                     hintText: l10n.journalQuickThoughtHint,
                     border: InputBorder.none,
-                    hintStyle: AppText.body.copyWith(color: AppColors.grey400),
+                    hintStyle: AppText.body.copyWith(color: AppColors.textSecondary),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -270,7 +272,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
               ] else
                 Text(
                   l10n.journalCaptureMoment,
-                  style: AppText.body.copyWith(color: AppColors.grey400),
+                  style: AppText.body.copyWith(color: AppColors.textSecondary),
                 ),
             ],
           ),
@@ -313,7 +315,7 @@ class _JournalHomeScreenState extends ConsumerState<JournalHomeScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: Text(l10n.journalNoEntriesYet,
-              style: AppText.body.copyWith(color: AppColors.grey400)),
+              style: AppText.body.copyWith(color: AppColors.textSecondary)),
         ),
       );
     }
@@ -428,7 +430,7 @@ class _SimpleJournalCard extends StatelessWidget {
                   ),
                   Text(
                     DateFormat('d MMMM • HH:mm', locale).format(entry.updatedAt),
-                    style: AppText.caption.copyWith(color: AppColors.grey500),
+                    style: AppText.caption.copyWith(color: AppColors.textSecondary),
                   ),
                 ],
               ),

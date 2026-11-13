@@ -39,7 +39,7 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           const SizedBox(height: 10),
           Text(
             l10n.partnerInviteDescription,
-            style: AppText.body.copyWith(color: AppColors.grey600),
+            style: AppText.body.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
@@ -100,7 +100,7 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
             Text(
               l10n.partnerInvitationSentDescription,
               textAlign: TextAlign.center,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 18),
             SizedBox(

@@ -50,7 +50,7 @@ class PrimaryButton extends StatelessWidget {
         child: Text(label,
             style: enabled
                 ? AppText.btnPrimary
-                : AppText.btnPrimary.copyWith(color: AppColors.grey500)),
+                : AppText.btnPrimary.copyWith(color: AppColors.textSecondary)),
       ),
     );
   }
@@ -133,24 +133,30 @@ class BackIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed ?? () => Navigator.of(context).maybePop(),
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.grey200),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withAlpha(13),
-                blurRadius: 6,
-                offset: const Offset(0, 2)),
-          ],
+    return Semantics(
+      button: true,
+      label: AppLocalizations.of(context).back,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: onPressed ?? () => Navigator.of(context).maybePop(),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.grey200),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withAlpha(13),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2)),
+              ],
+            ),
+            child: const Icon(Icons.chevron_left_rounded,
+                color: AppColors.black, size: 24),
+          ),
         ),
-        child: const Icon(Icons.chevron_left_rounded,
-            color: AppColors.black, size: 24),
       ),
     );
   }
@@ -305,7 +311,7 @@ class OnboardingScaffold extends StatelessWidget {
                     onTap: onSkip,
                     child: Text(AppLocalizations.of(context).skip,
                         style: AppText.body.copyWith(
-                            color: AppColors.grey500,
+                            color: AppColors.textSecondary,
                             fontWeight: FontWeight.w500)),
                   ),
                 ),
@@ -525,7 +531,7 @@ class EmptyJournal extends StatelessWidget {
                     ? l10n.startFirstNote
                     : l10n.journalQuickLogPrompt),
             textAlign: TextAlign.center,
-            style: AppText.body.copyWith(color: AppColors.grey600),
+            style: AppText.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -563,7 +569,7 @@ class JournalMetaChip extends StatelessWidget {
           Text(
             label,
             style: AppText.label.copyWith(
-              color: AppColors.grey600,
+              color: AppColors.textSecondary,
               fontSize: 10,
             ),
           ),
@@ -574,17 +580,22 @@ class JournalMetaChip extends StatelessWidget {
 }
 
 class HeaderIconButton extends StatelessWidget {
-  const HeaderIconButton({super.key, 
+  const HeaderIconButton({
+    super.key,
     required this.icon,
     required this.onTap,
+    this.semanticLabel,
   });
 
   final IconData icon;
   final VoidCallback onTap;
 
+  /// Announced by screen readers; the visible button is icon-only.
+  final String? semanticLabel;
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final button = GestureDetector(
       onTap: onTap,
       child: Container(
         width: 44,
@@ -602,6 +613,12 @@ class HeaderIconButton extends StatelessWidget {
         ),
         child: Icon(icon, color: AppColors.grey700, size: 21),
       ),
+    );
+    if (semanticLabel == null) return button;
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: ExcludeSemantics(child: button),
     );
   }
 }

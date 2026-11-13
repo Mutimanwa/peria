@@ -249,7 +249,7 @@ class _DateOfBirthScreenState extends ConsumerState<DateOfBirthScreen> {
                     const SizedBox(height: 12),
                     Text(
                       l10n.minimumAgeMessage(minimumAccountAgeYears),
-                      style: AppText.body.copyWith(color: AppColors.error),
+                      style: AppText.body.copyWith(color: AppColors.textError),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -331,7 +331,7 @@ class _ScrollColumnState extends State<_ScrollColumn> {
                   style: isSelected
                       ? AppText.label.copyWith(fontSize: 17)
                       : AppText.body
-                          .copyWith(color: AppColors.grey400, fontSize: 15),
+                          .copyWith(color: AppColors.textSecondary, fontSize: 15),
                 ),
               );
             },

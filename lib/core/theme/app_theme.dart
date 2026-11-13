@@ -43,8 +43,8 @@ class AppTheme {
         // OutlinedButton
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            side: const BorderSide(color: AppColors.primary, width: 1.5),
+            foregroundColor: AppColors.primary600,
+            side: const BorderSide(color: AppColors.primary600, width: 1.5),
             textStyle: AppTypography.buttonMedium,
             shape: const RoundedRectangleBorder(
               borderRadius: AppRadius.br12,
@@ -56,7 +56,8 @@ class AppTheme {
         // TextButton
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
+            // primary is 3.1:1 on white; primary600 is 6.1:1 (WCAG AA).
+            foregroundColor: AppColors.primary600,
             textStyle: AppTypography.buttonMedium,
           ),
         ),
@@ -84,9 +85,11 @@ class AppTheme {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           hintStyle:
-              AppTypography.bodyMedium.copyWith(color: AppColors.neutral500),
+              AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
           labelStyle:
               AppTypography.bodySmall.copyWith(color: AppColors.neutral700),
+          errorStyle:
+              AppTypography.bodySmall.copyWith(color: AppColors.textError),
         ),
 
         // Card

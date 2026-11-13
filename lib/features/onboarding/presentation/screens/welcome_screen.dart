@@ -66,6 +66,54 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     }
   }
 
+  /// Opening another account replaces the anonymous session, so the user is
+  /// warned before her data would be lost.
+  Future<void> _openSignIn() async {
+    final l10n = AppLocalizations.of(context);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.isAnonymous) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: Text(
+            l10n.anonymousLogoutTitle,
+            style: AppText.h5.copyWith(fontWeight: FontWeight.w700),
+          ),
+          content: Text(
+            l10n.anonymousLogoutMessage,
+            style: AppText.body.copyWith(color: AppColors.textSecondary, height: 1.45),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(
+                l10n.cancel,
+                style: AppText.label.copyWith(color: AppColors.grey700),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(
+                l10n.signInCta,
+                style: AppText.label.copyWith(
+                  color: AppColors.textError,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true || !mounted) return;
+    }
+    if (!mounted) return;
+    context.push('/sign-in');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -220,7 +268,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         child: Text(
                           copy.journalSyncNotice,
                           style: AppText.caption.copyWith(
-                            color: AppColors.grey600,
+                            color: AppColors.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -231,7 +279,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       Text(
                         _errorMessage!,
                         style: AppText.caption.copyWith(
-                          color: AppColors.error,
+                          color: AppColors.textError,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -246,7 +294,20 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                               ? _continue
                               : null,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: TextButton(
+                        onPressed: _isContinuing ? null : _openSignIn,
+                        child: Text(
+                          l10n.alreadyHaveAccount,
+                          style: AppText.label.copyWith(
+                            color: AppColors.primary600,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),

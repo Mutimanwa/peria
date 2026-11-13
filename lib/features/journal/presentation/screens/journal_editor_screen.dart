@@ -178,7 +178,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                               color: AppColors.grey900)),
                       const SizedBox(width: 8),
                       Text(timeStr,
-                          style: AppText.body.copyWith(color: AppColors.grey400)),
+                          style: AppText.body.copyWith(color: AppColors.textSecondary)),
                       const Spacer(),
                     ],
                   ),
@@ -194,7 +194,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                       hintStyle: AppText.h3.copyWith(
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
-                        color: AppColors.grey400,
+                        color: AppColors.textSecondary,
                       ),
                       border: InputBorder.none,
                       isDense: true,
@@ -255,7 +255,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                       hintStyle: AppText.body.copyWith(
                         fontSize: 17,
                         height: 1.6,
-                        color: AppColors.grey500,
+                        color: AppColors.textSecondary,
                       ),
                       border: InputBorder.none,
                     ),
@@ -490,7 +490,7 @@ Future<void> _insertImage() async {
                         Text(
                           m.localizedLabel(l10n),
                           style: TextStyle(
-                            color: isSelected ? m.accent : AppColors.grey500,
+                            color: isSelected ? m.accent : AppColors.textSecondary,
                             fontSize: 12,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           ),

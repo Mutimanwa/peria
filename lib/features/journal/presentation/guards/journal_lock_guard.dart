@@ -123,7 +123,7 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                   Text(
                     l10n.journalLockedDescription,
                     textAlign: TextAlign.center,
-                    style: AppText.body.copyWith(color: AppColors.grey600),
+                    style: AppText.body.copyWith(color: AppColors.textSecondary),
                   ),
                   const SizedBox(height: 24),
                   if (_isBiometric)

@@ -11,19 +11,19 @@ class AppAssets {
 
   // 3D mascot illustrations (education articles and feedback flow)
   static const String mascotArticle =
-      'assets/images/mascot/mascot_article.png';
+      'assets/images/mascot/mascot_article.webp';
   static const String mascotFeedback =
-      'assets/images/mascot/mascot_feedback.png';
+      'assets/images/mascot/mascot_feedback.webp';
   static const String mascotSearch =
-      'assets/images/mascot/mascot_search.png';
+      'assets/images/mascot/mascot_search.webp';
   static const String mascotThanks =
-      'assets/images/mascot/mascot_thanks.png';
+      'assets/images/mascot/mascot_thanks.webp';
   static const String mascotOvulation =
-      'assets/images/mascot/mascot_ovulation.png';
+      'assets/images/mascot/mascot_ovulation.webp';
   static const String mascotPeriod =
-      'assets/images/mascot/mascot_period.png';
+      'assets/images/mascot/mascot_period.webp';
   static const String mascotMedication =
-      'assets/images/mascot/mascot_medication.png';
+      'assets/images/mascot/mascot_medication.webp';
 
   static const String imageEat = 'assets/images/eat.png';
   static const String imageSkin = 'assets/images/skin.png';

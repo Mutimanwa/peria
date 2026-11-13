@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:peria_app/features/profile/presentation/widgets/delete_account_dialog.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/shared/widgets/common_widgets.dart';
 import 'package:shimmer/shimmer.dart';
@@ -91,7 +93,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                         Text(
                           subtitle,
                           textAlign: TextAlign.center,
-                          style: AppText.body.copyWith(color: AppColors.grey600),
+                          style: AppText.body.copyWith(color: AppColors.textSecondary),
                         ),
                         const SizedBox(height: 20),
                         PinCodeInput(
@@ -150,7 +152,7 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                           child: Text(
                             l10n.cancel,
                             style:
-                                AppText.body.copyWith(color: AppColors.grey500),
+                                AppText.body.copyWith(color: AppColors.textSecondary),
                           ),
                         ),
                       ],
@@ -307,6 +309,21 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                           .read(securityProvider.notifier)
                           .clearAllLocalData();
                     }
+                  },
+                  danger: true,
+                ),
+                MenuItemData(
+                  l10n.deleteAccount,
+                  Icons.person_remove_outlined,
+                  () async {
+                    final messenger = ScaffoldMessenger.of(context);
+                    final deleted = await showDeleteAccountDialog(context);
+                    if (!deleted) return;
+                    if (!context.mounted) return;
+                    messenger.showSnackBar(
+                      SnackBar(content: Text(l10n.deleteAccountSuccess)),
+                    );
+                    context.go('/welcome');
                   },
                   danger: true,
                 ),

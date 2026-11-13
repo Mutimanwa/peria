@@ -46,7 +46,7 @@ class _ConnectedPartnerScreenState extends ConsumerState<ConnectedPartnerScreen>
             const SizedBox(height: 10),
             Text(
               l10n.partnerConnectedDescription,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
@@ -88,7 +88,7 @@ class _ConnectedPartnerScreenState extends ConsumerState<ConnectedPartnerScreen>
                           const SizedBox(width: 6),
                           Text(
                             l10n.statusConnected,
-                            style: AppText.body.copyWith(color: AppColors.grey600),
+                            style: AppText.body.copyWith(color: AppColors.textSecondary),
                           ),
                         ],
                       ),
@@ -138,7 +138,7 @@ class _ConnectedPartnerScreenState extends ConsumerState<ConnectedPartnerScreen>
             Text(
               l10n.disconnectWarning,
               textAlign: TextAlign.center,
-              style: AppText.body.copyWith(color: AppColors.grey600),
+              style: AppText.body.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 18),
             Row(
