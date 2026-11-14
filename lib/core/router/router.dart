@@ -354,16 +354,6 @@ final GoRouter appRouter = GoRouter(
         path: '/profile/notifications',
         pageBuilder: (context, state) => _buildSlideTransitionPage(
             context, state, const NotificationsScreen())),
-    // Older buttons still call `/notification`. Keep the alias so that tap
-    // opens the screen instead of a missing-route error.
-    GoRoute(
-      path: '/notification',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const NotificationInboxScreen(),
-      ),
-    ),
     GoRoute(
         path: '/profile/account-security',
         pageBuilder: (context, state) => _buildSlideTransitionPage(
