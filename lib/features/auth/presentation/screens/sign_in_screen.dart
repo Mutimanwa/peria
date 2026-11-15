@@ -97,12 +97,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return OnboardingScaffold(
       showBack: true,
+      // Le corps se reduit avec le clavier, sinon le champ garde sa position
+      // sous le clavier et la zone defilable ne defile pas.
+      resizeToAvoidBottomInset: true,
       child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(24, 70, 24, 40 + bottomInset),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(24, 70, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

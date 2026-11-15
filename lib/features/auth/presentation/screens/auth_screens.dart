@@ -88,8 +88,10 @@ final l10n = AppLocalizations.of(context);
     return OnboardingScaffold(
       showBack: true,
       showSkip: false,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 70),
+      resizeToAvoidBottomInset: true,
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(24, 70, 24, 32),
         child: Column(
           children: [
             // ── Illustration enveloppe 3D ───────────────────────
@@ -110,34 +112,28 @@ final l10n = AppLocalizations.of(context);
             const SizedBox(height: 10),
             Text(l10n.enterYourEmailSubtitle,
                 style: AppText.body, textAlign: TextAlign.center),
-            const SizedBox(height: 60),
+            const SizedBox(height: 48),
 
             // ── Champ email ─────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.emailAddressLabel, style: AppText.label),
-                  const SizedBox(height: 8),
-                  PillTextField(
-                    hint: l10n.yourEmailAddressHint,
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.emailAddressLabel, style: AppText.label),
+                const SizedBox(height: 8),
+                PillTextField(
+                  hint: l10n.yourEmailAddressHint,
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ],
             ),
 
-            const Spacer(),
+            const SizedBox(height: 32),
 
             // ── Bouton Continue ─────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
-              child: PrimaryButton(
-                label: l10n.continueCta,
-                onPressed: state.canContinue && !_checking ? _continue : null,
-              ),
+            PrimaryButton(
+              label: l10n.continueCta,
+              onPressed: state.canContinue && !_checking ? _continue : null,
             ),
           ],
         ),
@@ -253,8 +249,10 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
 
     return OnboardingScaffold(
       showBack: true,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 70),
+      resizeToAvoidBottomInset: true,
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(24, 70, 24, 32),
         child: Column(
           children: [
             // ── Illustration enveloppe 3D ───────────────────────
@@ -274,11 +272,9 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
             const SizedBox(height: 32),
 
             // ── Champs mot de passe ─────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   // Password
                   Text(l10n.passwordLabel, style: AppText.label),
                   const SizedBox(height: 8),
@@ -337,40 +333,32 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                           .toggleShowConfirmPassword,
                     ),
                   ),
-                  if (state.confirmPassword.isNotEmpty &&
-                      state.password != state.confirmPassword) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      l10n.passwordMismatch,
-                      style:
-                          AppText.caption.copyWith(color: AppColors.textError),
-                    ),
-                  ],
+                if (state.confirmPassword.isNotEmpty &&
+                    state.password != state.confirmPassword) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.passwordMismatch,
+                    style: AppText.caption.copyWith(color: AppColors.textError),
+                  ),
                 ],
-              ),
+              ],
             ),
 
             if (isAnonymous) ...[
               const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  l10n.createAccountKeepsData,
-                  style: AppText.caption.copyWith(color: AppColors.textSecondary),
-                  textAlign: TextAlign.center,
-                ),
+              Text(
+                l10n.createAccountKeepsData,
+                style: AppText.caption.copyWith(color: AppColors.textSecondary),
+                textAlign: TextAlign.center,
               ),
             ],
 
             if (_error != null) ...[
               const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  _error!,
-                  style: AppText.caption.copyWith(color: AppColors.textError),
-                  textAlign: TextAlign.center,
-                ),
+              Text(
+                _error!,
+                style: AppText.caption.copyWith(color: AppColors.textError),
+                textAlign: TextAlign.center,
               ),
               if (_errorCode == AuthErrorCode.emailAlreadyInUse)
                 TextButton(
@@ -391,14 +379,11 @@ final l10n = AppLocalizations.of(context);   final state = ref.watch(createAccou
                 ),
             ],
 
-            const Spacer(),
+            const SizedBox(height: 32),
 
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
-              child: PrimaryButton(
-                label: l10n.continueCta,
-                onPressed: state.canContinue && !_submitting ? _submit : null,
-              ),
+            PrimaryButton(
+              label: l10n.continueCta,
+              onPressed: state.canContinue && !_submitting ? _submit : null,
             ),
           ],
         ),
