@@ -3746,6 +3746,18 @@ abstract class AppLocalizations {
   /// **'Search'**
   String get search;
 
+  /// No description provided for @passwordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get passwordMismatch;
+
+  /// No description provided for @policyRequiredForAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick the privacy policy to continue.'**
+  String get policyRequiredForAuth;
+
   /// No description provided for @close.
   ///
   /// In en, this message translates to:

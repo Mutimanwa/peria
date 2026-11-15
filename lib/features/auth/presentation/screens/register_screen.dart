@@ -35,7 +35,7 @@ final l10n = AppLocalizations.of(context);
     void goTo(AuthNavigationTarget target) {
       switch (target) {
         case AuthNavigationTarget.continueWithEmail:
-          context.go('/email');
+          context.push('/email');
       }
     }
 

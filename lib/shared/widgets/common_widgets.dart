@@ -215,6 +215,8 @@ class PillTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final EdgeInsets scrollPadding;
+  final bool autocorrect;
+  final bool enableSuggestions;
 
   const PillTextField({
     super.key,
@@ -226,6 +228,8 @@ class PillTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.scrollPadding = const EdgeInsets.all(20),
+    this.autocorrect = true,
+    this.enableSuggestions = true,
   });
 
   @override
@@ -234,6 +238,8 @@ class PillTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscure,
       keyboardType: keyboardType,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
       readOnly: readOnly,
       onTap: onTap,
       scrollPadding: scrollPadding,

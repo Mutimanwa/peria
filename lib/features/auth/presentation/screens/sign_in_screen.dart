@@ -15,7 +15,11 @@ import 'package:peria_app/shared/widgets/common_widgets.dart';
 ///
 /// Without it an account could be created but never opened again.
 class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({super.key, this.initialEmail});
+
+  /// Renseigné quand l'adresse vient de l'ecran precedent : la personne n'a
+  /// pas a la retaper apres avoir choisi « j'ai deja un compte ».
+  final String? initialEmail;
 
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
@@ -28,6 +32,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _obscure = true;
   bool _submitting = false;
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final email = widget.initialEmail?.trim();
+    if (email != null && email.isNotEmpty) {
+      _emailController.text = email;
+    }
+  }
 
   @override
   void dispose() {
@@ -115,6 +128,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             PillTextField(
               hint: l10n.enterYourPasswordHint,
               obscure: _obscure,
+              autocorrect: false,
+              enableSuggestions: false,
               controller: _passwordController,
               suffix: IconButton(
                 tooltip: _obscure ? l10n.showPassword : l10n.hidePassword,
@@ -157,7 +172,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/register'),
+                onPressed: () => context.push('/register'),
                 child: Text(
                   l10n.dontHaveAccount,
                   style: AppText.caption.copyWith(color: AppColors.textSecondary),

@@ -1967,5 +1967,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
+  String get passwordMismatch => 'Passwords do not match.';
+
+  @override
+  String get policyRequiredForAuth => 'Tick the privacy policy to continue.';
+
+  @override
   String get close => 'Close';
 }

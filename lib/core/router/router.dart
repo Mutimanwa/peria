@@ -103,10 +103,6 @@ String? resolveRouterRedirect({
     return '/cycle';
   }
 
-  if (location == '/splash' || location == '/welcome') {
-    return '/ask-name';
-  }
-
   return null;
 }
 
@@ -267,11 +263,14 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/sign-in',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const SignInScreen(),
-      ),
+      pageBuilder: (context, state) {
+        final email = state.extra;
+        return _buildSlideTransitionPage(
+          context,
+          state,
+          SignInScreen(initialEmail: email is String ? email : null),
+        );
+      },
     ),
     GoRoute(
       path: '/verify-email',

@@ -1991,5 +1991,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get search => 'Rechercher';
 
   @override
+  String get passwordMismatch => 'Les mots de passe ne correspondent pas.';
+
+  @override
+  String get policyRequiredForAuth => 'Coche la politique de confidentialité pour continuer.';
+
+  @override
   String get close => 'Fermer';
 }

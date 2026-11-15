@@ -677,6 +677,8 @@
   "deleteAccountSuccess": "Ton compte a été supprimé.",
   "passwordMinLengthHint": "8 caractères minimum",
   "createAccountKeepsData": "Ton suivi actuel sera conservé.",
+  "passwordMismatch": "Les mots de passe ne correspondent pas.",
+  "policyRequiredForAuth": "Coche la politique de confidentialité pour continuer.",
   "back": "Retour",
   "previousMonth": "Mois précédent",
   "nextMonth": "Mois suivant",

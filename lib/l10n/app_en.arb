@@ -677,6 +677,8 @@
   "deleteAccountSuccess": "Your account has been deleted.",
   "passwordMinLengthHint": "At least 8 characters",
   "createAccountKeepsData": "Your current tracking will be kept.",
+  "passwordMismatch": "Passwords do not match.",
+  "policyRequiredForAuth": "Tick the privacy policy to continue.",
   "back": "Back",
   "previousMonth": "Previous month",
   "nextMonth": "Next month",
