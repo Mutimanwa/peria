@@ -1065,10 +1065,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Échec de l’authentification. Réessaie.';
 
   @override
-  String get securitySkipDevelopmentOnly =>
-      'Ignorer (développement uniquement)';
-
-  @override
   String get securityRetry => 'Réessayer';
 
   @override

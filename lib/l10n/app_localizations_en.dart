@@ -1052,9 +1052,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get securityAuthenticationError => 'Authentication failed. Try again.';
 
   @override
-  String get securitySkipDevelopmentOnly => 'Skip (development only)';
-
-  @override
   String get securityRetry => 'Retry';
 
   @override

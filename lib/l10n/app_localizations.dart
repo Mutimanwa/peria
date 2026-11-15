@@ -2033,12 +2033,6 @@ abstract class AppLocalizations {
   /// **'Authentication failed. Try again.'**
   String get securityAuthenticationError;
 
-  /// No description provided for @securitySkipDevelopmentOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip (development only)'**
-  String get securitySkipDevelopmentOnly;
-
   /// No description provided for @securityRetry.
   ///
   /// In en, this message translates to:

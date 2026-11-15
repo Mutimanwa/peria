@@ -29,15 +29,12 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
     final securityNotifier = ref.read(securityProvider.notifier);
     final result = await securityNotifier.authenticate();
+    if (!mounted) return;
 
     setState(() {
       _authResult = result;
       _isAuthenticating = false;
     });
-
-    if (result.isSuccess) {
-      _onAuthenticated();
-    }
   }
 
   Future<void> _authenticateWithPin(String pin) async {
@@ -45,20 +42,12 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
     final securityNotifier = ref.read(securityProvider.notifier);
     final result = await securityNotifier.authenticateWithPin(pin);
+    if (!mounted) return;
 
     setState(() {
       _authResult = result;
       _isAuthenticating = false;
     });
-
-    if (result.isSuccess) {
-      _onAuthenticated();
-    }
-  }
-
-  void _onAuthenticated() {
-    // Navigate back or to the protected content
-    Navigator.of(context).pop(true);
   }
 
   @override
@@ -120,14 +109,6 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               ],
 
               const Spacer(),
-
-              // Emergency exit (for development/testing)
-              if (_authResult?.isLocked == false) ...[
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(l10n.securitySkipDevelopmentOnly),
-                ),
-              ],
             ],
           ),
         ),
@@ -201,9 +182,9 @@ class AuthGuard extends ConsumerWidget {
         // Show lock screen
         return const LockScreen();
       },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      // Keep the white splash look while the settings are read, instead of
+      // flashing a spinner.
+      loading: () => const ColoredBox(color: Colors.white),
       error: (error, stack) => Scaffold(
         body: Center(
           child: Column(

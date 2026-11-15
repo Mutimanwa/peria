@@ -364,7 +364,6 @@
   "securityAuthenticationSuccess": "Authentication successful",
   "securityPinRequired": "PIN required",
   "securityAuthenticationError": "Authentication failed. Try again.",
-  "securitySkipDevelopmentOnly": "Skip (development only)",
   "securityRetry": "Retry",
   "securityLockedFor": "Locked for {minutes}m {seconds}s",
   "journalNoEntryForDay": "No entry for this day",

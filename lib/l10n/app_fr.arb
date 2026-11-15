@@ -364,7 +364,6 @@
   "securityAuthenticationSuccess": "Authentification réussie",
   "securityPinRequired": "Code PIN requis",
   "securityAuthenticationError": "Échec de l’authentification. Réessaie.",
-  "securitySkipDevelopmentOnly": "Ignorer (développement uniquement)",
   "securityRetry": "Réessayer",
   "securityLockedFor": "Verrouillé pendant {minutes} min {seconds} s",
   "journalNoEntryForDay": "Aucune note pour ce jour",

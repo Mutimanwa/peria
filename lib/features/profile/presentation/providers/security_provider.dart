@@ -45,8 +45,14 @@ class SecurityState {
 
 /// Riverpod StateNotifier for security management
 class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
-  SecurityNotifier() : super(const AsyncValue.loading()) {
-    _initialize();
+  SecurityNotifier({SecurityState? seed})
+      : super(seed == null
+            ? const AsyncValue.loading()
+            : AsyncValue.data(seed)) {
+    // A seeded state already comes from a completed load (tests, restore).
+    if (seed == null) {
+      _initialize();
+    }
   }
 
   Future<void> _initialize() async {
