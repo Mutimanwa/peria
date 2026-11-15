@@ -47,6 +47,10 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
   bool _isBiometric = false;
   String? _error;
 
+  /// Incremente a chaque code refuse : la saisie est reconstruite, sinon les
+  /// cases restent remplies et le code suivant n'est plus pris en compte.
+  int _attempts = 0;
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +78,10 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
     final result =
         await ref.read(securityProvider.notifier).authenticateWithPin(pin);
     if (!mounted || result.isSuccess) return;
-    setState(() => _error = AppLocalizations.of(context).securityIncorrectPin);
+    setState(() {
+      _error = AppLocalizations.of(context).securityIncorrectPin;
+      _attempts++;
+    });
   }
 
   @override
@@ -148,16 +155,14 @@ class _LockOverlayState extends ConsumerState<_LockOverlay> {
                     )
                   else
                     const SizedBox(height: 16),
-                  if (!_isBiometric || true) ...[
-                    PinCodeInput(
-                      length: 4,
-                      onCompleted: _verifyPin,
-                      error: _error,
-                      autoFocus: true,
-                    ),
-                    const SizedBox(height: 16),
-                    const SizedBox(height: 16),
-                  ],
+                  PinCodeInput(
+                    key: ValueKey(_attempts),
+                    length: 4,
+                    onCompleted: _verifyPin,
+                    error: _error,
+                    autoFocus: true,
+                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),

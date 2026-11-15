@@ -250,6 +250,10 @@ class SecurityService {
     );
   }
 
+  /// Opens a fresh unlocked session, e.g. right after the PIN was configured
+  /// so enabling the app lock does not immediately lock the settings screen.
+  static Future<void> startSession() => _startSession();
+
   /// Check if the current session is still valid
   static Future<bool> isSessionValid() async {
     final expiresAtRaw = await _secureStorage.read(key: _sessionExpiresAtKey);

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:peria_app/core/theme/theme.dart';
+import 'package:peria_app/l10n/app_localizations.dart';
 
+/// Saisie d'un code PIN.
+///
+/// Un seul [TextField] invisible porte la saisie, et les cases ne sont que
+/// décoratives. Avec un vrai champ par chiffre, les frappes rapides se
+/// perdaient pendant le transfert de focus : le code restait incomplet,
+/// [onCompleted] n'était jamais appelé et le verrou semblait ne rien valider.
 class PinCodeInput extends StatefulWidget {
   final Function(String) onCompleted;
   final Function(String)? onChanged;
@@ -28,30 +35,21 @@ class PinCodeInput extends StatefulWidget {
 
 class _PinCodeInputState extends State<PinCodeInput>
     with SingleTickerProviderStateMixin {
-  late List<FocusNode> _focusNodes;
-  late List<TextEditingController> _controllers;
-  late AnimationController _shakeController;
-  late Animation<Offset> _shakeAnimation;
-  bool _isObscured = true;
+  static const double _cellSize = 52;
+  static const double _cellGap = 14;
+
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  late final AnimationController _shakeController;
+  late final Animation<Offset> _shakeAnimation;
+  late bool _isObscured;
   String _pin = '';
 
   @override
   void initState() {
     super.initState();
     _isObscured = widget.obscureText;
-    _focusNodes = List.generate(widget.length, (_) => FocusNode());
-    _controllers = List.generate(widget.length, (_) => TextEditingController());
-
-    // Add listeners to focus hubs for backspace detection
-    for (var i = 0; i < widget.length; i++) {
-      _focusNodes[i].addListener(() {
-        if (_focusNodes[i].hasFocus &&
-            i > 0 &&
-            _controllers[i - 1].text.isEmpty) {
-          // Prevent skipping empty fields forward manually
-        }
-      });
-    }
 
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -67,95 +65,149 @@ class _PinCodeInputState extends State<PinCodeInput>
 
     if (widget.autoFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _focusNodes[0].requestFocus();
+        if (mounted) _focusNode.requestFocus();
+      });
+    }
+
+    // Le parent reconstruit la saisie apres un echec : on rejoue la secousse
+    // pour que le refus soit visible.
+    if (widget.error != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _shake();
       });
     }
   }
 
   @override
+  void didUpdateWidget(covariant PinCodeInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Un code refusé doit vider les cases, sinon la personne ne peut plus rien
+    // retaper sans les effacer une par une.
+    if (widget.error != null && widget.error != oldWidget.error) {
+      _clear();
+      _shake();
+    }
+  }
+
+  @override
   void dispose() {
-    for (final node in _focusNodes) {
-      node.dispose();
-    }
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
+    _controller.dispose();
+    _focusNode.dispose();
     _shakeController.dispose();
     super.dispose();
   }
 
-  void _onChanged(int index, String value) {
-    if (value.isEmpty) return;
-
-    if (value.length > 1) {
-      value = value[value.length - 1];
-      _controllers[index].text = value;
-    }
-
-    _updatePin();
-
-    if (index < widget.length - 1) {
-      _focusNodes[index + 1].requestFocus();
-    } else if (_pin.length == widget.length) {
-      widget.onCompleted(_pin);
-    }
+  void _clear() {
+    _controller.clear();
+    if (_pin.isEmpty) return;
+    setState(() => _pin = '');
+    widget.onChanged?.call('');
+    if (mounted) _focusNode.requestFocus();
   }
 
-  void _updatePin() {
-    _pin = _controllers.map((c) => c.text).join();
-    widget.onChanged?.call(_pin);
-  }
+  void _onChanged(String raw) {
+    final digits = raw.replaceAll(RegExp(r'\D'), '');
+    final value = digits.length > widget.length
+        ? digits.substring(0, widget.length)
+        : digits;
 
-  void _handleKeyPress(RawKeyEvent event, int index) {
-    if (event is RawKeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.backspace) {
-      if (_controllers[index].text.isEmpty && index > 0) {
-        _controllers[index - 1].clear();
-        _focusNodes[index - 1].requestFocus();
-        _updatePin();
-      }
+    if (value != raw) {
+      _controller.value = TextEditingValue(
+        text: value,
+        selection: TextSelection.collapsed(offset: value.length),
+      );
+    }
+
+    setState(() => _pin = value);
+    widget.onChanged?.call(value);
+
+    if (value.length == widget.length) {
+      widget.onCompleted(value);
     }
   }
 
   Future<void> _shake() async {
-    await _shakeController.forward().then((_) => _shakeController.reset());
+    if (!mounted) return;
+    await _shakeController.forward();
+    if (mounted) _shakeController.reset();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.error != null) {
-      _shake();
-    }
+    final l10n = AppLocalizations.of(context);
+    final cellsWidth =
+        widget.length * _cellSize + (widget.length - 1) * _cellGap;
 
     return Column(
       children: [
         Stack(
-          alignment: Alignment.centerRight,
+          alignment: Alignment.center,
           children: [
-            AnimatedBuilder(
-              animation: _shakeAnimation,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: _shakeAnimation.value,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(widget.length, (index) {
-                      return Row(
-                        children: [
-                          _buildPinCell(index),
-                          if (index < widget.length - 1)
-                            const SizedBox(width: 14),
+            Padding(
+              padding: EdgeInsets.only(
+                right: widget.showVisibilityToggle ? 44 : 0,
+              ),
+              child: SizedBox(
+                width: cellsWidth,
+                height: _cellSize,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    // Le seul champ qui reçoit les frappes ; il est invisible.
+                    Opacity(
+                      opacity: 0,
+                      child: TextField(
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
-                      );
-                    }),
-                  ),
-                );
-              },
+                        showCursor: false,
+                        enableInteractiveSelection: false,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        maxLength: widget.length,
+                        style: const TextStyle(color: Colors.transparent),
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        onChanged: _onChanged,
+                      ),
+                    ),
+                    IgnorePointer(
+                      child: AnimatedBuilder(
+                        animation: _shakeAnimation,
+                        builder: (context, child) => Transform.translate(
+                          offset: _shakeAnimation.value,
+                          child: child,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (var index = 0;
+                                index < widget.length;
+                                index++) ...[
+                              if (index > 0)
+                                const SizedBox(width: _cellGap),
+                              _buildPinCell(index),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             if (widget.showVisibilityToggle)
               Positioned(
                 right: 0,
                 child: IconButton(
+                  tooltip:
+                      _isObscured ? l10n.hidePassword : l10n.showPassword,
                   icon: Icon(
                     _isObscured
                         ? Icons.visibility_outlined
@@ -172,6 +224,7 @@ class _PinCodeInputState extends State<PinCodeInput>
           const SizedBox(height: 12),
           Text(
             widget.error!,
+            textAlign: TextAlign.center,
             style: AppText.caption.copyWith(color: AppColors.textError),
           ),
         ],
@@ -180,42 +233,32 @@ class _PinCodeInputState extends State<PinCodeInput>
   }
 
   Widget _buildPinCell(int index) {
-    final isFocused = _focusNodes[index].hasFocus;
+    final isFilled = index < _pin.length;
+    final isCurrent = index == _pin.length;
+
+    final Color borderColor;
+    if (widget.error != null) {
+      borderColor = AppColors.error;
+    } else if (isCurrent) {
+      borderColor = AppColors.primary500;
+    } else {
+      borderColor = Colors.transparent;
+    }
 
     return Container(
-      width: 52,
-      height: 52,
+      width: _cellSize,
+      height: _cellSize,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppColors.grey100,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isFocused
-              ? AppColors.primary500
-              : (widget.error != null ? AppColors.error : Colors.transparent),
-          width: 1.5,
-        ),
+        border: Border.all(color: borderColor, width: 1.5),
       ),
-      child: RawKeyboardListener(
-        focusNode: FocusNode(), // Dummy to intercept backspace
-        onKey: (event) => _handleKeyPress(event, index),
-        child: TextField(
-          controller: _controllers[index],
-          focusNode: _focusNodes[index],
-          keyboardType: TextInputType.number,
-          textAlign: TextAlign.center,
-          obscureText: _isObscured,
-          obscuringCharacter: '●',
-          style: AppText.h4.copyWith(
-            fontWeight: FontWeight.w700,
-            color: AppColors.grey900,
-          ),
-          maxLength: 1,
-          decoration: const InputDecoration(
-            counterText: '',
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.zero,
-          ),
-          onChanged: (value) => _onChanged(index, value),
+      child: Text(
+        isFilled ? (_isObscured ? '●' : _pin[index]) : '',
+        style: AppText.h4.copyWith(
+          fontWeight: FontWeight.w700,
+          color: AppColors.grey900,
         ),
       ),
     );

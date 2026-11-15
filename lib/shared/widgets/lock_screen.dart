@@ -18,6 +18,10 @@ class _LockScreenState extends ConsumerState<LockScreen> {
   AuthResult? _authResult;
   bool _isAuthenticating = false;
 
+  /// Change a chaque code refuse : la saisie est reconstruite et vidée, sinon
+  /// les quatre cases restent remplies et plus aucune frappe n'est prise.
+  int _pinAttempts = 0;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +51,7 @@ class _LockScreenState extends ConsumerState<LockScreen> {
     setState(() {
       _authResult = result;
       _isAuthenticating = false;
+      if (!result.isSuccess) _pinAttempts++;
     });
   }
 
@@ -85,11 +90,14 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                 const SizedBox(height: 32),
               ],
 
-              // PIN input if needed
-              if (_authResult?.requiresPin == true ||
-                  _authResult?.status == AuthStatus.pinIncorrect) ...[
+              // PIN input: also shown when biometrics fail or error, so the
+              // person always has a way in.
+              if (_authResult != null &&
+                  !_authResult!.isSuccess &&
+                  _authResult!.status != AuthStatus.locked) ...[
                 const SizedBox(height: 32),
                 PinCodeInput(
+                  key: ValueKey(_pinAttempts),
                   length: 4,
                   autoFocus: true,
                   obscureText: true,

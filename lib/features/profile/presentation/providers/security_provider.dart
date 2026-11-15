@@ -88,7 +88,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   // ===========================================================================
 
   Future<void> createPin(String pin) async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.createPin(pin);
       await _loadState();
@@ -99,7 +98,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   }
 
   Future<void> changePin(String oldPin, String newPin) async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.changePin(oldPin, newPin);
       await _loadState();
@@ -110,7 +108,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   }
 
   Future<void> deletePin() async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.deletePin();
       await _loadState();
@@ -163,9 +160,13 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   // ===========================================================================
 
   Future<void> setAppLockEnabled(bool enabled) async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.setAppLockEnabled(enabled);
+      // Juste apres avoir configure son code, la personne reste debloquee :
+      // sinon la garde lui impose aussitot l'ecran de verrouillage.
+      if (enabled) {
+        await SecurityService.startSession();
+      }
       await _loadState();
     } catch (error) {
       await _loadState();
@@ -174,7 +175,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   }
 
   Future<void> setJournalLockEnabled(bool enabled) async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.setJournalLockEnabled(enabled);
       await _loadState();
@@ -185,7 +185,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   }
 
   Future<void> setBiometricsEnabled(bool enabled) async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.setBiometricsEnabled(enabled);
       await _loadState();
@@ -196,7 +195,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   }
 
   Future<void> setMultitaskProtectionEnabled(bool enabled) async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.setMultitaskProtectionEnabled(enabled);
       await _loadState();
@@ -228,7 +226,6 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   // ===========================================================================
 
   Future<void> clearAllLocalData() async {
-    state = const AsyncValue.loading();
     try {
       await SecurityService.clearAllLocalData();
       await _loadState();
