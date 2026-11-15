@@ -62,7 +62,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (!mounted) return;
       final verified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
       if (verified) {
-        context.go('/home');
+        // `/home` n'a jamais existe dans le routeur : GoRouter affichait sa
+        // page d'erreur apres une connexion reussie. `/cycle` est l'accueil
+        // authentifie.
+        context.go('/cycle');
       } else {
         context.go(
           '/verify-email',
