@@ -27,8 +27,16 @@ La documentation détaillée se trouve dans le dossier `docs/` :
 - [Architecture du Projet](docs/ARCHITECTURE.md) : Modèles, Services, Providers et la logique de l'application.
 - [Design System](docs/design_system.md) : Couleurs, typographies, règles de design et composants métier.
 - [Cahier des charges (Initial)](docs/cahier.md) : Le document de conception initial.
+- [CI/CD](docs/CI_CD.md) : Branches `develop`/`main`, builds Android et iOS, release automatique sur `main`.
 
 Pour toute nouvelle fonctionnalité ou amélioration prévue, consultez le fichier [TODO.md](TODO.md).
+
+## 🌿 Branches
+
+- `develop` : intégration, cible des pull requests.
+- `main` : code livré ; chaque poussée déclenche une release GitHub.
+
+Voir [docs/CI_CD.md](docs/CI_CD.md) pour le détail des jobs et des versions.
 
 ## 🛠 Lancement Rapide
 

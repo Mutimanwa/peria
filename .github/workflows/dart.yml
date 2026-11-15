@@ -2,13 +2,31 @@ name: Flutter CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
+
+# Le job de release crée un tag et une Release GitHub : il lui faut les droits
+# d'écriture sur le contenu du dépôt.
+permissions:
+  contents: write
+
+# Deux poussées rapprochées sur une PR annulent la première ; une poussée sur
+# main n'est jamais annulée pour ne pas interrompre une release.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FLUTTER_VERSION: '3.41.7'
+
 jobs:
-  build:
+  # ===========================================================================
+  # Android : analyse, tests, APK et AAB
+  # ===========================================================================
+  android:
+    name: Android (analyse, tests, APK, AAB)
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +46,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.7'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
 
       # 4. Dépendances
       - name: Install dependencies
@@ -63,3 +82,113 @@ jobs:
         with:
           name: app-release-aab
           path: build/app/outputs/bundle/release/app-release.aab
+
+  # ===========================================================================
+  # iOS : compilation sans signature (les certificats Apple ne sont pas dans le
+  # dépôt). Le .app obtenu sert à valider la compilation ; il n'est pas
+  # installable tel quel sur un appareil.
+  # ===========================================================================
+  ios:
+    name: iOS (build sans signature)
+    runs-on: macos-latest
+
+    steps:
+      # 1. Récupération du code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Installation Flutter (CocoaPods est déjà présent sur les runners macOS)
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      # 3. Dépendances
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. Binaires iOS (accélère le premier build)
+      - name: Precache iOS artifacts
+        run: flutter precache --ios
+
+      # 5. Build iOS sans signature
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      # 6. Archive du .app, avec la version du pubspec dans le nom
+      - name: Package Runner.app
+        id: package
+        run: |
+          set -euo pipefail
+          VERSION=$(sed -n 's/^version: *//p' pubspec.yaml | head -1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          cd build/ios/iphoneos
+          zip -qry "peria-ios-$VERSION.zip" Runner.app
+          ls -lh "peria-ios-$VERSION.zip"
+
+      # 7. Upload de l'archive iOS
+      - name: Upload iOS archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-ios
+          path: build/ios/iphoneos/peria-ios-${{ steps.package.outputs.version }}.zip
+
+  # ===========================================================================
+  # Release : uniquement sur un push (direct ou merge d'une PR) vers main.
+  # Le numéro vient de `version:` dans pubspec.yaml ; le tag reprend la version
+  # complète, par exemple v1.0.0+1. Relancer le workflow met à jour la release
+  # existante au lieu d'échouer.
+  # ===========================================================================
+  release:
+    name: Release automatique
+    needs: [ android, ios ]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Historique complet : nécessaire pour les notes générées et les tags
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Récupération des binaires des deux jobs de build
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      # 3. Préparation des fichiers de la release
+      - name: Prepare release assets
+        id: assets
+        run: |
+          set -euo pipefail
+          VERSION=$(sed -n 's/^version: *//p' pubspec.yaml | head -1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+          mkdir -p release
+          cp dist/app-release.apk "release/peria-$VERSION.apk"
+          cp dist/app-release.aab "release/peria-$VERSION.aab"
+          cp "dist/peria-ios-$VERSION.zip" "release/peria-$VERSION-ios.zip"
+          ls -lh release
+
+      # 4. Tag + Release (création, ou mise à jour si le tag existe déjà)
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.assets.outputs.tag }}
+          VERSION: ${{ steps.assets.outputs.version }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/* --clobber
+            gh release edit "$TAG" --title "Peria $TAG"
+          else
+            gh release create "$TAG" release/* \
+              --title "Peria $TAG" \
+              --target "$GITHUB_SHA" \
+              --generate-notes
+          fi
