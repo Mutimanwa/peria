@@ -72,7 +72,7 @@ void main() {
     // d'erreur des que la saisie change, sans changer la cle du champ. Le
     // vidage part d'un didUpdateWidget : notifier le parent depuis un build
     // levait « setState() called during build ».
-    var error = 'Code incorrect.';
+    String? error = 'Code incorrect.';
     late StateSetter hostSetState;
 
     await tester.pumpWidget(MaterialApp(
