@@ -2,4 +2,6 @@
 <resources>
     <!-- The launch screen must always be white, in light and dark mode alike. -->
     <color name="splash_background">#FFFFFF</color>
+    <!-- Fond de l'icone adaptative (meme blanc que la marque). -->
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

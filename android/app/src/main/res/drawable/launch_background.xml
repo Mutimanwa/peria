@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Launch splash: white background with the Peria logo centered. -->
+<!-- Launch splash: white background with the Peria logo centered.
+     Le <bitmap> pointe vers un vrai PNG : depuis l'ajout de l'icone
+     adaptative, @mipmap/ic_launcher est un XML et ne peut plus etre
+     utilise comme source de bitmap. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/splash_background" />
 
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/launch_logo" />
     </item>
 </layer-list>

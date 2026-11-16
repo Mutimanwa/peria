@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 8+ : icone adaptative. Sans elle, les lanceurs modernes reduisent
+     l'icone carree dans un rond blanc. Fond blanc, et marque limitee a 60 dp
+     sur le canevas de 108 dp pour rester dans la zone sure, quel que soit le
+     masque applique par le lanceur. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>
