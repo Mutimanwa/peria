@@ -207,7 +207,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              Center(child: Image.asset(AppAssets.logo)),
+              Center(
+                child: Image.asset(
+                  AppAssets.logo,
+                  width: 104,
+                  height: 104,
+                  filterQuality: FilterQuality.medium,
+                ),
+              ),
               const SizedBox(height: 36),
               Expanded(
                 child: Image.asset(

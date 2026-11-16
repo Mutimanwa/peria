@@ -180,31 +180,15 @@ final l10n = AppLocalizations.of(context);
 class _PeriaLogoMini extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    // Même marque que le splash et l'accueil (asset unique, pas de tracé
+    // approximatif en cercles qui ne correspondait pas au logo).
+    return Image.asset(
+      AppAssets.logo,
       width: 28,
       height: 28,
-      child: CustomPaint(painter: _PeriaPainterMini()),
+      filterQuality: FilterQuality.medium,
     );
   }
-}
-
-class _PeriaPainterMini extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.2
-      ..strokeCap = StrokeCap.round;
-    final c = Offset(size.width / 2, size.height / 2);
-    final r = size.width * 0.32;
-    paint.color = AppColors.primary;
-    canvas.drawCircle(Offset(c.dx - r * 0.4, c.dy), r, paint);
-    paint.color = AppColors.secondary;
-    canvas.drawCircle(Offset(c.dx + r * 0.4, c.dy), r, paint);
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
 }
 
 // ── Logo Google dessiné en Flutter ──────────────────

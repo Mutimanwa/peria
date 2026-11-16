@@ -73,6 +73,9 @@ class _SplashScreenState extends State<SplashScreen>
                         width: 140,
                         height: 140,
                         fit: BoxFit.contain,
+                        // Le logo source fait 512 px : un filtrage bilinéaire
+                        // laisse un bord mou en réduction.
+                        filterQuality: FilterQuality.medium,
                       ),
                     ),
                   ),
