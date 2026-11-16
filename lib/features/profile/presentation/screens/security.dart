@@ -29,6 +29,10 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
     String? error;
     var isConfirming = false;
     var saved = false;
+    // Incremente a chaque code refuse : la saisie est reconstruite sur des
+    // cases vides. Sans cela, les quatre cases restaient remplies apres un
+    // refus et le code suivant n'etait plus pris en compte.
+    var attempts = 0;
 
     await showModalBottomSheet<void>(
       context: context,
@@ -97,14 +101,17 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                         ),
                         const SizedBox(height: 20),
                         PinCodeInput(
-                          key: ValueKey(isConfirming),
+                          key: ValueKey('$isConfirming-$attempts'),
                           length: 4,
                           autoFocus: true,
                           obscureText: true,
                           showVisibilityToggle: true,
                           error: error,
-                          onChanged: (_) {
-                            if (error != null) {
+                          onChanged: (value) {
+                            // Efface le message des la premiere frappe. La
+                            // saisie, elle, est deja vide : c'est la cle qui
+                            // la reconstruit, pas ce rappel.
+                            if (error != null && value.isNotEmpty) {
                               setSheetState(() => error = null);
                             }
                           },
@@ -118,7 +125,10 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                               return;
                             }
                             if (value != pin) {
-                              setSheetState(() => error = l10n.pinsDoNotMatch);
+                              setSheetState(() {
+                                error = l10n.pinsDoNotMatch;
+                                attempts++;
+                              });
                               return;
                             }
                             try {
@@ -140,9 +150,10 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                                 Navigator.of(sheetContext).pop();
                               }
                             } catch (_) {
-                              setSheetState(
-                                () => error = l10n.securityAuthenticationError,
-                              );
+                              setSheetState(() {
+                                error = l10n.securityAuthenticationError;
+                                attempts++;
+                              });
                             }
                           },
                         ),

@@ -66,6 +66,49 @@ void main() {
     expect(codes, isEmpty);
   });
 
+  testWidgets('le vidage ne fait pas planter le parent qui efface son erreur',
+      (tester) async {
+    // Reproduit la feuille des reglages : le parent efface son message
+    // d'erreur des que la saisie change, sans changer la cle du champ. Le
+    // vidage part d'un didUpdateWidget : notifier le parent depuis un build
+    // levait « setState() called during build ».
+    var error = 'Code incorrect.';
+    late StateSetter hostSetState;
+
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: StatefulBuilder(
+          builder: (context, setState) {
+            hostSetState = setState;
+            return Center(
+              child: PinCodeInput(
+                key: const ValueKey('pin'),
+                length: 4,
+                error: error,
+                onChanged: (_) {
+                  if (error != null) setState(() => error = null);
+                },
+                onCompleted: (_) {},
+              ),
+            );
+          },
+        ),
+      ),
+    ));
+
+    await tester.enterText(find.byType(TextField), '1234');
+    await tester.pump();
+
+    hostSetState(() => error = 'Code incorrect.');
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    final field = tester.widget<TextField>(find.byType(TextField));
+    expect(field.controller?.text, isEmpty);
+  });
+
   testWidgets('un code refuse vide la saisie', (tester) async {
     Widget build({String? error}) => wrap(
           PinCodeInput(

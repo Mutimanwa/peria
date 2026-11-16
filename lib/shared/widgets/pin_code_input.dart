@@ -101,7 +101,13 @@ class _PinCodeInputState extends State<PinCodeInput>
     _controller.clear();
     if (_pin.isEmpty) return;
     setState(() => _pin = '');
-    widget.onChanged?.call('');
+    // Le vidage part d'un didUpdateWidget, donc pendant la construction :
+    // notifier le parent ici lui ferait appeler setState en pleine phase de
+    // build (assertion « setState() called during build »). On le notifie
+    // apres la frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onChanged?.call('');
+    });
     if (mounted) _focusNode.requestFocus();
   }
 
