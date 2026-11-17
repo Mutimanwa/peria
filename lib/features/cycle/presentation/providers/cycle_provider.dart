@@ -7,6 +7,7 @@ import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/cycle_regularity.dart';
 import 'package:peria_app/features/cycle/domain/cycle_statistics.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/cycle/domain/period_log_upsert.dart';
 import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
@@ -38,22 +39,21 @@ class PeriodLogsNotifier extends StateNotifier<AsyncValue<List<PeriodLog>>> {
     state = await AsyncValue.guard(_repository.load);
   }
 
+  /// Ajoute ou corrige une période.
+  ///
+  /// Toutes les bornes (durée maximale, pas de jour futur, remplacement d'une
+  /// plage chevauchée) sont appliquées par [PeriodLogUpsert] : les écrans
+  /// peuvent envoyer ce que la personne a dessiné, le notifier fait respecter
+  /// les règles.
   Future<void> add(PeriodLog log) async {
     final current = [...(state.value ?? <PeriodLog>[])];
-    current.removeWhere((x) => x.id == log.id);
-    var mergedLog = log;
-    final remaining = <PeriodLog>[];
-    for (final existing in current) {
-      if (existing.overlapsOrTouches(mergedLog)) {
-        mergedLog = mergedLog.merge(existing);
-      } else {
-        remaining.add(existing);
-      }
-    }
-    remaining.add(mergedLog);
-    remaining.sort((a, b) => b.startDate.compareTo(a.startDate));
-    state = AsyncValue.data(remaining);
-    await _repository.save(remaining);
+    final next = PeriodLogUpsert.apply(
+      logs: current,
+      log: log,
+      today: DateTime.now(),
+    );
+    state = AsyncValue.data(next);
+    await _repository.save(next);
   }
 }
 

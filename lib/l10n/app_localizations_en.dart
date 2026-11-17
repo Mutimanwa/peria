@@ -903,6 +903,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'No period is logged today or yesterday to close. Use Edit Calendar to correct the dates.';
 
   @override
+  String get periodLogTooLong => 'This period has reached its maximum length. Fix the dates in Edit calendar.';
+
+  @override
+  String get calendarPeriodMaxHelp => 'A period lasts 10 days at most; future days cannot be selected.';
+
+  @override
   String get periodLogSaveError =>
       'Could not save the period log. Check your connection and try again.';
 

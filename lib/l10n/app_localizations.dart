@@ -1763,6 +1763,18 @@ abstract class AppLocalizations {
   /// **'No period is logged today or yesterday to close. Use Edit Calendar to correct the dates.'**
   String get periodLogNoRecentToEnd;
 
+  /// No description provided for @periodLogTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'This period has reached its maximum length. Fix the dates in Edit calendar.'**
+  String get periodLogTooLong;
+
+  /// No description provided for @calendarPeriodMaxHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A period lasts 10 days at most; future days cannot be selected.'**
+  String get calendarPeriodMaxHelp;
+
   /// No description provided for @periodLogSaveError.
   ///
   /// In en, this message translates to:

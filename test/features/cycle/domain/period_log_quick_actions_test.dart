@@ -69,7 +69,28 @@ void main() {
       expect(log?.id, estimated.id);
       expect(log?.isEstimated, isFalse);
       expect(log?.startDate, estimated.startDate);
-      expect(log?.endDate, estimated.endDate);
+      // Les jours à venir de l'estimation ne sont pas confirmés : une période
+      // enregistrée ne contient jamais de date future.
+      expect(log?.endDate, today);
+    });
+
+    test('starts a new log once the ongoing period reached its maximum', () {
+      // Période ouverte il y a douze jours : la prolonger produirait la plage
+      // démesurée qui cassait le calendrier.
+      final ongoing = PeriodLog(
+        id: 'ongoing',
+        startDate: DateTime(2026, 10, 2),
+        endDate: DateTime(2026, 10, 13),
+      );
+
+      final log = PeriodLogQuickActions.recordToday(
+        logs: [ongoing],
+        today: today,
+      );
+
+      expect(log?.id, isNot(ongoing.id));
+      expect(log?.startDate, today);
+      expect(log?.endDate, today);
     });
 
     test('does not duplicate a day already recorded as actual', () {
@@ -118,6 +139,19 @@ void main() {
       );
     });
 
+    test('refuses to close a period open for longer than the maximum', () {
+      final stale = PeriodLog(
+        id: 'stale',
+        startDate: DateTime(2026, 9, 20),
+        endDate: DateTime(2026, 10, 13),
+      );
+
+      expect(
+        PeriodLogQuickActions.endToday(logs: [stale], today: today),
+        isNull,
+      );
+    });
+
     test('does not save an already confirmed end date for today', () {
       final actual = PeriodLog(
         id: 'actual',
@@ -127,6 +161,32 @@ void main() {
 
       expect(
         PeriodLogQuickActions.endToday(logs: [actual], today: today),
+        isNull,
+      );
+    });
+  });
+
+  group('PeriodLogQuickActions.startToday', () {
+    test('creates a one-day log when today is free', () {
+      final log = PeriodLogQuickActions.startToday(
+        logs: const <PeriodLog>[],
+        today: today,
+      );
+
+      expect(log?.startDate, today);
+      expect(log?.endDate, today);
+      expect(log?.isEstimated, isFalse);
+    });
+
+    test('does nothing when today is already an actual period day', () {
+      final actual = PeriodLog(
+        id: 'actual',
+        startDate: DateTime(2026, 10, 12),
+        endDate: DateTime(2026, 10, 14),
+      );
+
+      expect(
+        PeriodLogQuickActions.startToday(logs: [actual], today: today),
         isNull,
       );
     });

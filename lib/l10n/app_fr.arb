@@ -319,6 +319,8 @@
   "periodLogLoadError": "Impossible de charger les journaux. Réessaie ou utilise Modifier le calendrier.",
   "periodLogAlreadyLoggedToday": "Aujourd’hui est déjà enregistré comme jour de règles.",
   "periodLogNoRecentToEnd": "Aucun journal d’aujourd’hui ou d’hier à terminer. Utilise Modifier le calendrier pour corriger les dates.",
+  "periodLogTooLong": "Cette période a atteint sa durée maximale. Corrige les dates dans Modifier le calendrier.",
+  "calendarPeriodMaxHelp": "Une période dure 10 jours au maximum ; les jours à venir ne sont pas sélectionnables.",
   "periodLogSaveError": "Impossible d’enregistrer le journal. Vérifie ta connexion puis réessaie.",
   "update": "Mettre à jour",
   "calendarTitle": "Calendrier du cycle",

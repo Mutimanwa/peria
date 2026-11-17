@@ -911,6 +911,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucun journal d’aujourd’hui ou d’hier à terminer. Utilise Modifier le calendrier pour corriger les dates.';
 
   @override
+  String get periodLogTooLong => 'Cette période a atteint sa durée maximale. Corrige les dates dans Modifier le calendrier.';
+
+  @override
+  String get calendarPeriodMaxHelp => 'Une période dure 10 jours au maximum ; les jours à venir ne sont pas sélectionnables.';
+
+  @override
   String get periodLogSaveError =>
       'Impossible d’enregistrer le journal. Vérifie ta connexion puis réessaie.';
 
