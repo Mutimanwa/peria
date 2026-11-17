@@ -61,6 +61,32 @@ jobs:
       - name: Run tests
         run: flutter test
 
+      # 6bis. Signature de release. Le keystore arrive par le secret
+      #        ANDROID_KEYSTORE_BASE64 ; sans lui, on compile avec la clé de
+      #        debug et l'APK ne remplace pas une installation signée autrement.
+      #        Procédure complète : docs/CI_CD.md, section « Signature Android ».
+      - name: Configure release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${KEYSTORE_BASE64}" ]; then
+            echo "::warning title=Signature de release absente::ANDROID_KEYSTORE_BASE64 n'est pas defini : l'APK est signe avec la cle de debug. Il ne remplacera pas une installation existante et le Play Store le refusera. Voir docs/CI_CD.md."
+            exit 0
+          fi
+          mkdir -p android/keystore
+          printf '%s' "${KEYSTORE_BASE64}" | base64 -d > android/keystore/release.jks
+          {
+            echo "storeFile=keystore/release.jks"
+            echo "storePassword=${KEYSTORE_PASSWORD}"
+            echo "keyAlias=${KEY_ALIAS}"
+            echo "keyPassword=${KEY_PASSWORD}"
+          } > android/key.properties
+          echo "Keystore de release installe ($(wc -c < android/keystore/release.jks) octets)."
+
       # 7. Build APK
       - name: Build APK
         run: flutter build apk --release
@@ -68,6 +94,21 @@ jobs:
       # 8. Build AAB (Play Store)
       - name: Build App Bundle
         run: flutter build appbundle --release
+
+      # 8bis. Empreinte du certificat qui a signé l'APK : c'est la valeur à
+      #       comparer quand Android refuse une mise à jour.
+      - name: Print signing certificate
+        run: |
+          set -uo pipefail
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          if [ ! -f "$APK" ]; then echo "APK introuvable : $APK"; exit 0; fi
+          APKSIGNER=$(ls "$SDK"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -1 || true)
+          if [ -n "${APKSIGNER}" ]; then
+            "$APKSIGNER" verify --print-certs "$APK" || true
+          else
+            unzip -p "$APK" 'META-INF/*.RSA' > /tmp/cert.rsa && keytool -printcert -file /tmp/cert.rsa || true
+          fi
 
       # 9. Upload APK
       - name: Upload APK

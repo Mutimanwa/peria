@@ -66,7 +66,70 @@ version: 1.0.1+2   # correctif : +0.0.1 et numéro de build +1
 
 Aucun tag n'est créé à la main.
 
-## 4. iOS : ce qui est fait, ce qui reste
+## 4. Signature Android
+
+Une mise à jour ne s'installe que si la nouvelle APK est signée avec **le même
+certificat** que celle déjà présente sur le téléphone. Sinon Android répond
+`INSTALL_FAILED_UPDATE_INCOMPATIBLE`, que le téléphone traduit par « Application
+non installée » ou « Conflit avec un paquet existant ».
+
+Sans keystore de release, `android/app/build.gradle.kts` signe avec la clé de
+debug. Or cette clé est créée automatiquement dans `~/.android/debug.keystore`
+avec une paire de clés **aléatoire** : chaque runner GitHub démarre avec un
+`$HOME` vide, donc **chaque exécution de la CI produit une signature différente**.
+Deux APK de la CI ne peuvent pas se remplacer l'un l'autre, et le Play Store
+refuse un bundle signé en debug.
+
+### Créer le keystore (une seule fois)
+
+```bash
+keytool -genkeypair -v \
+  -keystore peria-upload.jks \
+  -alias peria \
+  -keyalg RSA -keysize 4096 -validity 10000 \
+  -dname "CN=Peria, O=Peria, C=BI"
+```
+
+> **À conserver hors du dépôt, avec une sauvegarde.** Sans ce fichier et ses mots
+> de passe, plus aucune mise à jour n'est possible sur le Play Store : il faudrait
+> publier une application sous un autre identifiant.
+
+### Déposer les secrets
+
+Le keystore voyage en base64, dans quatre secrets du dépôt
+(*Settings → Secrets and variables → Actions*) :
+
+```bash
+base64 -w0 peria-upload.jks > peria-upload.jks.b64
+# macOS : base64 -i peria-upload.jks -o peria-upload.jks.b64
+
+gh secret set ANDROID_KEYSTORE_BASE64 < peria-upload.jks.b64
+gh secret set ANDROID_KEYSTORE_PASSWORD   # mot de passe du keystore
+gh secret set ANDROID_KEY_ALIAS           # peria
+gh secret set ANDROID_KEY_PASSWORD        # mot de passe de la clé
+```
+
+### Ce que fait la CI
+
+L'étape « Configure release signing » écrit `android/keystore/release.jks` et
+`android/key.properties` à partir des secrets (les deux sont ignorés par git).
+`build.gradle.kts` lit ce fichier et signe les builds release avec la clé de
+release ; en son absence — poste de dev sans les secrets — il retombe sur la clé
+de debug pour ne pas bloquer la compilation, et le job affiche un avertissement.
+
+L'étape « Print signing certificate » affiche l'empreinte SHA-256 du certificat
+de l'APK produit dans les logs du job `android` : c'est la valeur à comparer
+quand une installation est refusée.
+
+### Vérifier un APK à la main
+
+```bash
+apksigner verify --print-certs peria-1.0.0+1.apk
+```
+
+Deux APK qui peuvent se remplacer l'un l'autre affichent la même empreinte.
+
+## 5. iOS : ce qui est fait, ce qui reste
 
 Le job `ios` compile l'application en release **sans signature** : c'est une
 vérification de compilation, pas un binaire installable.
@@ -83,7 +146,7 @@ de distribution et un profil de provisionnement :
 Ces étapes demandent un compte Apple Developer payant ; tant qu'il n'existe
 pas, la compilation non signée reste la meilleure vérification possible.
 
-## 5. Lancer la CI à la main
+## 6. Lancer la CI à la main
 
 Onglet *Actions* → *Flutter CI/CD* → *Run workflow*, ou :
 
