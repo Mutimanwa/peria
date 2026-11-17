@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/features/auth/domain/auth_validators.dart';
-import 'package:peria_app/features/auth/domain/email_flow_navigation_target.dart';
 
 final continueWithEmailControllerProvider =
     StateNotifierProvider<ContinueWithEmailController, ContinueWithEmailState>(
@@ -26,9 +25,5 @@ class ContinueWithEmailController
 
   void onEmailChanged(String value) {
     state = state.copyWith(email: value);
-  }
-
-  EmailFlowNavigationTarget onContinueTapped() {
-    return EmailFlowNavigationTarget.createAccount;
   }
 }

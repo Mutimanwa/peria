@@ -215,6 +215,8 @@ class PillTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final EdgeInsets scrollPadding;
+  final bool autocorrect;
+  final bool enableSuggestions;
 
   const PillTextField({
     super.key,
@@ -226,6 +228,8 @@ class PillTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.scrollPadding = const EdgeInsets.all(20),
+    this.autocorrect = true,
+    this.enableSuggestions = true,
   });
 
   @override
@@ -234,6 +238,8 @@ class PillTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscure,
       keyboardType: keyboardType,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
       readOnly: readOnly,
       onTap: onTap,
       scrollPadding: scrollPadding,
@@ -274,6 +280,11 @@ class OnboardingScaffold extends StatelessWidget {
   final VoidCallback? onSkip;
   final VoidCallback? onBack;
 
+  /// Ecrans avec champ de saisie : passer `true` pour que le corps se reduise
+  /// quand le clavier s'ouvre. Sans cela, le champ garde ses coordonnees, reste
+  /// sous le clavier et la zone defilable ne sait pas qu'il faut defiler.
+  final bool resizeToAvoidBottomInset;
+
   const OnboardingScaffold({
     super.key,
     required this.child,
@@ -281,13 +292,13 @@ class OnboardingScaffold extends StatelessWidget {
     this.showSkip = false,
     this.onSkip,
     this.onBack,
+    this.resizeToAvoidBottomInset = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Keep the keyboard inset visible so onboarding fields can scroll above it.
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       body: Container(
         decoration: const BoxDecoration(gradient: AppColors.bgGradient),
         child: SafeArea(

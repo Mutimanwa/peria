@@ -15,7 +15,11 @@ import 'package:peria_app/shared/widgets/common_widgets.dart';
 ///
 /// Without it an account could be created but never opened again.
 class SignInScreen extends ConsumerStatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({super.key, this.initialEmail});
+
+  /// Renseigné quand l'adresse vient de l'ecran precedent : la personne n'a
+  /// pas a la retaper apres avoir choisi « j'ai deja un compte ».
+  final String? initialEmail;
 
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
@@ -28,6 +32,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _obscure = true;
   bool _submitting = false;
   String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final email = widget.initialEmail?.trim();
+    if (email != null && email.isNotEmpty) {
+      _emailController.text = email;
+    }
+  }
 
   @override
   void dispose() {
@@ -62,7 +75,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (!mounted) return;
       final verified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
       if (verified) {
-        context.go('/home');
+        // `/home` n'a jamais existe dans le routeur : GoRouter affichait sa
+        // page d'erreur apres une connexion reussie. `/cycle` est l'accueil
+        // authentifie.
+        context.go('/cycle');
       } else {
         context.go(
           '/verify-email',
@@ -81,12 +97,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return OnboardingScaffold(
       showBack: true,
+      // Le corps se reduit avec le clavier, sinon le champ garde sa position
+      // sous le clavier et la zone defilable ne defile pas.
+      resizeToAvoidBottomInset: true,
       child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(24, 70, 24, 40 + bottomInset),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(24, 70, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,6 +131,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             PillTextField(
               hint: l10n.enterYourPasswordHint,
               obscure: _obscure,
+              autocorrect: false,
+              enableSuggestions: false,
               controller: _passwordController,
               suffix: IconButton(
                 tooltip: _obscure ? l10n.showPassword : l10n.hidePassword,
@@ -154,7 +175,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             const SizedBox(height: 16),
             Center(
               child: TextButton(
-                onPressed: () => context.go('/register'),
+                onPressed: () => context.push('/register'),
                 child: Text(
                   l10n.dontHaveAccount,
                   style: AppText.caption.copyWith(color: AppColors.textSecondary),

@@ -214,7 +214,11 @@ class _EducationHomeScreenState extends ConsumerState<EducationHomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(AppAssets.logo, height: 20),
+                Image.asset(
+                  AppAssets.logo,
+                  height: 20,
+                  filterQuality: FilterQuality.medium,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   'Peria',

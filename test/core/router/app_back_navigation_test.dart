@@ -5,7 +5,6 @@ void main() {
   test('system back walks to the logical parent instead of exiting', () {
     expect(resolveAppBackTarget('/calendar'), '/cycle');
     expect(resolveAppBackTarget('/symptoms'), '/cycle');
-    expect(resolveAppBackTarget('/notification'), '/cycle');
     expect(resolveAppBackTarget('/notifications'), '/cycle');
     expect(resolveAppBackTarget('/profile'), '/cycle');
     expect(resolveAppBackTarget('/profile/notifications'), '/profile');
@@ -29,6 +28,5 @@ void main() {
     expect(isAgeGateExempt('/ask-name'), isTrue);
     expect(isAgeGateExempt('/cycle'), isFalse);
     expect(isAgeGateExempt('/symptoms'), isFalse);
-    expect(isAgeGateExempt('/notification'), isFalse);
   });
 }

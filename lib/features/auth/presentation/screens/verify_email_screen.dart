@@ -130,7 +130,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
   Future<void> _showSuccessDialog() async {
     final l10n = AppLocalizations.of(context);
-    final destination = widget.args.isNewAccount ? '/ask-name' : '/home';
+    // `/cycle` est l'accueil authentifie ; `/home` n'existe pas et menait a la
+    // page d'erreur de GoRouter.
+    final destination = widget.args.isNewAccount ? '/ask-name' : '/cycle';
     await showDialog<void>(
       context: context,
       barrierDismissible: false,

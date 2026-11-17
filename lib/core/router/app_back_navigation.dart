@@ -26,7 +26,6 @@ String? resolveAppBackTarget(String location) {
     '/profile/settings': '/profile',
     '/profile/journal-sync': '/profile/settings',
     '/profile/help-support': '/profile',
-    '/notification': '/cycle',
     '/notifications': '/cycle',
     '/journal': '/cycle',
     '/journal/new': '/journal',

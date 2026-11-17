@@ -19,12 +19,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Peria t\'aide a comprendre ton corps avec un accompagnement doux et personnalise.';
 
   @override
-  String get turnOnNotifications => 'Activer les notifications';
-
-  @override
-  String get anotherTime => 'Plus tard';
-
-  @override
   String get registerTitle => 'On commence';
 
   @override
@@ -284,10 +278,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get saveEntry => 'Enregistrer';
 
   @override
-  String get writeFreelyHint =>
-      'Ecris librement. Cette note reste sur ton appareil.';
-
-  @override
   String get myProfile => 'Mon profil';
 
   @override
@@ -354,13 +344,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logOut => 'Se deconnecter';
 
   @override
-  String get cycleProfile => 'Profil du cycle';
-
-  @override
-  String get cycleProfileDescription =>
-      'Ces parametres sont la source de verite pour calculer tes prochaines regles et tes fenetres de fertilite.';
-
-  @override
   String get dateOfBirth => 'Date de naissance';
 
   @override
@@ -373,20 +356,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get periodLength => 'Duree des regles';
 
   @override
-  String get lastPeriodStartDate => 'Date du dernier debut de regles';
-
-  @override
-  String get regularCycleQuestion => 'Cycle regulier ?';
-
-  @override
   String get regular => 'Regulier';
 
   @override
   String get irregular => 'Irregulier';
-
-  @override
-  String get changesSavedAutomatically =>
-      'Les modifications sont enregistrees automatiquement des que tu changes une valeur.';
 
   @override
   String get unableToLoadProfile => 'Impossible de charger le profil';
@@ -402,10 +375,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get symptomJournalReminder =>
       'Noter ses symptômes ou écrire dans le journal';
-
-  @override
-  String get quickDailySymptomCapture =>
-      'Saisie rapide des symptomes du jour. Appuie sur tout ce qui correspond a ce que tu ressens aujourd\'hui.';
 
   @override
   String get save => 'Enregistrer';
@@ -570,9 +539,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de charger les notifications';
 
   @override
-  String get appearance => 'Apparence';
-
-  @override
   String get language => 'Langue de l’application';
 
   @override
@@ -598,9 +564,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get integrationsSync => 'Integrations et synchronisation';
 
   @override
-  String get connectedApps => 'Applications connectees';
-
-  @override
   String get about => 'A propos';
 
   @override
@@ -608,9 +571,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appVersion => 'Version de l\'application';
-
-  @override
-  String get unableToLoadSettings => 'Impossible de charger les parametres';
 
   @override
   String connectedPartnerTitle(String partnerName) {
@@ -755,12 +715,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pinsDoNotMatch => 'Les PIN ne correspondent pas';
 
   @override
-  String get enter4Digits => 'Saisis 4 chiffres';
-
-  @override
-  String get appLock => 'Verrouillage de l\'application';
-
-  @override
   String get journalLock => 'Verrouillage du journal';
 
   @override
@@ -770,21 +724,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get privateByDefault => 'Privé par défaut sur cet appareil.';
 
   @override
-  String get faceId => 'Face ID';
-
-  @override
-  String get changePinButton => 'Changer le PIN';
-
-  @override
-  String get disablePinLock => 'Desactiver le verrou PIN';
-
-  @override
   String get unableToLoadSecuritySettings =>
       'Impossible de charger les parametres de securite';
-
-  @override
-  String get unableToLoadAccountSettings =>
-      'Impossible de charger les parametres du compte';
 
   @override
   String get appAccess => 'Acces App';
@@ -815,9 +756,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cette action est irreversible et supprimera tout votre historique.';
 
   @override
-  String get securityRequired => 'Securite requise';
-
-  @override
   String get globalSecurityRequiredForJournal =>
       'L\'acces securise (PIN/FaceID) doit d\'abord etre active pour proteger le journal.';
 
@@ -831,15 +769,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aboutYourDay => 'Raconte ta journée...';
 
   @override
-  String get howDoYouFell => 'Comment te sens-tu ?';
-
-  @override
-  String get educationGreeting => 'Bonjour Peria';
-
-  @override
-  String get educationSpace => 'Votre espace educatif';
-
-  @override
   String get educationWhatToLearn => 'Que voulez-vous apprendre aujourd\'hui ?';
 
   @override
@@ -847,12 +776,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get educationSearchResults => 'Resultats de recherche';
-
-  @override
-  String get searchAction => 'Rechercher';
-
-  @override
-  String get cancelAction => 'Annuler';
 
   @override
   String get educationSearchHint => 'Rechercher un article...';
@@ -891,9 +814,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get educationArticleNotFound => 'Article non trouve';
 
   @override
-  String get educationArticleSaved => 'Article ajoute aux favoris';
-
-  @override
   String get educationExplanation => 'Explication';
 
   @override
@@ -904,23 +824,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get educationWhenToConsult => 'Quand consulter';
-
-  @override
-  String get educationRelatedTags => 'Tags associes';
-
-  @override
-  String educationUpdated(String value) {
-    return 'Mise a jour : $value';
-  }
-
-  @override
-  String get difficultyEasy => 'Facile';
-
-  @override
-  String get difficultyMedium => 'Moyen';
-
-  @override
-  String get difficultyAdvanced => 'Avance';
 
   @override
   String get educationAxisCycleBasics => 'Comprendre le cycle';
@@ -954,33 +857,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get todayLabel => 'Aujourd\'hui';
-
-  @override
-  String get yesterdayLabel => 'Hier';
-
-  @override
-  String daysAgo(int count) {
-    return 'Il y a $count jours';
-  }
-
-  @override
-  String weeksAgo(int count) {
-    return 'Il y a $count semaine(s)';
-  }
-
-  @override
-  String monthsAgo(int count) {
-    return 'Il y a $count mois';
-  }
-
-  @override
-  String get articleHealthyDiet => 'Alimentation saine';
-
-  @override
-  String get articleSkinCare => 'Soins de la peau';
-
-  @override
-  String get articleYogaTips => 'Conseils de yoga';
 
   @override
   String get logPeriodButton => 'Noter les règles';
@@ -1052,35 +928,20 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucune prévision de cycle n’est disponible pour cette date.';
 
   @override
-  String get calendarOverdue => 'En retard';
-
-  @override
   String get calendarExpectedNotLogged =>
       'Tes règles sont attendues mais n’ont pas été enregistrées.';
-
-  @override
-  String get calendarLoggedPeriodDay => 'Jour de règles enregistré';
 
   @override
   String get calendarLoggedPeriodDescription =>
       'Cette date figure dans ton journal des règles.';
 
   @override
-  String get calendarPredictedPeriodDay => 'Jour de règles prévu';
-
-  @override
   String get calendarPredictedPeriodDescription =>
       'Cette date est une estimation fondée sur les données de ton cycle.';
 
   @override
-  String get calendarFertilityWindow => 'Fenêtre fertile';
-
-  @override
   String get calendarFertilityWindowDescription =>
       'Cette date se situe dans la fenêtre fertile estimée.';
-
-  @override
-  String get calendarPmsDay => 'Jour de SPM';
 
   @override
   String get calendarPmsDayDescription =>
@@ -1088,66 +949,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get calendarSelectedDay => 'Jour sélectionné.';
-
-  @override
-  String get calendarRegularDay => 'Jour ordinaire';
-
-  @override
-  String get calendarNoTrackedCycleEvent =>
-      'Aucun événement de cycle suivi n’est associé à cette date.';
-
-  @override
-  String get calendarMonthlyOverview => 'Aperçu mensuel';
-
-  @override
-  String get calendarMonthlyOverviewHelp =>
-      'Consulte l’évolution de ton cycle. Utilise la saisie rapide au quotidien et Modifier le calendrier pour corriger les dates.';
-
-  @override
-  String get calendarQuickCapture => 'Saisie rapide';
-
-  @override
-  String get calendarQuickCaptureHelp =>
-      'Des actions rapides pour noter tes règles et tes symptômes sans ouvrir l’éditeur détaillé.';
-
-  @override
-  String get calendarDateRangeHelp =>
-      'Tu veux définir ou corriger une période ? Utilise Modifier le calendrier.';
-
-  @override
-  String get calendarEditTitle => 'Modifier le calendrier';
-
-  @override
-  String get calendarStructuredEditTitle => 'Modification détaillée des règles';
-
-  @override
-  String get calendarStartDateSelected => 'Date de début sélectionnée';
-
-  @override
-  String get calendarPeriodRangeReady => 'Période sélectionnée';
-
-  @override
-  String get calendarSelectRangeInstruction =>
-      'Utilise cet écran pour définir ou corriger précisément une période de règles.';
-
-  @override
-  String get calendarChooseLastDay => 'Choisis le dernier jour de ces règles.';
-
-  @override
-  String get calendarCorrectionHelp =>
-      'Cet écran sert à corriger précisément les dates. Pour une saisie rapide, utilise Noter les règles depuis le calendrier.';
-
-  @override
-  String get calendarSavedPeriod => 'Règles enregistrées';
-
-  @override
-  String get calendarPredictedPeriodLegend => 'Règles prévues';
-
-  @override
-  String get calendarSaveStartDate => 'Enregistrer la date de début';
-
-  @override
-  String get calendarSavePeriodRange => 'Enregistrer la période';
 
   @override
   String get calendarLegendPmsDay => 'Jour de SPM';
@@ -1196,9 +997,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noGoalsSelected => 'Aucun objectif sélectionné';
-
-  @override
-  String get goalsSelected => 'Objectifs sélectionnés';
 
   @override
   String get helpSearchHint => 'Rechercher…';
@@ -1265,10 +1063,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get securityAuthenticationError =>
       'Échec de l’authentification. Réessaie.';
-
-  @override
-  String get securitySkipDevelopmentOnly =>
-      'Ignorer (développement uniquement)';
 
   @override
   String get securityRetry => 'Réessayer';
@@ -1390,10 +1184,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get journalImageAdded => 'Image ajoutée au journal.';
 
   @override
-  String get journalAudioComingSoon =>
-      'L’enregistrement audio sera bientôt disponible.';
-
-  @override
   String get journalMoodQuestion => 'Comment te sens-tu ?';
 
   @override
@@ -1424,9 +1214,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get journalUseBiometrics => 'Utiliser la biométrie';
-
-  @override
-  String get journalUnlockReason => 'Déverrouiller ton journal privé';
 
   @override
   String get securityBiometricFailed =>
@@ -1806,13 +1593,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cyclePhaseFollicular => 'Phase folliculaire';
 
   @override
-  String get authPasswordResetSuccess => 'Mot de passe réinitialisé';
-
-  @override
-  String get authPasswordResetSuccessMessage =>
-      'Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.';
-
-  @override
   String get aiChatCheckingIn =>
       'Bonjour, je voulais prendre de tes nouvelles.';
 
@@ -1944,13 +1724,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aiChatSymptomHeadache => 'Mal de tête';
 
   @override
-  String get periodLogSheetTitle => 'Enregistrer tes règles';
-
-  @override
-  String get periodLogSheetSubtitle =>
-      'Choisis l’action qui correspond le mieux à aujourd’hui.';
-
-  @override
   String get notificationSettings => 'Réglages des notifications';
 
   @override
@@ -2066,9 +1839,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get educationAxisAll => 'Tout';
-
-  @override
-  String get changePhoto => 'Modifier la photo';
 
   @override
   String get takePhoto => 'Prendre une photo';
@@ -2219,6 +1989,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get search => 'Rechercher';
+
+  @override
+  String get passwordMismatch => 'Les mots de passe ne correspondent pas.';
+
+  @override
+  String get policyRequiredForAuth => 'Coche la politique de confidentialité pour continuer.';
 
   @override
   String get close => 'Fermer';

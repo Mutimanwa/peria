@@ -103,10 +103,6 @@ String? resolveRouterRedirect({
     return '/cycle';
   }
 
-  if (location == '/splash' || location == '/welcome') {
-    return '/ask-name';
-  }
-
   return null;
 }
 
@@ -267,11 +263,14 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/sign-in',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const SignInScreen(),
-      ),
+      pageBuilder: (context, state) {
+        final email = state.extra;
+        return _buildSlideTransitionPage(
+          context,
+          state,
+          SignInScreen(initialEmail: email is String ? email : null),
+        );
+      },
     ),
     GoRoute(
       path: '/verify-email',
@@ -354,16 +353,6 @@ final GoRouter appRouter = GoRouter(
         path: '/profile/notifications',
         pageBuilder: (context, state) => _buildSlideTransitionPage(
             context, state, const NotificationsScreen())),
-    // Older buttons still call `/notification`. Keep the alias so that tap
-    // opens the screen instead of a missing-route error.
-    GoRoute(
-      path: '/notification',
-      pageBuilder: (context, state) => _buildSlideTransitionPage(
-        context,
-        state,
-        const NotificationInboxScreen(),
-      ),
-    ),
     GoRoute(
         path: '/profile/account-security',
         pageBuilder: (context, state) => _buildSlideTransitionPage(

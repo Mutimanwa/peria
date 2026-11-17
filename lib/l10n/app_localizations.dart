@@ -116,18 +116,6 @@ abstract class AppLocalizations {
   /// **'Peria helps you understand your body\\nwith calm, personalized guidance.'**
   String get welcomeSubtitle;
 
-  /// No description provided for @turnOnNotifications.
-  ///
-  /// In en, this message translates to:
-  /// **'Turn on notification'**
-  String get turnOnNotifications;
-
-  /// No description provided for @anotherTime.
-  ///
-  /// In en, this message translates to:
-  /// **'Another time'**
-  String get anotherTime;
-
   /// No description provided for @registerTitle.
   ///
   /// In en, this message translates to:
@@ -587,12 +575,6 @@ abstract class AppLocalizations {
   /// **'Save entry'**
   String get saveEntry;
 
-  /// No description provided for @writeFreelyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Write freely. This note stays on your device.'**
-  String get writeFreelyHint;
-
   /// No description provided for @myProfile.
   ///
   /// In en, this message translates to:
@@ -719,18 +701,6 @@ abstract class AppLocalizations {
   /// **'Log out'**
   String get logOut;
 
-  /// No description provided for @cycleProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Cycle profile'**
-  String get cycleProfile;
-
-  /// No description provided for @cycleProfileDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'These settings are the source of truth for calculating your next period and fertility windows.'**
-  String get cycleProfileDescription;
-
   /// No description provided for @dateOfBirth.
   ///
   /// In en, this message translates to:
@@ -755,18 +725,6 @@ abstract class AppLocalizations {
   /// **'Period length'**
   String get periodLength;
 
-  /// No description provided for @lastPeriodStartDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Last period start date'**
-  String get lastPeriodStartDate;
-
-  /// No description provided for @regularCycleQuestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Regular cycle?'**
-  String get regularCycleQuestion;
-
   /// No description provided for @regular.
   ///
   /// In en, this message translates to:
@@ -778,12 +736,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Irregular'**
   String get irregular;
-
-  /// No description provided for @changesSavedAutomatically.
-  ///
-  /// In en, this message translates to:
-  /// **'Changes are saved automatically as soon as you update a value.'**
-  String get changesSavedAutomatically;
 
   /// No description provided for @unableToLoadProfile.
   ///
@@ -808,12 +760,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Symptoms & journal check-in'**
   String get symptomJournalReminder;
-
-  /// No description provided for @quickDailySymptomCapture.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick daily symptom capture. Tap everything that matches how you feel today.'**
-  String get quickDailySymptomCapture;
 
   /// No description provided for @save.
   ///
@@ -1133,12 +1079,6 @@ abstract class AppLocalizations {
   /// **'Unable to load notifications'**
   String get unableToLoadNotifications;
 
-  /// No description provided for @appearance.
-  ///
-  /// In en, this message translates to:
-  /// **'Appearance'**
-  String get appearance;
-
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
@@ -1187,12 +1127,6 @@ abstract class AppLocalizations {
   /// **'Integrations & Sync'**
   String get integrationsSync;
 
-  /// No description provided for @connectedApps.
-  ///
-  /// In en, this message translates to:
-  /// **'Connected Apps'**
-  String get connectedApps;
-
   /// No description provided for @about.
   ///
   /// In en, this message translates to:
@@ -1210,12 +1144,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App Version'**
   String get appVersion;
-
-  /// No description provided for @unableToLoadSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Unable to load settings'**
-  String get unableToLoadSettings;
 
   /// No description provided for @connectedPartnerTitle.
   ///
@@ -1475,18 +1403,6 @@ abstract class AppLocalizations {
   /// **'PINs do not match'**
   String get pinsDoNotMatch;
 
-  /// No description provided for @enter4Digits.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter 4 digits'**
-  String get enter4Digits;
-
-  /// No description provided for @appLock.
-  ///
-  /// In en, this message translates to:
-  /// **'App Lock'**
-  String get appLock;
-
   /// No description provided for @journalLock.
   ///
   /// In en, this message translates to:
@@ -1505,35 +1421,11 @@ abstract class AppLocalizations {
   /// **'Private by default on this device.'**
   String get privateByDefault;
 
-  /// No description provided for @faceId.
-  ///
-  /// In en, this message translates to:
-  /// **'Face ID'**
-  String get faceId;
-
-  /// No description provided for @changePinButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Change PIN'**
-  String get changePinButton;
-
-  /// No description provided for @disablePinLock.
-  ///
-  /// In en, this message translates to:
-  /// **'Disable PIN lock'**
-  String get disablePinLock;
-
   /// No description provided for @unableToLoadSecuritySettings.
   ///
   /// In en, this message translates to:
   /// **'Unable to load security settings'**
   String get unableToLoadSecuritySettings;
-
-  /// No description provided for @unableToLoadAccountSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Unable to load account settings'**
-  String get unableToLoadAccountSettings;
 
   /// No description provided for @appAccess.
   ///
@@ -1589,12 +1481,6 @@ abstract class AppLocalizations {
   /// **'This action cannot be undone and will delete your entire history.'**
   String get clearDataWarning;
 
-  /// No description provided for @securityRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Security required'**
-  String get securityRequired;
-
   /// No description provided for @globalSecurityRequiredForJournal.
   ///
   /// In en, this message translates to:
@@ -1619,24 +1505,6 @@ abstract class AppLocalizations {
   /// **'Tell me about your day...'**
   String get aboutYourDay;
 
-  /// No description provided for @howDoYouFell.
-  ///
-  /// In en, this message translates to:
-  /// **'How are you feeling?'**
-  String get howDoYouFell;
-
-  /// No description provided for @educationGreeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello Peria'**
-  String get educationGreeting;
-
-  /// No description provided for @educationSpace.
-  ///
-  /// In en, this message translates to:
-  /// **'Your education space'**
-  String get educationSpace;
-
   /// No description provided for @educationWhatToLearn.
   ///
   /// In en, this message translates to:
@@ -1654,18 +1522,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search results'**
   String get educationSearchResults;
-
-  /// No description provided for @searchAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get searchAction;
-
-  /// No description provided for @cancelAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancelAction;
 
   /// No description provided for @educationSearchHint.
   ///
@@ -1733,12 +1589,6 @@ abstract class AppLocalizations {
   /// **'Article not found'**
   String get educationArticleNotFound;
 
-  /// No description provided for @educationArticleSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Article added to favorites'**
-  String get educationArticleSaved;
-
   /// No description provided for @educationExplanation.
   ///
   /// In en, this message translates to:
@@ -1762,36 +1612,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'When to consult'**
   String get educationWhenToConsult;
-
-  /// No description provided for @educationRelatedTags.
-  ///
-  /// In en, this message translates to:
-  /// **'Related tags'**
-  String get educationRelatedTags;
-
-  /// No description provided for @educationUpdated.
-  ///
-  /// In en, this message translates to:
-  /// **'Updated: {value}'**
-  String educationUpdated(String value);
-
-  /// No description provided for @difficultyEasy.
-  ///
-  /// In en, this message translates to:
-  /// **'Easy'**
-  String get difficultyEasy;
-
-  /// No description provided for @difficultyMedium.
-  ///
-  /// In en, this message translates to:
-  /// **'Medium'**
-  String get difficultyMedium;
-
-  /// No description provided for @difficultyAdvanced.
-  ///
-  /// In en, this message translates to:
-  /// **'Advanced'**
-  String get difficultyAdvanced;
 
   /// No description provided for @educationAxisCycleBasics.
   ///
@@ -1852,48 +1672,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get todayLabel;
-
-  /// No description provided for @yesterdayLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Yesterday'**
-  String get yesterdayLabel;
-
-  /// No description provided for @daysAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days ago'**
-  String daysAgo(int count);
-
-  /// No description provided for @weeksAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} week(s) ago'**
-  String weeksAgo(int count);
-
-  /// No description provided for @monthsAgo.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} month(s) ago'**
-  String monthsAgo(int count);
-
-  /// No description provided for @articleHealthyDiet.
-  ///
-  /// In en, this message translates to:
-  /// **'Healthy diet'**
-  String get articleHealthyDiet;
-
-  /// No description provided for @articleSkinCare.
-  ///
-  /// In en, this message translates to:
-  /// **'Skin care'**
-  String get articleSkinCare;
-
-  /// No description provided for @articleYogaTips.
-  ///
-  /// In en, this message translates to:
-  /// **'Yoga tips'**
-  String get articleYogaTips;
 
   /// No description provided for @logPeriodButton.
   ///
@@ -2015,23 +1793,11 @@ abstract class AppLocalizations {
   /// **'No cycle prediction is available for this date.'**
   String get calendarNoCyclePredictionAvailable;
 
-  /// No description provided for @calendarOverdue.
-  ///
-  /// In en, this message translates to:
-  /// **'Overdue'**
-  String get calendarOverdue;
-
   /// No description provided for @calendarExpectedNotLogged.
   ///
   /// In en, this message translates to:
   /// **'Your period is expected but has not been logged.'**
   String get calendarExpectedNotLogged;
-
-  /// No description provided for @calendarLoggedPeriodDay.
-  ///
-  /// In en, this message translates to:
-  /// **'Logged period day'**
-  String get calendarLoggedPeriodDay;
 
   /// No description provided for @calendarLoggedPeriodDescription.
   ///
@@ -2039,35 +1805,17 @@ abstract class AppLocalizations {
   /// **'This date is recorded in your period log.'**
   String get calendarLoggedPeriodDescription;
 
-  /// No description provided for @calendarPredictedPeriodDay.
-  ///
-  /// In en, this message translates to:
-  /// **'Predicted period day'**
-  String get calendarPredictedPeriodDay;
-
   /// No description provided for @calendarPredictedPeriodDescription.
   ///
   /// In en, this message translates to:
   /// **'This date is an estimate based on your cycle data.'**
   String get calendarPredictedPeriodDescription;
 
-  /// No description provided for @calendarFertilityWindow.
-  ///
-  /// In en, this message translates to:
-  /// **'Fertility window'**
-  String get calendarFertilityWindow;
-
   /// No description provided for @calendarFertilityWindowDescription.
   ///
   /// In en, this message translates to:
   /// **'This date is inside the predicted fertile window.'**
   String get calendarFertilityWindowDescription;
-
-  /// No description provided for @calendarPmsDay.
-  ///
-  /// In en, this message translates to:
-  /// **'PMS day'**
-  String get calendarPmsDay;
 
   /// No description provided for @calendarPmsDayDescription.
   ///
@@ -2080,114 +1828,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected day.'**
   String get calendarSelectedDay;
-
-  /// No description provided for @calendarRegularDay.
-  ///
-  /// In en, this message translates to:
-  /// **'Regular day'**
-  String get calendarRegularDay;
-
-  /// No description provided for @calendarNoTrackedCycleEvent.
-  ///
-  /// In en, this message translates to:
-  /// **'No tracked cycle event is attached to this date.'**
-  String get calendarNoTrackedCycleEvent;
-
-  /// No description provided for @calendarMonthlyOverview.
-  ///
-  /// In en, this message translates to:
-  /// **'Monthly overview'**
-  String get calendarMonthlyOverview;
-
-  /// No description provided for @calendarMonthlyOverviewHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Review your cycle over time. Use quick log for daily updates and Edit Calendar for corrections.'**
-  String get calendarMonthlyOverviewHelp;
-
-  /// No description provided for @calendarQuickCapture.
-  ///
-  /// In en, this message translates to:
-  /// **'Quick capture'**
-  String get calendarQuickCapture;
-
-  /// No description provided for @calendarQuickCaptureHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Fast daily actions for periods and symptoms, without opening the structured editor.'**
-  String get calendarQuickCaptureHelp;
-
-  /// No description provided for @calendarDateRangeHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Need to define or correct a date range? Use Edit Calendar.'**
-  String get calendarDateRangeHelp;
-
-  /// No description provided for @calendarEditTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Calendar'**
-  String get calendarEditTitle;
-
-  /// No description provided for @calendarStructuredEditTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Structured period edit'**
-  String get calendarStructuredEditTitle;
-
-  /// No description provided for @calendarStartDateSelected.
-  ///
-  /// In en, this message translates to:
-  /// **'Start date selected'**
-  String get calendarStartDateSelected;
-
-  /// No description provided for @calendarPeriodRangeReady.
-  ///
-  /// In en, this message translates to:
-  /// **'Period range ready'**
-  String get calendarPeriodRangeReady;
-
-  /// No description provided for @calendarSelectRangeInstruction.
-  ///
-  /// In en, this message translates to:
-  /// **'Use this screen to define or correct an exact period range.'**
-  String get calendarSelectRangeInstruction;
-
-  /// No description provided for @calendarChooseLastDay.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the last day of this period.'**
-  String get calendarChooseLastDay;
-
-  /// No description provided for @calendarCorrectionHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'This screen is for precise corrections. For quick daily updates, use Log Period from the calendar overview.'**
-  String get calendarCorrectionHelp;
-
-  /// No description provided for @calendarSavedPeriod.
-  ///
-  /// In en, this message translates to:
-  /// **'Saved period'**
-  String get calendarSavedPeriod;
-
-  /// No description provided for @calendarPredictedPeriodLegend.
-  ///
-  /// In en, this message translates to:
-  /// **'Predicted period'**
-  String get calendarPredictedPeriodLegend;
-
-  /// No description provided for @calendarSaveStartDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Save start date'**
-  String get calendarSaveStartDate;
-
-  /// No description provided for @calendarSavePeriodRange.
-  ///
-  /// In en, this message translates to:
-  /// **'Save period range'**
-  String get calendarSavePeriodRange;
 
   /// No description provided for @calendarLegendPmsDay.
   ///
@@ -2284,12 +1924,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No goals selected'**
   String get noGoalsSelected;
-
-  /// No description provided for @goalsSelected.
-  ///
-  /// In en, this message translates to:
-  /// **'Goals selected'**
-  String get goalsSelected;
 
   /// No description provided for @helpSearchHint.
   ///
@@ -2398,12 +2032,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Authentication failed. Try again.'**
   String get securityAuthenticationError;
-
-  /// No description provided for @securitySkipDevelopmentOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip (development only)'**
-  String get securitySkipDevelopmentOnly;
 
   /// No description provided for @securityRetry.
   ///
@@ -2633,12 +2261,6 @@ abstract class AppLocalizations {
   /// **'Image added to your journal.'**
   String get journalImageAdded;
 
-  /// No description provided for @journalAudioComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Audio recording will be available soon.'**
-  String get journalAudioComingSoon;
-
   /// No description provided for @journalMoodQuestion.
   ///
   /// In en, this message translates to:
@@ -2693,12 +2315,6 @@ abstract class AppLocalizations {
   /// **'Use biometrics'**
   String get journalUseBiometrics;
 
-  /// No description provided for @journalUnlockReason.
-  ///
-  /// In en, this message translates to:
-  /// **'Unlock your private journal'**
-  String get journalUnlockReason;
-
   /// No description provided for @securityBiometricFailed.
   ///
   /// In en, this message translates to:
@@ -2732,12 +2348,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The photo could not be updated.'**
   String get photoUpdateFailed;
-
-  /// No description provided for @changePhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'Change photo'**
-  String get changePhoto;
 
   /// No description provided for @takePhoto.
   ///
@@ -3425,18 +3035,6 @@ abstract class AppLocalizations {
   /// **'Follicular phase'**
   String get cyclePhaseFollicular;
 
-  /// No description provided for @authPasswordResetSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Password reset successful'**
-  String get authPasswordResetSuccess;
-
-  /// No description provided for @authPasswordResetSuccessMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Your password has been updated. You can now log in with your new password.'**
-  String get authPasswordResetSuccessMessage;
-
   /// No description provided for @aiChatCheckingIn.
   ///
   /// In en, this message translates to:
@@ -3664,18 +3262,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Headache'**
   String get aiChatSymptomHeadache;
-
-  /// No description provided for @periodLogSheetTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Log your period'**
-  String get periodLogSheetTitle;
-
-  /// No description provided for @periodLogSheetSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose the period update that best describes today.'**
-  String get periodLogSheetSubtitle;
 
   /// No description provided for @notificationSettings.
   ///
@@ -4159,6 +3745,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search'**
   String get search;
+
+  /// No description provided for @passwordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get passwordMismatch;
+
+  /// No description provided for @policyRequiredForAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick the privacy policy to continue.'**
+  String get policyRequiredForAuth;
 
   /// No description provided for @close.
   ///

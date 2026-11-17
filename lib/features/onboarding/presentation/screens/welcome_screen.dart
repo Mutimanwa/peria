@@ -54,7 +54,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
 
       // Refresh consent-dependent startup work now that the gate is open.
       ref.invalidate(localNotificationScheduleProvider);
-      context.go('/welcome');
+      context.go('/ask-name');
     } catch (_) {
       if (!mounted) return;
       final copy = PrivacyPolicyContent.forLanguageCode(
@@ -68,8 +68,43 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
 
   /// Opening another account replaces the anonymous session, so the user is
   /// warned before her data would be lost.
+  ///
+  /// The privacy policy gate comes first: while the policy is not accepted the
+  /// router sends every destination back to `/welcome`, which made this button
+  /// look dead. We either record the consent (the box is already ticked) or
+  /// explain what is missing.
   Future<void> _openSignIn() async {
     final l10n = AppLocalizations.of(context);
+    final currentLanguageCode = Localizations.localeOf(context).languageCode;
+    final policyChecked =
+        _policyAccepted && _policyAcceptedLanguageCode == currentLanguageCode;
+
+    if (!PrivacyPolicyConsentService.hasAcceptedCurrentVersion) {
+      if (!policyChecked) {
+        setState(() => _errorMessage = l10n.policyRequiredForAuth);
+        return;
+      }
+      setState(() {
+        _isContinuing = true;
+        _errorMessage = null;
+      });
+      try {
+        await _consentService.acceptCurrentPolicy();
+      } catch (_) {
+        if (!mounted) return;
+        setState(() {
+          _isContinuing = false;
+          _errorMessage =
+              PrivacyPolicyContent.forLanguageCode(currentLanguageCode)
+                  .continueFailedMessage;
+        });
+        return;
+      }
+      if (!mounted) return;
+      setState(() => _isContinuing = false);
+      ref.invalidate(localNotificationScheduleProvider);
+    }
+
     final user = FirebaseAuth.instance.currentUser;
     if (user != null && user.isAnonymous) {
       final confirmed = await showDialog<bool>(
@@ -172,7 +207,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              Center(child: Image.asset(AppAssets.logo)),
+              Center(
+                child: Image.asset(
+                  AppAssets.logo,
+                  width: 104,
+                  height: 104,
+                  filterQuality: FilterQuality.medium,
+                ),
+              ),
               const SizedBox(height: 36),
               Expanded(
                 child: Image.asset(

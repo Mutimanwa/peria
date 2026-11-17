@@ -14,6 +14,7 @@ import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/storage/hive_setup.dart';
 import 'package:peria_app/firebase_options.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/app_lock_gate.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -68,6 +69,8 @@ class PeriaApp extends ConsumerWidget {
       routeInformationParser: appRouter.routeInformationParser,
       routerDelegate: appRouter.routerDelegate,
       backButtonDispatcher: periaBackButtonDispatcher,
+      builder: (context, child) =>
+          AppLockGate(child: child ?? const SizedBox.shrink()),
     );
   }
 }

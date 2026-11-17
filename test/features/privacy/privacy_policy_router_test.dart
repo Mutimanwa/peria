@@ -54,8 +54,10 @@ void main() {
       );
     });
 
-    test('sends a newly authenticated user into onboarding after acceptance',
-        () {
+    // Welcome reste affichable pour une personne connectee : sinon un retour
+    // depuis les ecrans d'auth (inscription, email, mot de passe) la projetait
+    // dans l'onboarding, qui ne doit commencer qu'apres « creer un compte ».
+    test('keeps Welcome reachable while onboarding is not started', () {
       expect(
         resolveRouterRedirect(
           location: '/welcome',
@@ -63,8 +65,29 @@ void main() {
           hasAcceptedPrivacyPolicy: true,
           hasCompletedOnboarding: false,
         ),
-        '/ask-name',
+        isNull,
       );
+    });
+
+    test('keeps the auth screens reachable during the sign-up flow', () {
+      for (final location in const [
+        '/sign-in',
+        '/register',
+        '/email',
+        '/create-account',
+        '/verify-email',
+      ]) {
+        expect(
+          resolveRouterRedirect(
+            location: location,
+            isAuthenticated: true,
+            hasAcceptedPrivacyPolicy: true,
+            hasCompletedOnboarding: false,
+          ),
+          isNull,
+          reason: location,
+        );
+      }
     });
 
     test('sends an onboarded authenticated user home after acceptance', () {

@@ -18,6 +18,10 @@ class _LockScreenState extends ConsumerState<LockScreen> {
   AuthResult? _authResult;
   bool _isAuthenticating = false;
 
+  /// Change a chaque code refuse : la saisie est reconstruite et vidée, sinon
+  /// les quatre cases restent remplies et plus aucune frappe n'est prise.
+  int _pinAttempts = 0;
+
   @override
   void initState() {
     super.initState();
@@ -29,15 +33,12 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
     final securityNotifier = ref.read(securityProvider.notifier);
     final result = await securityNotifier.authenticate();
+    if (!mounted) return;
 
     setState(() {
       _authResult = result;
       _isAuthenticating = false;
     });
-
-    if (result.isSuccess) {
-      _onAuthenticated();
-    }
   }
 
   Future<void> _authenticateWithPin(String pin) async {
@@ -45,20 +46,13 @@ class _LockScreenState extends ConsumerState<LockScreen> {
 
     final securityNotifier = ref.read(securityProvider.notifier);
     final result = await securityNotifier.authenticateWithPin(pin);
+    if (!mounted) return;
 
     setState(() {
       _authResult = result;
       _isAuthenticating = false;
+      if (!result.isSuccess) _pinAttempts++;
     });
-
-    if (result.isSuccess) {
-      _onAuthenticated();
-    }
-  }
-
-  void _onAuthenticated() {
-    // Navigate back or to the protected content
-    Navigator.of(context).pop(true);
   }
 
   @override
@@ -96,11 +90,14 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                 const SizedBox(height: 32),
               ],
 
-              // PIN input if needed
-              if (_authResult?.requiresPin == true ||
-                  _authResult?.status == AuthStatus.pinIncorrect) ...[
+              // PIN input: also shown when biometrics fail or error, so the
+              // person always has a way in.
+              if (_authResult != null &&
+                  !_authResult!.isSuccess &&
+                  _authResult!.status != AuthStatus.locked) ...[
                 const SizedBox(height: 32),
                 PinCodeInput(
+                  key: ValueKey(_pinAttempts),
                   length: 4,
                   autoFocus: true,
                   obscureText: true,
@@ -120,14 +117,6 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               ],
 
               const Spacer(),
-
-              // Emergency exit (for development/testing)
-              if (_authResult?.isLocked == false) ...[
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(l10n.securitySkipDevelopmentOnly),
-                ),
-              ],
             ],
           ),
         ),
@@ -201,9 +190,9 @@ class AuthGuard extends ConsumerWidget {
         // Show lock screen
         return const LockScreen();
       },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      // Keep the white splash look while the settings are read, instead of
+      // flashing a spinner.
+      loading: () => const ColoredBox(color: Colors.white),
       error: (error, stack) => Scaffold(
         body: Center(
           child: Column(
