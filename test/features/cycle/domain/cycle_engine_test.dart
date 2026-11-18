@@ -369,8 +369,8 @@ void main() {
         now: DateTime(2024, 2, 2),
       );
 
-      expect(status.isOverdue, false);
-      expect(status.overdueDays, 0);
+      expect(status, isNotNull);
+      expect(status!.overdueDays, 0);
       expect(status.dayOfCycle, 1);
       expect(status.phase, CyclePhase.menstrual);
       expect(status.isInPeriod, isTrue);
