@@ -70,6 +70,11 @@ final cycleStatusForDateProvider =
   final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
   const pmsDaysSetting = 5;
 
+  // `now` describes the requested date (the calendar asks about any day) while
+  // `today` is the real current day: it decides whether the period is late, so
+  // a late cycle keeps counting instead of restarting at day 1.
+  final today = DateTime.now();
+
   if (periodLogs.isNotEmpty) {
     return CycleEngine.computeFromLogs(
       logs: periodLogs,
@@ -77,6 +82,7 @@ final cycleStatusForDateProvider =
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
       now: targetDate,
+      today: today,
     );
   }
 
@@ -94,6 +100,7 @@ final cycleStatusForDateProvider =
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
       now: targetDate,
+      today: today,
     );
   }
 

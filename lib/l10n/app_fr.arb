@@ -36,6 +36,8 @@
   "madeByIm": "Made by IM",
   "nextPeriodUnknown": "Prochaines regles : inconnues",
   "periodIsDue": "Les regles sont proches",
+  "cycleLateByDays": "Règles en retard de {days} jours",
+  "@cycleLateByDays": {"placeholders": {"days": {"type": "int"}}},
   "nextPeriodInDays": "Prochaines regles dans {days} jours",
   "@nextPeriodInDays": {
     "placeholders": {

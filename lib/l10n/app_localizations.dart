@@ -308,6 +308,12 @@ abstract class AppLocalizations {
   /// **'Next period: unknown'**
   String get nextPeriodUnknown;
 
+  /// No description provided for @cycleLateByDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days late'**
+  String cycleLateByDays(int days);
+
   /// No description provided for @periodIsDue.
   ///
   /// In en, this message translates to:

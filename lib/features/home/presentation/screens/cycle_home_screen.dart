@@ -173,6 +173,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
     final dayOfCycle = status?.dayOfCycle ?? 1;
     final daysUntilNext = status?.daysUntilNextPeriod;
+    final overdueDays = status?.overdueDays ?? 0;
+    final isLate = overdueDays > 0;
     final phase = status?.phase ?? CyclePhase.follicular;
     final cycleLength = status?.cycleLengthDays ?? 28;
     final cycleLengthDays = cycleLength > 0 ? cycleLength : 28;
@@ -227,17 +229,24 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                     child: Column(
                       children: [
                         Text(
-                          daysUntilNext == null
-                              ? l10n.nextPeriodUnknown
-                              : daysUntilNext <= 0
-                                  ? l10n.periodIsDue
-                                  : l10n.nextPeriodInDays(daysUntilNext),
+                          // A late period says how late it is instead of
+                          // announcing a next date that already passed.
+                          isLate
+                              ? l10n.cycleLateByDays(overdueDays)
+                              : daysUntilNext == null
+                                  ? l10n.nextPeriodUnknown
+                                  : daysUntilNext <= 0
+                                      ? l10n.periodIsDue
+                                      : l10n.nextPeriodInDays(daysUntilNext),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.neutral700,
+                            fontWeight:
+                                isLate ? FontWeight.w700 : FontWeight.w500,
+                            color: isLate
+                                ? AppColors.primary600
+                                : AppColors.neutral700,
                           ),
                         ),
                         const SizedBox(height: 18),

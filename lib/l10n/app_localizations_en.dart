@@ -120,6 +120,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextPeriodUnknown => 'Next period: unknown';
 
   @override
+  String cycleLateByDays(int days) {
+    return '$days days late';
+  }
+
+  @override
   String get periodIsDue => 'Period is due';
 
   @override

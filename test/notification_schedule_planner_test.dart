@@ -157,6 +157,7 @@ CycleStatus _cycleStatus({DateTime? nextPeriodStart}) {
     ],
     pmsDays: const [],
     isOverdue: false,
+    overdueDays: 0,
     daysUntilNextPeriod: nextPeriod.difference(DateTime(2026, 1, 1)).inDays,
     confidenceScore: 1,
     isEstimated: true,

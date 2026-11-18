@@ -121,6 +121,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nextPeriodUnknown => 'Prochaines regles : inconnues';
 
   @override
+  String cycleLateByDays(int days) {
+    return 'Règles en retard de $days jours';
+  }
+
+  @override
   String get periodIsDue => 'Les regles sont proches';
 
   @override

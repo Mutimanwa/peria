@@ -36,6 +36,8 @@
   "madeByIm": "Made by IM",
   "nextPeriodUnknown": "Next period: unknown",
   "periodIsDue": "Period is due",
+  "cycleLateByDays": "{days} days late",
+  "@cycleLateByDays": {"placeholders": {"days": {"type": "int"}}},
   "nextPeriodInDays": "Next period in {days} days",
   "@nextPeriodInDays": {
     "placeholders": {
