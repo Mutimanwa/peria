@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_spacing.dart';
-import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/presentation/widgets/period_log_quick_sheet.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
