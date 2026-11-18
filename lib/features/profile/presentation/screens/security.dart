@@ -401,7 +401,25 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
             ],
           ),
           loading: () => const AccountSecuritySkeleton(),
-          error: (e, __) => Center(child: Text(l10n.unableToLoadSecuritySettings)),
+          // Sans ce bouton, un échec de lecture des réglages laissait un
+          // écran figé, impossible à distinguer d'un verrouillage inactif.
+          error: (e, __) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Column(
+              children: [
+                Text(
+                  l10n.unableToLoadSecuritySettings,
+                  textAlign: TextAlign.center,
+                  style: AppText.body.copyWith(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => ref.invalidate(securityProvider),
+                  child: Text(l10n.securityRetry),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
