@@ -126,11 +126,22 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get periodIsDue => 'Les regles sont proches';
+  String get periodIsDue => 'Règles attendues aujourd’hui';
 
   @override
-  String nextPeriodInDays(int days) {
-    return 'Prochaines regles dans $days jours';
+  String nextPeriodInAboutDays(int days) {
+    return 'Prochaines règles dans environ $days jours';
+  }
+
+  @override
+  String get nextPeriodTomorrow => 'Prochaines règles demain';
+
+  @override
+  String get cycleLateOneDay => 'Règles en retard d’un jour';
+
+  @override
+  String notificationDaysAgo(int count) {
+    return 'il y a $count j';
   }
 
   @override
@@ -523,6 +534,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get allowNotifications => 'Autoriser les notifications';
+
+  @override
+  String get pushNotifications => 'Notifications push';
+
+  @override
+  String get pushNotificationsHint =>
+      'Recevez les rappels de Peria meme quand l’application est fermee. Aucun detail de cycle n’apparait sur l’ecran verrouille.';
+
+  @override
+  String get pushPermissionDenied =>
+      'Autorisez les notifications dans les reglages du telephone';
 
   @override
   String get periodStarting => 'Debut des regles';

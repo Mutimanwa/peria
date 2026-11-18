@@ -317,14 +317,32 @@ abstract class AppLocalizations {
   /// No description provided for @periodIsDue.
   ///
   /// In en, this message translates to:
-  /// **'Period is due'**
+  /// **'Period expected today'**
   String get periodIsDue;
 
-  /// No description provided for @nextPeriodInDays.
+  /// No description provided for @nextPeriodInAboutDays.
   ///
   /// In en, this message translates to:
-  /// **'Next period in {days} days'**
-  String nextPeriodInDays(int days);
+  /// **'Next period in about {days} days'**
+  String nextPeriodInAboutDays(int days);
+
+  /// No description provided for @nextPeriodTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Next period tomorrow'**
+  String get nextPeriodTomorrow;
+
+  /// No description provided for @cycleLateOneDay.
+  ///
+  /// In en, this message translates to:
+  /// **'One day late'**
+  String get cycleLateOneDay;
+
+  /// No description provided for @notificationDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d ago'**
+  String notificationDaysAgo(int count);
 
   /// No description provided for @day.
   ///
@@ -1048,6 +1066,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Allow Notifications'**
   String get allowNotifications;
+
+  /// No description provided for @pushNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Notifications'**
+  String get pushNotifications;
+
+  /// No description provided for @pushNotificationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Peria reminders even when the app is closed. No cycle detail ever appears on the lock screen.'**
+  String get pushNotificationsHint;
+
+  /// No description provided for @pushPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications in your phone settings'**
+  String get pushPermissionDenied;
 
   /// No description provided for @periodStarting.
   ///

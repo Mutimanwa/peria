@@ -35,17 +35,15 @@
   "today": "Today",
   "madeByIm": "Made by IM",
   "nextPeriodUnknown": "Next period: unknown",
-  "periodIsDue": "Period is due",
+  "periodIsDue": "Period expected today",
   "cycleLateByDays": "{days} days late",
   "@cycleLateByDays": {"placeholders": {"days": {"type": "int"}}},
-  "nextPeriodInDays": "Next period in {days} days",
-  "@nextPeriodInDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
+  "nextPeriodInAboutDays": "Next period in about {days} days",
+  "@nextPeriodInAboutDays": {"placeholders": {"days": {"type": "int"}}},
+  "nextPeriodTomorrow": "Next period tomorrow",
+  "cycleLateOneDay": "One day late",
+  "notificationDaysAgo": "{count} d ago",
+  "@notificationDaysAgo": {"placeholders": {"count": {"type": "int"}}},
   "day": "Day",
   "days": "Days",
   "didntGetCode": "Didn't get the code?",
@@ -186,6 +184,9 @@
   "moodEntries": "Mood Entries",
   "saveChanges": "Save Changes",
   "unableToLoadSharingSettings": "Unable to load sharing settings",
+  "pushNotifications": "Push Notifications",
+  "pushNotificationsHint": "Get Peria reminders even when the app is closed. No cycle detail ever appears on the lock screen.",
+  "pushPermissionDenied": "Allow notifications in your phone settings",
   "allowNotifications": "Allow Notifications",
   "periodStarting": "Period Starting",
   "fertileWindow": "Fertile Window",

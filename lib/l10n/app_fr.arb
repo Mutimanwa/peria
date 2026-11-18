@@ -35,17 +35,15 @@
   "today": "Aujourd'hui",
   "madeByIm": "Made by IM",
   "nextPeriodUnknown": "Prochaines regles : inconnues",
-  "periodIsDue": "Les regles sont proches",
+  "periodIsDue": "Règles attendues aujourd’hui",
   "cycleLateByDays": "Règles en retard de {days} jours",
   "@cycleLateByDays": {"placeholders": {"days": {"type": "int"}}},
-  "nextPeriodInDays": "Prochaines regles dans {days} jours",
-  "@nextPeriodInDays": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
+  "nextPeriodInAboutDays": "Prochaines règles dans environ {days} jours",
+  "@nextPeriodInAboutDays": {"placeholders": {"days": {"type": "int"}}},
+  "nextPeriodTomorrow": "Prochaines règles demain",
+  "cycleLateOneDay": "Règles en retard d’un jour",
+  "notificationDaysAgo": "il y a {count} j",
+  "@notificationDaysAgo": {"placeholders": {"count": {"type": "int"}}},
   "day": "Jour",
   "days": "Jours",
   "didntGetCode": "Tu n'as pas recu le code ?",
@@ -186,6 +184,9 @@
   "moodEntries": "Entrees d'humeur",
   "saveChanges": "Enregistrer les modifications",
   "unableToLoadSharingSettings": "Impossible de charger les parametres de partage",
+  "pushNotifications": "Notifications push",
+  "pushNotificationsHint": "Recevez les rappels de Peria meme quand l’application est fermee. Aucun detail de cycle n’apparait sur l’ecran verrouille.",
+  "pushPermissionDenied": "Autorisez les notifications dans les reglages du telephone",
   "allowNotifications": "Autoriser les notifications",
   "periodStarting": "Debut des regles",
   "fertileWindow": "Fenetre fertile",

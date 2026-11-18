@@ -69,6 +69,26 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
     super.dispose();
   }
 
+  /// Wording for the next period.
+  ///
+  /// A prediction is never shown as a date: it is always a count of days, kept
+  /// approximate (“in about 2 days”) and with dedicated single-day wording.
+  String _periodLabel(
+    AppLocalizations l10n, {
+    required int overdueDays,
+    required int? daysUntilNext,
+  }) {
+    if (overdueDays > 0) {
+      return overdueDays == 1
+          ? l10n.cycleLateOneDay
+          : l10n.cycleLateByDays(overdueDays);
+    }
+    if (daysUntilNext == null) return l10n.nextPeriodUnknown;
+    if (daysUntilNext <= 0) return l10n.periodIsDue;
+    if (daysUntilNext == 1) return l10n.nextPeriodTomorrow;
+    return l10n.nextPeriodInAboutDays(daysUntilNext);
+  }
+
   // ── Config couleurs + données par phase ─────────────────────────
   _PhaseConfig _config(
     CyclePhase phase,
@@ -229,15 +249,11 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                     child: Column(
                       children: [
                         Text(
-                          // A late period says how late it is instead of
-                          // announcing a next date that already passed.
-                          isLate
-                              ? l10n.cycleLateByDays(overdueDays)
-                              : daysUntilNext == null
-                                  ? l10n.nextPeriodUnknown
-                                  : daysUntilNext <= 0
-                                      ? l10n.periodIsDue
-                                      : l10n.nextPeriodInDays(daysUntilNext),
+                          _periodLabel(
+                            l10n,
+                            overdueDays: overdueDays,
+                            daysUntilNext: daysUntilNext,
+                          ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Poppins',

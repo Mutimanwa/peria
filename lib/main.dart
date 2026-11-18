@@ -10,6 +10,8 @@ import 'package:peria_app/core/services/local_notification_service.dart';
 import 'package:peria_app/core/services/multitask_protection_service.dart';
 import 'package:peria_app/core/services/onboarding_service.dart';
 import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
+import 'package:peria_app/core/services/push_notification_service.dart';
+import 'package:peria_app/core/services/push_registration_provider.dart';
 import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/storage/hive_setup.dart';
 import 'package:peria_app/firebase_options.dart';
@@ -37,6 +39,11 @@ Future<void> main() async {
   );
   updateOnboardingState(onboardingCompleted);
   await LocalNotificationService.instance.initialize();
+
+  // Push groundwork: the device is ready to receive server-sent reminders, but
+  // nothing is registered until the user turns the switch on and signs in.
+  await PushNotificationService.instance.registerBackgroundHandler();
+  await PushNotificationService.instance.initialize();
 
   // Tapping an OS reminder opens the screen it is about, whether Peria was
   // running or had to be launched from the notification.
@@ -69,6 +76,7 @@ class PeriaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(localNotificationScheduleProvider);
+    ref.watch(pushRegistrationProvider);
     final locale = ref.watch(appLocaleProvider);
     return MaterialApp.router(
       locale: locale,

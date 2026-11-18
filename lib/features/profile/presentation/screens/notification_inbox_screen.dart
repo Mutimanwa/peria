@@ -190,7 +190,6 @@ class _NotificationInboxScreenState
     for (final item in items) {
       sections[AppNotification.periodFor(item.scheduledAt, now)]!.add(item);
     }
-    final todayItems = sections[NotificationPeriod.today]!;
 
     Widget buildSection(String label, List<AppNotification> section) {
       if (section.isEmpty) return const SizedBox.shrink();
@@ -214,7 +213,7 @@ class _NotificationInboxScreenState
             for (final item in section)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _buildCard(item, isToday: todayItems.contains(item)),
+                child: _buildCard(item),
               ),
           ],
         ),
@@ -234,13 +233,24 @@ class _NotificationInboxScreenState
     ];
   }
 
-  Widget _buildCard(AppNotification item, {required bool isToday}) {
+  Widget _buildCard(AppNotification item) {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
     final texts = _textsFor(item.kind, l10n);
-    final timeLabel = isToday
+
+    // Relative time only: a message never shows a calendar date, the same way a
+    // prediction is always expressed as a count of days.
+    final now = DateTime.now();
+    final daysAgo = DateTime(now.year, now.month, now.day)
+        .difference(DateTime(
+          item.scheduledAt.year,
+          item.scheduledAt.month,
+          item.scheduledAt.day,
+        ))
+        .inDays;
+    final timeLabel = daysAgo <= 0
         ? DateFormat.Hm(locale).format(item.scheduledAt)
-        : DateFormat.MMMd(locale).format(item.scheduledAt);
+        : l10n.notificationDaysAgo(daysAgo);
 
     return NotificationCard(
       notification: item,

@@ -125,11 +125,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get periodIsDue => 'Period is due';
+  String get periodIsDue => 'Period expected today';
 
   @override
-  String nextPeriodInDays(int days) {
-    return 'Next period in $days days';
+  String nextPeriodInAboutDays(int days) {
+    return 'Next period in about $days days';
+  }
+
+  @override
+  String get nextPeriodTomorrow => 'Next period tomorrow';
+
+  @override
+  String get cycleLateOneDay => 'One day late';
+
+  @override
+  String notificationDaysAgo(int count) {
+    return '$count d ago';
   }
 
   @override
@@ -519,6 +530,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allowNotifications => 'Allow Notifications';
+
+  @override
+  String get pushNotifications => 'Push Notifications';
+
+  @override
+  String get pushNotificationsHint =>
+      'Get Peria reminders even when the app is closed. No cycle detail ever appears on the lock screen.';
+
+  @override
+  String get pushPermissionDenied => 'Allow notifications in your phone settings';
 
   @override
   String get periodStarting => 'Period Starting';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/services/local_notification_service.dart';
+import 'package:peria_app/core/services/push_notification_service.dart';
 import 'package:peria_app/core/storage/app_settings_provider.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
@@ -34,6 +35,31 @@ class NotificationsScreen extends ConsumerWidget {
 
     await ref.read(appSettingsProvider.notifier).patch(
           (current) => current.copyWith(allowNotifications: enabled),
+        );
+  }
+
+  /// Push has its own system permission: refusing it must leave the switch off
+  /// instead of pretending the device is registered.
+  Future<void> _setPushEnabled(
+    BuildContext context,
+    WidgetRef ref,
+    bool enabled,
+  ) async {
+    if (enabled) {
+      final granted = await PushNotificationService.instance.requestPermission();
+      if (!granted) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).pushPermissionDenied),
+          ),
+        );
+        return;
+      }
+    }
+
+    await ref.read(appSettingsProvider.notifier).patch(
+          (current) => current.copyWith(pushEnabled: enabled),
         );
   }
 
@@ -77,6 +103,25 @@ class NotificationsScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 28),
+            SectionLabel(l10n.pushNotifications),
+            ToggleGroup(items: [
+              ToggleItemData(
+                l10n.pushNotifications,
+                settings.pushEnabled,
+                (value) => _setPushEnabled(context, ref, value),
+              ),
+            ]),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
+              child: Text(
+                l10n.pushNotificationsHint,
+                style: AppText.caption.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.4,
+                ),
               ),
             ),
             const SizedBox(height: 28),

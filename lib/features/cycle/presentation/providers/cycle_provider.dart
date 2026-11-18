@@ -210,11 +210,6 @@ final isOverdueProvider = Provider<bool>((ref) {
   return ref.watch(cycleStatusProvider)?.isOverdue ?? false;
 });
 
-// --- NEXT PERIOD PREDICTION PROVIDER ---
-final nextPeriodPredictionProvider = Provider<DateTime?>((ref) {
-  return ref.watch(cycleStatusProvider)?.nextPeriodStart;
-});
-
 // --- DAYS UNTIL NEXT PERIOD PROVIDER ---
 final daysUntilNextPeriodProvider = Provider<int?>((ref) {
   return ref.watch(cycleStatusProvider)?.daysUntilNextPeriod;
