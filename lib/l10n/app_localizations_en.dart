@@ -1720,6 +1720,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get journalEntryEmpty => 'Write a title or a few words before saving.';
 
   @override
+  String get journalBulletAction => 'Bulleted list';
+
+  @override
+  String get journalChecklistAction => 'Checklist item';
+
+  @override
+  String get journalCaseAction => 'Change case';
+
+  @override
+  String get journalCopyText => 'Copy the note text';
+
+  @override
+  String get journalCopied => 'Text copied.';
+
+  @override
+  String get journalEditedLabel => 'Edited';
+
+  @override
+  String journalReadingTime(int minutes) {
+    return '{minutes} min read';
+  }
+
+  @override
+  String get journalDiscardTitle => 'Discard this note?';
+
+  @override
+  String get journalDiscardBody => 'Your changes will not be saved.';
+
+  @override
+  String get journalDiscard => 'Discard';
+
+  @override
+  String get journalKeepWriting => 'Keep writing';
+
+  @override
+  String get journalToggleCaseHint => 'Select text to change its case.';
+
+  @override
+  String get journalImageError => 'Could not add the picture. Try again.';
+
+  @override
   String get savedArticles => 'Saved articles';
 
   @override

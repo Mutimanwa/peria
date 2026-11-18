@@ -1744,6 +1744,47 @@ class AppLocalizationsFr extends AppLocalizations {
       'Écris un titre ou quelques mots avant d’enregistrer.';
 
   @override
+  String get journalBulletAction => 'Liste à puces';
+
+  @override
+  String get journalChecklistAction => 'Case à cocher';
+
+  @override
+  String get journalCaseAction => 'Changer la casse';
+
+  @override
+  String get journalCopyText => 'Copier le texte';
+
+  @override
+  String get journalCopied => 'Texte copié.';
+
+  @override
+  String get journalEditedLabel => 'Modifié';
+
+  @override
+  String journalReadingTime(int minutes) {
+    return '{minutes} min de lecture';
+  }
+
+  @override
+  String get journalDiscardTitle => 'Abandonner cette note ?';
+
+  @override
+  String get journalDiscardBody => 'Tes changements ne seront pas enregistrés.';
+
+  @override
+  String get journalDiscard => 'Abandonner';
+
+  @override
+  String get journalKeepWriting => 'Continuer l’écriture';
+
+  @override
+  String get journalToggleCaseHint => 'Sélectionne du texte pour changer sa casse.';
+
+  @override
+  String get journalImageError => 'Impossible d’ajouter l’image. Réessaie.';
+
+  @override
   String get savedArticles => 'Articles enregistrés';
 
   @override

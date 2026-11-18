@@ -3299,6 +3299,49 @@ abstract class AppLocalizations {
   /// **'Write a title or a few words before saving.'**
   String get journalEntryEmpty;
 
+  /// In en, this message translates to:
+  /// **'Bulleted list'**
+  String get journalBulletAction;
+
+  /// In en, this message translates to:
+  /// **'Checklist item'**
+  String get journalChecklistAction;
+
+  /// In en, this message translates to:
+  /// **'Change case'**
+  String get journalCaseAction;
+
+  /// In en, this message translates to:
+  /// **'Copy the note text'**
+  String get journalCopyText;
+  /// In en, this message translates to:
+  /// **'Text copied.'**
+  String get journalCopied;
+  /// In en, this message translates to:
+  /// **'Edited'**
+  String get journalEditedLabel;
+  /// In en, this message translates to:
+  /// **'{minutes} min read'**
+  String journalReadingTime(int minutes);
+  /// In en, this message translates to:
+  /// **'Discard this note?'**
+  String get journalDiscardTitle;
+  /// In en, this message translates to:
+  /// **'Your changes will not be saved.'**
+  String get journalDiscardBody;
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get journalDiscard;
+  /// In en, this message translates to:
+  /// **'Keep writing'**
+  String get journalKeepWriting;
+  /// In en, this message translates to:
+  /// **'Select text to change its case.'**
+  String get journalToggleCaseHint;
+  /// In en, this message translates to:
+  /// **'Could not add the picture. Try again.'**
+  String get journalImageError;
+
   /// No description provided for @savedArticles.
   ///
   /// In en, this message translates to:

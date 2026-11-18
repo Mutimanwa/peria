@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -141,10 +142,11 @@ class _JournalScreenState extends ConsumerState<JournalScreens> {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 8, right: 8),
-        child: HeaderIconButton(
-          icon: Icons.add, onTap: () => context.push('/journal/new'),
-        )
+        padding: const EdgeInsets.only(bottom: 8, right: 4),
+        child: _JournalAddButton(
+          semanticLabel: l10n.journalWrite,
+          onTap: () => context.push('/journal/new'),
+        ),
       ),
     );
   }
@@ -563,3 +565,62 @@ class _JournalCard extends StatelessWidget {
   }
 }
 
+
+/// Bouton d'ajout d'une note.
+///
+/// C'est l'action principale de l'écran : plus grand qu'une icône de barre,
+/// et posé sur une double ombre (halo rose + ombre portée) pour qu'il reste
+/// détaché du dégradé quand la liste défile dessous.
+class _JournalAddButton extends StatelessWidget {
+  const _JournalAddButton({required this.onTap, required this.semanticLabel});
+
+  final VoidCallback onTap;
+  final String semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: ExcludeSemantics(
+        child: GestureDetector(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onTap();
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [AppColors.primary400, AppColors.primary500],
+              ),
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary500.withOpacity(0.38),
+                  blurRadius: 20,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.10),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.add_rounded,
+              size: 30,
+              color: AppColors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

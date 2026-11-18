@@ -44,6 +44,8 @@ dependencies:
   crypto: ^3.0.3
   # Image picker pour le journal
   image_picker: ^1.1.2
+  # Stockage permanent des photos du journal (image_picker écrit dans le cache)
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
