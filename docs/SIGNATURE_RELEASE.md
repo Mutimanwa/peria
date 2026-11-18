@@ -99,7 +99,23 @@ binaires et le `versionCode` sont produits automatiquement.
 | `Keystore was tampered with` | mot de passe ou fichier base64 corrompu | regénérer le secret depuis le `.jks` sauvegardé |
 | « You already have a signing key with key ID … » au Play Store | envoi signé avec une autre clé | utiliser le keystore d'origine, jamais un nouveau |
 
-## 7. Play Store : identifiant de paquet
+## 7. Installer une mise à jour depuis une release
+
+Décision du projet : la distribution passe par les **releases GitHub**, pas par
+le Play Store. L'identifiant `com.example.peria` reste donc en l'état — le
+renommage décrit plus bas n'est nécessaire que le jour d'un premier envoi sur le
+Play Store.
+
+1. Onglet *Releases* du dépôt → dernière release `v<version>-b<build>`.
+2. Télécharger le fichier `peria-<version>-b<build>.apk`.
+3. L'ouvrir sur le téléphone : Android propose « Mettre à jour » si la signature
+   est la même que l'installation existante.
+
+La première fois après la bascule vers la clé de release, il faut désinstaller
+l'application installée avec la clé de debug, puis réinstaller. Les mises à jour
+suivantes se font sans désinstallation.
+
+## 8. Play Store : identifiant de paquet
 
 L'`applicationId` actuel est `com.example.peria`. Google Play **refuse tout
 identifiant commençant par `com.example`** : avant le premier envoi, il faudra

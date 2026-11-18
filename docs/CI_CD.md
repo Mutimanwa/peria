@@ -74,6 +74,10 @@ version: 1.0.1+2   # correctif : +0.0.1 et numéro de build +1
 
 Aucun tag n'est créé à la main.
 
+La distribution se fait par ces releases (`com.example.peria` assumé) ; la
+procédure d'installation d'une mise à jour est dans `docs/SIGNATURE_RELEASE.md`,
+section 7.
+
 ## 4. Signature Android
 
 Une mise à jour ne s'installe que si la nouvelle APK est signée avec **le même
