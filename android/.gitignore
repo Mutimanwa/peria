@@ -12,3 +12,7 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+# Dossier de la clé de release (voir docs/SIGNATURE_RELEASE.md). Un fichier
+# .jks y échappe déjà, mais le dossier entier ne doit jamais être versionné :
+# on y dépose aussi les sauvegardes.
+/keystore/
