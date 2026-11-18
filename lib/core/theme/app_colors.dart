@@ -83,6 +83,8 @@ class AppColors {
   static const Color warning50 = Color(0xFFFEF9C3);
   static const Color warning200 = Color(0xFFFACC15); // Base
   static const Color warning700 = Color(0xFFCA8A04);
+  /// Warning text on a light chip: 6.4:1 on white (warning700 is 2.9:1).
+  static const Color warning800 = Color(0xFF854D0E);
 
   static const Color warning = warning200;
 

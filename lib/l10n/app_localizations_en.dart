@@ -1729,7 +1729,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationInboxSubtitle =>
-      'These are the reminders planned on this device.';
+      'Your recent reminders, on this device only.';
+
+  @override
+  String get notificationInboxHint =>
+      'Tap a message to open it, swipe it left to delete it.';
+
+  @override
+  String get notificationMarkAllRead =>
+      'Mark all as read';
+
+  @override
+  String get notificationClearAll => 'Clear all';
+
+  @override
+  String get notificationClearAllTitle =>
+      'Delete all notifications?';
+
+  @override
+  String get notificationClearAllBody =>
+      'Only messages already received are deleted. Your upcoming reminders stay scheduled.';
+
+  @override
+  @override
+  String get notificationDeleted => 'Message deleted.';
+
+  String get notificationToday => 'Today';
+
+  @override
+  String get notificationYesterday => 'Yesterday';
+
+  @override
+  String get notificationEarlier => 'Earlier';
+
+  @override
+  String get notificationPeriodBody =>
+      'Your period may have started. Open your cycle to check or log the first day.';
+
+  @override
+  String get notificationFertileBody =>
+      'Your fertile window is announced. The calendar shows the days involved.';
+
+  @override
+  String get notificationOvulationBody =>
+      'Your estimated ovulation day has arrived. Have a look at the calendar.';
+
+  @override
+  String get notificationCheckInBody =>
+      'A moment to log your symptoms and write a couple of lines in your journal.';
+
+  @override
+  String notificationUnreadCount(int count) =>
+      '$count unread notifications';
 
   @override
   String get journalEntryEmpty => 'Write a title or a few words before saving.';

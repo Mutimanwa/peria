@@ -40,6 +40,12 @@ class HiveSetup {
       HiveBoxes.userProfile,
       encryptionCipher: HiveAesCipher(encryptionKey),
     );
+    // Notifications are stored as JSON strings in an encrypted box: they reveal
+    // cycle dates, so they deserve the same protection as the journal.
+    await Hive.openBox<String>(
+      HiveBoxes.appNotifications,
+      encryptionCipher: HiveAesCipher(encryptionKey),
+    );
   }
 
   /// Migrates the old, unencrypted map cache into the encrypted typed box.

@@ -3310,8 +3310,92 @@ abstract class AppLocalizations {
   /// No description provided for @notificationInboxSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'These are the reminders planned on this device.'**
+  /// **'Your recent reminders, on this device only.'**
   String get notificationInboxSubtitle;
+
+  /// No description provided for @notificationInboxHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a message to open it, swipe it left to delete it.'**
+  String get notificationInboxHint;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get notificationClearAll;
+
+  /// No description provided for @notificationClearAllTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all notifications?'**
+  String get notificationClearAllTitle;
+
+  /// No description provided for @notificationClearAllBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only messages already received are deleted. Your upcoming reminders stay scheduled.'**
+  String get notificationClearAllBody;
+
+  /// No description provided for @notificationDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Message deleted.'**
+  String get notificationDeleted;
+
+  /// No description provided for @notificationToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get notificationToday;
+
+  /// No description provided for @notificationYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get notificationYesterday;
+
+  /// No description provided for @notificationEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get notificationEarlier;
+
+  /// No description provided for @notificationPeriodBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your period may have started. Open your cycle to check or log the first day.'**
+  String get notificationPeriodBody;
+
+  /// No description provided for @notificationFertileBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your fertile window is announced. The calendar shows the days involved.'**
+  String get notificationFertileBody;
+
+  /// No description provided for @notificationOvulationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your estimated ovulation day has arrived. Have a look at the calendar.'**
+  String get notificationOvulationBody;
+
+  /// No description provided for @notificationCheckInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A moment to log your symptoms and write a couple of lines in your journal.'**
+  String get notificationCheckInBody;
+
+  /// No description provided for @notificationUnreadCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unread notifications'**
+  String notificationUnreadCount(int count);
 
   /// No description provided for @journalEntryEmpty.
   ///

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
+import 'package:peria_app/core/services/notification_inbox_provider.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_spacing.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
@@ -212,6 +213,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                 _AppBar(
                   onAvatarTap: () => context.push('/profile'),
                   avatarBase64: ref.watch(userProfileProvider).value?.avatarBase64,
+                  unreadNotifications:
+                      ref.watch(unreadNotificationCountProvider),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -295,10 +298,17 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 class _AppBar extends StatelessWidget {
   final VoidCallback onAvatarTap;
   final String? avatarBase64;
-  const _AppBar({required this.onAvatarTap, this.avatarBase64});
+  final int unreadNotifications;
+
+  const _AppBar({
+    required this.onAvatarTap,
+    this.avatarBase64,
+    this.unreadNotifications = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.page,
@@ -361,6 +371,10 @@ class _AppBar extends StatelessWidget {
             children: [
               _HeaderAction(
                 onTap: () => context.push('/notifications'),
+                showDot: unreadNotifications > 0,
+                semanticsLabel: unreadNotifications > 0
+                    ? l10n.notificationUnreadCount(unreadNotifications)
+                    : l10n.notifications,
                 child: Image.asset(
                   AppAssets.notificationBell,
                   width: 22,
@@ -388,23 +402,59 @@ class _AppBar extends StatelessWidget {
 //  LOGO PERIA — 2 cercles entrelacés
 // ════════════════════════════════════════════════════════════════════
 class _HeaderAction extends StatelessWidget {
-  const _HeaderAction({required this.onTap, required this.child});
+  const _HeaderAction({
+    required this.onTap,
+    required this.child,
+    this.showDot = false,
+    this.semanticsLabel,
+  });
 
   final VoidCallback onTap;
   final Widget child;
 
+  /// Unread reminders are flagged with a dot instead of a number: the exact
+  /// count would be noise on a 44 px button, so it is spoken instead.
+  final bool showDot;
+
+  final String? semanticsLabel;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.white,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        onTap: onTap,
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        child: SizedBox(
-          width: 44,
-          height: 44,
-          child: Center(child: child),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Center(
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  child,
+                  if (showDot)
+                    Positioned(
+                      right: -3,
+                      top: -3,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary500,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.white, width: 2),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

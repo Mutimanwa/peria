@@ -38,7 +38,29 @@ Future<void> main() async {
   updateOnboardingState(onboardingCompleted);
   await LocalNotificationService.instance.initialize();
 
+  // Tapping an OS reminder opens the screen it is about, whether Peria was
+  // running or had to be launched from the notification.
+  LocalNotificationService.instance.onNotificationTap = _openNotificationRoute;
+  final launchRoute = await LocalNotificationService.instance.launchRoute();
+
   runApp(const ProviderScope(child: PeriaApp()));
+
+  if (launchRoute != null) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _openNotificationRoute(launchRoute),
+    );
+  }
+}
+
+/// Pushes the destination of a tapped reminder once the router is ready.
+void _openNotificationRoute(String route) {
+  try {
+    final current = appRouter.routerDelegate.currentConfiguration.uri.path;
+    if (current == route) return;
+    appRouter.push(route);
+  } catch (error) {
+    debugPrint('[main] could not open $route: $error');
+  }
 }
 
 class PeriaApp extends ConsumerWidget {

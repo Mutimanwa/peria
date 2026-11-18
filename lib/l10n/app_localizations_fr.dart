@@ -1752,7 +1752,58 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notificationInboxSubtitle =>
-      'Voici les rappels prévus sur cet appareil.';
+      'Tes rappels récents, sur cet appareil uniquement.';
+
+  @override
+  String get notificationInboxHint =>
+      'Appuie sur un message pour l’ouvrir, glisse-le vers la gauche pour le supprimer.';
+
+  @override
+  String get notificationMarkAllRead =>
+      'Tout marquer comme lu';
+
+  @override
+  String get notificationClearAll => 'Tout supprimer';
+
+  @override
+  String get notificationClearAllTitle =>
+      'Supprimer toutes les notifications ?';
+
+  @override
+  String get notificationClearAllBody =>
+      'Seuls les messages déjà reçus sont supprimés. Tes rappels à venir restent programmés.';
+
+  @override
+  @override
+  String get notificationDeleted => 'Message supprimé.';
+
+  String get notificationToday => 'Aujourd’hui';
+
+  @override
+  String get notificationYesterday => 'Hier';
+
+  @override
+  String get notificationEarlier => 'Plus tôt';
+
+  @override
+  String get notificationPeriodBody =>
+      'Ta période est peut-être arrivée. Ouvre ton cycle pour vérifier ou noter le premier jour.';
+
+  @override
+  String get notificationFertileBody =>
+      'Ta fenêtre fertile est annoncée. Le calendrier montre les jours concernés.';
+
+  @override
+  String get notificationOvulationBody =>
+      'Ton jour d’ovulation estimé est arrivé. Jette un œil au calendrier.';
+
+  @override
+  String get notificationCheckInBody =>
+      'Un instant pour noter tes symptômes et écrire deux lignes dans ton journal.';
+
+  @override
+  String notificationUnreadCount(int count) =>
+      '$count notifications non lues';
 
   @override
   String get journalEntryEmpty =>
