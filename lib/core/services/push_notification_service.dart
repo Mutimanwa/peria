@@ -58,10 +58,10 @@ class PushNotificationService {
 
   /// Routes pushes received while the app is not running to
   /// [periaPushBackgroundHandler]. Must run before `runApp`, and once only.
-  Future<void> registerBackgroundHandler() async {
+  void registerBackgroundHandler() {
     if (kIsWeb) return;
     try {
-      await FirebaseMessaging.onBackgroundMessage(periaPushBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(periaPushBackgroundHandler);
     } catch (error) {
       debugPrint('[push] background handler not registered: $error');
     }

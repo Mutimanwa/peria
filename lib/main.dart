@@ -42,7 +42,7 @@ Future<void> main() async {
 
   // Push groundwork: the device is ready to receive server-sent reminders, but
   // nothing is registered until the user turns the switch on and signs in.
-  await PushNotificationService.instance.registerBackgroundHandler();
+  PushNotificationService.instance.registerBackgroundHandler();
   await PushNotificationService.instance.initialize();
 
   // Tapping an OS reminder opens the screen it is about, whether Peria was
