@@ -9,6 +9,24 @@ import 'package:peria_app/features/cycle/domain/cycle_status.dart';
 class CycleEngine {
   const CycleEngine._();
 
+  /// Number of complete cycles needed before the confidence can reach
+  /// [reliableConfidenceScore]. Four regular cycles are enough to stop calling
+  /// the prediction an estimate.
+  static const int cyclesForFullConfidence = 4;
+
+  /// Below this score the dates are shown as an estimate (`isEstimated`).
+  static const double reliableConfidenceScore = 0.7;
+
+  /// Extra days allowed after the predicted start before the calendar flags the
+  /// period as overdue. A couple of days of variation is normal and stays quiet.
+  static const int overdueToleranceDays = 2;
+
+  /// The fertile window starts five days before the estimated ovulation: sperm
+  /// can survive that long. It ends on the last day of the ±2 ovulation range.
+  static const int fertileDaysBeforeOvulation = 5;
+
+  static const int _maxPeriodLengthDays = 14;
+
   static DateTime _startOfDay(DateTime value) =>
       DateTime(value.year, value.month, value.day);
 
@@ -31,30 +49,61 @@ class CycleEngine {
         999,
       );
 
+  /// Confidence in the predicted dates, between 0.05 and 0.95.
+  ///
+  /// The score grows with the amount of history (0.2 with a single saved period,
+  /// 0.9 once four complete cycles are known) and is scaled down when the cycle
+  /// lengths vary around the average. A well tracked, regular history therefore
+  /// reaches [reliableConfidenceScore] instead of being capped below it.
   static double _calculateConfidenceScore({
-    required int logCount,
+    required int completedCycles,
     required int cycleVariance,
     required bool isIrregular,
-    required double irregularityFactor,
   }) {
-    // Base confidence from log count (max 0.6 with 6+ logs)
-    double logConfidence = (logCount / 6.0).clamp(0.2, 0.6).toDouble();
-    
-    // Variance penalty (up to -0.3)
-    double variancePenalty = 0;
-    if (cycleVariance > 5) {
-      variancePenalty =
-          ((cycleVariance - 5) / 20).clamp(0.0, 0.3).toDouble();
-    } else if (cycleVariance > 2) {
-      variancePenalty =
-          ((cycleVariance - 2) / 30).clamp(0.0, 0.15).toDouble();
+    final coverage =
+        (completedCycles / cyclesForFullConfidence).clamp(0.0, 1.0).toDouble();
+    final historyConfidence = 0.2 + 0.7 * coverage;
+
+    // Standard deviation of 0 days keeps the full score; 14 days or more keeps
+    // only 40 % of it.
+    final regularity =
+        1 - (cycleVariance / 14).clamp(0.0, 0.6).toDouble();
+
+    // A cycle that is irregular by the app's own definition loses a bit more.
+    final irregularityPenalty = isIrregular ? 0.1 : 0.0;
+
+    return (historyConfidence * regularity - irregularityPenalty)
+        .clamp(0.05, 0.95)
+        .toDouble();
+  }
+
+  /// Average length of the periods the user actually recorded.
+  ///
+  /// Only saved periods (never predictions) that are already over are counted,
+  /// so an ongoing period or a range drawn on the calendar cannot shrink the
+  /// average. [fallback] is the profile setting, used until a period is known.
+  static int resolvePeriodLength({
+    required List<PeriodLog> logs,
+    required int fallback,
+    required DateTime today,
+  }) {
+    final lengths = <int>[];
+    for (final log in logs) {
+      if (log.isEstimated) continue;
+      // A period that ends today (or later) may still be running.
+      if (!_startOfDay(log.endDate).isBefore(_startOfDay(today))) continue;
+      final length = _calendarDayDifference(log.endDate, log.startDate) + 1;
+      if (length < 1 || length > _maxPeriodLengthDays) continue;
+      lengths.add(length);
     }
-    
-    // Irregularity penalty
-    double irregularityPenalty = isIrregular ? 0.2 : 0.0;
-    
-    double confidence = logConfidence - variancePenalty - irregularityPenalty;
-    return confidence.clamp(0.0, 1.0).toDouble();
+
+    if (lengths.isEmpty) {
+      return fallback.clamp(1, _maxPeriodLengthDays).toInt();
+    }
+
+    final recent = lengths.take(6).toList();
+    final average = recent.reduce((a, b) => a + b) / recent.length;
+    return average.round().clamp(1, _maxPeriodLengthDays).toInt();
   }
 
   /// Aggregate statistics over all logged cycle intervals.
@@ -86,7 +135,9 @@ class CycleEngine {
       minCycleLength: cycleLengths.reduce((a, b) => a < b ? a : b),
       maxCycleLength: cycleLengths.reduce((a, b) => a > b ? a : b),
       stdDeviation: standardDeviation,
-      totalCyclesLogged: sortedLogs.length,
+      // One cycle is the interval between two saved periods: n periods describe
+      // n-1 complete cycles.
+      totalCyclesLogged: cycleLengths.length,
       isRegular: standardDeviation <= 5,
     );
   }
@@ -97,8 +148,10 @@ class CycleEngine {
     required int userPeriodLengthDays,
     required int pmsDaysSetting,
     DateTime? now,
+    DateTime? today,
   }) {
     final requestedDate = _startOfDay(now ?? DateTime.now());
+    final currentDate = _startOfDay(today ?? now ?? DateTime.now());
     final logsOnOrBeforeDate = logs
         .where((log) => !_startOfDay(log.startDate).isAfter(requestedDate))
         .toList();
@@ -114,31 +167,32 @@ class CycleEngine {
         predictionStatistics?.averageCycleLength ?? userCycleLengthDays;
     final cycleVariance = predictionStatistics?.stdDeviation.round() ?? 0;
     final isIrregular = predictionStatistics?.isRegular == false;
-    final irregularityFactor = isIrregular
-        ? (cycleVariance / 10.0).clamp(0.0, 0.3).toDouble()
-        : 0.0;
+    final completedCycles = predictionStatistics?.totalCyclesLogged ?? 0;
     final confidenceScore = _calculateConfidenceScore(
-      logCount: sortedLogs.length,
+      completedCycles: completedCycles,
       cycleVariance: cycleVariance,
       isIrregular: isIrregular,
-      irregularityFactor: irregularityFactor,
     );
-    final isEstimated = confidenceScore < 0.7;
-    
+    final periodLengthDays = resolvePeriodLength(
+      logs: sortedLogs,
+      fallback: userPeriodLengthDays,
+      today: currentDate,
+    );
+
     return compute(
       startDate: latestLog.startDate,
       endDate: latestLog.endDate,
       cycleLengthDays: averageCycleLength,
-      periodLengthDays: userPeriodLengthDays,
+      periodLengthDays: periodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
       cycleVariance: cycleVariance,
-      irregularityFactor: irregularityFactor,
       confidenceScore: confidenceScore,
-      isEstimated: isEstimated,
+      isEstimated: confidenceScore < reliableConfidenceScore,
       cycleRegularity: isIrregular
           ? CycleRegularity.irregular
           : CycleRegularity.regular,
       now: now,
+      today: currentDate,
     );
   }
 
@@ -149,6 +203,7 @@ class CycleEngine {
     required int userPeriodLengthDays,
     required int pmsDaysSetting,
     DateTime? now,
+    DateTime? today,
   }) {
     final requestedDate = _startOfDay(now ?? DateTime.now());
     if (requestedDate.isBefore(_startOfDay(startDate))) return null;
@@ -160,14 +215,24 @@ class CycleEngine {
       periodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
       cycleVariance: 0,
-      irregularityFactor: 0.0,
       confidenceScore: 0.2,
       isEstimated: true,
       cycleRegularity: CycleRegularity.regular,
       now: now,
+      today: today,
     );
   }
 
+  /// Builds the status for [now] from the last saved period.
+  ///
+  /// Two clocks are used on purpose:
+  /// * [now] is the date being described (the calendar asks about any date);
+  /// * [today] is the real current day, which decides whether the period is late.
+  ///
+  /// The cycle day never restarts on its own: while a period is late, the open
+  /// cycle keeps counting (day 32, not "day 4 of a cycle that never started").
+  /// Dates after [today] are still projected cycle by cycle so the calendar
+  /// keeps showing the next periods, fertile windows and PMS.
   static CycleStatus? compute({
     required DateTime startDate,
     required DateTime endDate,
@@ -175,64 +240,57 @@ class CycleEngine {
     required int periodLengthDays,
     required int pmsDaysSetting,
     required int cycleVariance,
-    required double irregularityFactor,
     required double confidenceScore,
     required bool isEstimated,
     required CycleRegularity cycleRegularity,
     DateTime? now,
+    DateTime? today,
   }) {
     if (cycleLengthDays <= 0 || periodLengthDays <= 0) return null;
-    
+
     final current = now ?? DateTime.now();
     final normalizedStartDate = _startOfDay(startDate);
-    final normalizedCurrent = _startOfDay(current);
-    
-    // Check if there's a real log covering today
+    final requestedDate = _startOfDay(current);
+    final todayDate = _startOfDay(today ?? current);
+
+    // Check if there's a real log covering the requested date or today.
     final isInRealPeriod = _isInRealPeriod(current, startDate, endDate);
-    
-    // For overdue detection: only overdue if no active period
-    final expectedNextPeriodStart =
-        _addCalendarDays(normalizedStartDate, cycleLengthDays);
-    const overdueToleranceDays = 2;
-    final isOverdue = !isInRealPeriod && normalizedCurrent.isAfter(
-      _addCalendarDays(expectedNextPeriodStart, overdueToleranceDays),
-    );
-    
-    // For prediction, use the most recent log as anchor
-    DateTime currentCycleStart;
-    bool useRealPeriodForCycle;
-    
-    if (isInRealPeriod) {
-      currentCycleStart = normalizedStartDate;
-      useRealPeriodForCycle = true;
-    } else {
-      // Calculate based on prediction from last log
-      final daysSinceLastPeriod =
-          _calendarDayDifference(normalizedCurrent, normalizedStartDate);
-      final cyclesElapsed =
-          daysSinceLastPeriod >= 0 ? daysSinceLastPeriod ~/ cycleLengthDays : 0;
-      currentCycleStart =
-          _addCalendarDays(normalizedStartDate, cyclesElapsed * cycleLengthDays);
-      useRealPeriodForCycle = false;
-    }
-    
+    final isPeriodToday = _isInRealPeriod(todayDate, startDate, endDate);
+
+    final daysSinceStartToday =
+        _calendarDayDifference(todayDate, normalizedStartDate);
+    final lateDaysToday = math.max(0, daysSinceStartToday - cycleLengthDays);
+    final isLate = !isPeriodToday && lateDaysToday > 0;
+    final isOverdue = isLate && lateDaysToday > overdueToleranceDays;
+
+    // The open cycle is the last saved one; a projected cycle starts only for
+    // dates that are still in the future.
+    final daysSinceStart =
+        _calendarDayDifference(requestedDate, normalizedStartDate);
+    final cyclesElapsed =
+        daysSinceStart >= 0 ? daysSinceStart ~/ cycleLengthDays : 0;
+    final currentCycleStart =
+        _addCalendarDays(normalizedStartDate, cyclesElapsed * cycleLengthDays);
+    final projectedDayOfCycle =
+        _calendarDayDifference(requestedDate, currentCycleStart) + 1;
+
+    final keepOpenCycle = isLate && !requestedDate.isAfter(todayDate);
+    final dayOfCycle =
+        keepOpenCycle ? daysSinceStart + 1 : projectedDayOfCycle;
+
+    final useRealPeriodForCycle = isInRealPeriod;
     final computedEndDate = useRealPeriodForCycle
         ? _endOfDay(endDate)
         : _endOfDay(_addCalendarDays(currentCycleStart, periodLengthDays - 1));
 
-    final isInPeriod = useRealPeriodForCycle;
-
-    final dayOfCycle =
-        _calendarDayDifference(normalizedCurrent, currentCycleStart) + 1;
-    
-    // Ovulation range (±2 days)
+    // Ovulation range (±2 days) around the estimated ovulation.
     final predictedOvulationDay =
         (cycleLengthDays - 14).clamp(1, cycleLengthDays).toInt();
     final ovulationRangeStartDay =
         (predictedOvulationDay - 2).clamp(1, cycleLengthDays).toInt();
     final ovulationRangeEndDay =
         (predictedOvulationDay + 2).clamp(1, cycleLengthDays).toInt();
-    
+
     final ovulationDateStart =
         _addCalendarDays(currentCycleStart, ovulationRangeStartDay - 1);
     final ovulationDateEnd =
@@ -240,9 +298,14 @@ class CycleEngine {
     final ovulationEstimateMid =
         _addCalendarDays(currentCycleStart, predictedOvulationDay - 1);
 
-    // Fertile window: 5 days before ovulation + day of ovulation
-    final fertileStart = _addCalendarDays(ovulationDateStart, -5);
-    final fertileEnd = _addCalendarDays(ovulationDateEnd, 1);
+    // Fertile window: J-5 (sperm survival), the ovulation day itself and the
+    // two days after it that belong to the ovulation uncertainty range. It can
+    // never start before the first day of the cycle.
+    final fertileStart = _laterOf(
+      currentCycleStart,
+      _addCalendarDays(ovulationEstimateMid, -fertileDaysBeforeOvulation),
+    );
+    final fertileEnd = ovulationDateEnd;
 
     final fertileWindow = List.generate(
       _calendarDayDifference(fertileEnd, fertileStart) + 1,
@@ -256,13 +319,13 @@ class CycleEngine {
 
     final nextPeriodStart = _addCalendarDays(currentCycleStart, cycleLengthDays);
     final pmsDays = _computePmsDays(nextPeriodStart, pmsDaysSetting);
-    
-    // Phase detection with adjusted windows for irregular cycles.
-    // Predicted period days are menstrual even when they are not a saved log.
+
+    // The phase follows [dayOfCycle]: a late period is luteal, never menstrual
+    // when nothing was logged.
     CyclePhase phase;
-    final isPredictedPeriodDay =
-        dayOfCycle >= 1 && dayOfCycle <= periodLengthDays;
-    if (isInPeriod || isPredictedPeriodDay) {
+    if (useRealPeriodForCycle) {
+      phase = CyclePhase.menstrual;
+    } else if (dayOfCycle >= 1 && dayOfCycle <= periodLengthDays) {
       phase = CyclePhase.menstrual;
     } else if (dayOfCycle >= ovulationRangeStartDay &&
         dayOfCycle <= ovulationRangeEndDay) {
@@ -272,17 +335,17 @@ class CycleEngine {
     } else {
       phase = CyclePhase.follicular;
     }
-    
+
     final daysUntilNextPeriod =
-        _calendarDayDifference(nextPeriodStart, normalizedCurrent);
-    
+        _calendarDayDifference(nextPeriodStart, todayDate);
+
     return CycleStatus(
       startDate: currentCycleStart,
       endDate: computedEndDate,
       cycleLengthDays: cycleLengthDays,
       periodLengthDays: periodLengthDays,
       now: current,
-      isInPeriod: isInPeriod,
+      isInPeriod: isInRealPeriod,
       dayOfCycle: dayOfCycle,
       phase: phase,
       nextPeriodStart: nextPeriodStart,
@@ -295,6 +358,9 @@ class CycleEngine {
       periodDays: periodDays,
       pmsDays: pmsDays,
       isOverdue: isOverdue,
+      // Kept even within the tolerance: one day late is worth saying out loud,
+      // it is only the calendar warning that waits a couple of days.
+      overdueDays: isLate ? lateDaysToday : 0,
       daysUntilNextPeriod: daysUntilNextPeriod,
       confidenceScore: confidenceScore,
       isEstimated: isEstimated,
@@ -303,6 +369,8 @@ class CycleEngine {
       useRealData: useRealPeriodForCycle,
     );
   }
+
+  static DateTime _laterOf(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
 
   static List<DateTime> _computePmsDays(
     DateTime nextPeriodStart,

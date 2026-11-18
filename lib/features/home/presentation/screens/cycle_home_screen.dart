@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/constants/app_assets.dart';
+import 'package:peria_app/core/services/notification_inbox_provider.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_spacing.dart';
-import 'package:peria_app/core/theme/app_text.dart';
-import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
-import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
+import 'package:peria_app/features/cycle/presentation/widgets/period_log_quick_sheet.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/shared/widgets/profile_avatar.dart';
 
 import 'package:peria_app/l10n/app_localizations.dart';
+import 'package:peria_app/shared/widgets/pill_button.dart';
 
 // ════════════════════════════════════════════════════════════════════
 //  ÉCRAN PRINCIPAL — Cycle Home
@@ -67,6 +67,26 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
     _wave2Ctrl.dispose();
     _phaseCtrl.dispose();
     super.dispose();
+  }
+
+  /// Wording for the next period.
+  ///
+  /// A prediction is never shown as a date: it is always a count of days, kept
+  /// approximate (“in about 2 days”) and with dedicated single-day wording.
+  String _periodLabel(
+    AppLocalizations l10n, {
+    required int overdueDays,
+    required int? daysUntilNext,
+  }) {
+    if (overdueDays > 0) {
+      return overdueDays == 1
+          ? l10n.cycleLateOneDay
+          : l10n.cycleLateByDays(overdueDays);
+    }
+    if (daysUntilNext == null) return l10n.nextPeriodUnknown;
+    if (daysUntilNext <= 0) return l10n.periodIsDue;
+    if (daysUntilNext == 1) return l10n.nextPeriodTomorrow;
+    return l10n.nextPeriodInAboutDays(daysUntilNext);
   }
 
   // ── Config couleurs + données par phase ─────────────────────────
@@ -153,7 +173,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
       barrierColor: Colors.black.withOpacity(0.46),
       elevation: 0,
       clipBehavior: Clip.none,
-      builder: (_) => _QuickPeriodLogSheet(
+      builder: (_) => PeriodLogQuickSheet(
         onOpenStructuredEdit: () {
           if (mounted) context.push('/edit-calendar');
         },
@@ -173,6 +193,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
 
     final dayOfCycle = status?.dayOfCycle ?? 1;
     final daysUntilNext = status?.daysUntilNextPeriod;
+    final overdueDays = status?.overdueDays ?? 0;
+    final isLate = overdueDays > 0;
     final phase = status?.phase ?? CyclePhase.follicular;
     final cycleLength = status?.cycleLengthDays ?? 28;
     final cycleLengthDays = cycleLength > 0 ? cycleLength : 28;
@@ -213,6 +235,8 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                 _AppBar(
                   onAvatarTap: () => context.push('/profile'),
                   avatarBase64: ref.watch(userProfileProvider).value?.avatarBase64,
+                  unreadNotifications:
+                      ref.watch(unreadNotificationCountProvider),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -225,17 +249,20 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                     child: Column(
                       children: [
                         Text(
-                          daysUntilNext == null
-                              ? l10n.nextPeriodUnknown
-                              : daysUntilNext <= 0
-                                  ? l10n.periodIsDue
-                                  : l10n.nextPeriodInDays(daysUntilNext),
+                          _periodLabel(
+                            l10n,
+                            overdueDays: overdueDays,
+                            daysUntilNext: daysUntilNext,
+                          ),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.neutral700,
+                            fontWeight:
+                                isLate ? FontWeight.w700 : FontWeight.w500,
+                            color: isLate
+                                ? AppColors.primary600
+                                : AppColors.neutral700,
                           ),
                         ),
                         const SizedBox(height: 18),
@@ -261,7 +288,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                         Row(
                           children: [
                             Expanded(
-                              child: _LogBtn(
+                              child: PillButton(
                                 label: l10n.logSymptoms,
                                 filled: false,
                                 onTap: () => context.push('/symptoms'),
@@ -269,7 +296,7 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: _LogBtn(
+                              child: PillButton(
                                 label: l10n.logPeriodButton,
                                 filled: true,
                                 onTap: _showQuickPeriodSheet,
@@ -290,251 +317,23 @@ class _CycleHomeScreenState extends ConsumerState<CycleHomeScreen>
   }
 }
 
-enum _QuickPeriodLogAction { startToday, addToday, endToday }
-
-class _QuickPeriodLogSheet extends ConsumerStatefulWidget {
-  const _QuickPeriodLogSheet({required this.onOpenStructuredEdit});
-
-  final VoidCallback onOpenStructuredEdit;
-
-  @override
-  ConsumerState<_QuickPeriodLogSheet> createState() =>
-      _QuickPeriodLogSheetState();
-}
-
-class _QuickPeriodLogSheetState extends ConsumerState<_QuickPeriodLogSheet> {
-  bool _isSaving = false;
-  String? _feedback;
-
-  Future<void> _submit(
-    _QuickPeriodLogAction action,
-    List<PeriodLog> logs,
-  ) async {
-    if (_isSaving) return;
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final periodLog = action == _QuickPeriodLogAction.endToday
-        ? PeriodLogQuickActions.endToday(logs: logs, today: today)
-        : PeriodLogQuickActions.recordToday(logs: logs, today: today);
-
-    if (periodLog == null) {
-      final message = action == _QuickPeriodLogAction.endToday &&
-              !logs.any((log) =>
-                  !log.isEstimated &&
-                  log.endDate.year == today.year &&
-                  log.endDate.month == today.month &&
-                  log.endDate.day == today.day)
-          ? AppLocalizations.of(context).periodLogNoRecentToEnd
-          : AppLocalizations.of(context).periodLogAlreadyLoggedToday;
-      setState(() => _feedback = message);
-      return;
-    }
-
-    final periodLogsNotifier = ref.read(periodLogsProvider.notifier);
-    setState(() {
-      _isSaving = true;
-      _feedback = null;
-    });
-
-    try {
-      await periodLogsNotifier.add(periodLog);
-      if (!mounted) return;
-
-      // Period logs are the cycle engine's source of truth. Keep the profile's
-      // legacy fallback anchor aligned when it is already available.
-      final savedLogs =
-          ref.read(periodLogsProvider).value ?? const <PeriodLog>[];
-      final periodContainingToday = savedLogs
-          .where((log) => log.contains(today) && !log.isEstimated)
-          .toList()
-        ..sort((a, b) => b.startDate.compareTo(a.startDate));
-      final profile = ref.read(userProfileProvider).value;
-      if (periodContainingToday.isNotEmpty && profile != null) {
-        final loggedStart = periodContainingToday.first.startDate;
-        final currentStart = profile.lastPeriodStart;
-        if (currentStart == null || loggedStart.isAfter(currentStart)) {
-          try {
-            await ref.read(userProfileProvider.notifier).patch(
-                  (current) => current.copyWith(lastPeriodStart: loggedStart),
-                );
-          } catch (_) {
-            // The saved period log remains canonical if this legacy fallback
-            // profile field cannot be refreshed.
-          }
-        }
-      }
-
-      if (mounted) Navigator.of(context).pop();
-    } catch (_) {
-      // `add` updates the provider optimistically. Reload its canonical value
-      // after a failed write so a retry cannot mistake an unsaved entry for a
-      // successfully recorded period.
-      try {
-        await periodLogsNotifier.load();
-      } catch (_) {
-        // Keep the original save error visible if refreshing also fails.
-      }
-      if (mounted) {
-        final reloadedLogs =
-            ref.read(periodLogsProvider).value ?? const <PeriodLog>[];
-        final wasSaved = reloadedLogs.any(
-          (log) => log.contains(today) && !log.isEstimated,
-        );
-        if (wasSaved) {
-          Navigator.of(context).pop();
-        } else {
-          setState(() =>
-              _feedback = AppLocalizations.of(context).periodLogSaveError);
-        }
-      }
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final logsState = ref.watch(periodLogsProvider);
-    final canSave = logsState.hasValue &&
-        !logsState.isLoading &&
-        !logsState.hasError &&
-        !_isSaving;
-    final logs = logsState.value ?? const <PeriodLog>[];
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-
-    return Padding(
-      padding: EdgeInsets.only(top: 28, bottom: bottomInset),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.22),
-              blurRadius: 28,
-              spreadRadius: 2,
-              offset: const Offset(0, -10),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey300,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Text(l10n.logPeriodSheetTitle, style: AppText.h4),
-                const SizedBox(height: 6),
-                Text(
-                  l10n.logPeriodSheetSubtitle,
-                  style: AppText.body.copyWith(color: AppColors.textSecondary),
-                ),
-                if (logsState.isLoading || _isSaving) ...[
-                  const SizedBox(height: 14),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        _isSaving
-                            ? l10n.periodLogSaving
-                            : l10n.periodLogLoading,
-                        style: AppText.caption.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-                if (logsState.hasError) ...[
-                  const SizedBox(height: 14),
-                  Text(
-                    l10n.periodLogLoadError,
-                    style: AppText.caption.copyWith(color: AppColors.textError),
-                  ),
-                ],
-                if (_feedback != null) ...[
-                  const SizedBox(height: 14),
-                  Text(
-                    _feedback!,
-                    style: AppText.caption.copyWith(color: AppColors.textError),
-                  ),
-                ],
-                const SizedBox(height: 18),
-                _QuickActionTile(
-                  icon: Icons.play_arrow_rounded,
-                  title: l10n.periodStartedToday,
-                  subtitle: l10n.periodStartedTodaySubtitle,
-                  color: AppColors.primary400,
-                  enabled: canSave,
-                  onTap: () =>
-                      _submit(_QuickPeriodLogAction.startToday, logs),
-                ),
-                const SizedBox(height: 12),
-                _QuickActionTile(
-                  icon: Icons.water_drop_outlined,
-                  title: l10n.addTodayPeriodDay,
-                  subtitle: l10n.addTodayPeriodDaySubtitle,
-                  color: AppColors.primary500,
-                  enabled: canSave,
-                  onTap: () => _submit(_QuickPeriodLogAction.addToday, logs),
-                ),
-                const SizedBox(height: 12),
-                _QuickActionTile(
-                  icon: Icons.stop_rounded,
-                  title: l10n.periodEndedToday,
-                  subtitle: l10n.periodEndedTodaySubtitle,
-                  color: AppColors.warning700,
-                  enabled: canSave,
-                  onTap: () => _submit(_QuickPeriodLogAction.endToday, logs),
-                ),
-                const SizedBox(height: 16),
-                _LogBtn(
-                  label: l10n.openStructuredPeriodEdit,
-                  filled: false,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    widget.onOpenStructuredEdit();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 // ════════════════════════════════════════════════════════════════════
 //  APPBAR
 // ════════════════════════════════════════════════════════════════════
 class _AppBar extends StatelessWidget {
   final VoidCallback onAvatarTap;
   final String? avatarBase64;
-  const _AppBar({required this.onAvatarTap, this.avatarBase64});
+  final int unreadNotifications;
+
+  const _AppBar({
+    required this.onAvatarTap,
+    this.avatarBase64,
+    this.unreadNotifications = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.page,
@@ -597,6 +396,10 @@ class _AppBar extends StatelessWidget {
             children: [
               _HeaderAction(
                 onTap: () => context.push('/notifications'),
+                showDot: unreadNotifications > 0,
+                semanticsLabel: unreadNotifications > 0
+                    ? l10n.notificationUnreadCount(unreadNotifications)
+                    : l10n.notifications,
                 child: Image.asset(
                   AppAssets.notificationBell,
                   width: 22,
@@ -624,23 +427,59 @@ class _AppBar extends StatelessWidget {
 //  LOGO PERIA — 2 cercles entrelacés
 // ════════════════════════════════════════════════════════════════════
 class _HeaderAction extends StatelessWidget {
-  const _HeaderAction({required this.onTap, required this.child});
+  const _HeaderAction({
+    required this.onTap,
+    required this.child,
+    this.showDot = false,
+    this.semanticsLabel,
+  });
 
   final VoidCallback onTap;
   final Widget child;
 
+  /// Unread reminders are flagged with a dot instead of a number: the exact
+  /// count would be noise on a 44 px button, so it is spoken instead.
+  final bool showDot;
+
+  final String? semanticsLabel;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.white,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        onTap: onTap,
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: Material(
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        child: SizedBox(
-          width: 44,
-          height: 44,
-          child: Center(child: child),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Center(
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  child,
+                  if (showDot)
+                    Positioned(
+                      right: -3,
+                      top: -3,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary500,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.white, width: 2),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -927,126 +766,6 @@ class _CycleWheelPainter extends CustomPainter {
       old.wave2 != wave2 ||
       old.progress != progress ||
       old.config.label != config.label;
-}
-
-// ════════════════════════════════════════════════════════════════════
-//  BOUTONS LOG SYMPTOM / LOG PERIOD
-// ════════════════════════════════════════════════════════════════════
-class _LogBtn extends StatelessWidget {
-  final String label;
-  final bool filled;
-  final VoidCallback onTap;
-
-  const _LogBtn(
-      {required this.label, required this.filled, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 56,
-        decoration: BoxDecoration(
-          color: filled ? AppColors.grey900 : AppColors.white,
-          borderRadius: BorderRadius.circular(50),
-          border:
-              filled ? null : Border.all(color: AppColors.grey900, width: 1.5),
-          boxShadow: filled
-              ? [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3))
-                ]
-              : null,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: filled ? AppColors.white : AppColors.black,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _QuickActionTile extends StatelessWidget {
-  const _QuickActionTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.onTap,
-    this.enabled = true,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color color;
-  final VoidCallback onTap;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    final actionColor = enabled ? color : AppColors.grey400;
-    return GestureDetector(
-      onTap: enabled ? onTap : null,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.grey50,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.grey200),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: actionColor.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: actionColor, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppText.label.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: enabled ? AppColors.grey900 : AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: AppText.caption.copyWith(
-                      color: enabled ? AppColors.textSecondary : AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: enabled ? AppColors.grey500 : AppColors.grey300,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 // ════════════════════════════════════════════════════════════════════

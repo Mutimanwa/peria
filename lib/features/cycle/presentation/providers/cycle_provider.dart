@@ -7,6 +7,7 @@ import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
 import 'package:peria_app/features/cycle/domain/cycle_regularity.dart';
 import 'package:peria_app/features/cycle/domain/cycle_statistics.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
+import 'package:peria_app/features/cycle/domain/period_log_upsert.dart';
 import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 
@@ -38,22 +39,21 @@ class PeriodLogsNotifier extends StateNotifier<AsyncValue<List<PeriodLog>>> {
     state = await AsyncValue.guard(_repository.load);
   }
 
+  /// Ajoute ou corrige une période.
+  ///
+  /// Toutes les bornes (durée maximale, pas de jour futur, remplacement d'une
+  /// plage chevauchée) sont appliquées par [PeriodLogUpsert] : les écrans
+  /// peuvent envoyer ce que la personne a dessiné, le notifier fait respecter
+  /// les règles.
   Future<void> add(PeriodLog log) async {
     final current = [...(state.value ?? <PeriodLog>[])];
-    current.removeWhere((x) => x.id == log.id);
-    var mergedLog = log;
-    final remaining = <PeriodLog>[];
-    for (final existing in current) {
-      if (existing.overlapsOrTouches(mergedLog)) {
-        mergedLog = mergedLog.merge(existing);
-      } else {
-        remaining.add(existing);
-      }
-    }
-    remaining.add(mergedLog);
-    remaining.sort((a, b) => b.startDate.compareTo(a.startDate));
-    state = AsyncValue.data(remaining);
-    await _repository.save(remaining);
+    final next = PeriodLogUpsert.apply(
+      logs: current,
+      log: log,
+      today: DateTime.now(),
+    );
+    state = AsyncValue.data(next);
+    await _repository.save(next);
   }
 }
 
@@ -70,6 +70,11 @@ final cycleStatusForDateProvider =
   final userPeriodLengthDays = profile?.periodLengthDays ?? 5;
   const pmsDaysSetting = 5;
 
+  // `now` describes the requested date (the calendar asks about any day) while
+  // `today` is the real current day: it decides whether the period is late, so
+  // a late cycle keeps counting instead of restarting at day 1.
+  final today = DateTime.now();
+
   if (periodLogs.isNotEmpty) {
     return CycleEngine.computeFromLogs(
       logs: periodLogs,
@@ -77,6 +82,7 @@ final cycleStatusForDateProvider =
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
       now: targetDate,
+      today: today,
     );
   }
 
@@ -94,6 +100,7 @@ final cycleStatusForDateProvider =
       userPeriodLengthDays: userPeriodLengthDays,
       pmsDaysSetting: pmsDaysSetting,
       now: targetDate,
+      today: today,
     );
   }
 
@@ -201,11 +208,6 @@ final isInPeriodProvider = Provider<bool>((ref) {
 // --- IS OVERDUE PROVIDER ---
 final isOverdueProvider = Provider<bool>((ref) {
   return ref.watch(cycleStatusProvider)?.isOverdue ?? false;
-});
-
-// --- NEXT PERIOD PREDICTION PROVIDER ---
-final nextPeriodPredictionProvider = Provider<DateTime?>((ref) {
-  return ref.watch(cycleStatusProvider)?.nextPeriodStart;
 });
 
 // --- DAYS UNTIL NEXT PERIOD PROVIDER ---

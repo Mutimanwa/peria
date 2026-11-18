@@ -120,11 +120,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nextPeriodUnknown => 'Next period: unknown';
 
   @override
-  String get periodIsDue => 'Period is due';
+  String cycleLateByDays(int days) {
+    return '$days days late';
+  }
 
   @override
-  String nextPeriodInDays(int days) {
-    return 'Next period in $days days';
+  String get periodIsDue => 'Period expected today';
+
+  @override
+  String nextPeriodInAboutDays(int days) {
+    return 'Next period in about $days days';
+  }
+
+  @override
+  String get nextPeriodTomorrow => 'Next period tomorrow';
+
+  @override
+  String get cycleLateOneDay => 'One day late';
+
+  @override
+  String notificationDaysAgo(int count) {
+    return '$count d ago';
   }
 
   @override
@@ -516,6 +532,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allowNotifications => 'Allow Notifications';
 
   @override
+  String get pushNotifications => 'Push Notifications';
+
+  @override
+  String get pushNotificationsHint =>
+      'Get Peria reminders even when the app is closed. No cycle detail ever appears on the lock screen.';
+
+  @override
+  String get pushPermissionDenied => 'Allow notifications in your phone settings';
+
+  @override
   String get periodStarting => 'Period Starting';
 
   @override
@@ -903,6 +929,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'No period is logged today or yesterday to close. Use Edit Calendar to correct the dates.';
 
   @override
+  String get periodLogTooLong => 'This period has reached its maximum length. Fix the dates in Edit calendar.';
+
+  @override
+  String get calendarPeriodMaxHelp => 'A period lasts 10 days at most; future days cannot be selected.';
+
+  @override
   String get periodLogSaveError =>
       'Could not save the period log. Check your connection and try again.';
 
@@ -1041,6 +1073,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get securityIncorrectPin => 'Incorrect PIN.';
+
+  @override
+  String get securityLockNow => 'Lock now';
+
+  @override
+  String get securityAppLockOnNotice => 'Lock enabled. Enter your PIN to unlock.';
+
+  @override
+  String get securityJournalLockOnNotice => 'Journal lock enabled. The PIN will be asked when you open the journal.';
+
+  @override
+  String get securityToggleError => 'Could not change this setting. Try again.';
+
+  @override
+  String get securityCurrentPin => 'Your current PIN';
 
   @override
   String get securityAuthenticationSuccess => 'Authentication successful';
@@ -1708,10 +1755,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationInboxSubtitle =>
-      'These are the reminders planned on this device.';
+      'Your recent reminders, on this device only.';
+
+  @override
+  String get notificationInboxHint =>
+      'Tap a message to open it, swipe it left to delete it.';
+
+  @override
+  String get notificationMarkAllRead =>
+      'Mark all as read';
+
+  @override
+  String get notificationClearAll => 'Clear all';
+
+  @override
+  String get notificationClearAllTitle =>
+      'Delete all notifications?';
+
+  @override
+  String get notificationClearAllBody =>
+      'Only messages already received are deleted. Your upcoming reminders stay scheduled.';
+
+  @override
+  @override
+  String get notificationDeleted => 'Message deleted.';
+
+  String get notificationToday => 'Today';
+
+  @override
+  String get notificationYesterday => 'Yesterday';
+
+  @override
+  String get notificationEarlier => 'Earlier';
+
+  @override
+  String get notificationPeriodBody =>
+      'Your period may have started. Open your cycle to check or log the first day.';
+
+  @override
+  String get notificationFertileBody =>
+      'Your fertile window is announced. The calendar shows the days involved.';
+
+  @override
+  String get notificationOvulationBody =>
+      'Your estimated ovulation day has arrived. Have a look at the calendar.';
+
+  @override
+  String get notificationCheckInBody =>
+      'A moment to log your symptoms and write a couple of lines in your journal.';
+
+  @override
+  String notificationUnreadCount(int count) =>
+      '$count unread notifications';
 
   @override
   String get journalEntryEmpty => 'Write a title or a few words before saving.';
+
+  @override
+  String get journalBulletAction => 'Bulleted list';
+
+  @override
+  String get journalChecklistAction => 'Checklist item';
+
+  @override
+  String get journalCaseAction => 'Change case';
+
+  @override
+  String get journalCopyText => 'Copy the note text';
+
+  @override
+  String get journalCopied => 'Text copied.';
+
+  @override
+  String get journalEditedLabel => 'Edited';
+
+  @override
+  String journalReadingTime(int minutes) {
+    return '{minutes} min read';
+  }
+
+  @override
+  String get journalDiscardTitle => 'Discard this note?';
+
+  @override
+  String get journalDiscardBody => 'Your changes will not be saved.';
+
+  @override
+  String get journalDiscard => 'Discard';
+
+  @override
+  String get journalKeepWriting => 'Keep writing';
+
+  @override
+  String get journalToggleCaseHint => 'Select text to change its case.';
+
+  @override
+  String get journalImageError => 'Could not add the picture. Try again.';
 
   @override
   String get savedArticles => 'Saved articles';

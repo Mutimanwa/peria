@@ -4,6 +4,7 @@ import 'dart:ui' show Locale;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:peria_app/core/services/app_notification.dart';
 import 'package:peria_app/core/services/notification_schedule_planner.dart';
 import 'package:peria_app/core/storage/app_settings.dart';
 import 'package:peria_app/features/cycle/domain/cycle_status.dart';
@@ -23,6 +24,10 @@ class LocalNotificationService {
       FlutterLocalNotificationsPlugin();
   Future<void> _scheduleQueue = Future<void>.value();
   bool _initialized = false;
+
+  /// Called with the route of a notification the user tapped, whether the app
+  /// was already running or was launched from the notification itself.
+  ValueChanged<String>? onNotificationTap;
 
   bool get _isSupportedPlatform =>
       !kIsWeb &&
@@ -46,12 +51,49 @@ class LocalNotificationService {
             requestSoundPermission: false,
           ),
         ),
+        onDidReceiveNotificationResponse: _handleNotificationResponse,
       );
       _initialized = initialized ?? true;
     } catch (error) {
       _initialized = false;
       _log('local notification setup failed: $error');
     }
+  }
+
+  /// Route of the notification that launched the app from a stopped state,
+  /// or null when the app was opened normally.
+  Future<String?> launchRoute() async {
+    if (!_isSupportedPlatform || !_initialized) return null;
+    try {
+      final details = await _plugin.getNotificationAppLaunchDetails();
+      if (details == null || details.didNotificationLaunchApp != true) {
+        return null;
+      }
+      return _routeFromPayload(details.notificationResponse?.payload);
+    } catch (error) {
+      _log('could not read the launch notification: $error');
+      return null;
+    }
+  }
+
+  void _handleNotificationResponse(NotificationResponse response) {
+    final route = _routeFromPayload(response.payload);
+    if (route == null) return;
+    final handler = onNotificationTap;
+    if (handler == null) return;
+    try {
+      handler(route);
+    } catch (error) {
+      _log('could not open the notification destination: $error');
+    }
+  }
+
+  String? _routeFromPayload(String? payload) {
+    if (payload == null) return null;
+    final route = payload.trim();
+    // Only in-app routes are accepted: a payload is never used as a raw URL.
+    if (!route.startsWith('/') || route.length > 64) return null;
+    return route;
   }
 
   /// Requests OS permission only after the user enables the master switch.
@@ -167,6 +209,7 @@ class LocalNotificationService {
         matchDateTimeComponents: notification.repeatsDaily
             ? DateTimeComponents.time
             : null,
+        payload: AppNotification.routeForKind(notification.kind),
       );
     }
   }

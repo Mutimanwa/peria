@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
@@ -109,6 +112,8 @@ class UserRepository {
     'journal',
     'period_logs',
     'symptoms',
+    // Devices registered for push notifications.
+    'devices',
   ];
 
   /// Deletes the whole `users/{uid}` subtree.
@@ -141,6 +146,52 @@ class UserRepository {
       await batch.commit();
       if (snapshot.docs.length < pageSize) return;
     }
+  }
+
+  CollectionReference<Map<String, dynamic>> deviceCollectionFor(String uid) {
+    return userCollectionFor(uid, 'devices');
+  }
+
+  /// Stable document id for a device, so the same phone updates its own entry
+  /// instead of stacking a new one on every launch.
+  ///
+  /// The token itself is hashed: a document id ends up in logs and in the
+  /// Firebase console, and a raw FCM token would be enough to send pushes.
+  static String pushDeviceId(String token) {
+    return sha256.convert(utf8.encode(token)).toString().substring(0, 32);
+  }
+
+  /// Registers (or refreshes) the push destination of a device.
+  ///
+  /// The uid is passed explicitly because the token can arrive from a Firebase
+  /// callback after a sign-out, and a push must never be attached to the next
+  /// account signed in on the same phone.
+  Future<void> savePushDevice({
+    required String uid,
+    required String token,
+    required String platform,
+    required String locale,
+  }) async {
+    if (uid.isEmpty || token.isEmpty) return;
+    _log('saving push device uid=$uid platform=$platform');
+    await deviceCollectionFor(uid).doc(pushDeviceId(token)).set(
+      {
+        'token': token,
+        'platform': platform,
+        'locale': locale,
+        'updatedAt': FieldValue.serverTimestamp(),
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  Future<void> removePushDevice({
+    required String uid,
+    required String token,
+  }) async {
+    if (uid.isEmpty || token.isEmpty) return;
+    _log('removing push device uid=$uid');
+    await deviceCollectionFor(uid).doc(pushDeviceId(token)).delete();
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserProfile() async {

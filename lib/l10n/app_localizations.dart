@@ -308,17 +308,41 @@ abstract class AppLocalizations {
   /// **'Next period: unknown'**
   String get nextPeriodUnknown;
 
+  /// No description provided for @cycleLateByDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days late'**
+  String cycleLateByDays(int days);
+
   /// No description provided for @periodIsDue.
   ///
   /// In en, this message translates to:
-  /// **'Period is due'**
+  /// **'Period expected today'**
   String get periodIsDue;
 
-  /// No description provided for @nextPeriodInDays.
+  /// No description provided for @nextPeriodInAboutDays.
   ///
   /// In en, this message translates to:
-  /// **'Next period in {days} days'**
-  String nextPeriodInDays(int days);
+  /// **'Next period in about {days} days'**
+  String nextPeriodInAboutDays(int days);
+
+  /// No description provided for @nextPeriodTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Next period tomorrow'**
+  String get nextPeriodTomorrow;
+
+  /// No description provided for @cycleLateOneDay.
+  ///
+  /// In en, this message translates to:
+  /// **'One day late'**
+  String get cycleLateOneDay;
+
+  /// No description provided for @notificationDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d ago'**
+  String notificationDaysAgo(int count);
 
   /// No description provided for @day.
   ///
@@ -1043,6 +1067,24 @@ abstract class AppLocalizations {
   /// **'Allow Notifications'**
   String get allowNotifications;
 
+  /// No description provided for @pushNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Notifications'**
+  String get pushNotifications;
+
+  /// No description provided for @pushNotificationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Peria reminders even when the app is closed. No cycle detail ever appears on the lock screen.'**
+  String get pushNotificationsHint;
+
+  /// No description provided for @pushPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notifications in your phone settings'**
+  String get pushPermissionDenied;
+
   /// No description provided for @periodStarting.
   ///
   /// In en, this message translates to:
@@ -1763,6 +1805,18 @@ abstract class AppLocalizations {
   /// **'No period is logged today or yesterday to close. Use Edit Calendar to correct the dates.'**
   String get periodLogNoRecentToEnd;
 
+  /// No description provided for @periodLogTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'This period has reached its maximum length. Fix the dates in Edit calendar.'**
+  String get periodLogTooLong;
+
+  /// No description provided for @calendarPeriodMaxHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'A period lasts 10 days at most; future days cannot be selected.'**
+  String get calendarPeriodMaxHelp;
+
   /// No description provided for @periodLogSaveError.
   ///
   /// In en, this message translates to:
@@ -2014,6 +2068,26 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Incorrect PIN.'**
   String get securityIncorrectPin;
+
+  /// In en, this message translates to:
+  /// **'Lock now'**
+  String get securityLockNow;
+
+  /// In en, this message translates to:
+  /// **'Lock enabled. Enter your PIN to unlock.'**
+  String get securityAppLockOnNotice;
+
+  /// In en, this message translates to:
+  /// **'Journal lock enabled. The PIN will be asked when you open the journal.'**
+  String get securityJournalLockOnNotice;
+
+  /// In en, this message translates to:
+  /// **'Could not change this setting. Try again.'**
+  String get securityToggleError;
+
+  /// In en, this message translates to:
+  /// **'Your current PIN'**
+  String get securityCurrentPin;
 
   /// No description provided for @securityAuthenticationSuccess.
   ///
@@ -3278,14 +3352,141 @@ abstract class AppLocalizations {
   /// No description provided for @notificationInboxSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'These are the reminders planned on this device.'**
+  /// **'Your recent reminders, on this device only.'**
   String get notificationInboxSubtitle;
+
+  /// No description provided for @notificationInboxHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a message to open it, swipe it left to delete it.'**
+  String get notificationInboxHint;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get notificationClearAll;
+
+  /// No description provided for @notificationClearAllTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all notifications?'**
+  String get notificationClearAllTitle;
+
+  /// No description provided for @notificationClearAllBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Only messages already received are deleted. Your upcoming reminders stay scheduled.'**
+  String get notificationClearAllBody;
+
+  /// No description provided for @notificationDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Message deleted.'**
+  String get notificationDeleted;
+
+  /// No description provided for @notificationToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get notificationToday;
+
+  /// No description provided for @notificationYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get notificationYesterday;
+
+  /// No description provided for @notificationEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get notificationEarlier;
+
+  /// No description provided for @notificationPeriodBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your period may have started. Open your cycle to check or log the first day.'**
+  String get notificationPeriodBody;
+
+  /// No description provided for @notificationFertileBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your fertile window is announced. The calendar shows the days involved.'**
+  String get notificationFertileBody;
+
+  /// No description provided for @notificationOvulationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your estimated ovulation day has arrived. Have a look at the calendar.'**
+  String get notificationOvulationBody;
+
+  /// No description provided for @notificationCheckInBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A moment to log your symptoms and write a couple of lines in your journal.'**
+  String get notificationCheckInBody;
+
+  /// No description provided for @notificationUnreadCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unread notifications'**
+  String notificationUnreadCount(int count);
 
   /// No description provided for @journalEntryEmpty.
   ///
   /// In en, this message translates to:
   /// **'Write a title or a few words before saving.'**
   String get journalEntryEmpty;
+
+  /// In en, this message translates to:
+  /// **'Bulleted list'**
+  String get journalBulletAction;
+
+  /// In en, this message translates to:
+  /// **'Checklist item'**
+  String get journalChecklistAction;
+
+  /// In en, this message translates to:
+  /// **'Change case'**
+  String get journalCaseAction;
+
+  /// In en, this message translates to:
+  /// **'Copy the note text'**
+  String get journalCopyText;
+  /// In en, this message translates to:
+  /// **'Text copied.'**
+  String get journalCopied;
+  /// In en, this message translates to:
+  /// **'Edited'**
+  String get journalEditedLabel;
+  /// In en, this message translates to:
+  /// **'{minutes} min read'**
+  String journalReadingTime(int minutes);
+  /// In en, this message translates to:
+  /// **'Discard this note?'**
+  String get journalDiscardTitle;
+  /// In en, this message translates to:
+  /// **'Your changes will not be saved.'**
+  String get journalDiscardBody;
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get journalDiscard;
+  /// In en, this message translates to:
+  /// **'Keep writing'**
+  String get journalKeepWriting;
+  /// In en, this message translates to:
+  /// **'Select text to change its case.'**
+  String get journalToggleCaseHint;
+  /// In en, this message translates to:
+  /// **'Could not add the picture. Try again.'**
+  String get journalImageError;
 
   /// No description provided for @savedArticles.
   ///

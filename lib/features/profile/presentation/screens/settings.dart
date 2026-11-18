@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:peria_app/core/services/app_locale_provider.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
+import 'package:peria_app/features/cycle/domain/period_rules.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/app_language_selector.dart';
@@ -57,7 +58,7 @@ class SettingScreen extends ConsumerWidget {
                   title: l10n.periodLength,
                   currentValue: profileState.value?.periodLengthDays ?? 5,
                   min: 2,
-                  max: 12,
+                  max: PeriodRules.maxPeriodLengthDays,
                   onSelected: (value) =>
                       ref.read(userProfileProvider.notifier).patch(
                             (current) =>

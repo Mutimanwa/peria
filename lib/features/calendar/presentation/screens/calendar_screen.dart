@@ -9,6 +9,7 @@ import 'package:peria_app/features/calendar/presentation/day_semantics.dart';
 import 'package:peria_app/features/calendar/presentation/widgets/month_grid_layout.dart';
 import 'package:peria_app/features/calendar/presentation/calendar_phase_style.dart';
 import 'package:peria_app/features/cycle/domain/cycle_phase.dart';
+import 'package:peria_app/features/cycle/domain/period_rules.dart';
 import 'package:peria_app/features/cycle/presentation/models/cycle_day_info.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
 import 'package:peria_app/features/journal/presentation/providers/journal_provider.dart';
@@ -25,13 +26,35 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   DateTime _displayMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _selectedDate = DateTime.now();
 
-  void _prevMonth() => setState(() {
-        _displayMonth = DateTime(_displayMonth.year, _displayMonth.month - 1);
-      });
+  // The grid is a place to read the current cycle, not a calendar browser:
+  // it stops one month after today (the next predicted period) and twelve
+  // months back.
+  DateTime get _earliestMonth {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month - (PeriodRules.maxLookBackMonths - 1));
+  }
 
-  void _nextMonth() => setState(() {
-        _displayMonth = DateTime(_displayMonth.year, _displayMonth.month + 1);
-      });
+  DateTime get _latestMonth {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month + 1);
+  }
+
+  bool get _canGoPrev => _displayMonth.isAfter(_earliestMonth);
+  bool get _canGoNext => _displayMonth.isBefore(_latestMonth);
+
+  void _prevMonth() {
+    if (!_canGoPrev) return;
+    setState(() {
+      _displayMonth = DateTime(_displayMonth.year, _displayMonth.month - 1);
+    });
+  }
+
+  void _nextMonth() {
+    if (!_canGoNext) return;
+    setState(() {
+      _displayMonth = DateTime(_displayMonth.year, _displayMonth.month + 1);
+    });
+  }
 
   void _selectDay(DateTime day) {
     setState(() {
@@ -155,6 +178,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           onTap: _prevMonth,
                           icon: Icons.chevron_left_rounded,
                           semanticLabel: l10n.previousMonth,
+                          enabled: _canGoPrev,
                         ),
                         Expanded(
                           child: Text(
@@ -167,6 +191,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           onTap: _nextMonth,
                           icon: Icons.chevron_right_rounded,
                           semanticLabel: l10n.nextMonth,
+                          enabled: _canGoNext,
                         ),
                       ],
                     ),
@@ -603,11 +628,13 @@ class _NavArrow extends StatelessWidget {
   final VoidCallback onTap;
   final IconData icon;
   final String semanticLabel;
+  final bool enabled;
 
   const _NavArrow({
     required this.onTap,
     required this.icon,
     required this.semanticLabel,
+    this.enabled = true,
   });
 
   @override
@@ -616,18 +643,25 @@ class _NavArrow extends StatelessWidget {
     // glyph stays the same size as the mockup.
     return Semantics(
       button: true,
+      enabled: enabled,
       label: semanticLabel,
       child: ExcludeSemantics(
         child: GestureDetector(
-          onTap: onTap,
+          onTap: enabled ? onTap : null,
           child: Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.grey200),
+              border: Border.all(
+                color: enabled ? AppColors.grey200 : AppColors.grey100,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 20, color: AppColors.grey700),
+            child: Icon(
+              icon,
+              size: 20,
+              color: enabled ? AppColors.grey700 : AppColors.grey300,
+            ),
           ),
         ),
       ),

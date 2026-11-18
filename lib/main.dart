@@ -10,6 +10,8 @@ import 'package:peria_app/core/services/local_notification_service.dart';
 import 'package:peria_app/core/services/multitask_protection_service.dart';
 import 'package:peria_app/core/services/onboarding_service.dart';
 import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
+import 'package:peria_app/core/services/push_notification_service.dart';
+import 'package:peria_app/core/services/push_registration_provider.dart';
 import 'package:peria_app/core/services/security_service.dart';
 import 'package:peria_app/core/storage/hive_setup.dart';
 import 'package:peria_app/firebase_options.dart';
@@ -38,7 +40,34 @@ Future<void> main() async {
   updateOnboardingState(onboardingCompleted);
   await LocalNotificationService.instance.initialize();
 
+  // Push groundwork: the device is ready to receive server-sent reminders, but
+  // nothing is registered until the user turns the switch on and signs in.
+  PushNotificationService.instance.registerBackgroundHandler();
+  await PushNotificationService.instance.initialize();
+
+  // Tapping an OS reminder opens the screen it is about, whether Peria was
+  // running or had to be launched from the notification.
+  LocalNotificationService.instance.onNotificationTap = _openNotificationRoute;
+  final launchRoute = await LocalNotificationService.instance.launchRoute();
+
   runApp(const ProviderScope(child: PeriaApp()));
+
+  if (launchRoute != null) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _openNotificationRoute(launchRoute),
+    );
+  }
+}
+
+/// Pushes the destination of a tapped reminder once the router is ready.
+void _openNotificationRoute(String route) {
+  try {
+    final current = appRouter.routerDelegate.currentConfiguration.uri.path;
+    if (current == route) return;
+    appRouter.push(route);
+  } catch (error) {
+    debugPrint('[main] could not open $route: $error');
+  }
 }
 
 class PeriaApp extends ConsumerWidget {
@@ -47,6 +76,7 @@ class PeriaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(localNotificationScheduleProvider);
+    ref.watch(pushRegistrationProvider);
     final locale = ref.watch(appLocaleProvider);
     return MaterialApp.router(
       locale: locale,

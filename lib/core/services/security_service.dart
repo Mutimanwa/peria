@@ -412,6 +412,7 @@ class SecurityService {
       Hive.deleteBoxFromDisk(HiveBoxes.journalTombstones),
       Hive.deleteBoxFromDisk(HiveBoxes.periodLogs),
       Hive.deleteBoxFromDisk(HiveBoxes.userProfile),
+      Hive.deleteBoxFromDisk(HiveBoxes.appNotifications),
     ]);
   }
 

@@ -12,6 +12,8 @@ class CycleStatistics {
   final int minCycleLength;
   final int maxCycleLength;
   final double stdDeviation;
+  /// Number of complete cycles: the intervals between two saved periods, so
+  /// one fewer than the number of saved periods.
   final int totalCyclesLogged;
   final bool isRegular;
 }

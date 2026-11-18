@@ -32,7 +32,7 @@ class AppAssets {
   static const String login = "assets/images/icons/login1.png";
   static const String birthday = "assets/images/icons/birthday.png";
 
-  static const String avatar = 'assets/images/icons/Profile.png';
+  static const String avatar = 'assets/images/onboarding/avatar_profile.png';
   static const String calendar = "assets/images/icons/calendar.png";
   static const String notificationBell = "assets/images/icons/notification-1.png";
 

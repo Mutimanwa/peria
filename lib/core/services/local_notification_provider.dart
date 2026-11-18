@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peria_app/core/services/app_locale_provider.dart';
 import 'package:peria_app/core/services/local_notification_service.dart';
+import 'package:peria_app/core/services/notification_inbox_provider.dart';
+import 'package:peria_app/core/services/notification_schedule_planner.dart';
 import 'package:peria_app/core/services/privacy_policy_consent_service.dart';
 import 'package:peria_app/core/storage/app_settings_provider.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
@@ -61,4 +63,16 @@ final localNotificationScheduleProvider = Provider<void>((ref) {
       locale: locale,
     ),
   );
+
+  // Each planned reminder is remembered on this device. It appears in the feed
+  // once its time has passed, so the user can open it, mark it read or delete
+  // it even if the OS notification was dismissed from the lock screen.
+  final plan = settings.allowNotifications
+      ? NotificationSchedulePlanner.createPlan(
+          settings: settings,
+          cycleStatus: cycleStatus,
+        )
+      : const <PlannedLocalNotification>[];
+  final inbox = ref.read(notificationInboxProvider.notifier);
+  unawaited(Future<void>.microtask(() => inbox.sync(plan)));
 });

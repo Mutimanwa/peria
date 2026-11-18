@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:peria_app/core/theme/app_colors.dart';
 import 'package:peria_app/core/theme/app_text.dart';
 import 'package:peria_app/features/journal/data/models/mood.dart';
@@ -26,10 +30,20 @@ class JournalEditorScreen extends ConsumerStatefulWidget {
 class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
+
+  /// Le bouton « puce » ou « case à cocher » écrit dans le corps de la note :
+  /// sans nœud de focus, la barre d'outils fermait le clavier au lieu de le
+  /// ramener sur le texte.
+  final _contentFocus = FocusNode();
+
   String _moodId = 'calm';
   JournalEntry? _existing;
   bool _isSaving = false;
   final List<String> _attachments = [];
+
+  /// Vrai une fois que la sortie de l'écran a été confirmée : le `PopScope`
+  /// laisse alors passer le retour.
+  bool _allowPop = false;
 
   @override
   void initState() {
@@ -42,7 +56,65 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
     // FIX : Libération impérative de la mémoire pour éviter les leaks
     _titleController.dispose();
     _contentController.dispose();
+    _contentFocus.dispose();
     super.dispose();
+  }
+
+  // ── Sortie de l'écran ────────────────────────────────────────────────────
+
+  /// Le texte a-t-il changé depuis l'ouverture de l'écran ?
+  bool get _hasUnsavedChanges {
+    final title = _titleController.text.trim();
+    final content = _contentController.text.trim();
+    final existing = _existing;
+    if (existing == null) {
+      return title.isNotEmpty ||
+          content.isNotEmpty ||
+          _attachments.isNotEmpty ||
+          _moodId != 'calm';
+    }
+    return title != existing.title.trim() ||
+        content != existing.content.trim() ||
+        _moodId != existing.mood ||
+        !listEquals(_attachments, existing.attachments);
+  }
+
+  Future<void> _requestClose() async {
+    if (_isSaving) return;
+    if (!_hasUnsavedChanges) {
+      _leaveScreen();
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text(l10n.journalDiscardTitle),
+        content: Text(l10n.journalDiscardBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(l10n.journalKeepWriting),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              l10n.journalDiscard,
+              style: const TextStyle(color: AppColors.error700),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (discard == true && mounted) _leaveScreen();
+  }
+
+  void _leaveScreen() {
+    _allowPop = true;
+    safeRouterBack(context, fallbackRoute: '/journal');
   }
 
   void _loadExistingEntry() {
@@ -101,6 +173,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
     try {
       await ref.read(journalProvider.notifier).upsert(entry);
       if (mounted) {
+        _allowPop = true;
         safeRouterBack(context, fallbackRoute: '/journal');
       }
     } catch (e) {
@@ -119,8 +192,19 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return PopScope(
+      canPop: _allowPop,
+      onPopInvokedWithResult: (didPop, result) {
+        // Retour système : on passe par la même confirmation que le bouton.
+        if (!didPop) _requestClose();
+      },
+      child: _buildEditor(context),
+    );
+  }
+
+  Widget _buildEditor(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     // Fallback automatique si la locale 'fr' n'est pas encore chargée globalement
     final entryDate = _existing?.createdAt ?? DateTime.now();
     final locale = Localizations.localeOf(context).toString();
@@ -129,7 +213,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
 
     return PageScaffold(
       showBack: true,
-      onBack: () => safeRouterBack(context, fallbackRoute: '/journal'),
+      onBack: _requestClose,
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -189,6 +273,8 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                     controller: _titleController,
                     style: AppText.h3.copyWith(fontWeight: FontWeight.w800, fontSize: 24),
                     textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (_) => _contentFocus.requestFocus(),
                     decoration: InputDecoration(
                       hintText: l10n.myDairy,
                       hintStyle: AppText.h3.copyWith(
@@ -245,9 +331,11 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
                   // Input Contenu
                   TextField(
                     controller: _contentController,
+                    focusNode: _contentFocus,
                     maxLines: null,
                     textCapitalization: TextCapitalization.sentences,
                     keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
                     style: AppText.body.copyWith(
                         fontSize: 17, height: 1.6, color: AppColors.grey800),
                     decoration: InputDecoration(
@@ -272,6 +360,7 @@ class _JournalEditorScreenState extends ConsumerState<JournalEditorScreen> {
   }
 
 Widget _buildBottomToolbar() {
+    final l10n = AppLocalizations.of(context);
     final currentMood = Mood.fromId(_moodId);
     return Container(
       padding: EdgeInsets.only(
@@ -286,31 +375,45 @@ Widget _buildBottomToolbar() {
           // 1. Ajouter une Image
           _ToolbarIcon(
             icon: Icons.image_outlined,
+            semanticLabel: l10n.journalPhotoGallery,
             onPressed: _insertImage,
           ),
           // 2. Liste à puces
           _ToolbarIcon(
             icon: Icons.format_list_bulleted,
-            onPressed: () => _insertTextAtCursor("• "),
+            semanticLabel: l10n.journalBulletAction,
+            onPressed: () => _insertSnippet('• '),
           ),
           // 3. To-Do List / Case à cocher
           _ToolbarIcon(
             icon: Icons.check_box_outlined,
-            onPressed: () => _insertTextAtCursor("[ ] "),
+            semanticLabel: l10n.journalChecklistAction,
+            onPressed: () => _insertSnippet('[ ] '),
           ),
-          // 4. Majuscules / Raccourci texte rapide
+          // 4. Changer la casse de la sélection
           _ToolbarIcon(
             icon: Icons.text_fields,
+            semanticLabel: l10n.journalCaseAction,
             onPressed: _toggleCase,
           ),
-          
-          // Bouton Humeur (Déjà fonctionnel)
-          InkWell(
-            onTap: _showMoodPicker,
-            borderRadius: BorderRadius.circular(20),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(currentMood.icon, color: currentMood.accent, size: 26),
+
+          // Bouton Humeur
+          Semantics(
+            button: true,
+            label: l10n.journalMoodQuestion,
+            child: ExcludeSemantics(
+              child: InkWell(
+                onTap: _showMoodPicker,
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    currentMood.icon,
+                    color: currentMood.accent,
+                    size: 26,
+                  ),
+                ),
+              ),
             ),
           ),
           
@@ -321,42 +424,49 @@ Widget _buildBottomToolbar() {
 
   // --- LOGIQUE DES ACTIONS DE LA TOOLBAR ---
 
-  // Fonction universelle pour insérer du texte là où se trouve le curseur de l'utilisatrice
-  void _insertTextAtCursor(String textToInsert) {
+  // Insère un fragment (puce, case à cocher) là où se trouve le curseur.
+  void _insertSnippet(String snippet) {
     final text = _contentController.text;
     final selection = _contentController.selection;
-    
-    // Si le curseur n'est pas positionné, on ajoute à la fin
-    if (!selection.isValid) {
-      _contentController.text = text + textToInsert;
-      return;
+    final hasCursor = selection.isValid && selection.start >= 0;
+
+    if (!hasCursor) {
+      // Curseur jamais posé : on ajoute à la fin, sur une nouvelle ligne.
+      final needsNewLine = text.isNotEmpty && !text.endsWith('\n');
+      final insertion = '${needsNewLine ? '\n' : ''}$snippet';
+      _contentController.value = TextEditingValue(
+        text: '$text$insertion',
+        selection:
+            TextSelection.collapsed(offset: text.length + insertion.length),
+      );
+    } else {
+      final beforeCursor = text.substring(0, selection.start);
+      final needsNewLine =
+          beforeCursor.isNotEmpty && !beforeCursor.endsWith('\n');
+      final insertion = '${needsNewLine ? '\n' : ''}$snippet';
+      final newText =
+          text.replaceRange(selection.start, selection.end, insertion);
+      _contentController.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection.collapsed(
+          offset: selection.start + insertion.length,
+        ),
+      );
     }
 
-    final newText = text.replaceRange(selection.start, selection.end, textToInsert);
-    final newSelectionIndex = selection.start + textToInsert.length;
-
-    _contentController.value = TextEditingValue(
-      text: newText,
-      selection: TextSelection.collapsed(offset: newSelectionIndex),
-    );
-    
-    // Force le focus sur le champ de texte pour faire réapparaître le clavier
-    FocusScope.of(context).requestFocus();
+    _contentFocus.requestFocus();
   }
 
-  // Action Image : Ouvre la galerie du téléphone
-Future<void> _insertImage() async {
+  // Action Image : propose la galerie ou l'appareil photo.
+  Future<void> _insertImage() async {
     final l10n = AppLocalizations.of(context);
-    final ImagePicker picker = ImagePicker();
-    
-    // On propose le choix de la source à l'utilisatrice
-    showModalBottomSheet(
+    final source = await showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (bottomSheetContext) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -364,46 +474,64 @@ Future<void> _insertImage() async {
             Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(color: AppColors.grey200, borderRadius: BorderRadius.circular(2)),
+              decoration: BoxDecoration(
+                color: AppColors.grey200,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined, color: AppColors.primary500),
+              leading: const Icon(
+                Icons.photo_library_outlined,
+                color: AppColors.primary500,
+              ),
               title: Text(l10n.journalPhotoGallery),
-              onTap: () async {
-                Navigator.pop(bottomSheetContext);
-                final XFile? image = await picker.pickImage(
-                  source: ImageSource.gallery,
-                  imageQuality: 70, // Compresse à 70% pour économiser la RAM et le stockage
-                );
-                if (image != null) {
-                  _handleSelectedImage(image.path);
-                }
-              },
+              onTap: () => Navigator.pop(sheetContext, ImageSource.gallery),
             ),
             ListTile(
-              leading: const Icon(Icons.camera_alt_outlined, color: AppColors.primary500),
+              leading: const Icon(
+                Icons.camera_alt_outlined,
+                color: AppColors.primary500,
+              ),
               title: Text(l10n.journalTakePhoto),
-              onTap: () async {
-                Navigator.pop(bottomSheetContext);
-                final XFile? image = await picker.pickImage(
-                  source: ImageSource.camera,
-                  imageQuality: 70,
-                );
-                if (image != null) {
-                  _handleSelectedImage(image.path);
-                }
-              },
+              onTap: () => Navigator.pop(sheetContext, ImageSource.camera),
             ),
             const SizedBox(height: 8),
           ],
         ),
       ),
     );
+    if (source == null || !mounted) return;
+
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: source,
+        imageQuality: 70, // compresse pour économiser la RAM et le stockage
+      );
+      if (picked == null || !mounted) return;
+      await _addAttachment(picked);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.journalImageError)),
+      );
+    }
   }
 
-  void _handleSelectedImage(String path) {
+  /// `image_picker` écrit dans le cache : une photo non copiée disparaît dès
+  /// qu'Android nettoie ce dossier. On la déplace dans les documents de
+  /// l'application pour que le souvenir reste lisible des mois plus tard.
+  Future<void> _addAttachment(XFile file) async {
     final l10n = AppLocalizations.of(context);
+    final path = await _persistImage(file.path);
+    if (!mounted) return;
+    if (path == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.journalImageError)),
+      );
+      return;
+    }
+
     setState(() => _attachments.add(path));
     HapticFeedback.lightImpact();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -414,36 +542,82 @@ Future<void> _insertImage() async {
     );
   }
 
-  // Action Raccourci Texte : Alterne la sélection en MAJUSCULES / minuscules
+  Future<String?> _persistImage(String sourcePath) async {
+    try {
+      final documents = await getApplicationDocumentsDirectory();
+      final folder = Directory('${documents.path}/journal_images');
+      if (!folder.existsSync()) folder.createSync(recursive: true);
+      final fileName = sourcePath.split(Platform.pathSeparator).last;
+      final target =
+          '${folder.path}/${DateTime.now().microsecondsSinceEpoch}_$fileName';
+      await File(sourcePath).copy(target);
+      return target;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // Change la casse de la sélection, ou du mot sous le curseur.
   void _toggleCase() {
+    final l10n = AppLocalizations.of(context);
+    final text = _contentController.text;
     final selection = _contentController.selection;
-    if (!selection.isValid || selection.isCollapsed) {
-      // Sans sélection, on laisse le curseur tel quel : aucun emoji décoratif.
+    final hasSelection = selection.isValid &&
+        !selection.isCollapsed &&
+        selection.start >= 0 &&
+        selection.end <= text.length;
+
+    var start = selection.isValid ? selection.start : text.length;
+    var end = hasSelection ? selection.end : start;
+
+    if (!hasSelection) {
+      // Pas de sélection : on prend le mot autour du curseur.
+      while (start > 0 && !_isWordBoundary(text[start - 1])) {
+        start--;
+      }
+      end = selection.isValid ? selection.start : text.length;
+      while (end < text.length && !_isWordBoundary(text[end])) {
+        end++;
+      }
+    }
+
+    if (start >= end) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.journalToggleCaseHint)),
+      );
       return;
     }
 
-    final text = _contentController.text;
-    final selectedText = text.substring(selection.start, selection.end);
-    
-    // Si c'est déjà en majuscule, on met en minuscule, sinon l'inverse
-    final isUpperCase = selectedText == selectedText.toUpperCase();
-    final transformedText = isUpperCase ? selectedText.toLowerCase() : selectedText.toUpperCase();
+    final target = text.substring(start, end);
+    final isUpperCase = target == target.toUpperCase();
+    final transformed =
+        isUpperCase ? target.toLowerCase() : target.toUpperCase();
 
     _contentController.value = TextEditingValue(
-      text: text.replaceRange(selection.start, selection.end, transformedText),
-      selection: selection,
+      text: text.replaceRange(start, end, transformed),
+      selection: TextSelection(
+        baseOffset: start,
+        extentOffset: start + transformed.length,
+      ),
     );
+    _contentFocus.requestFocus();
   }
+
+  bool _isWordBoundary(String char) =>
+      RegExp(r'''[\s.,;:!?«»"()\[\]•]''').hasMatch(char);
 
   void _showMoodPicker() {
     final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
+      // Les six humeurs dépassent la moitié de l'écran sur un petit
+      // téléphone : la feuille doit pouvoir défiler.
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) => SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -511,18 +685,27 @@ Future<void> _insertImage() async {
 
 class _ToolbarIcon extends StatelessWidget {
   final IconData icon;
-  final VoidCallback? onPressed; 
-  
+  final String semanticLabel;
+  final VoidCallback? onPressed;
+
   const _ToolbarIcon({
     required this.icon,
+    required this.semanticLabel,
     this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(icon, color: AppColors.grey400, size: 24),
-      onPressed: onPressed, 
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: ExcludeSemantics(
+        child: IconButton(
+          tooltip: semanticLabel,
+          icon: Icon(icon, color: AppColors.grey500, size: 24),
+          onPressed: onPressed,
+        ),
+      ),
     );
   }
 }

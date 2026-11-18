@@ -121,11 +121,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nextPeriodUnknown => 'Prochaines regles : inconnues';
 
   @override
-  String get periodIsDue => 'Les regles sont proches';
+  String cycleLateByDays(int days) {
+    return 'Règles en retard de $days jours';
+  }
 
   @override
-  String nextPeriodInDays(int days) {
-    return 'Prochaines regles dans $days jours';
+  String get periodIsDue => 'Règles attendues aujourd’hui';
+
+  @override
+  String nextPeriodInAboutDays(int days) {
+    return 'Prochaines règles dans environ $days jours';
+  }
+
+  @override
+  String get nextPeriodTomorrow => 'Prochaines règles demain';
+
+  @override
+  String get cycleLateOneDay => 'Règles en retard d’un jour';
+
+  @override
+  String notificationDaysAgo(int count) {
+    return 'il y a $count j';
   }
 
   @override
@@ -520,6 +536,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get allowNotifications => 'Autoriser les notifications';
 
   @override
+  String get pushNotifications => 'Notifications push';
+
+  @override
+  String get pushNotificationsHint =>
+      'Recevez les rappels de Peria meme quand l’application est fermee. Aucun detail de cycle n’apparait sur l’ecran verrouille.';
+
+  @override
+  String get pushPermissionDenied =>
+      'Autorisez les notifications dans les reglages du telephone';
+
+  @override
   String get periodStarting => 'Debut des regles';
 
   @override
@@ -911,6 +938,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucun journal d’aujourd’hui ou d’hier à terminer. Utilise Modifier le calendrier pour corriger les dates.';
 
   @override
+  String get periodLogTooLong => 'Cette période a atteint sa durée maximale. Corrige les dates dans Modifier le calendrier.';
+
+  @override
+  String get calendarPeriodMaxHelp => 'Une période dure 10 jours au maximum ; les jours à venir ne sont pas sélectionnables.';
+
+  @override
   String get periodLogSaveError =>
       'Impossible d’enregistrer le journal. Vérifie ta connexion puis réessaie.';
 
@@ -1053,6 +1086,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get securityIncorrectPin => 'Code PIN incorrect.';
+
+  @override
+  String get securityLockNow => 'Verrouiller maintenant';
+
+  @override
+  String get securityAppLockOnNotice => 'Verrouillage activé. Saisis ton code pour déverrouiller.';
+
+  @override
+  String get securityJournalLockOnNotice => 'Verrouillage du journal activé. Le code sera demandé à l’ouverture du journal.';
+
+  @override
+  String get securityToggleError => 'Impossible de modifier ce réglage. Réessaie.';
+
+  @override
+  String get securityCurrentPin => 'Ton code actuel';
 
   @override
   String get securityAuthenticationSuccess => 'Authentification réussie';
@@ -1731,11 +1779,103 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get notificationInboxSubtitle =>
-      'Voici les rappels prévus sur cet appareil.';
+      'Tes rappels récents, sur cet appareil uniquement.';
+
+  @override
+  String get notificationInboxHint =>
+      'Appuie sur un message pour l’ouvrir, glisse-le vers la gauche pour le supprimer.';
+
+  @override
+  String get notificationMarkAllRead =>
+      'Tout marquer comme lu';
+
+  @override
+  String get notificationClearAll => 'Tout supprimer';
+
+  @override
+  String get notificationClearAllTitle =>
+      'Supprimer toutes les notifications ?';
+
+  @override
+  String get notificationClearAllBody =>
+      'Seuls les messages déjà reçus sont supprimés. Tes rappels à venir restent programmés.';
+
+  @override
+  @override
+  String get notificationDeleted => 'Message supprimé.';
+
+  String get notificationToday => 'Aujourd’hui';
+
+  @override
+  String get notificationYesterday => 'Hier';
+
+  @override
+  String get notificationEarlier => 'Plus tôt';
+
+  @override
+  String get notificationPeriodBody =>
+      'Ta période est peut-être arrivée. Ouvre ton cycle pour vérifier ou noter le premier jour.';
+
+  @override
+  String get notificationFertileBody =>
+      'Ta fenêtre fertile est annoncée. Le calendrier montre les jours concernés.';
+
+  @override
+  String get notificationOvulationBody =>
+      'Ton jour d’ovulation estimé est arrivé. Jette un œil au calendrier.';
+
+  @override
+  String get notificationCheckInBody =>
+      'Un instant pour noter tes symptômes et écrire deux lignes dans ton journal.';
+
+  @override
+  String notificationUnreadCount(int count) =>
+      '$count notifications non lues';
 
   @override
   String get journalEntryEmpty =>
       'Écris un titre ou quelques mots avant d’enregistrer.';
+
+  @override
+  String get journalBulletAction => 'Liste à puces';
+
+  @override
+  String get journalChecklistAction => 'Case à cocher';
+
+  @override
+  String get journalCaseAction => 'Changer la casse';
+
+  @override
+  String get journalCopyText => 'Copier le texte';
+
+  @override
+  String get journalCopied => 'Texte copié.';
+
+  @override
+  String get journalEditedLabel => 'Modifié';
+
+  @override
+  String journalReadingTime(int minutes) {
+    return '{minutes} min de lecture';
+  }
+
+  @override
+  String get journalDiscardTitle => 'Abandonner cette note ?';
+
+  @override
+  String get journalDiscardBody => 'Tes changements ne seront pas enregistrés.';
+
+  @override
+  String get journalDiscard => 'Abandonner';
+
+  @override
+  String get journalKeepWriting => 'Continuer l’écriture';
+
+  @override
+  String get journalToggleCaseHint => 'Sélectionne du texte pour changer sa casse.';
+
+  @override
+  String get journalImageError => 'Impossible d’ajouter l’image. Réessaie.';
 
   @override
   String get savedArticles => 'Articles enregistrés';

@@ -29,6 +29,7 @@ void main() {
           periodDays: const [],
           pmsDays: const [],
           isOverdue: false,
+          overdueDays: 0,
           daysUntilNextPeriod: 6,
           confidenceScore: 0.8,
           isEstimated: false,

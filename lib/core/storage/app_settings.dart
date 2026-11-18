@@ -9,6 +9,12 @@ class AppSettings {
   final bool faceIdEnabled;
   final bool discreetModeEnabled;
 
+  /// Whether this device accepts server-sent reminders.
+  ///
+  /// Groundwork: the preference is already stored with the account, so the
+  /// server can read it before sending anything.
+  final bool pushEnabled;
+
   const AppSettings({
     this.allowNotifications = false,
     this.notifyPeriodStarting = false,
@@ -19,6 +25,7 @@ class AppSettings {
     this.twoFactorEnabled = false,
     this.faceIdEnabled = true,
     this.discreetModeEnabled = false,
+    this.pushEnabled = false,
   });
 
   AppSettings copyWith({
@@ -31,6 +38,7 @@ class AppSettings {
     bool? twoFactorEnabled,
     bool? faceIdEnabled,
     bool? discreetModeEnabled,
+    bool? pushEnabled,
   }) {
     return AppSettings(
       allowNotifications: allowNotifications ?? this.allowNotifications,
@@ -42,6 +50,7 @@ class AppSettings {
       twoFactorEnabled: twoFactorEnabled ?? this.twoFactorEnabled,
       faceIdEnabled: faceIdEnabled ?? this.faceIdEnabled,
       discreetModeEnabled: discreetModeEnabled ?? this.discreetModeEnabled,
+      pushEnabled: pushEnabled ?? this.pushEnabled,
     );
   }
 
@@ -56,6 +65,7 @@ class AppSettings {
       twoFactorEnabled: json['twoFactorEnabled'] as bool? ?? false,
       faceIdEnabled: json['faceIdEnabled'] as bool? ?? true,
       discreetModeEnabled: json['discreetModeEnabled'] as bool? ?? false,
+      pushEnabled: json['pushEnabled'] as bool? ?? false,
     );
   }
 
@@ -70,6 +80,7 @@ class AppSettings {
       'twoFactorEnabled': twoFactorEnabled,
       'faceIdEnabled': faceIdEnabled,
       'discreetModeEnabled': discreetModeEnabled,
+      'pushEnabled': pushEnabled,
     };
   }
 }

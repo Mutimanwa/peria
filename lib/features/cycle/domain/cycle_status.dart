@@ -20,6 +20,14 @@ class CycleStatus {
   final List<DateTime> periodDays;
   final List<DateTime> pmsDays;
   final bool isOverdue;
+
+  /// How many days late the period is today, 0 when it is not late.
+  ///
+  /// `isOverdue` only switches on after the engine's tolerance of two days, so
+  /// the calendar warning absorbs normal variation while the home screen can
+  /// already say that the period is late.
+  final int overdueDays;
+
   final int daysUntilNextPeriod;
   
   // New fields
@@ -48,6 +56,7 @@ class CycleStatus {
     required this.periodDays,
     required this.pmsDays,
     required this.isOverdue,
+    required this.overdueDays,
     required this.daysUntilNextPeriod,
     required this.confidenceScore,
     required this.isEstimated,

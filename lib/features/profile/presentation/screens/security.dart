@@ -20,19 +20,26 @@ class AccountSecurityScreen extends ConsumerStatefulWidget {
       _AccountSecurityScreenState();
 }
 
+enum _PinStep { current, create, confirm }
+
 class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
+  /// Saisie du code : création, confirmation, et vérification du code actuel
+  /// avant d'en changer.
+  ///
+  /// L'ancien flux ne demandait jamais le code existant : n'importe qui
+  /// pouvait remplacer le code puis désactiver le verrouillage.
   Future<bool> _showPinSheet({required bool enableJournalLock}) async {
     final l10n = AppLocalizations.of(context);
-    final security = ref.read(securityProvider).value;
-    final isNew = security?.pinConfigured != true;
-    String? pin;
+    final notifier = ref.read(securityProvider.notifier);
+    final pinConfigured =
+        ref.read(securityProvider).value?.pinConfigured == true;
+
+    var step = pinConfigured ? _PinStep.current : _PinStep.create;
+    String? currentPin;
+    String? pendingPin;
     String? error;
-    var isConfirming = false;
-    var saved = false;
-    // Incremente a chaque code refuse : la saisie est reconstruite sur des
-    // cases vides. Sans cela, les quatre cases restaient remplies apres un
-    // refus et le code suivant n'etait plus pris en compte.
     var attempts = 0;
+    var saved = false;
 
     await showModalBottomSheet<void>(
       context: context,
@@ -50,14 +57,17 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
           padding: EdgeInsets.only(top: 28, bottom: bottomInset),
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              final title = isConfirming
-                  ? l10n.confirmPin
-                  : (isNew ? l10n.setPinLock : l10n.newPin);
-              final subtitle = isConfirming
+              final title = switch (step) {
+                _PinStep.current => l10n.securityCurrentPin,
+                _PinStep.create => pinConfigured ? l10n.newPin : l10n.setPinLock,
+                _PinStep.confirm => l10n.confirmPin,
+              };
+              final subtitle = step == _PinStep.confirm
                   ? l10n.confirmPin
                   : (enableJournalLock
                       ? l10n.globalSecurityRequiredForJournal
                       : l10n.enterPin);
+
               return DecoratedBox(
                 decoration: BoxDecoration(
                   color: AppColors.white,
@@ -97,53 +107,73 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                         Text(
                           subtitle,
                           textAlign: TextAlign.center,
-                          style: AppText.body.copyWith(color: AppColors.textSecondary),
+                          style: AppText.body
+                              .copyWith(color: AppColors.textSecondary),
                         ),
                         const SizedBox(height: 20),
                         PinCodeInput(
-                          key: ValueKey('$isConfirming-$attempts'),
+                          // La clé change à chaque étape et à chaque refus :
+                          // les cases repartent vides, sinon plus aucune
+                          // frappe n'était prise.
+                          key: ValueKey('$step-$attempts'),
                           length: 4,
                           autoFocus: true,
                           obscureText: true,
                           showVisibilityToggle: true,
                           error: error,
                           onChanged: (value) {
-                            // Efface le message des la premiere frappe. La
-                            // saisie, elle, est deja vide : c'est la cle qui
-                            // la reconstruit, pas ce rappel.
                             if (error != null && value.isNotEmpty) {
                               setSheetState(() => error = null);
                             }
                           },
                           onCompleted: (value) async {
-                            if (!isConfirming) {
+                            if (step == _PinStep.current) {
+                              final result =
+                                  await notifier.authenticateWithPin(value);
+                              if (result.isSuccess) {
+                                setSheetState(() {
+                                  currentPin = value;
+                                  step = _PinStep.create;
+                                  error = null;
+                                });
+                              } else {
+                                setSheetState(() {
+                                  error = l10n.securityIncorrectPin;
+                                  attempts++;
+                                });
+                              }
+                              return;
+                            }
+
+                            if (step == _PinStep.create) {
                               setSheetState(() {
-                                pin = value;
-                                isConfirming = true;
+                                pendingPin = value;
+                                step = _PinStep.confirm;
                                 error = null;
                               });
                               return;
                             }
-                            if (value != pin) {
+
+                            if (value != pendingPin) {
                               setSheetState(() {
                                 error = l10n.pinsDoNotMatch;
                                 attempts++;
                               });
                               return;
                             }
+
                             try {
-                              await ref
-                                  .read(securityProvider.notifier)
-                                  .createPin(pin!);
-                              if (isNew) {
-                                await ref
-                                    .read(securityProvider.notifier)
-                                    .setAppLockEnabled(true);
+                              if (pinConfigured) {
+                                await notifier.changePin(
+                                  currentPin ?? '',
+                                  pendingPin!,
+                                );
+                              } else {
+                                await notifier.createPin(pendingPin!);
+                                await notifier.setAppLockEnabled(true);
                               }
                               if (enableJournalLock) {
-                                await ref
-                                    .read(securityProvider.notifier)
-                                    .setJournalLockEnabled(true);
+                                await notifier.setJournalLockEnabled(true);
                               }
                               saved = true;
                               if (sheetContext.mounted) {
@@ -162,8 +192,8 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                           onPressed: () => Navigator.of(sheetContext).pop(),
                           child: Text(
                             l10n.cancel,
-                            style:
-                                AppText.body.copyWith(color: AppColors.textSecondary),
+                            style: AppText.body
+                                .copyWith(color: AppColors.textSecondary),
                           ),
                         ),
                       ],
@@ -231,9 +261,14 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                       await _showPinSheet(enableJournalLock: false);
                       return;
                     }
-                    await ref
-                        .read(securityProvider.notifier)
-                        .setAppLockEnabled(v);
+                    if (v) _showDiscreteFeedback(l10n.securityAppLockOnNotice);
+                    try {
+                      await ref
+                          .read(securityProvider.notifier)
+                          .setAppLockEnabled(v);
+                    } catch (_) {
+                      if (mounted) _showDiscreteFeedback(l10n.securityToggleError);
+                    }
                   },
                 ),
                 ToggleItemData(
@@ -244,9 +279,13 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                       _showDependencyWarning();
                       return;
                     }
-                    await ref
-                        .read(securityProvider.notifier)
-                        .setBiometricsEnabled(v);
+                    try {
+                      await ref
+                          .read(securityProvider.notifier)
+                          .setBiometricsEnabled(v);
+                    } catch (_) {
+                      if (mounted) _showDiscreteFeedback(l10n.securityToggleError);
+                    }
                   },
                 ),
               ]),
@@ -263,22 +302,35 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
                       await _showPinSheet(enableJournalLock: true);
                       return;
                     }
-                    if (v && !security.appLockEnabled) {
+                    if (v) {
+                      _showDiscreteFeedback(l10n.securityJournalLockOnNotice);
+                    }
+                    try {
+                      if (v && !security.appLockEnabled) {
+                        await ref
+                            .read(securityProvider.notifier)
+                            .setAppLockEnabled(true);
+                      }
                       await ref
                           .read(securityProvider.notifier)
-                          .setAppLockEnabled(true);
+                          .setJournalLockEnabled(v);
+                    } catch (_) {
+                      if (mounted) _showDiscreteFeedback(l10n.securityToggleError);
                     }
-                    await ref
-                        .read(securityProvider.notifier)
-                        .setJournalLockEnabled(v);
                   },
                 ),
                 ToggleItemData(
                   l10n.multitaskProtection,
                   security.multitaskProtectionEnabled,
-                  (v) => ref
-                      .read(securityProvider.notifier)
-                      .setMultitaskProtectionEnabled(v),
+                  (v) async {
+                    try {
+                      await ref
+                          .read(securityProvider.notifier)
+                          .setMultitaskProtectionEnabled(v);
+                    } catch (_) {
+                      if (mounted) _showDiscreteFeedback(l10n.securityToggleError);
+                    }
+                  },
                 ),
               ]),
               const SizedBox(height: 24),
@@ -286,6 +338,12 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
               // SECTION: Gestion
               SectionLabel(l10n.management),
               MenuGroup(items: [
+                if (security.appLockEnabled)
+                  MenuItemData(
+                    l10n.securityLockNow,
+                    Icons.lock_clock_outlined,
+                    () => ref.read(securityProvider.notifier).endSession(),
+                  ),
                 MenuItemData(
                   l10n.changePin,
                   Icons.lock_outline,
@@ -343,7 +401,25 @@ class _AccountSecurityScreenState extends ConsumerState<AccountSecurityScreen> {
             ],
           ),
           loading: () => const AccountSecuritySkeleton(),
-          error: (e, __) => Center(child: Text(l10n.unableToLoadSecuritySettings)),
+          // Sans ce bouton, un échec de lecture des réglages laissait un
+          // écran figé, impossible à distinguer d'un verrouillage inactif.
+          error: (e, __) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32),
+            child: Column(
+              children: [
+                Text(
+                  l10n.unableToLoadSecuritySettings,
+                  textAlign: TextAlign.center,
+                  style: AppText.body.copyWith(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => ref.invalidate(securityProvider),
+                  child: Text(l10n.securityRetry),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -20,6 +20,7 @@ Future<void> clearLocalAccountData() async {
     HiveBoxes.journalTombstones,
     HiveBoxes.periodLogs,
     HiveBoxes.legacyJournalEntries,
+    HiveBoxes.appNotifications,
   ];
   for (final name in boxes) {
     try {
