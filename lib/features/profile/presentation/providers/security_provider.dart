@@ -9,6 +9,14 @@ class SecurityState {
   final bool biometricsEnabled;
   final bool isSessionValid;
   final bool multitaskProtectionEnabled;
+
+  /// Le journal a été déverrouillé pour cette session.
+  ///
+  /// Il ne réutilise pas [isSessionValid] : la session globale de cinq minutes
+  /// laissait le journal ouvert sans jamais demander le code, si bien que
+  /// activer « Verrouillage du journal » ne changeait rien de visible.
+  final bool isJournalUnlocked;
+
   final AuthResult? lastAuthResult;
 
   const SecurityState({
@@ -18,6 +26,7 @@ class SecurityState {
     this.biometricsEnabled = false,
     this.isSessionValid = false,
     this.multitaskProtectionEnabled = true,
+    this.isJournalUnlocked = false,
     this.lastAuthResult,
   });
 
@@ -28,6 +37,7 @@ class SecurityState {
     bool? biometricsEnabled,
     bool? isSessionValid,
     bool? multitaskProtectionEnabled,
+    bool? isJournalUnlocked,
     AuthResult? lastAuthResult,
   }) {
     return SecurityState(
@@ -38,6 +48,7 @@ class SecurityState {
       isSessionValid: isSessionValid ?? this.isSessionValid,
       multitaskProtectionEnabled:
           multitaskProtectionEnabled ?? this.multitaskProtectionEnabled,
+      isJournalUnlocked: isJournalUnlocked ?? this.isJournalUnlocked,
       lastAuthResult: lastAuthResult ?? this.lastAuthResult,
     );
   }
@@ -80,6 +91,9 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
       biometricsEnabled: biometricsEnabled,
       isSessionValid: isSessionValid,
       multitaskProtectionEnabled: multitaskProtectionEnabled,
+      // Toute relecture des réglages referme le journal : un changement de
+      // code ou de verrou doit se voir immédiatement.
+      isJournalUnlocked: false,
     ));
   }
 
@@ -162,10 +176,11 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   Future<void> setAppLockEnabled(bool enabled) async {
     try {
       await SecurityService.setAppLockEnabled(enabled);
-      // Juste apres avoir configure son code, la personne reste debloquee :
-      // sinon la garde lui impose aussitot l'ecran de verrouillage.
       if (enabled) {
-        await SecurityService.startSession();
+        // Activer le verrouillage doit se voir tout de suite : on ferme la
+        // session au lieu d'offrir cinq minutes de sursis pendant lesquelles
+        // l'ecran de verrouillage ne s'affichait jamais.
+        await SecurityService.endSession();
       }
       await _loadState();
     } catch (error) {
@@ -177,6 +192,11 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   Future<void> setJournalLockEnabled(bool enabled) async {
     try {
       await SecurityService.setJournalLockEnabled(enabled);
+      if (enabled) {
+        // Le journal se referme immediatement : le code sera demande a la
+        // premiere ouverture, ce qui rend le reglage visible.
+        await SecurityService.endSession();
+      }
       await _loadState();
     } catch (error) {
       await _loadState();
@@ -211,7 +231,10 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
   Future<void> endSession() async {
     await SecurityService.endSession();
     final currentState = state.valueOrNull ?? const SecurityState();
-    state = AsyncValue.data(currentState.copyWith(isSessionValid: false));
+    state = AsyncValue.data(currentState.copyWith(
+      isSessionValid: false,
+      isJournalUnlocked: false,
+    ));
   }
 
   Future<void> refreshSessionStatus() async {
@@ -219,6 +242,23 @@ class SecurityNotifier extends StateNotifier<AsyncValue<SecurityState>> {
     final currentState = state.valueOrNull ?? const SecurityState();
     state =
         AsyncValue.data(currentState.copyWith(isSessionValid: isSessionValid));
+  }
+
+  // ===========================================================================
+  // JOURNAL SESSION
+  // ===========================================================================
+
+  /// Ouvre le journal après un code correct ou une authentification
+  /// biométrique réussie.
+  Future<void> unlockJournal() async {
+    final currentState = state.valueOrNull ?? const SecurityState();
+    state = AsyncValue.data(currentState.copyWith(isJournalUnlocked: true));
+  }
+
+  /// Referme le journal (retour au premier plan, changement de réglage).
+  Future<void> lockJournal() async {
+    final currentState = state.valueOrNull ?? const SecurityState();
+    state = AsyncValue.data(currentState.copyWith(isJournalUnlocked: false));
   }
 
   // ===========================================================================

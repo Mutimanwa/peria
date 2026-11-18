@@ -1049,6 +1049,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get securityIncorrectPin => 'Incorrect PIN.';
 
   @override
+  String get securityLockNow => 'Lock now';
+
+  @override
+  String get securityAppLockOnNotice => 'Lock enabled. Enter your PIN to unlock.';
+
+  @override
+  String get securityJournalLockOnNotice => 'Journal lock enabled. The PIN will be asked when you open the journal.';
+
+  @override
+  String get securityToggleError => 'Could not change this setting. Try again.';
+
+  @override
+  String get securityCurrentPin => 'Your current PIN';
+
+  @override
   String get securityAuthenticationSuccess => 'Authentication successful';
 
   @override

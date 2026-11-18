@@ -2027,6 +2027,26 @@ abstract class AppLocalizations {
   /// **'Incorrect PIN.'**
   String get securityIncorrectPin;
 
+  /// In en, this message translates to:
+  /// **'Lock now'**
+  String get securityLockNow;
+
+  /// In en, this message translates to:
+  /// **'Lock enabled. Enter your PIN to unlock.'**
+  String get securityAppLockOnNotice;
+
+  /// In en, this message translates to:
+  /// **'Journal lock enabled. The PIN will be asked when you open the journal.'**
+  String get securityJournalLockOnNotice;
+
+  /// In en, this message translates to:
+  /// **'Could not change this setting. Try again.'**
+  String get securityToggleError;
+
+  /// In en, this message translates to:
+  /// **'Your current PIN'**
+  String get securityCurrentPin;
+
   /// No description provided for @securityAuthenticationSuccess.
   ///
   /// In en, this message translates to:

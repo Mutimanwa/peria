@@ -51,6 +51,22 @@ class FakeSecurityNotifier extends StateNotifier<AsyncValue<SecurityState>>
   Future<void> setMultitaskProtectionEnabled(bool enabled) async {}
 
   @override
+  Future<void> unlockJournal() async {
+    final current = state.valueOrNull;
+    if (current != null) {
+      state = AsyncValue.data(current.copyWith(isJournalUnlocked: true));
+    }
+  }
+
+  @override
+  Future<void> lockJournal() async {
+    final current = state.valueOrNull;
+    if (current != null) {
+      state = AsyncValue.data(current.copyWith(isJournalUnlocked: false));
+    }
+  }
+
+  @override
   Future<void> endSession() async {}
 
   @override

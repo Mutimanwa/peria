@@ -1061,6 +1061,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get securityIncorrectPin => 'Code PIN incorrect.';
 
   @override
+  String get securityLockNow => 'Verrouiller maintenant';
+
+  @override
+  String get securityAppLockOnNotice => 'Verrouillage activé. Saisis ton code pour déverrouiller.';
+
+  @override
+  String get securityJournalLockOnNotice => 'Verrouillage du journal activé. Le code sera demandé à l’ouverture du journal.';
+
+  @override
+  String get securityToggleError => 'Impossible de modifier ce réglage. Réessaie.';
+
+  @override
+  String get securityCurrentPin => 'Ton code actuel';
+
+  @override
   String get securityAuthenticationSuccess => 'Authentification réussie';
 
   @override
