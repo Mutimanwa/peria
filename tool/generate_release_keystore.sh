@@ -3,7 +3,8 @@
 # Génère la clé de signature de release de Peria et la liste des secrets GitHub
 # à créer. À lancer UNE SEULE FOIS, sur la machine du propriétaire du projet.
 #
-#   bash tool/generate_release_keystore.sh
+#   bash tool/generate_release_keystore.sh          (Linux, macOS, Git Bash)
+#   tool\Generate-ReleaseKeystore.ps1               (Windows natif)
 #
 # Prérequis : Java (keytool) et openssl.
 #
@@ -44,8 +45,11 @@ generate_password() {
   openssl rand -base64 32 | tr -d '/+=\n' | cut -c1-28
 }
 
+# Un seul mot de passe : un keystore PKCS12 n'en stocke qu'un, keytool ignore
+# -keypass s'il diffère de -storepass, et la signature échouerait alors avec un
+# mot de passe qui ne correspond pas à key.properties.
 STORE_PASSWORD="$(generate_password)"
-KEY_PASSWORD="$(generate_password)"
+KEY_PASSWORD="$STORE_PASSWORD"
 
 mkdir -p "$KEYSTORE_DIR"
 
@@ -104,7 +108,7 @@ quatre secrets avec exactement ces noms :
   ANDROID_KEYSTORE_BASE64  = le contenu de release.jks encodé en base64
   ANDROID_KEYSTORE_PASSWORD = $STORE_PASSWORD
   ANDROID_KEY_ALIAS         = $ALIAS
-  ANDROID_KEY_PASSWORD      = $KEY_PASSWORD
+  ANDROID_KEY_PASSWORD      = $KEY_PASSWORD   (identique : PKCS12 n'a qu'un mot de passe)
 
 Si la CLI gh est authentifiée avec un compte propriétaire du dépôt, les quatre
 commandes ci-dessous font la même chose :

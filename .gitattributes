@@ -1,0 +1,6 @@
+# Les scripts shell gardent des fins de ligne LF même sur un poste Windows
+# (core.autocrlf=true). Un CRLF fait échouer « bash tool/…sh » avec
+# « $'\r': command not found ».
+*.sh text eol=lf
+
+# Le reste du dépôt garde le comportement par défaut de git.

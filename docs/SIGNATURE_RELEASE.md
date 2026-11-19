@@ -30,6 +30,41 @@ Le script :
 - affiche l'empreinte SHA-256 du certificat et les quatre commandes `gh secret
   set` correspondantes.
 
+### Sous Windows
+
+Deux chemins, même résultat.
+
+**PowerShell natif** (pas besoin de Git Bash) :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tool\Generate-ReleaseKeystore.ps1
+```
+
+**Git Bash** (inclus avec Git for Windows) :
+
+```bash
+bash tool/generate_release_keystore.sh
+```
+
+Dans les deux cas il faut un **JDK 17** installé (`keytool`), puis rouvrir le
+terminal pour que `PATH` et `JAVA_HOME` soient pris en compte. Vérification :
+
+```powershell
+keytool -help
+```
+
+Trois pièges Windows, tous traités par les scripts et le `.gitattributes` :
+
+- **Fins de ligne** : un `.sh` récupéré en CRLF échoue avec
+  `$'\r': command not found`. `.gitattributes` force LF pour les scripts ;
+  en cas de doute, `git config core.autocrlf false` puis re-checkout du fichier.
+- **Redirection `<`** : PowerShell ne la gère pas. Utilisez
+  `gh secret set ANDROID_KEYSTORE_BASE64 --body ([System.IO.File]::ReadAllText('android\keystore\release.jks.b64'))`
+  au lieu de `< fichier`.
+- **BOM** : un `key.properties` enregistré « UTF-8 avec BOM » casse la première
+  clé lue par Java. Le script PowerShell écrit sans BOM ; si vous éditez le
+  fichier à la main, enregistrez-le en UTF-8 sans BOM ou en ASCII.
+
 ## 2. Sauvegarder la clé (avant tout le reste)
 
 Copiez hors du dépôt, dans un endroit sûr et sauvegardé :
@@ -48,7 +83,17 @@ définitivement un paquet signé avec une autre clé que le premier envoi.
 *Settings → Secrets and variables → Actions*, ou avec `gh` :
 
 ```bash
-gh secret set ANDROID_KEYSTORE_BASE64  < <(base64 < android/keystore/release.jks)
+# Git Bash / macOS / Linux
+gh secret set ANDROID_KEYSTORE_BASE64 < android/keystore/release.jks.b64
+gh secret set ANDROID_KEYSTORE_PASSWORD --body '…'
+gh secret set ANDROID_KEY_ALIAS         --body 'peria'
+gh secret set ANDROID_KEY_PASSWORD      --body '…'
+```
+
+```powershell
+# PowerShell (la redirection < n'existe pas)
+$b64 = [System.IO.File]::ReadAllText('android\keystore\release.jks.b64')
+gh secret set ANDROID_KEYSTORE_BASE64 --body $b64
 gh secret set ANDROID_KEYSTORE_PASSWORD --body '…'
 gh secret set ANDROID_KEY_ALIAS         --body 'peria'
 gh secret set ANDROID_KEY_PASSWORD      --body '…'
@@ -59,7 +104,7 @@ gh secret set ANDROID_KEY_PASSWORD      --body '…'
 | `ANDROID_KEYSTORE_BASE64` | le fichier `.jks` encodé en base64, sur une ligne |
 | `ANDROID_KEYSTORE_PASSWORD` | `storePassword` de `key.properties` |
 | `ANDROID_KEY_ALIAS` | `keyAlias`, ici `peria` |
-| `ANDROID_KEY_PASSWORD` | `keyPassword` de `key.properties` |
+| `ANDROID_KEY_PASSWORD` | `keyPassword` de `key.properties` — **même valeur** que `ANDROID_KEYSTORE_PASSWORD` : un keystore PKCS12 n'a qu'un mot de passe |
 
 ## 4. Vérifier
 
@@ -98,6 +143,9 @@ binaires et le `versionCode` sont produits automatiquement.
 | release non publiée, journal vert | secrets absents : `signed=false` | créer les quatre secrets |
 | `Keystore was tampered with` | mot de passe ou fichier base64 corrompu | regénérer le secret depuis le `.jks` sauvegardé |
 | « You already have a signing key with key ID … » au Play Store | envoi signé avec une autre clé | utiliser le keystore d'origine, jamais un nouveau |
+| `$'\r': command not found` (Windows, Git Bash) | script récupéré en CRLF | `.gitattributes` force LF ; sinon `git config core.autocrlf false` et re-checkout |
+| `ParserError` / `<` inattendu dans PowerShell | PowerShell ne gère pas la redirection `<` | `gh secret set … --body ([System.IO.File]::ReadAllText('…'))` |
+| `Keystore was tampered with` juste après génération | `key.properties` lu avec un BOM, ou mot de passe différent de `storePassword` | réécrire le fichier sans BOM ; PKCS12 n'a qu'un mot de passe, `keyPassword` = `storePassword` |
 
 ## 7. Installer une mise à jour depuis une release
 
