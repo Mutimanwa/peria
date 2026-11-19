@@ -29,6 +29,13 @@ jobs:
     name: Android (analyse, tests, APK, AAB)
     runs-on: ubuntu-latest
 
+    # `signed` pilote la publication : tant que le keystore de release n'est pas
+    # installé, l'APK est signé avec la clé de debug du runner et ne peut
+    # remplacer aucune installation. Une telle archive ne doit pas devenir une
+    # release officielle.
+    outputs:
+      signed: ${{ steps.signing.outputs.signed }}
+
     steps:
       # 1. Récupération du code
       - name: Checkout code
@@ -66,6 +73,7 @@ jobs:
       #        debug et l'APK ne remplace pas une installation signée autrement.
       #        Procédure complète : docs/CI_CD.md, section « Signature Android ».
       - name: Configure release signing
+        id: signing
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -74,7 +82,8 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${KEYSTORE_BASE64}" ]; then
-            echo "::warning title=Signature de release absente::ANDROID_KEYSTORE_BASE64 n'est pas defini : l'APK est signe avec la cle de debug. Il ne remplacera pas une installation existante et le Play Store le refusera. Voir docs/CI_CD.md."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Signature de release absente::ANDROID_KEYSTORE_BASE64 n'est pas defini : l'APK est signe avec la cle de debug du runner. Il ne remplacera pas une installation existante et aucune release officielle ne sera publiee. Procedure : docs/SIGNATURE_RELEASE.md."
             exit 0
           fi
           mkdir -p android/keystore
@@ -85,15 +94,19 @@ jobs:
             echo "keyAlias=${KEY_ALIAS}"
             echo "keyPassword=${KEY_PASSWORD}"
           } > android/key.properties
+          echo "signed=true" >> "$GITHUB_OUTPUT"
           echo "Keystore de release installe ($(wc -c < android/keystore/release.jks) octets)."
 
       # 7. Build APK
+      # Le versionCode doit augmenter a chaque publication, sinon le Play Store
+      # refuse l'envoi et les utilisateurs ne voient pas la mise a jour. Le
+      # numero de run est monotone : il fait un versionCode unique par build.
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --build-number=${{ github.run_number }}
 
       # 8. Build AAB (Play Store)
       - name: Build App Bundle
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --build-number=${{ github.run_number }}
 
       # 8bis. Empreinte du certificat qui a signé l'APK : c'est la valeur à
       #       comparer quand Android refuse une mise à jour.
@@ -155,7 +168,7 @@ jobs:
 
       # 5. Build iOS sans signature
       - name: Build iOS (no codesign)
-        run: flutter build ios --release --no-codesign
+        run: flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
 
       # 6. Archive du .app, avec la version du pubspec dans le nom
       - name: Package Runner.app
@@ -184,7 +197,10 @@ jobs:
   release:
     name: Release automatique
     needs: [ android, ios ]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Rien n'est publie tant que l'APK n'est pas signé avec la clé de release :
+    # une archive signée par la clé de debug du runner ne peut être installée
+    # par-dessus une version existante.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.android.outputs.signed == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -206,14 +222,20 @@ jobs:
         id: assets
         run: |
           set -euo pipefail
+          # `version:` reste la version lisible ; le numéro de run identifie le
+          # build. Deux publications de la même version ne s'écrasent donc pas :
+          # chaque mise à jour garde son APK, et le tag ne se confond pas avec
+          # celui d'un build précédent.
           VERSION=$(sed -n 's/^version: *//p' pubspec.yaml | head -1)
+          BUILD="$GITHUB_RUN_NUMBER"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION-b$BUILD" >> "$GITHUB_OUTPUT"
 
           mkdir -p release
-          cp dist/app-release.apk "release/peria-$VERSION.apk"
-          cp dist/app-release.aab "release/peria-$VERSION.aab"
-          cp "dist/peria-ios-$VERSION.zip" "release/peria-$VERSION-ios.zip"
+          cp dist/app-release.apk "release/peria-$VERSION-b$BUILD.apk"
+          cp dist/app-release.aab "release/peria-$VERSION-b$BUILD.aab"
+          cp "dist/peria-ios-$VERSION.zip" "release/peria-$VERSION-b$BUILD-ios.zip"
           ls -lh release
 
       # 4. Tag + Release (création, ou mise à jour si le tag existe déjà)
@@ -222,14 +244,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.assets.outputs.tag }}
           VERSION: ${{ steps.assets.outputs.version }}
+          BUILD: ${{ steps.assets.outputs.build }}
         run: |
           set -euo pipefail
+          TITLE="Peria $VERSION (build $BUILD)"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" release/* --clobber
-            gh release edit "$TAG" --title "Peria $TAG"
+            gh release edit "$TAG" --title "$TITLE"
           else
             gh release create "$TAG" release/* \
-              --title "Peria $TAG" \
+              --title "$TITLE" \
               --target "$GITHUB_SHA" \
               --generate-notes
           fi

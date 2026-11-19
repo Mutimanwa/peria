@@ -47,15 +47,23 @@ version: 1.0.0+1
 
 À chaque poussée sur `main`, le workflow :
 
-1. attend la fin des jobs `android` et `ios` ;
-2. lit `version:` et fabrique le tag `v<version>`, par exemple `v1.0.0+1` ;
+1. attend la fin des jobs `android` et `ios`, et vérifie que l'APK a été signé
+   avec la clé de release (`signed == 'true'`, voir §4) ;
+2. lit `version:` et le numéro de run, et fabrique le tag `v<version>-b<run>`,
+   par exemple `v1.0.0+1-b42` ;
 3. crée la Release GitHub avec notes générées automatiquement et trois fichiers :
-   - `peria-1.0.0+1.apk`
-   - `peria-1.0.0+1.aab`
-   - `peria-1.0.0+1-ios.zip`
+   - `peria-1.0.0+1-b42.apk`
+   - `peria-1.0.0+1-b42.aab`
+   - `peria-1.0.0+1-b42-ios.zip`
 
-Si la release du tag existe déjà (relance manuelle du workflow), les binaires
-sont remplacés au lieu de provoquer une erreur.
+Le numéro de build dans le tag évite qu'un nouveau build écrase les binaires
+d'une version précédente. Relancer le **même** run met à jour la release
+existante au lieu de provoquer une erreur.
+
+Le `versionCode` de l'APK/AAB n'est plus celui de `pubspec.yaml` seul : la CI
+passe `--build-number=<numéro de run>`, donc il augmente à chaque build. Un
+`versionCode` qui stagne fait refuser l'envoi par le Play Store et empêche les
+téléphones de voir la mise à jour.
 
 **Publier une nouvelle version** revient donc à incrémenter `version:` dans
 `pubspec.yaml` dans la PR qui part vers `main` :
@@ -65,6 +73,10 @@ version: 1.0.1+2   # correctif : +0.0.1 et numéro de build +1
 ```
 
 Aucun tag n'est créé à la main.
+
+La distribution se fait par ces releases (`com.example.peria` assumé) ; la
+procédure d'installation d'une mise à jour est dans `docs/SIGNATURE_RELEASE.md`,
+section 7.
 
 ## 4. Signature Android
 
@@ -80,15 +92,18 @@ avec une paire de clés **aléatoire** : chaque runner GitHub démarre avec un
 Deux APK de la CI ne peuvent pas se remplacer l'un l'autre, et le Play Store
 refuse un bundle signé en debug.
 
+La procédure complète, pas à pas, est dans **`docs/SIGNATURE_RELEASE.md`**.
+Résumé :
+
 ### Créer le keystore (une seule fois)
 
 ```bash
-keytool -genkeypair -v \
-  -keystore peria-upload.jks \
-  -alias peria \
-  -keyalg RSA -keysize 4096 -validity 10000 \
-  -dname "CN=Peria, O=Peria, C=BI"
+bash tool/generate_release_keystore.sh
 ```
+
+Le script génère `android/keystore/release.jks` et `android/key.properties`,
+refuse d'écraser une clé existante, et affiche l'empreinte SHA-256 ainsi que les
+commandes de création des secrets.
 
 > **À conserver hors du dépôt, avec une sauvegarde.** Sans ce fichier et ses mots
 > de passe, plus aucune mise à jour n'est possible sur le Play Store : il faudrait
@@ -120,6 +135,15 @@ de debug pour ne pas bloquer la compilation, et le job affiche un avertissement.
 L'étape « Print signing certificate » affiche l'empreinte SHA-256 du certificat
 de l'APK produit dans les logs du job `android` : c'est la valeur à comparer
 quand une installation est refusée.
+
+Deux garde-fous ont été ajoutés :
+
+- les builds release reçoivent `--build-number=<numéro de run>`, donc un
+  `versionCode` strictement croissant — condition pour que le Play Store accepte
+  un envoi et pour que les téléphones voient la mise à jour ;
+- le job *Release automatique* est conditionné à `needs.android.outputs.signed
+  == 'true'` : sans secrets, l'APK est signé en debug et **aucune release n'est
+  publiée**, car elle serait ininstallable par-dessus l'existante.
 
 ### Vérifier un APK à la main
 
