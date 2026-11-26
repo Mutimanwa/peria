@@ -5,6 +5,7 @@ import 'package:peria_app/features/cycle/data/models/period_log.dart';
 import 'package:peria_app/features/cycle/domain/period_log_quick_actions.dart';
 import 'package:peria_app/features/cycle/domain/period_rules.dart';
 import 'package:peria_app/features/cycle/presentation/providers/cycle_provider.dart';
+import 'package:peria_app/features/cycle/presentation/widgets/mini_month_calendar.dart';
 import 'package:peria_app/features/profile/presentation/providers/user_profile_provider.dart';
 import 'package:peria_app/l10n/app_localizations.dart';
 import 'package:peria_app/shared/widgets/pill_button.dart';
@@ -176,6 +177,11 @@ class _PeriodLogQuickSheetState extends ConsumerState<PeriodLogQuickSheet> {
                   l10n.logPeriodSheetSubtitle,
                   style: AppText.body.copyWith(color: AppColors.grey600),
                 ),
+                const SizedBox(height: 16),
+                // Le mois sous les yeux : jours déjà enregistrés (pleins) et
+                // jours prévus (contour), pour situer l'action avant de la
+                // choisir. Le calendrier ne modifie rien lui-même.
+                const MiniMonthCalendar(),
                 if (logsState.isLoading || _isSaving) ...[
                   const SizedBox(height: 14),
                   Row(
